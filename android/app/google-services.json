@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "672870303503",
+    "firebase_url": "https://delivery-app-cc4cc.firebaseio.com",
+    "project_id": "delivery-app-cc4cc",
+    "storage_bucket": "delivery-app-cc4cc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:672870303503:android:bda53cd360eae89ae8e07a",
+        "android_client_info": {
+          "package_name": "com.android.application"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "672870303503-8k63bdqkhim0sl4o9kplt3ebtc5e2arb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMY96a4MDT3y6K1887prALCMXnxZ8YSTE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "672870303503-8k63bdqkhim0sl4o9kplt3ebtc5e2arb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
