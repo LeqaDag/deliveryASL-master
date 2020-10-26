@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sajeda_app/classes/busines.dart';
 import 'package:sajeda_app/components/businessComponent/addComponent/add_delivery_cost.dart';
-import 'package:sajeda_app/components/businessComponent/businesssComponent/buisnessOrders.dart';
+import 'package:sajeda_app/components/businessComponent/updateComponent/update_company.dart';
 import 'package:sajeda_app/services/businessServices.dart';
 import 'package:sajeda_app/services/orderServices.dart';
 
@@ -29,7 +29,7 @@ class AllBuisness extends StatelessWidget {
     return StreamBuilder<Business>(
         stream: BusinessService(uid: businessID).businessByID,
         builder: (context, snapshot) {
-          //print(snapshot.data);
+          print(businessID);
           if (snapshot.hasData) {
             Business business = snapshot.data;
             return Card(
@@ -89,10 +89,51 @@ class AllBuisness extends StatelessWidget {
                         }),
                     IconButton(
                         icon: Icon(Icons.edit, color: KEditIconColor),
-                        onPressed: null),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => UpdateCompany(
+                                    businessID: businessID, name: name)),
+                          );
+                        }),
                     IconButton(
                         icon: Icon(Icons.delete, color: KTrashIconColor),
-                        onPressed: null),
+                        onPressed: () {
+                          return showDialog<void>(
+                            context: context,
+                            barrierDismissible: false, // user must tap button!
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text('حذف شركة'),
+                                content: SingleChildScrollView(
+                                  child: ListBody(
+                                    children: <Widget>[
+                                      Text('هل ترغب بحذف الشركة'),
+                                      Text(business.name),
+                                    ],
+                                  ),
+                                ),
+                                actions: <Widget>[
+                                  FlatButton(
+                                    child: Text('تأكيد'),
+                                    onPressed: () async {
+                                      BusinessService()
+                                          .deleteBusinessData(businessID);
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                  FlatButton(
+                                    child: Text('تراجع'),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        }),
                     IconButton(
                       icon: Icon(Icons.add, color: KAllOrdersListTileColor),
                       onPressed: () {
@@ -100,7 +141,9 @@ class AllBuisness extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                               builder: (context) => AddDeliveryCost(
-                                  businessID: businessID, name: business.name)),
+                                  businessID: businessID,
+                                  businessName: business.name,
+                                  name: name)),
                         );
                       },
                     ),

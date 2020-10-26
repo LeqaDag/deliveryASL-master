@@ -25,14 +25,15 @@ class _BusinessListState extends State<BusinessList> {
           return AllBuisness(
               color: KCustomCompanyOrdersStatus,
               businessID: business[index].uid,
+              name: widget.name,
               onTapBox: () {
                 print("yes");
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => CompaniesOrdersAdmin(
-                          businessID: business[index].uid, name: business[index].name)),
-                );
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //       builder: (context) => CompaniesOrdersAdmin(
+                //           businessID: business[index].uid, name: business[index].name)),
+                // );
               });
         },
       );

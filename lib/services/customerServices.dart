@@ -64,6 +64,13 @@ class CustomerService {
         .then((value) => value.data()['name']);
   }
 
+  Future<String> get customerAdress {
+    return customerCollection
+        .doc(uid)
+        .get()
+        .then((value) => value.data()['address']);
+  }
+
   Stream<List<Customer>> get customers {
     return customerCollection
         .where('isArchived', isEqualTo: false)

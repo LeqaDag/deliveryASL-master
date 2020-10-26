@@ -80,7 +80,7 @@ class DriverAdmin extends StatelessWidget {
                   ],
                 ),
                 drawer: AdminDrawer(name: name),
-                body: DriverList()),
+                body: DriverList(name: name)),
           ),
         ));
   }

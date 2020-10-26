@@ -313,6 +313,15 @@ class OrderService {
 
   Stream<List<Order>> get ordersBusinessByState {
     switch (orderState) {
+      case 'all':
+        {
+          return orderCollection
+              .where('businesID', isEqualTo: businesID)
+              .where('isArchived', isEqualTo: false)
+              .snapshots()
+              .map(_orderListFromSnapshot);
+        }
+        break;
       case 'isLoading':
         {
           return orderCollection
@@ -408,5 +417,13 @@ class OrderService {
         .where('isArchived', isEqualTo: false)
         .get()
         .then((value) => value.size);
+  }
+
+  Stream<List<Order>> businessAllOrders(String businessID) {
+    return orderCollection
+        .where('businesID', isEqualTo: businessID)
+        .where('isArchived', isEqualTo: false)
+        .snapshots()
+        .map(_orderListFromSnapshot);
   }
 }

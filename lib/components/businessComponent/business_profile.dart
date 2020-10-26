@@ -4,19 +4,28 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class BusinessProfile extends StatelessWidget {
+class BusinessProfile extends StatefulWidget {
   final String name, uid;
   BusinessProfile({this.name, this.uid});
+
+  @override
+  _BusinessProfileState createState() => _BusinessProfileState();
+}
+
+class _BusinessProfileState extends State<BusinessProfile> {
   TextEditingController emailController = new TextEditingController();
+
   TextEditingController passwordController = new TextEditingController();
+
   TextEditingController phoneController = new TextEditingController();
+
   TextEditingController nameController = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     final bus = FirebaseFirestore.instance
         .collection('business')
-        .where('userID', isEqualTo: uid)
+        .where('userID', isEqualTo: widget.uid)
         .get();
     print(bus);
     return Scaffold(
@@ -53,7 +62,7 @@ class BusinessProfile extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      name ?? "",
+                      widget.name ?? "",
                       style: TextStyle(
                         color: Color(0xffffffff),
                         fontFamily: 'Amiri',

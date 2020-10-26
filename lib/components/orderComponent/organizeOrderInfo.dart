@@ -9,46 +9,50 @@ import 'orderInformationComponent/returnInfo.dart';
 import 'orderInformationComponent/urgentInfo.dart';
 
 class OrganizeOrderInfo extends StatelessWidget {
-  final String uid;
+  final String uid, name;
   final String orderState;
-  OrganizeOrderInfo({this.uid, this.orderState});
+  OrganizeOrderInfo({this.uid, this.orderState, this.name});
+
   @override
   Widget build(BuildContext context) {
     switch (orderState) {
       case 'isLoading':
         {
-          return LoadingInfo(uid: uid);
+          return LoadingInfo(uid: uid, name: name);
         }
         break;
       case 'isReceived':
         {
-          return ReceivedInfo(uid: uid);
+          return ReceivedInfo(uid: uid, name: name);
         }
         break;
       case 'isUrgent':
         {
-          return UrgentInfo(uid: uid);
+          return UrgentInfo(uid: uid, name: name);
         }
         break;
       case 'isCancelld':
         {
-          return CancelldInfo(uid: uid);
+          return CancelldInfo(
+            uid: uid,
+            name: name,
+          );
         }
         break;
 
       case 'isDelivery':
         {
-          return DeliveryInfo(uid: uid);
+          return DeliveryInfo(uid: uid, name: name);
         }
         break;
       case 'isDone':
         {
-          return DoneInfo(uid: uid);
+          return DoneInfo(uid: uid, name: name);
         }
         break;
       case 'isReturn':
         {
-          return ReturnInfo(uid: uid);
+          return ReturnInfo(uid: uid, name: name);
         }
         break;
       default:

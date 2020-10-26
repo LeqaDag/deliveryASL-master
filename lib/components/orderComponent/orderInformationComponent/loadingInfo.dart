@@ -14,8 +14,8 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../constants.dart';
 
 class LoadingInfo extends StatelessWidget {
-  final String uid;
-  LoadingInfo({Key key, this.uid}) : super(key: key);
+  final String uid, name;
+  LoadingInfo({Key key, this.uid, this.name}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +54,9 @@ class LoadingInfo extends StatelessWidget {
                                 ),
                                 endDrawer: Directionality(
                                     textDirection: TextDirection.rtl,
-                                    child: AdminDrawer()),
+                                    child: AdminDrawer(
+                                      name: name,
+                                    )),
                                 body: Directionality(
                                   textDirection: TextDirection.rtl,
                                   child: ListView(

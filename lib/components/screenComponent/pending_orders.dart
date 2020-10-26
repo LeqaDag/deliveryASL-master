@@ -27,13 +27,14 @@ class _PendingOrdersState extends State<PendingOrders> {
           centerTitle: true,
         ),
         endDrawer: Directionality(
-            textDirection: TextDirection.rtl, child: AdminDrawer()),
+            textDirection: TextDirection.rtl,
+            child: AdminDrawer(name: widget.name)),
         backgroundColor: Colors.white,
         body: Directionality(
           textDirection: TextDirection.rtl,
           child: StreamProvider<List<Order>>.value(
             value: OrderService().ordersByState('isLoading'),
-            child: OrderList(orderState: 'isLoading'),
+            child: OrderList(orderState: 'isLoading', name: widget.name),
           ),
         ));
   }

@@ -5,7 +5,8 @@ import 'package:sajeda_app/services/driverServices.dart';
 
 class Item extends StatelessWidget {
   final Driver driver;
-  Item({this.driver});
+  final String name;
+  Item({this.driver, this.name});
 
   @override
   Widget build(BuildContext context) {
@@ -43,42 +44,11 @@ class Item extends StatelessWidget {
                 children: <Widget>[
                   IconButton(
                     onPressed: () {
-                      return showDialog<void>(
-                        context: context,
-                        barrierDismissible: false, // user must tap button!
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text('حذف سائق'),
-                            content: SingleChildScrollView(
-                              child: ListBody(
-                                children: <Widget>[
-                                  Text('هل ترغب بحذف السائق'),
-                                  Text(driver.name),
-                                ],
-                              ),
-                            ),
-                            actions: <Widget>[
-                              FlatButton(
-                                child: Text('تأكيد'),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            UpdateDriver(driverID: driver.uid)),
-                                  );
-                                },
-                              ),
-                              FlatButton(
-                                child: Text('تراجع'),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                            ],
-                          );
-                        },
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                UpdateDriver(driverID: driver.uid, name: name)),
                       );
                     },
                     icon: Icon(

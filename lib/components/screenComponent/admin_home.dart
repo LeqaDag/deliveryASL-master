@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:sajeda_app/components/businessComponent/businesssComponent/business_admin.dart';
 import 'package:sajeda_app/components/driverComponent/driversComponent/driveradmin.dart';
+import 'package:sajeda_app/components/invoiceComponent/invoice_admin.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
 import 'package:sajeda_app/components/widgetsComponent/CustomWidgets.dart';
 import 'package:sajeda_app/components/lineComponent/all_lines.dart';
@@ -141,7 +142,12 @@ class AdminHome extends StatelessWidget {
                                           AssetImage("assets/Accounting.png"),
                                       text: "الحسابات المالية",
                                       onTap: () {
-                                        //type your code here 5
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  InvoiceAdmin(name: name)),
+                                        );
                                       }),
                                 ),
                               ],

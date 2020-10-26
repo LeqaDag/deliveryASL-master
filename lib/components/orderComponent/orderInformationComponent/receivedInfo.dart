@@ -13,8 +13,8 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../constants.dart';
 
 class ReceivedInfo extends StatelessWidget {
-  final String uid;
-  ReceivedInfo({Key key, this.uid}) : super(key: key);
+  final String uid, name;
+  ReceivedInfo({Key key, this.uid, this.name}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +53,7 @@ class ReceivedInfo extends StatelessWidget {
                                 ),
                                 endDrawer: Directionality(
                                     textDirection: TextDirection.rtl,
-                                    child: AdminDrawer()),
+                                    child: AdminDrawer(name: name)),
                                 body: Directionality(
                                   textDirection: TextDirection.rtl,
                                   child: ListView(

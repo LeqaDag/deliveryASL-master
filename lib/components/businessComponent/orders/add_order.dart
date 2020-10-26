@@ -8,21 +8,20 @@ import 'package:sajeda_app/classes/customer.dart';
 import 'package:sajeda_app/classes/order.dart';
 import 'package:sajeda_app/components/cityComponent/cityList.dart';
 import 'package:sajeda_app/components/pages/business_drawer.dart';
-import 'package:sajeda_app/components/pages/drawer.dart';
 import 'package:sajeda_app/services/cityServices.dart';
 import 'package:sajeda_app/services/customerServices.dart';
 import 'package:sajeda_app/services/orderServices.dart';
 import 'package:provider/provider.dart';
 
-class AddNewOders extends StatefulWidget {
-  final String name;
-  AddNewOders({this.name});
+class AddNewOdersByBusiness extends StatefulWidget {
+  final String name, uid;
+  AddNewOdersByBusiness({this.name, this.uid});
 
   @override
-  _AddNewOdersState createState() => _AddNewOdersState();
+  _AddNewOdersByBusinessState createState() => _AddNewOdersByBusinessState();
 }
 
-class _AddNewOdersState extends State<AddNewOders> {
+class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
   final _formKey = GlobalKey<FormState>();
   String customerCityID = 'One';
   String datehh = "";
@@ -47,7 +46,7 @@ class _AddNewOdersState extends State<AddNewOders> {
     return Scaffold(
       endDrawer: Directionality(
           textDirection: TextDirection.rtl,
-          child: AdminDrawer(name: widget.name)),
+          child: BusinessDrawer(name: widget.name, uid: widget.uid)),
       appBar: AppBar(
         title: Text('اضافة طلبية جديدة',
             style: TextStyle(fontSize: 20.0, fontFamily: 'Amiri')),

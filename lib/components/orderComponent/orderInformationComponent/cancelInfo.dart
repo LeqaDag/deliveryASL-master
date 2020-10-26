@@ -13,8 +13,8 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../constants.dart';
 
 class CancelldInfo extends StatelessWidget {
-  final String uid;
-  CancelldInfo({Key key, this.uid}) : super(key: key);
+  final String uid, name;
+  CancelldInfo({Key key, this.uid, this.name}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +53,9 @@ class CancelldInfo extends StatelessWidget {
                                 ),
                                 endDrawer: Directionality(
                                     textDirection: TextDirection.rtl,
-                                    child: AdminDrawer()),
+                                    child: AdminDrawer(
+                                      name: name,
+                                    )),
                                 body: Directionality(
                                   textDirection: TextDirection.rtl,
                                   child: ListView(

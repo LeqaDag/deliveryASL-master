@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sajeda_app/components/businessComponent/addComponent/add_delivery_cost.dart';
+import 'package:sajeda_app/components/businessComponent/businesssComponent/business_admin.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
 
 import '../../../constants.dart';
@@ -41,7 +42,7 @@ class _AddCompanyState extends State<AddCompany> {
       ),
       endDrawer: Directionality(
           textDirection: TextDirection.rtl,
-          child: AdminDrawer(name: widget.name)),
+          child: BusinessAdmin(name: widget.name)),
       backgroundColor: Colors.white,
       body: Directionality(
         textDirection: TextDirection.rtl,

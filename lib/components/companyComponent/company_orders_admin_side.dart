@@ -10,9 +10,10 @@ import 'package:sajeda_app/services/orderServices.dart';
 import '../../constants.dart';
 
 class CompanyOrdersAdminSide extends StatelessWidget {
-  final String uid;
+  final String uid, name;
   final String orderState;
-  CompanyOrdersAdminSide({this.uid, this.orderState});
+  CompanyOrdersAdminSide({this.uid, this.orderState, this.name});
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Business>(
@@ -32,14 +33,17 @@ class CompanyOrdersAdminSide extends StatelessWidget {
                 centerTitle: true,
               ),
               endDrawer: Directionality(
-                  textDirection: TextDirection.rtl, child: AdminDrawer()),
+                  textDirection: TextDirection.rtl,
+                  child: AdminDrawer(
+                    name: name,
+                  )),
               body: Directionality(
                 textDirection: TextDirection.rtl,
                 child: StreamProvider<List<Order>>.value(
                   value: OrderService(
                           businesID: businessData.uid, orderState: orderState)
                       .ordersBusinessByState,
-                  child: OrdersBusinessList(orderState:orderState),
+                  child: OrdersBusinessList(orderState: orderState, name: name),
                 ),
               ));
         });

@@ -5,8 +5,8 @@ import 'package:sajeda_app/components/pages/drawer.dart';
 import 'package:sajeda_app/services/driverServices.dart';
 
 class UpdateDriver extends StatefulWidget {
-  final String driverID;
-  const UpdateDriver({this.driverID});
+  final String driverID, name;
+  const UpdateDriver({this.driverID, this.name});
   @override
   _UpdateDriverState createState() => _UpdateDriverState();
 }
@@ -16,8 +16,8 @@ class _UpdateDriverState extends State<UpdateDriver> {
 
   String dropdownValue = 'One';
 
-  String name;
-  bool type ;
+  String driverName;
+  bool type;
   String email;
   String phoneNumber;
   String passowrd;
@@ -37,7 +37,10 @@ class _UpdateDriverState extends State<UpdateDriver> {
               backgroundColor: Color(0xff316686),
             ),
             endDrawer: Directionality(
-                textDirection: TextDirection.rtl, child: AdminDrawer()),
+                textDirection: TextDirection.rtl,
+                child: AdminDrawer(
+                  name: widget.name,
+                )),
             backgroundColor: Colors.white,
             body: Directionality(
               textDirection: TextDirection.rtl,
@@ -57,7 +60,8 @@ class _UpdateDriverState extends State<UpdateDriver> {
                           margin: EdgeInsets.all(10.0),
                           child: TextFormField(
                             initialValue: driverData.name ?? "",
-                            onChanged: (val) => setState(() => name = val),
+                            onChanged: (val) =>
+                                setState(() => driverName = val),
                             decoration: InputDecoration(
                               labelText: 'الإسم',
                               labelStyle: TextStyle(
@@ -126,7 +130,7 @@ class _UpdateDriverState extends State<UpdateDriver> {
                                   //Change color to Color(0xff73a16a)
                                 ),
                                 contentPadding:
-                                EdgeInsets.only(right: 20.0, left: 10.0),
+                                    EdgeInsets.only(right: 20.0, left: 10.0),
                                 labelText: "نوع السائق",
                                 labelStyle: TextStyle(
                                     fontFamily: 'Amiri',
@@ -234,7 +238,7 @@ class _UpdateDriverState extends State<UpdateDriver> {
                                   //Change color to Color(0xff73a16a)
                                 ),
                                 contentPadding:
-                                EdgeInsets.only(right: 20.0, left: 10.0),
+                                    EdgeInsets.only(right: 20.0, left: 10.0),
                                 labelText: "المدينة",
                                 labelStyle: TextStyle(
                                     fontFamily: 'Amiri',
@@ -341,7 +345,7 @@ class _UpdateDriverState extends State<UpdateDriver> {
                                   //Change color to Color(0xff73a16a)
                                 ),
                                 contentPadding:
-                                EdgeInsets.only(right: 20.0, left: 10.0),
+                                    EdgeInsets.only(right: 20.0, left: 10.0),
                                 labelText: "خط التوصيل",
                                 labelStyle: TextStyle(
                                     fontFamily: 'Amiri',
@@ -357,14 +361,13 @@ class _UpdateDriverState extends State<UpdateDriver> {
                                 borderRadius: new BorderRadius.circular(30.0)),
                             onPressed: () async {
                               if (_formKey.currentState.validate()) {
-
                                 await DriverService(uid: widget.driverID)
                                     .updateData(Driver(
-                                  name: name ?? snapshot.data.name,
-                                  type: type?? snapshot.data.type,
+                                  name: driverName ?? snapshot.data.name,
+                                  type: type ?? snapshot.data.type,
                                   email: email ?? snapshot.data.email,
                                   phoneNumber:
-                                  phoneNumber ?? snapshot.data.phoneNumber,
+                                      phoneNumber ?? snapshot.data.phoneNumber,
                                   passowrd: passowrd ?? snapshot.data.passowrd,
                                   address: address ?? snapshot.data.address,
                                   cityID: cityID ?? snapshot.data.cityID,

@@ -12,10 +12,9 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../constants.dart';
 
-
 class UrgentInfo extends StatelessWidget {
-  final String uid;
-  UrgentInfo({Key key, this.uid}) : super(key: key);
+  final String uid, name;
+  UrgentInfo({Key key, this.uid, this.name}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -54,12 +53,13 @@ class UrgentInfo extends StatelessWidget {
                                 ),
                                 endDrawer: Directionality(
                                     textDirection: TextDirection.rtl,
-                                    child: AdminDrawer()),
+                                    child: AdminDrawer(name: name)),
                                 body: Directionality(
                                   textDirection: TextDirection.rtl,
                                   child: ListView(
                                     children: <Widget>[
-                                      _customTitle("معلومات الاتصال بـ ${business.name}"),
+                                      _customTitle(
+                                          "معلومات الاتصال بـ ${business.name}"),
 
                                       _labelTextField(Icons.phone, Colors.green,
                                           business.phoneNumber.toString()),

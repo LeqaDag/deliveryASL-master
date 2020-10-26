@@ -1,6 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sajeda_app/classes/city.dart';
@@ -11,176 +8,261 @@ import 'package:sajeda_app/services/cityServices.dart';
 import '../../../constants.dart';
 
 class AddDeliveryCost extends StatefulWidget {
-  final String name, businessID;
-  AddDeliveryCost({this.name, this.businessID});
+  final String name, businessID, businessName;
+  AddDeliveryCost({this.name, this.businessID, this.businessName});
 
   @override
   _AddDeliveryCostState createState() => _AddDeliveryCostState();
 }
 
 class _AddDeliveryCostState extends State<AddDeliveryCost> {
-  String dropdownValue = 'One';
   final _formKey = GlobalKey<FormState>();
-  bool isLoading = false;
-
-  FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-
-  final CollectionReference deliveryCostCollection =
-      FirebaseFirestore.instance.collection('deliveries_costs');
-  final CollectionReference companyCollection =
-      FirebaseFirestore.instance.collection('businesss');
-
-
-  TextEditingController priceController = TextEditingController();
-
-  String customerCityID = 'One';
+  static List<String> friendsList = [null];
+  String city = 'المدينة';
+  City cc;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("${widget.name} إضافة سعر التوصيل ل ",
-            style: TextStyle(fontSize: 20.0, fontFamily: 'Amiri')),
-        centerTitle: true,
-        backgroundColor: kAppBarColor,
-      ),
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text("${widget.businessName} إضافة سعر التوصيل ل ",
+            style: TextStyle(fontSize: 20.0, fontFamily: 'Amiri')),
+        backgroundColor: kAppBarColor,
+        centerTitle: true,
+      ),
+      endDrawer: Directionality(
+          textDirection: TextDirection.rtl,
+          child: AdminDrawer(
+            name: widget.name,
+          )),
       body: Directionality(
         textDirection: TextDirection.rtl,
-        child: Container(
-            padding: EdgeInsets.fromLTRB(30.0, 0, 30.0, 0),
-            child: Form(
+        child: ListView(
+          children: [
+            Form(
               key: _formKey,
-              child: ListView(
-                children: <Widget>[
-                  _cityChoice(),
-                  Container(
-                    margin: EdgeInsets.all(10.0),
-                    child: TextFormField(
-                      controller: priceController,
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'الرجاء ادخال سعر التوصيل';
-                        }
-                        return null;
-                      },
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        labelText: 'سعر التوصيل',
-                        labelStyle: TextStyle(
-                            fontFamily: 'Amiri',
-                            fontSize: 18.0,
-                            color: Color(0xff316686)),
-                        contentPadding: EdgeInsets.only(right: 20.0),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                          borderSide: BorderSide(
-                            width: 1.0,
-                            color: Color(0xff636363),
-                          ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ..._getAll(),
+                    SizedBox(
+                      height: 40,
+                    ),
+                    Container(
+                      margin: EdgeInsets.all(40.0),
+                      child: RaisedButton(
+                        onPressed: () {
+                          if (_formKey.currentState.validate()) {
+                            // _formKey.currentState.save();
+                            print(friendsList);
+                            Navigator.pop(context);
+                          }
+                        },
+                        padding: EdgeInsets.all(10.0),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: new BorderRadius.circular(30.0)),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              'إضافة',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: 'Amiri',
+                                  fontSize: 24.0),
+                            ),
+                            SizedBox(
+                              width: 40.0,
+                            ),
+                            Icon(
+                              Icons.add_circle,
+                              color: Colors.white,
+                              size: 32.0,
+                            ),
+                          ],
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                          borderSide: BorderSide(
-                            width: 2.0,
-                            color: Color(0xff73a16a),
-                          ),
-                          //Change color to Color(0xff73a16a)
-                        ),
+                        color: Color(0xff73a16a),
                       ),
                     ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.all(40.0),
-                    child: RaisedButton(
-                      padding: EdgeInsets.all(10.0),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(30.0)),
-                      onPressed: () {
-                        _addDeliveryCost();
-                      },
-                      color: Color(0xff73a16a),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            'إضافة',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: 'Amiri',
-                                fontSize: 24.0),
-                          ),
-                          SizedBox(
-                            width: 40.0,
-                          ),
-                          Icon(
-                            Icons.add_circle,
-                            color: Colors.white,
-                            size: 32.0,
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                ],
+                  ],
+                ),
               ),
-            )),
-      ),
-    );
-  }
-
-  Widget _cityChoice() {
-    return Expanded(
-      flex: 2,
-      child: Container(
-        margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
-        child: RaisedButton(
-          child: Text("المدينه"),
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) => _buildAboutDialog(context),
-            ).then((value) => print(value));
-          },
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildAboutDialog(BuildContext context) {
-    return new AlertDialog(
-        content: Container(
-      width: double.maxFinite,
-      height: double.maxFinite,
-      child: StreamProvider<List<City>>.value(
-          value: CityService().citys, child: CityList()),
-    ));
+  List<Widget> _getAll() {
+    List<Widget> friendsTextFields = [];
+    for (int i = 0; i < friendsList.length; i++) {
+      friendsTextFields.add(Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16.0),
+        child: Container(
+          margin: EdgeInsets.only(left: 10.0, right: 10.0),
+          child: Row(
+            children: [
+              Expanded(child: FriendTextFields(i)),
+              SizedBox(
+                width: 16,
+              ),
+              // we need add button at last friends row
+              _addRemoveButton(i == friendsList.length - 1, i),
+            ],
+          ),
+        ),
+      ));
+    }
+
+    return friendsTextFields;
   }
 
-  void _addDeliveryCost() async {
-    User currentUser = FirebaseAuth.instance.currentUser;
-    print(currentUser.uid);
-    print(companyCollection.snapshots().last);
-    QuerySnapshot collectionSnapshot = await companyCollection.get();
-    print(collectionSnapshot.docs[0].id);
-    if (_formKey.currentState.validate()) {
-      deliveryCostCollection.doc().set({
-        "admin_id": currentUser.uid,
-        "busines_id": collectionSnapshot.docs[0].id,
-        //"city_id": cityID,
-        "delivery_price": priceController.text,
-        "is_archived": "2",
-        "note": "2",
-      }).then((value) {
-        isLoading = false;
-        Navigator.pop(context);
-        Navigator.pop(context);
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => BusinessAdmin(name: name)),
-        // );
-      }).catchError((err) {});
-    }
+  /// add / remove button
+  Widget _addRemoveButton(bool add, int index) {
+    return InkWell(
+      onTap: () {
+        if (add) {
+          // add new text-fields at the top of all friends textfields
+          friendsList.insert(index, null);
+        } else
+          friendsList.removeAt(index);
+        setState(() {});
+      },
+      child: Container(
+        width: 30,
+        height: 30,
+        decoration: BoxDecoration(
+          color: (add) ? Colors.green : Colors.red,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Icon(
+          (add) ? Icons.add : Icons.remove,
+          color: Colors.white,
+        ),
+      ),
+    );
   }
+}
+
+class FriendTextFields extends StatefulWidget {
+  final int index;
+  FriendTextFields(this.index);
+
+  @override
+  _FriendTextFieldsState createState() => _FriendTextFieldsState();
+}
+
+class _FriendTextFieldsState extends State<FriendTextFields> {
+  TextEditingController priceController;
+  String city = 'المدينة';
+  City cc;
+
+  @override
+  void initState() {
+    super.initState();
+    priceController = TextEditingController();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: <Widget>[
+        RaisedButton(
+          shape: RoundedRectangleBorder(
+              side: BorderSide(
+                width: 1.0,
+                color: Color(0xff636363),
+              ),
+              borderRadius: BorderRadius.circular(10)),
+          color: Colors.white,
+          elevation: 0,
+          child: Container(
+            margin: EdgeInsets.all(10.0),
+            height: 27,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  city,
+                  style: TextStyle(
+                      color: Color(0xff316686),
+                      fontFamily: 'Amiri',
+                      fontSize: 18.0),
+                ),
+                Icon(
+                  Icons.arrow_drop_down,
+                  color: Color(0xff636363),
+                  size: 25.0,
+                ),
+              ],
+            ),
+          ),
+          onPressed: () async {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) => _buildAboutDialog(context),
+            ).then((value) {
+              setState(() {
+                cc = value;
+                city = cc.name;
+                print(city);
+              });
+            });
+          },
+        ),
+        Expanded(
+          child: Container(
+            margin: EdgeInsets.all(10.0),
+            child: TextFormField(
+              controller: priceController,
+              validator: (value) {
+                if (value.isEmpty) {
+                  return 'ادخل سعر التوصيل';
+                }
+                return null;
+              },
+              decoration: InputDecoration(
+                labelText: 'سعر التوصيل',
+                labelStyle: TextStyle(
+                    fontFamily: 'Amiri',
+                    fontSize: 18.0,
+                    color: Color(0xff316686)),
+                contentPadding: EdgeInsets.only(right: 20.0),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                  borderSide: BorderSide(
+                    width: 1.0,
+                    color: Color(0xff636363),
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                  borderSide: BorderSide(
+                    width: 2.0,
+                    color: Color(0xff73a16a),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+Widget _buildAboutDialog(BuildContext context) {
+  return new AlertDialog(
+      content: Container(
+    width: double.maxFinite,
+    height: double.maxFinite,
+    child: StreamProvider<List<City>>.value(
+        value: CityService().citys, child: CityList()),
+  ));
 }

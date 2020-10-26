@@ -14,24 +14,23 @@ class ReadyOrders extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("الطورد الجاهزة",
-            style: TextStyle(
-              color: Colors.white,
-              fontFamily: 'Amiri',
-            )),
-        backgroundColor: kAppBarColor,
-        centerTitle: true,
-      ),
-      endDrawer: Directionality(
-          textDirection: TextDirection.rtl, child: AdminDrawer(name: name)),
-      body: Directionality(
+        appBar: AppBar(
+          title: Text("الطورد الجاهزة",
+              style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'Amiri',
+              )),
+          backgroundColor: kAppBarColor,
+          centerTitle: true,
+        ),
+        endDrawer: Directionality(
+            textDirection: TextDirection.rtl, child: AdminDrawer(name: name)),
+        body: Directionality(
           textDirection: TextDirection.rtl,
           child: StreamProvider<List<Order>>.value(
             value: OrderService().ordersByState('isDone'),
-            child: OrderList(orderState: 'isDone'),
+            child: OrderList(orderState: 'isDone', name: name),
           ),
-        )
-    );
+        ));
   }
 }

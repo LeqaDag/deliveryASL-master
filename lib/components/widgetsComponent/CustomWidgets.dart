@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sajeda_app/classes/busines.dart';
 import 'package:sajeda_app/classes/order.dart';
-import 'package:sajeda_app/components/businessComponent/businesssComponent/buisnessOrders.dart';
 import 'package:sajeda_app/components/orderComponent/organizeOrderInfo.dart';
 import 'package:sajeda_app/services/businessServices.dart';
 import 'package:sajeda_app/services/customerServices.dart';
@@ -60,10 +59,12 @@ class CustomTextFormField extends StatelessWidget {
 class CustomCardAndListTileAddLine extends StatelessWidget {
   final Color color;
   final Function onTapBox;
+  final String name;
 
   CustomCardAndListTileAddLine({
     @required this.color,
     this.onTapBox,
+    this.name,
   });
 
   @override
@@ -298,14 +299,15 @@ class CustomEditDriverProfile extends StatelessWidget {
 class CustomCardAndListTile extends StatelessWidget {
   final Color color;
   final Function onTapBox;
-  final String businessID;
+  final String businessID, name;
   final String orderState;
 
   CustomCardAndListTile(
       {@required this.color,
       @required this.onTapBox,
       @required this.businessID,
-      @required this.orderState});
+      @required this.orderState,
+      this.name});
 
   @override
   Widget build(BuildContext context) {
@@ -426,8 +428,9 @@ class CustomFlatButton extends StatelessWidget {
 
 class CustomCompanyOrdersStatus extends StatelessWidget {
   final Order order;
-  final String orderState;
-  CustomCompanyOrdersStatus({this.order, this.orderState});
+  final String orderState, name;
+  CustomCompanyOrdersStatus({this.order, this.orderState, this.name});
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -437,8 +440,8 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) =>
-                  OrganizeOrderInfo(uid: order.uid, orderState: orderState)),
+              builder: (context) => OrganizeOrderInfo(
+                  uid: order.uid, orderState: orderState, name: name)),
         );
       },
       child: Container(

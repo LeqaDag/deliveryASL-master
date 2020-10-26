@@ -58,7 +58,7 @@ class AdminOrders extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => AddNewOders()),
+                              builder: (context) => AddNewOders(name: name)),
                         );
                       },
                       icon: Icon(Icons.add),

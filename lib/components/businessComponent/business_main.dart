@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:sajeda_app/components/businessComponent/orders/add_order.dart';
 import 'package:sajeda_app/components/businessComponent/orders/all_orders.dart';
-import 'package:sajeda_app/components/orderComponent/store_add_new_order.dart';
 import 'package:sajeda_app/components/pages/business_drawer.dart';
 
 class BusinessMain extends StatelessWidget {
@@ -48,11 +48,11 @@ class BusinessMain extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   onTap: () {
-                    Navigator.pop(context);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => AddNewOders(name: name)),
+                          builder: (context) =>
+                              AddNewOdersByBusiness(name: name, uid: uid)),
                     );
                   },
                 ),
@@ -67,11 +67,11 @@ class BusinessMain extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   onTap: () {
-                    Navigator.pop(context);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => BusinessOrders(name: name)),
+                          builder: (context) =>
+                              BusinessOrders(name: name, uid: uid)),
                     );
                   },
                 ),

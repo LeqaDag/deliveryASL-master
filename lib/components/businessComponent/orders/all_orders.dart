@@ -1,39 +1,43 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:provider/provider.dart';
 import 'package:sajeda_app/classes/order.dart';
-import 'package:sajeda_app/components/orderComponent/orderList.dart';
+import 'package:sajeda_app/components/businessComponent/orders/business_orders.dart';
 import 'package:sajeda_app/components/pages/business_drawer.dart';
+import 'package:provider/provider.dart';
 import 'package:sajeda_app/services/orderServices.dart';
+
+import '../../../constants.dart';
 
 class BusinessOrders extends StatelessWidget {
   final String name, uid;
   BusinessOrders({this.name, this.uid});
-
+  
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Directionality(
-          textDirection: TextDirection.rtl,
-          child: Scaffold(
-              drawer: BusinessDrawer(name: name, uid: uid),
-              appBar: AppBar(
-                backgroundColor: Color(0xFF457B9D),
-                title: Text("جميع الطلبيات",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'Amiri',
-                    )),
-                centerTitle: true,
-              ),
-              body: Directionality(
-                textDirection: TextDirection.rtl,
-                child: StreamProvider<List<Order>>.value(
-                  value: OrderService().ordersByState('isReceived'),
-                  child: OrderList(orderState: 'isReceived'),
-                ),
-              ))),
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("جميع الطلبيات",
+              style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'Amiri',
+              )),
+          centerTitle: true,
+          backgroundColor: kAppBarColor,
+          actions: <Widget>[
+            IconButton(
+              onPressed: () {},
+              icon: Icon(Icons.search),
+              color: Colors.white,
+            ),
+          ],
+        ),
+        drawer: BusinessDrawer(name: name, uid: uid),
+        body: StreamProvider<List<Order>>.value(
+          value: OrderService(businesID: uid,orderState: "all").ordersBusinessByState,
+          child: BusinessOrderList(name: name, uid:uid),
+        ),
+      ),
     );
   }
 }

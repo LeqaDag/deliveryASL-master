@@ -65,6 +65,13 @@ class BusinessService {
         .map(_businessListFromSnapshot);
   }
 
+  Future<String> get businessName {
+    return businessCollection
+        .doc(uid)
+        .get()
+        .then((value) => value.data()['name']);
+  }
+
   Future<void> deleteBusinessData(String uid) async {
     return await businessCollection.doc(uid).update({'isArchived': true});
   }

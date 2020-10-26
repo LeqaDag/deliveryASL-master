@@ -7,8 +7,9 @@ import 'package:sajeda_app/components/widgetsComponent/CustomWidgets.dart';
 import '../../constants.dart';
 
 class OrderList extends StatefulWidget {
-  final String orderState;
-  OrderList({@required this.orderState});
+  final String orderState, name;
+  OrderList({@required this.orderState, this.name});
+
   @override
   _OrderListState createState() => _OrderListState();
 }
@@ -27,13 +28,16 @@ class _OrderListState extends State<OrderList> {
               color: KCustomCompanyOrdersStatus,
               businessID: orders[index].businesID,
               orderState: widget.orderState,
+              name: widget.name,
               onTapBox: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => CompanyOrdersAdminSide(
-                          uid: orders[index].businesID,
-                          orderState: widget.orderState)),
+                            uid: orders[index].businesID,
+                            orderState: widget.orderState,
+                            name: widget.name,
+                          )),
                 );
               });
         },

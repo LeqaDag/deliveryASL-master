@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sajeda_app/components/businessComponent/business_main.dart';
 import 'package:sajeda_app/components/businessComponent/business_profile.dart';
+import 'package:sajeda_app/components/businessComponent/orders/add_order.dart';
 import 'package:sajeda_app/components/businessComponent/orders/all_orders.dart';
-import 'package:sajeda_app/components/orderComponent/store_add_new_order.dart';
 import 'package:sajeda_app/components/screenComponent/admin_login.dart';
-import 'package:sajeda_app/components/orderComponent/store_profile.dart';
 import 'package:sajeda_app/services/auth/auth.dart';
 
 import '../../constants.dart';
@@ -35,7 +34,9 @@ class BusinessDrawer extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => StoreProfile()),
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              BusinessProfile(name: name, uid: uid)),
                     );
                   },
                   padding: EdgeInsets.all(0.0),
@@ -69,11 +70,13 @@ class BusinessDrawer extends StatelessWidget {
                   ),
                   leading: Image.asset('assets/homePage.png'),
                   onTap: () {
-                    Navigator.pop(context);
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => BusinessMain(name: name)),
+                          builder: (context) => BusinessMain(
+                                name: name,
+                                uid: uid,
+                              )),
                     );
                   },
                 ),
@@ -97,7 +100,6 @@ class BusinessDrawer extends StatelessWidget {
                   leading: Image.asset('assets/profile-business-drawer.png',
                       width: 32),
                   onTap: () {
-                    Navigator.pop(context);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -126,11 +128,11 @@ class BusinessDrawer extends StatelessWidget {
                   leading:
                       Image.asset('assets/add-order-drawer.png', width: 32),
                   onTap: () {
-                    Navigator.pop(context);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => AddNewOders(name: name)),
+                          builder: (context) =>
+                              AddNewOdersByBusiness(name: name, uid: uid)),
                     );
                   },
                 ),
@@ -154,11 +156,11 @@ class BusinessDrawer extends StatelessWidget {
                   leading:
                       Image.asset('assets/all-order-drawer.png', width: 35),
                   onTap: () {
-                    Navigator.pop(context);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => BusinessOrders(name: name)),
+                          builder: (context) =>
+                              BusinessOrders(name: name, uid: uid)),
                     );
                   },
                 ),
@@ -183,7 +185,6 @@ class BusinessDrawer extends StatelessWidget {
                   onTap: () {
                     AuthService _authService = AuthService();
                     _authService.signOut();
-                    Navigator.pop(context);
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => LoginAdmin()),
