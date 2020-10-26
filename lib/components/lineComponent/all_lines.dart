@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:sajeda_app/components/lineComponent/addLineTest.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
 
 import '../../constants.dart';
+import 'add_line.dart';
 
 class AllLines extends StatelessWidget {
   final String name;
@@ -32,7 +32,7 @@ class AllLines extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => AddLineTest()),
+                      MaterialPageRoute(builder: (context) => AddLine()),
                     );
                   },
                   icon: Icon(Icons.add),

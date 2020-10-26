@@ -9,7 +9,7 @@ class CityItem extends StatelessWidget {
     return Center(
       child: ListTile(
         onTap: () {
-          Navigator.pop(context, city.uid);
+          Navigator.pop(context, city);
         },
         title: Align(
           alignment: Alignment.center,
