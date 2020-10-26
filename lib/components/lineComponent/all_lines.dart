@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sajeda_app/components/lineComponent/listMainLineComponent/listMainLine.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
+import 'package:sajeda_app/services/mainLineServices.dart';
 
+import '../../classes/mainLine.dart';
 import '../../constants.dart';
+import '../widgetsComponent/CustomWidgets.dart';
 import 'add_line.dart';
 
 class AllLines extends StatelessWidget {
@@ -41,12 +46,9 @@ class AllLines extends StatelessWidget {
               ],
             ),
             drawer: AdminDrawer(name: name),
-            body: ListView(
-              children: <Widget>[
-                // CustomCardAndListTileAddLine(color :KAddLinesColor,onTap: () {}),
-                // CustomCardAndListTileAddLine(KAddLinesColor, () {}),
-                // CustomCardAndListTileAddLine(KAddLinesColor, () {}),
-              ],
+            body: StreamProvider<List<MainLine>>.value(
+              value: MainLineServices().mainLines,
+              child: MainLineList(),
             ),
           )),
     );

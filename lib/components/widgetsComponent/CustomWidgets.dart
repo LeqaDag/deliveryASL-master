@@ -5,8 +5,10 @@ import 'package:sajeda_app/components/businessComponent/businesssComponent/buisn
 import 'package:sajeda_app/components/orderComponent/organizeOrderInfo.dart';
 import 'package:sajeda_app/services/businessServices.dart';
 import 'package:sajeda_app/services/customerServices.dart';
+import 'package:sajeda_app/services/mainLineServices.dart';
 import 'package:sajeda_app/services/orderServices.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart' as intl;
+import '../../classes/mainLine.dart';
 import '../../constants.dart';
 import 'package:badges/badges.dart';
 
@@ -60,31 +62,132 @@ class CustomTextFormField extends StatelessWidget {
 class CustomCardAndListTileAddLine extends StatelessWidget {
   final Color color;
   final Function onTapBox;
-
+  final MainLine mainLine;
   CustomCardAndListTileAddLine({
     @required this.color,
+    @required this.mainLine,
     this.onTapBox,
   });
-
+// leading: Image.asset("assets/LineIcon.png"),
   @override
   Widget build(BuildContext context) {
-    // double width = MediaQuery.of(context).size.width;
-    // double height = MediaQuery.of(context).size.height;
     return Card(
-      color: color,
-      child: ListTile(
-        title: Text("اسم الخط"), // String Variable Take Name From DataBase
-
-        leading: Image.asset("assets/LineIcon.png"),
-        trailing: Wrap(
-          spacing: -15, // space between two icons
-
+      child: Directionality(
+        textDirection: TextDirection.rtl,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            IconButton(
-                icon: Icon(Icons.edit, color: KEditIconColor), onPressed: null),
-            IconButton(
-                icon: Icon(Icons.delete, color: KTrashIconColor),
-                onPressed: null),
+            Container(
+              width: 150.0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Expanded(
+                    child: Image.asset("assets/LineIcon.png"),
+                  ),
+                  Expanded(
+                    child: Text(
+                      '${mainLine.name}',
+                      style: TextStyle(fontFamily: 'Amiri', fontSize: 18.0),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              width: 100.0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  IconButton(
+                    onPressed: () {
+                      return showDialog<void>(
+                        context: context,
+                        barrierDismissible: false, // user must tap button!
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('حذف سائق'),
+                            content: SingleChildScrollView(
+                              child: ListBody(
+                                children: <Widget>[
+                                  Text('هل ترغب بحذف السائق'),
+                                  Text(mainLine.name),
+                                ],
+                              ),
+                            ),
+                            actions: <Widget>[
+                              FlatButton(
+                                child: Text('تأكيد'),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //       builder: (context) =>
+                                  //           UpdateDriver(driverID: driver.uid)),
+                                  // );
+                                },
+                              ),
+                              FlatButton(
+                                child: Text('تراجع'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                    icon: Icon(
+                      Icons.create,
+                      color: Colors.green,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      return showDialog<void>(
+                        context: context,
+                        barrierDismissible: false, // user must tap button!
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('حذف سائق'),
+                            content: SingleChildScrollView(
+                              child: ListBody(
+                                children: <Widget>[
+                                  Text('هل ترغب بحذف السائق'),
+                                  Text(mainLine.name),
+                                ],
+                              ),
+                            ),
+                            actions: <Widget>[
+                              FlatButton(
+                                child: Text('تأكيد'),
+                                onPressed: () {
+                                  MainLineServices()
+                                      .deleteMainLineData(mainLine.uid);
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              FlatButton(
+                                child: Text('تراجع'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                    icon: Icon(
+                      Icons.delete,
+                      color: Colors.red,
+                    ),
+                  )
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -510,7 +613,7 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
 
                               //  SizedBox(width: 33,),
                               Text(
-                                DateFormat('yyyy-MM-dd').format(order.date),
+                                intl.DateFormat('yyyy-MM-dd').format(order.date),
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
