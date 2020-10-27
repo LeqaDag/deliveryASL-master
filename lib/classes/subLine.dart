@@ -5,6 +5,7 @@ class SubLine {
   String name;
   int index;
   String mainLineID;
+  String cityID;
 
   bool isArchived;
   DateTime deleteDate;
@@ -15,6 +16,7 @@ class SubLine {
     @required this.name,
     @required this.index,
     @required this.mainLineID,
+    @required this.cityID,
     this.isArchived = false,
     this.deleteDate,
     this.deleteUser,

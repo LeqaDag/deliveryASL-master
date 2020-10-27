@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:sajeda_app/components/lineComponent/addLineTest.dart';
+import 'package:provider/provider.dart';
+import 'package:sajeda_app/components/lineComponent/listMainLineComponent/listMainLine.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
+import 'package:sajeda_app/services/mainLineServices.dart';
 
+import '../../classes/mainLine.dart';
 import '../../constants.dart';
+import 'add_line.dart';
 
 class AllLines extends StatelessWidget {
   final String name;
@@ -32,7 +36,7 @@ class AllLines extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => AddLineTest()),
+                      MaterialPageRoute(builder: (context) => AddLine(name:name)),
                     );
                   },
                   icon: Icon(Icons.add),
@@ -41,12 +45,9 @@ class AllLines extends StatelessWidget {
               ],
             ),
             drawer: AdminDrawer(name: name),
-            body: ListView(
-              children: <Widget>[
-                // CustomCardAndListTileAddLine(color :KAddLinesColor,onTap: () {}),
-                // CustomCardAndListTileAddLine(KAddLinesColor, () {}),
-                // CustomCardAndListTileAddLine(KAddLinesColor, () {}),
-              ],
+            body: StreamProvider<List<MainLine>>.value(
+              value: MainLineServices().mainLines,
+              child: MainLineList(name: name),
             ),
           )),
     );

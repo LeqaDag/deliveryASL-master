@@ -2,13 +2,11 @@ import 'package:flutter/cupertino.dart';
 
 class DeliveriesCosts {
   String uid;
-  List<int> deliveryPrice;
+  String deliveryPrice;
   String note;
   String adminID;
-  String cityID;
+  String city;
   String businesID;
-
-
 
   bool isArchived;
   DateTime deleteDate;
@@ -17,9 +15,9 @@ class DeliveriesCosts {
   DeliveriesCosts({
     this.uid,
     @required this.deliveryPrice,
-    @required this.note,
+    this.note,
     @required this.adminID,
-    @required this.cityID,
+    @required this.city,
     @required this.businesID,
     this.isArchived = false,
     this.deleteDate,

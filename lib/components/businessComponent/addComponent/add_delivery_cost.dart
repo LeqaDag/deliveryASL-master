@@ -1,8 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sajeda_app/classes/city.dart';
+import 'package:sajeda_app/classes/deliveriesCost.dart';
 import 'package:sajeda_app/components/cityComponent/cityList.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
+import 'package:sajeda_app/services/DeliveriesCostsServices.dart';
 import 'package:sajeda_app/services/cityServices.dart';
 
 import '../../../constants.dart';
@@ -17,9 +20,8 @@ class AddDeliveryCost extends StatefulWidget {
 
 class _AddDeliveryCostState extends State<AddDeliveryCost> {
   final _formKey = GlobalKey<FormState>();
-  static List<String> friendsList = [null];
-  String city = 'المدينة';
-  City cc;
+  static List<String> deliveryCostList = [null];
+  static List<String> cityList = [null];
 
   @override
   Widget build(BuildContext context) {
@@ -55,9 +57,21 @@ class _AddDeliveryCostState extends State<AddDeliveryCost> {
                       margin: EdgeInsets.all(40.0),
                       child: RaisedButton(
                         onPressed: () {
+                          final FirebaseAuth auth = FirebaseAuth.instance;
+                          final User user = auth.currentUser;
                           if (_formKey.currentState.validate()) {
-                            // _formKey.currentState.save();
-                            print(friendsList);
+                            deliveryCostList
+                                .asMap()
+                                .forEach((index, price) async {
+                              print(price);
+
+                              await DeliveriesCostsServices()
+                                  .addDeliveryCostData(new DeliveriesCosts(
+                                      deliveryPrice: price,
+                                      adminID: user.uid,
+                                      city: cityList[index],
+                                      businesID: widget.businessID));
+                            });
                             Navigator.pop(context);
                           }
                         },
@@ -100,7 +114,9 @@ class _AddDeliveryCostState extends State<AddDeliveryCost> {
 
   List<Widget> _getAll() {
     List<Widget> friendsTextFields = [];
-    for (int i = 0; i < friendsList.length; i++) {
+    cityList.length = deliveryCostList.length;
+
+    for (int i = 0; i < deliveryCostList.length; i++) {
       friendsTextFields.add(Padding(
         padding: const EdgeInsets.symmetric(vertical: 16.0),
         child: Container(
@@ -112,7 +128,7 @@ class _AddDeliveryCostState extends State<AddDeliveryCost> {
                 width: 16,
               ),
               // we need add button at last friends row
-              _addRemoveButton(i == friendsList.length - 1, i),
+              _addRemoveButton(i == deliveryCostList.length - 1, i),
             ],
           ),
         ),
@@ -128,9 +144,9 @@ class _AddDeliveryCostState extends State<AddDeliveryCost> {
       onTap: () {
         if (add) {
           // add new text-fields at the top of all friends textfields
-          friendsList.insert(index, null);
+          deliveryCostList.insert(index, null);
         } else
-          friendsList.removeAt(index);
+          deliveryCostList.removeAt(index);
         setState(() {});
       },
       child: Container(
@@ -158,14 +174,15 @@ class FriendTextFields extends StatefulWidget {
 }
 
 class _FriendTextFieldsState extends State<FriendTextFields> {
-  TextEditingController priceController;
-  String city = 'المدينة';
+  TextEditingController _priceController;
+  String city;
   City cc;
 
   @override
   void initState() {
     super.initState();
-    priceController = TextEditingController();
+    _priceController = TextEditingController();
+    city = 'المدينة';
   }
 
   @override
@@ -211,6 +228,7 @@ class _FriendTextFieldsState extends State<FriendTextFields> {
               setState(() {
                 cc = value;
                 city = cc.name;
+                _AddDeliveryCostState.cityList[widget.index] = city;
                 print(city);
               });
             });
@@ -220,7 +238,10 @@ class _FriendTextFieldsState extends State<FriendTextFields> {
           child: Container(
             margin: EdgeInsets.all(10.0),
             child: TextFormField(
-              controller: priceController,
+              onChanged: (v) =>
+                  _AddDeliveryCostState.deliveryCostList[widget.index] = v,
+              keyboardType: TextInputType.number,
+              controller: _priceController,
               validator: (value) {
                 if (value.isEmpty) {
                   return 'ادخل سعر التوصيل';

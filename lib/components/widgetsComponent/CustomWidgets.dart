@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sajeda_app/classes/busines.dart';
+import 'package:sajeda_app/classes/mainLine.dart';
 import 'package:sajeda_app/classes/order.dart';
 import 'package:sajeda_app/components/orderComponent/organizeOrderInfo.dart';
 import 'package:sajeda_app/services/businessServices.dart';
@@ -60,10 +61,12 @@ class CustomCardAndListTileAddLine extends StatelessWidget {
   final Color color;
   final Function onTapBox;
   final String name;
+  final MainLine mainLine;
 
   CustomCardAndListTileAddLine({
     @required this.color,
     this.onTapBox,
+    @required this.mainLine,
     this.name,
   });
 
@@ -74,7 +77,7 @@ class CustomCardAndListTileAddLine extends StatelessWidget {
     return Card(
       color: color,
       child: ListTile(
-        title: Text("اسم الخط"), // String Variable Take Name From DataBase
+        title: Text(mainLine.name), // String Variable Take Name From DataBase
 
         leading: Image.asset("assets/LineIcon.png"),
         trailing: Wrap(
