@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sajeda_app/components/lineComponent/mainLineComponent/mainLineDetails.dart';
 import 'package:sajeda_app/components/widgetsComponent/CustomWidgets.dart';
 
 import '../../../classes/mainLine.dart';
@@ -24,11 +25,21 @@ class _MainLineListState extends State<MainLineList> {
               mainLine: mainLine[index],
               color: KAddLinesColor,
               name: widget.name,
-              onTapBox: () {});
+              onTapBox: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MainLineDetails(
+                        name: widget.name, mainLineID: mainLine[index].uid),
+                  ),
+                );
+              });
         },
       );
     } else {
-      return Center(child: Image.asset("assets/EmptyOrder.png"));
+      return Center(
+        child: Image.asset("assets/EmptyOrder.png"),
+      );
     }
   }
 }

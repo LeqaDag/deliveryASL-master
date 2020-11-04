@@ -30,6 +30,7 @@ class InvoiceService {
 
   Invoice _invoiceDataFromSnapshot(DocumentSnapshot snapshot) {
     return Invoice(
+      uid: snapshot.id,
       adminID: snapshot.data()['adminID'],
       businessID: snapshot.data()['businessID'],
       note: snapshot.data()['note'],

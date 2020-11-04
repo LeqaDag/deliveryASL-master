@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sajeda_app/classes/busines.dart';
 import 'package:sajeda_app/classes/customer.dart';
+import 'package:sajeda_app/classes/driver.dart';
 import 'package:sajeda_app/classes/order.dart';
+import 'package:sajeda_app/components/orderComponent/orderInformationComponent/divide.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
 import 'package:sajeda_app/components/pages/loadingData.dart';
 import 'package:sajeda_app/services/businessServices.dart';
@@ -12,14 +14,21 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../constants.dart';
 
-class ReceivedInfo extends StatelessWidget {
+class ReceivedInfo extends StatefulWidget {
   final String uid, name;
-  ReceivedInfo({Key key, this.uid, this.name}) : super(key: key);
+  ReceivedInfo({this.uid, this.name});
 
+  @override
+  _ReceivedInfoState createState() => _ReceivedInfoState();
+}
+
+class _ReceivedInfoState extends State<ReceivedInfo> {
+  String driverName = 'اسم السائق';
+  Driver driver;
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Order>(
-        stream: OrderService(uid: uid).orderData,
+        stream: OrderService(uid: widget.uid).orderData,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             Order order = snapshot.data;
@@ -29,7 +38,6 @@ class ReceivedInfo extends StatelessWidget {
             } else {
               orderType = "مستعجل";
             }
-            print(order.customerID);
             return StreamBuilder<Customer>(
                 stream: CustomerService(uid: order.customerID).customerData,
                 builder: (context, snapshot) {
@@ -53,7 +61,7 @@ class ReceivedInfo extends StatelessWidget {
                                 ),
                                 endDrawer: Directionality(
                                     textDirection: TextDirection.rtl,
-                                    child: AdminDrawer(name: name)),
+                                    child: AdminDrawer(name: widget.name)),
                                 body: Directionality(
                                   textDirection: TextDirection.rtl,
                                   child: ListView(
@@ -91,9 +99,50 @@ class ReceivedInfo extends StatelessWidget {
                                       _labelTextField(Icons.scatter_plot,
                                           Colors.grey, orderType),
 
-                                      _customTitle("معلومات السائق"),
-
-                                      // مش فاهمها منيح لانو اعتقد بوجوب وجود خيار بعد سؤال هل تود تصنيف الطرد نعم او لا ووجوب خيار تعديل اسم السائق بعد اختيارهز لهذا تركتة فارغا لنقاشه
+                                      _customTitle("طرد غير موزع"),
+                                      Container(
+                                        margin: EdgeInsets.all(40.0),
+                                        child: RaisedButton(
+                                          padding: EdgeInsets.all(10.0),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  new BorderRadius.circular(
+                                                      30.0)),
+                                          onPressed: () {
+                                            
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      Divide(id : customer.cityID)),
+                                            );
+                                          },
+                                          color: Color(0xff73a16a),
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              Text(
+                                                'تم الإستلام',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontFamily: 'Amiri',
+                                                    fontSize: 24.0),
+                                              ),
+                                              SizedBox(
+                                                width: 40.0,
+                                              ),
+                                              Icon(
+                                                Icons.check_circle,
+                                                color: Colors.white,
+                                                size: 32.0,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      )
                                     ],
                                   ),
                                 ));

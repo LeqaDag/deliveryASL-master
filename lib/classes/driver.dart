@@ -8,7 +8,7 @@ class Driver {
   String phoneNumber;
   String passowrd;
   String address;
-  String line;
+  String mainLineID;
 
   String cityID;
 
@@ -27,7 +27,7 @@ class Driver {
     @required this.passowrd,
     @required this.address,
     @required this.cityID,
-    @required this.line,
+    @required this.mainLineID,
     this.isArchived = false,
     this.deleteDate,
     this.deleteUser,

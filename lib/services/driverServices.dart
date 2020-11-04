@@ -3,7 +3,8 @@ import 'package:sajeda_app/classes/driver.dart';
 
 class DriverService {
   final String uid;
-  DriverService({this.uid});
+  final String mainLineID;
+  DriverService({this.uid, this.mainLineID});
 
   final CollectionReference deiverCollection =
       FirebaseFirestore.instance.collection('drivers');
@@ -14,7 +15,7 @@ class DriverService {
       'type': driver.type,
       'email': driver.email,
       'phoneNumber': driver.phoneNumber,
-      'line': driver.line,
+      'mainLineID': driver.mainLineID,
       'cityID': driver.cityID,
       'passowrd': driver.passowrd,
       'address': driver.address,
@@ -27,7 +28,7 @@ class DriverService {
       'type': driver.type,
       'email': driver.email,
       'phoneNumber': driver.phoneNumber,
-      'line': driver.line,
+      'mainLineID': driver.mainLineID,
       'cityID': driver.cityID,
       'passowrd': driver.passowrd,
       'address': driver.address,
@@ -36,10 +37,11 @@ class DriverService {
 
   Driver _driverDataFromSnapshot(DocumentSnapshot snapshot) {
     return Driver(
+      uid: snapshot.id,
       name: snapshot.data()['name'],
       type: snapshot.data()['type'],
       email: snapshot.data()['email'],
-      line: snapshot.data()['line'],
+      mainLineID: snapshot.data()['mainLineID'],
       phoneNumber: snapshot.data()['phoneNumber'],
       passowrd: snapshot.data()['passowrd'],
       cityID: snapshot.data()['cityID'],
@@ -54,7 +56,7 @@ class DriverService {
         name: doc.data()['name'] ?? '',
         type: doc.data()['type'] ?? '',
         email: doc.data()['email'] ?? '',
-        line: doc.data()['line'] ?? '',
+        mainLineID: doc.data()['mainLineID'] ?? '',
         phoneNumber: doc.data()['phoneNumber'] ?? '',
         passowrd: doc.data()['passowrd'] ?? '',
         cityID: doc.data()['cityID'] ?? '',
@@ -69,6 +71,14 @@ class DriverService {
 
   Stream<List<Driver>> get drivers {
     return deiverCollection
+        .where('isArchived', isEqualTo: false)
+        .snapshots()
+        .map(_driverListFromSnapshot);
+  }
+
+  Stream<List<Driver>> get driversBymainLineID {
+    return deiverCollection
+        .where('mainLineID', isEqualTo: mainLineID)
         .where('isArchived', isEqualTo: false)
         .snapshots()
         .map(_driverListFromSnapshot);

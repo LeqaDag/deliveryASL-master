@@ -30,6 +30,7 @@ class BusinessService {
 
   Business _businessDataFromSnapshot(DocumentSnapshot snapshot) {
     return Business(
+      uid: snapshot.id,
       name: snapshot.data()['name'],
       email: snapshot.data()['email'],
       phoneNumber: snapshot.data()['phoneNumber'],

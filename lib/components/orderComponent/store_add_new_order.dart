@@ -6,13 +6,10 @@ import 'package:flutter/widgets.dart';
 import 'package:sajeda_app/classes/city.dart';
 import 'package:sajeda_app/classes/customer.dart';
 import 'package:sajeda_app/classes/order.dart';
-import 'package:sajeda_app/components/cityComponent/cityList.dart';
-import 'package:sajeda_app/components/pages/business_drawer.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
 import 'package:sajeda_app/services/cityServices.dart';
 import 'package:sajeda_app/services/customerServices.dart';
 import 'package:sajeda_app/services/orderServices.dart';
-import 'package:provider/provider.dart';
 
 class AddNewOders extends StatefulWidget {
   final String name;
@@ -26,7 +23,8 @@ class _AddNewOdersState extends State<AddNewOders> {
   final _formKey = GlobalKey<FormState>();
   String customerCityID = 'One';
   String datehh = "";
-
+  List<City> cities;
+  String cityID;
   //Order Filed
   TextEditingController orderDescription = new TextEditingController();
   TextEditingController orderPrice = new TextEditingController();
@@ -252,15 +250,63 @@ class _AddNewOdersState extends State<AddNewOders> {
       flex: 2,
       child: Container(
         margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
-        child: RaisedButton(
-          child: Text("المدينه"),
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) => _buildAboutDialog(context),
-            ).then((value) => print(value));
-          },
-        ),
+        child: StreamBuilder<List<City>>(
+            stream: CityService().citys,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Text('Loading...');
+              } else {
+                cities = snapshot.data;
+                return DropdownButtonFormField<String>(
+                  value: cityID,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide(
+                        width: 1.0,
+                        color: Color(0xff636363),
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide(
+                        width: 2.0,
+                        color: Color(0xff73a16a),
+                      ),
+                    ),
+                    contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
+                    labelText: "المدينة",
+                    labelStyle: TextStyle(
+                      fontFamily: 'Amiri',
+                      fontSize: 18.0,
+                      color: Color(0xff316686),
+                    ),
+                  ),
+                  items: cities.map(
+                    (city) {
+                      return DropdownMenuItem<String>(
+                        value: city.uid.toString(),
+                        child: Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              city.name,
+                              style: TextStyle(
+                                fontFamily: 'Amiri',
+                                fontSize: 16.0,
+                              ),
+                            )),
+                      );
+                    },
+                  ).toList(),
+                  onChanged: (val) {
+                    setState(() {
+                      cityID = val;
+                      print(cityID);
+                    });
+                  },
+                );
+              }
+            }),
       ),
     );
   }
@@ -403,16 +449,6 @@ class _AddNewOdersState extends State<AddNewOders> {
         ),
       ),
     );
-  }
-
-  Widget _buildAboutDialog(BuildContext context) {
-    return new AlertDialog(
-        content: Container(
-      width: double.maxFinite,
-      height: double.maxFinite,
-      child: StreamProvider<List<City>>.value(
-          value: CityService().citys, child: CityList()),
-    ));
   }
 
   Widget _addNewOrderButton() {
