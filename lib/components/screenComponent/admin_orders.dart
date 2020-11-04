@@ -84,7 +84,8 @@ class AdminOrders extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => PendingOrders(name: name)),
+                                  builder: (context) =>
+                                      PendingOrders(name: name)),
                             );
                           },
                           count: orderLoading.toString(),
@@ -100,7 +101,8 @@ class AdminOrders extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => PickupOrders(name: name)),
+                                    builder: (context) =>
+                                        PickupOrders(name: name)),
                               );
                             },
                             count: orderReceived.toString()),
@@ -121,7 +123,8 @@ class AdminOrders extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => AllOrders(name: name)),
+                                    builder: (context) =>
+                                        AllOrders(name: name)),
                               );
                             },
                             count: orderDelivery.toString()),
@@ -136,7 +139,8 @@ class AdminOrders extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => UrgentOrders(name: name)),
+                                    builder: (context) =>
+                                        UrgentOrders(name: name)),
                               );
                             },
                             count: orderUrgent.toString()),
@@ -157,7 +161,8 @@ class AdminOrders extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => ReadyOrders(name: name)),
+                                    builder: (context) =>
+                                        ReadyOrders(name: name)),
                               );
                             },
                             count: orderDone.toString()),
@@ -172,7 +177,8 @@ class AdminOrders extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => ReturnOrders(name: name)),
+                                    builder: (context) =>
+                                        ReturnOrders(name: name)),
                               );
                             },
                             count: orderReturn.toString()),
@@ -196,7 +202,8 @@ class AdminOrders extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => CanceledOrders(name: name)),
+                                      builder: (context) =>
+                                          CanceledOrders(name: name)),
                                 );
                               },
                               count: orderCancelld.toString()),

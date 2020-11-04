@@ -36,6 +36,7 @@ class DriverService {
 
   Driver _driverDataFromSnapshot(DocumentSnapshot snapshot) {
     return Driver(
+      uid: snapshot.id,
       name: snapshot.data()['name'],
       type: snapshot.data()['type'],
       email: snapshot.data()['email'],
@@ -67,9 +68,23 @@ class DriverService {
     return deiverCollection.doc(uid).snapshots().map(_driverDataFromSnapshot);
   }
 
+  // Stream<List<Driver>>get driverByuserID(String userId)  {
+  //   return deiverCollection
+  //       .where('userID', isEqualTo: userId)
+  //       .snapshots()
+  //       .map(_driverListFromSnapshot);
+  // }
+
   Stream<List<Driver>> get drivers {
     return deiverCollection
         .where('isArchived', isEqualTo: false)
+        .snapshots()
+        .map(_driverListFromSnapshot);
+  }
+
+  Stream<List<Driver>> get driverByuserID {
+    return deiverCollection
+        .where('userID', isEqualTo: uid)
         .snapshots()
         .map(_driverListFromSnapshot);
   }

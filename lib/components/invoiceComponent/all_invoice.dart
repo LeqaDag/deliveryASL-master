@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sajeda_app/classes/busines.dart';
+import 'package:sajeda_app/classes/invoice.dart';
 import 'package:sajeda_app/services/businessServices.dart';
 import 'package:sajeda_app/services/invoiceServices.dart';
 import 'package:sajeda_app/services/orderServices.dart';
@@ -24,23 +26,20 @@ class AllInvoice extends StatelessWidget {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    // FirebaseFirestore.instance
-    //     .collection('invoice')
-    //     .where('businessID', isEqualTo: businessId)
-    //     .where('isArchived', isEqualTo: false)
-    //     .get()
-    //     .then((value) => value.docs);
-    // print(FirebaseFirestore.instance
-    //     .collection('invoice')
-    //     .where('businessID', isEqualTo: businessId)
-    //     .where('isArchived', isEqualTo: false)
-    //     .get()
-    //     .then((value) => value.docs[0]["totalPrice"]));
-    //print(businessId);
+    int totalPrice;
+
     return StreamBuilder<Business>(
         stream: BusinessService(uid: businessId).businessByID,
         builder: (context, snapshot) {
-          //print(snapshot.data);
+          print(businessId);
+          // FirebaseFirestore.instance
+          //     .collection('invoice')
+          //     .where('businessID', isEqualTo: businessId)
+          //     .where('isArchived', isEqualTo: false)
+          //     .get()
+          //     .then((value) => {totalPrice = value.docs[0]["totalPrice"]});
+
+          // print(totalPrice);
           if (snapshot.hasData) {
             Business business = snapshot.data;
             return Card(
@@ -92,7 +91,6 @@ class AllInvoice extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Row(
-                            //3
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
                               Padding(
@@ -101,15 +99,14 @@ class AllInvoice extends StatelessWidget {
                                     right: height * 0.015,
                                     top: height * 0,
                                     bottom: height * 0),
-                                child: Icon(
-                                  Icons.date_range,
-                                  color: Colors.blueGrey,
-                                ),
+                                // child: Icon(
+                                //   Icons.date_range,
+                                //   color: Colors.blueGrey,
+                                // ),
                               ),
                             ],
                           ),
                           Row(
-                            //3
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
                               Padding(
@@ -120,22 +117,17 @@ class AllInvoice extends StatelessWidget {
                                     bottom: height * 0),
                                 child: Image.asset('assets/price.png'),
                               ),
-
-                              //  SizedBox(width: 33,),
-                              // FutureBuilder<String>(
-                              //     future:
-                              //         InvoiceService(businessId: business.uid)
-                              //             .totalPrice,
-                              //     builder: (context, snapshot) {
-                              //       return Text(
-                              //         snapshot.data ?? "",
-                              //         style: TextStyle(
-                              //           fontSize: 16,
-                              //           fontWeight: FontWeight.bold,
-                              //           fontFamily: "Amiri",
-                              //         ),
-                              //       );
-                              //     }),
+                              SizedBox(
+                                width: 33,
+                              ),
+                              Text(
+                                totalPrice.toString() ?? "",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: "Amiri",
+                                ),
+                              ),
                             ],
                           ),
                         ]),
@@ -227,127 +219,74 @@ class AllInvoice extends StatelessWidget {
                   height: 10,
                 ),
               ]),
-              //color: KCustomCompanyOrdersStatus,
-              // child: Row(
-              //     mainAxisAlignment: MainAxisAlignment.start,
-              //     children: <Widget>[
-              //       Container(
-              //         width: width / 2,
-              //         child: Column(
-              //             mainAxisAlignment: MainAxisAlignment.spaceAround,
-              //             children: <Widget>[
-              //               Row(
-              //                 //3
-              //                 mainAxisAlignment: MainAxisAlignment.start,
-              //                 children: <Widget>[
-              //                   Padding(
-              //                     padding: EdgeInsets.only(
-              //                         left: height * 0.025,
-              //                         right: height * 0.025,
-              //                         top: height * 0,
-              //                         bottom: height * 0),
-              //                     child: Icon(
-              //                       Icons.circle,
-              //                       color: KEditIconColor,
-              //                       size: 35,
-              //                     ),
-              //                   ),
-              //                   FutureBuilder<String>(
-              //                       future:
-              //                           BusinessService(uid: invoice.businessID)
-              //                               .businessName,
-              //                       builder: (context, snapshot) {
-              //                         return Text(
-              //                           snapshot.data ?? "",
-              //                           style: TextStyle(
-              //                             fontSize: 16,
-              //                             fontWeight: FontWeight.bold,
-              //                             fontFamily: "Amiri",
-              //                           ),
-              //                         );
-              //                       }),
-              //                 ],
-              //               ),
-              //             ]),
-              //       ),
-              //       Container(
-              //         child: Column(
-              //             mainAxisAlignment: MainAxisAlignment.spaceAround,
-              //             crossAxisAlignment: CrossAxisAlignment.start,
-              //             children: <Widget>[
-              //               Row(
-              //                 //3
-              //                 mainAxisAlignment: MainAxisAlignment.start,
-              //                 children: <Widget>[
-              //                   Padding(
-              //                     padding: EdgeInsets.only(
-              //                         left: height * 0.015,
-              //                         right: height * 0.015,
-              //                         top: height * 0,
-              //                         bottom: height * 0),
-              //                     child: Icon(
-              //                       Icons.location_on,
-              //                       color: Colors.blueGrey,
-              //                     ),
-              //                   ),
-              //                 ],
-              //               ),
-              //               Row(
-              //                 //3
-              //                 mainAxisAlignment: MainAxisAlignment.start,
-              //                 children: <Widget>[
-              //                   Padding(
-              //                     padding: EdgeInsets.only(
-              //                         left: height * 0.025,
-              //                         right: height * 0.025,
-              //                         top: height * 0,
-              //                         bottom: height * 0),
-              //                     child: Image.asset('assets/price.png'),
-              //                   ),
-
-              //                   //  SizedBox(width: 33,),
-              //                   Text(
-              //                     "hola",
-              //                     style: TextStyle(
-              //                       fontSize: 16,
-              //                       fontWeight: FontWeight.bold,
-              //                       fontFamily: "Amiri",
-              //                     ),
-              //                   ),
-              //                 ],
-              //               ),
-              //             ]),
-              //       ),
-              //       Row(
-              //           mainAxisAlignment: MainAxisAlignment.start,
-              //           children: <Widget>[
-              //             Container(
-              //               child: Row(
-              //                 mainAxisAlignment: MainAxisAlignment.start,
-              //                 children: <Widget>[
-              //                   Positioned(
-              //                     child: Container(
-              //                       width: 20,
-              //                       height: 77,
-              //                       child: Card(
-              //                         color: color,
-
-              //                         ///case color
-              //                       ),
-              //                     ),
-              //                   ),
-              //                 ],
-              //               ),
-              //             ),
-              //           ]),
-              //       SizedBox(
-              //         height: 50,
-              //       ),
-              //     ]),
             );
           } else {
             return Center(child: CircularProgressIndicator());
           }
+        });
+  }
+}
+
+class TotalPrice extends StatelessWidget {
+  final String businessId, name;
+
+  TotalPrice({
+    @required this.businessId,
+    this.name,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final invoice = Provider.of<List<Invoice>>(context).where((driv) {
+          return driv.businessID == businessId;
+        }).toList() ??
+        [];
+    print(invoice[0].totalPrice);
+
+    return StreamProvider<List<Invoice>>.value(
+      value: InvoiceService(businessId: businessId).totalPrice,
+      child: InvoicePrice(),
+    );
+  }
+}
+
+class InvoicePrice extends StatefulWidget {
+  @override
+  _InvoicePriceState createState() => _InvoicePriceState();
+}
+
+class _InvoicePriceState extends State<InvoicePrice> {
+  @override
+  Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    final invoice = Provider.of<List<Invoice>>(context) ?? [];
+
+    return ListView.builder(
+        itemCount: invoice.length,
+        itemBuilder: (context, index) {
+          return Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(
+                      left: height * 0.025,
+                      right: height * 0.025,
+                      top: height * 0,
+                      bottom: height * 0),
+                  child: Image.asset('assets/price.png'),
+                ),
+                SizedBox(
+                  width: 33,
+                ),
+                Text(
+                  invoice[index].totalPrice.toString(),
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: "Amiri",
+                  ),
+                ),
+              ]);
         });
   }
 }

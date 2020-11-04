@@ -27,6 +27,7 @@ class DeliveriesCostsServices {
 
   DeliveriesCosts _deliveryCostDataFromSnapshot(DocumentSnapshot snapshot) {
     return DeliveriesCosts(
+      uid: snapshot.id,
       deliveryPrice: snapshot.data()['deliveryPrice'],
       note: snapshot.data()['note'],
       adminID: snapshot.data()['adminID'],

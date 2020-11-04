@@ -9,7 +9,7 @@ class Driver {
   String passowrd;
   String address;
   String line;
-
+  String userID;
   String cityID;
 
   bool isArchived;
@@ -28,6 +28,7 @@ class Driver {
     @required this.address,
     @required this.cityID,
     @required this.line,
+    this.userID,
     this.isArchived = false,
     this.deleteDate,
     this.deleteUser,

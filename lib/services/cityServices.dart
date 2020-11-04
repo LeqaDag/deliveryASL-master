@@ -6,7 +6,7 @@ class CityService {
   CityService({this.uid});
 
   final CollectionReference cityCollection =
-  FirebaseFirestore.instance.collection('citys');
+      FirebaseFirestore.instance.collection('cities');
 
   Future<void> addCityData(City city) async {
     return await cityCollection.doc().set({
@@ -23,6 +23,7 @@ class CityService {
 
   City _cityDataFromSnapshot(DocumentSnapshot snapshot) {
     return City(
+      uid: snapshot.id,
       name: snapshot.data()['name'],
       isArchived: snapshot.data()['isArchived'],
     );

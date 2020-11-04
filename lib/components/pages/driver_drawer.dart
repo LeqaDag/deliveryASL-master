@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:sajeda_app/components/businessComponent/business_main.dart';
-import 'package:sajeda_app/components/businessComponent/business_profile.dart';
-import 'package:sajeda_app/components/driverComponent/driver_main.dart';
-import 'package:sajeda_app/components/driverComponent/driver_profile.dart';
-import 'package:sajeda_app/components/orderComponent/store_add_new_order.dart';
+import 'package:sajeda_app/components/driverComponent/driverAccount/driver_main.dart';
+import 'package:sajeda_app/components/driverComponent/driverAccount/driver_profile.dart';
 import 'package:sajeda_app/components/screenComponent/admin_login.dart';
-import 'package:sajeda_app/components/orderComponent/store_profile.dart';
 import 'package:sajeda_app/services/auth/auth.dart';
 
 import '../../constants.dart';
@@ -36,7 +32,9 @@ class DriverDrawer extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => StoreProfile()),
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              DriverProfile(name: name, uid: uid)),
                     );
                   },
                   padding: EdgeInsets.all(0.0),
@@ -74,7 +72,10 @@ class DriverDrawer extends StatelessWidget {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => DriverMain(name: name)),
+                          builder: (context) => DriverMain(
+                                name: name,
+                                uid: uid,
+                              )),
                     );
                   },
                 ),

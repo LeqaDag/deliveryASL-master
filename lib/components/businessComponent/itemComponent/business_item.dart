@@ -12,13 +12,14 @@ import '../../../constants.dart';
 class AllBuisness extends StatelessWidget {
   final Color color;
   final Function onTapBox;
-  final String businessID, name;
+  final String businessID, name, busID;
 
   AllBuisness({
     @required this.color,
     @required this.onTapBox,
     @required this.businessID,
     this.name,
+    this.busID
   });
 
   @override
@@ -143,7 +144,8 @@ class AllBuisness extends StatelessWidget {
                               builder: (context) => AddDeliveryCost(
                                   businessID: businessID,
                                   businessName: business.name,
-                                  name: name)),
+                                  name: name,
+                                  busID: busID)),
                         );
                       },
                     ),

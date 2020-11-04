@@ -30,6 +30,7 @@ class InvoiceService {
 
   Invoice _invoiceDataFromSnapshot(DocumentSnapshot snapshot) {
     return Invoice(
+      uid: snapshot.id,
       adminID: snapshot.data()['adminID'],
       businessID: snapshot.data()['businessID'],
       note: snapshot.data()['note'],
@@ -68,11 +69,22 @@ class InvoiceService {
 
   Stream<List<Invoice>> get totalPrice {
     return invoiceCollection
-        .where("isArchived", isEqualTo: false)
         .where("businessID", isEqualTo: businessId)
         .snapshots()
         .map(_invoiceListFromSnapshot);
   }
 
-  
+  Future<int> total(String businessId) {
+    return invoiceCollection
+        .where("businessID", isEqualTo: businessId)
+        .get()
+        .then((value) => value.docs[0]["totalPrice"]);
+  }
+
+  Future<int> paidPrice(String businessId) {
+    return invoiceCollection
+        .where("businessID", isEqualTo: businessId)
+        .get()
+        .then((value) => value.docs[0]["paidPrice"]);
+  }
 }

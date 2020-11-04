@@ -28,6 +28,7 @@ class MainLineServices {
 
   MainLine _mainLineDataFromSnapshot(DocumentSnapshot snapshot) {
     return MainLine(
+      uid: snapshot.id,
       name: snapshot.data()['name'],
       isArchived: snapshot.data()['isArchived'],
     );

@@ -249,7 +249,7 @@ class _UpdateDriverState extends State<UpdateDriver> {
                         Container(
                           margin: EdgeInsets.all(10.0),
                           child: TextFormField(
-                            initialValue: driverData.cityID,
+                            initialValue: driverData.address ?? "",
                             onChanged: (val) => setState(() => cityID = val),
                             decoration: InputDecoration(
                               labelText: 'العنوان',

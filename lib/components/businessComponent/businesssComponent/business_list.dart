@@ -26,8 +26,9 @@ class _BusinessListState extends State<BusinessList> {
               color: KCustomCompanyOrdersStatus,
               businessID: business[index].uid,
               name: widget.name,
+              busID: business[index].userID,
               onTapBox: () {
-                print("yes");
+                print(business[index].userID);
                 // Navigator.push(
                 //   context,
                 //   MaterialPageRoute(
