@@ -1,11 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sajeda_app/classes/busines.dart';
 import 'package:sajeda_app/classes/invoice.dart';
 import 'package:sajeda_app/services/businessServices.dart';
-import 'package:sajeda_app/services/invoiceServices.dart';
 import 'package:sajeda_app/services/orderServices.dart';
 
 import '../../constants.dart';
@@ -68,7 +66,7 @@ class AllInvoice extends StatelessWidget {
                                     top: height * 0,
                                     bottom: height * 0),
                                 child: Icon(
-                                  Icons.circle,
+                                  Icons.account_circle,
                                   color: KEditIconColor,
                                   size: 35,
                                 ),

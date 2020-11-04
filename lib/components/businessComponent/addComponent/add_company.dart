@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:sajeda_app/components/businessComponent/addComponent/add_delivery_cost.dart';
+import 'package:sajeda_app/classes/city.dart';
 import 'package:sajeda_app/components/businessComponent/businesssComponent/business_admin.dart';
-import 'package:sajeda_app/components/pages/drawer.dart';
+import 'package:sajeda_app/services/cityServices.dart';
 
 import '../../../constants.dart';
 
@@ -20,6 +20,9 @@ class _AddCompanyState extends State<AddCompany> {
   String dropdownValue = 'One';
   final _formKey = GlobalKey<FormState>();
   bool isLoading = false;
+
+  List<City> cities;
+  String cityID;
 
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
@@ -198,6 +201,66 @@ class _AddCompanyState extends State<AddCompany> {
                           //Change color to Color(0xff73a16a)
                         ),
                       ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.all(10.0),
+                    child: StreamBuilder<List<City>>(
+                      stream: CityService().citys,
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return Text('Loading...');
+                        } else {
+                          cities = snapshot.data;
+                          return DropdownButtonFormField<String>(
+                            value: cityID,
+                            decoration: InputDecoration(
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide: BorderSide(
+                                    width: 1.0,
+                                    color: Color(0xff636363),
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide: BorderSide(
+                                    width: 2.0,
+                                    color: Color(0xff73a16a),
+                                  ),
+                                ),
+                                contentPadding:
+                                    EdgeInsets.only(right: 20.0, left: 10.0),
+                                labelText: "المدينة",
+                                labelStyle: TextStyle(
+                                    fontFamily: 'Amiri',
+                                    fontSize: 18.0,
+                                    color: Color(0xff316686))),
+                            items: cities.map(
+                              (city) {
+                                return DropdownMenuItem<String>(
+                                  value: city.uid.toString(),
+                                  child: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Text(
+                                      city.name,
+                                      style: TextStyle(
+                                        fontFamily: 'Amiri',
+                                        fontSize: 16.0,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ).toList(),
+                            onChanged: (val) {
+                              setState(() {
+                                cityID = val;
+                              });
+                            },
+                          );
+                        }
+                      },
                     ),
                   ),
                   Container(

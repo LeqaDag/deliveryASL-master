@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:sajeda_app/classes/busines.dart';
 import 'package:sajeda_app/classes/mainLine.dart';
 import 'package:sajeda_app/classes/order.dart';
+import 'package:sajeda_app/components/lineComponent/mainLineComponent/updateMainLine.dart';
 import 'package:sajeda_app/components/orderComponent/organizeOrderInfo.dart';
 import 'package:sajeda_app/services/businessServices.dart';
 import 'package:sajeda_app/services/customerServices.dart';
+import 'package:sajeda_app/services/mainLineServices.dart';
 import 'package:sajeda_app/services/orderServices.dart';
 import 'package:intl/intl.dart';
 import '../../constants.dart';
@@ -77,18 +79,61 @@ class CustomCardAndListTileAddLine extends StatelessWidget {
     return Card(
       color: color,
       child: ListTile(
-        title: Text(mainLine.name), // String Variable Take Name From DataBase
-
+        onTap: onTapBox,
+        title: Text(mainLine.name),
         leading: Image.asset("assets/LineIcon.png"),
         trailing: Wrap(
-          spacing: -15, // space between two icons
-
+          spacing: -15,
           children: <Widget>[
             IconButton(
-                icon: Icon(Icons.edit, color: KEditIconColor), onPressed: null),
+              icon: Icon(Icons.edit, color: KEditIconColor),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        UpdateMainLine(name: name, mainLineID: mainLine.uid),
+                  ),
+                );
+              },
+            ),
             IconButton(
                 icon: Icon(Icons.delete, color: KTrashIconColor),
-                onPressed: null),
+                onPressed: () {
+                  return showDialog<void>(
+                    context: context,
+                    barrierDismissible: false, // user must tap button!
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('حذف سائق'),
+                        content: SingleChildScrollView(
+                          child: ListBody(
+                            children: <Widget>[
+                              Text('هل ترغب بحذف السائق'),
+                              Text(mainLine.name),
+                            ],
+                          ),
+                        ),
+                        actions: <Widget>[
+                          FlatButton(
+                            child: Text('تأكيد'),
+                            onPressed: () {
+                              MainLineServices()
+                                  .deleteMainLineData(mainLine.uid);
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                          FlatButton(
+                            child: Text('تراجع'),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                }),
           ],
         ),
       ),
@@ -314,6 +359,7 @@ class CustomCardAndListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(name);
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     print(businessID);
@@ -486,6 +532,7 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                                   future: CustomerService(uid: order.customerID)
                                       .customerName,
                                   builder: (context, snapshot) {
+                                    print(order.customerID);
                                     return Text(
                                       snapshot.data ?? "",
                                       style: TextStyle(

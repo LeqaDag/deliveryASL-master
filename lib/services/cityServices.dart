@@ -3,10 +3,11 @@ import 'package:sajeda_app/classes/city.dart';
 
 class CityService {
   final String uid;
-  CityService({this.uid});
+  final String name;
+  CityService({this.uid, this.name});
 
   final CollectionReference cityCollection =
-      FirebaseFirestore.instance.collection('cities');
+      FirebaseFirestore.instance.collection('citys');
 
   Future<void> addCityData(City city) async {
     return await cityCollection.doc().set({
@@ -43,10 +44,25 @@ class CityService {
     return cityCollection.doc(uid).snapshots().map(_cityDataFromSnapshot);
   }
 
+  Stream<List<City>> get cityIDByName {
+    return cityCollection
+        .where('name', isEqualTo: name)
+        .snapshots()
+        .map(_cityListFromSnapshot);
+  }
+
   Stream<List<City>> get citys {
     return cityCollection
         .where('isArchived', isEqualTo: false)
         .snapshots()
+        .map(_cityListFromSnapshot);
+  }
+
+  Stream<List<City>> get citysf {
+    return cityCollection
+        .where('isArchived', isEqualTo: false)
+        .get()
+        .asStream()
         .map(_cityListFromSnapshot);
   }
 

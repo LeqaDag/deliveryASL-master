@@ -3,9 +3,8 @@ import 'package:flutter/cupertino.dart';
 class SubLine {
   String uid;
   String name;
-  int index;
+  int indexLine;
   String mainLineID;
-  String cityID;
 
   bool isArchived;
   DateTime deleteDate;
@@ -14,9 +13,8 @@ class SubLine {
   SubLine({
     this.uid,
     @required this.name,
-    @required this.index,
+    @required this.indexLine,
     @required this.mainLineID,
-    @required this.cityID,
     this.isArchived = false,
     this.deleteDate,
     this.deleteUser,

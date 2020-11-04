@@ -4,7 +4,8 @@ import '../classes/mainLine.dart';
 
 class MainLineServices {
   final String uid;
-  MainLineServices({this.uid});
+  final String cityID;
+  MainLineServices({this.uid, this.cityID});
 
   final CollectionReference mainLineCollection =
       FirebaseFirestore.instance.collection('mainLines');
@@ -14,6 +15,7 @@ class MainLineServices {
 
     await docReference.set({
       'name': mainLine.name,
+      'cityID': mainLine.cityID,
       'isArchived': mainLine.isArchived,
     });
 
@@ -23,6 +25,7 @@ class MainLineServices {
   Future<void> updateData(MainLine mainLine) async {
     return await mainLineCollection.doc(uid).update({
       'name': mainLine.name,
+      'cityID': mainLine.cityID,
     });
   }
 
@@ -30,6 +33,7 @@ class MainLineServices {
     return MainLine(
       uid: snapshot.id,
       name: snapshot.data()['name'],
+      cityID: snapshot.data()['cityID'],
       isArchived: snapshot.data()['isArchived'],
     );
   }
@@ -39,6 +43,7 @@ class MainLineServices {
       return MainLine(
         uid: doc.reference.id,
         name: doc.data()['name'] ?? '',
+        cityID: doc.data()['cityID'] ?? '',
         isArchived: doc.data()['isArchived'] ?? '',
       );
     }).toList();
@@ -49,6 +54,13 @@ class MainLineServices {
         .doc(uid)
         .snapshots()
         .map(_mainLineDataFromSnapshot);
+  }
+ 
+ Stream<List<MainLine>> get mainLineByCityID {
+    return mainLineCollection
+        .where('cityID', isEqualTo: cityID)
+        .snapshots()
+        .map(_mainLineListFromSnapshot);
   }
 
   Stream<List<MainLine>> get mainLines {

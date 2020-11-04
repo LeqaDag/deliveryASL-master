@@ -41,7 +41,7 @@ class Order {
     this.isReturn = false,
     this.isDone = false,
     this.businesID,
-    this.driverID,
+    this.driverID = '',
     @required this.customerID,
     this.isArchived = false,
     this.deleteDate,

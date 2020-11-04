@@ -8,8 +8,10 @@ class Driver {
   String phoneNumber;
   String passowrd;
   String address;
-  String line;
+
   String userID;
+  String mainLineID;
+
   String cityID;
 
   bool isArchived;
@@ -27,8 +29,8 @@ class Driver {
     @required this.passowrd,
     @required this.address,
     @required this.cityID,
-    @required this.line,
     this.userID,
+    @required this.mainLineID,
     this.isArchived = false,
     this.deleteDate,
     this.deleteUser,

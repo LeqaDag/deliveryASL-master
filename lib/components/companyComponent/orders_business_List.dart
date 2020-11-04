@@ -3,11 +3,16 @@ import 'package:provider/provider.dart';
 import 'package:sajeda_app/classes/order.dart';
 import 'package:sajeda_app/components/widgetsComponent/CustomWidgets.dart';
 
-class OrdersBusinessList extends StatelessWidget {
+class OrdersBusinessList extends StatefulWidget {
   final orderState;
   final String name;
   OrdersBusinessList({this.orderState, this.name});
 
+  @override
+  _OrdersBusinessListState createState() => _OrdersBusinessListState();
+}
+
+class _OrdersBusinessListState extends State<OrdersBusinessList> {
   @override
   Widget build(BuildContext context) {
     final orders = Provider.of<List<Order>>(context) ?? [];
@@ -15,7 +20,10 @@ class OrdersBusinessList extends StatelessWidget {
         itemCount: orders.length,
         itemBuilder: (context, index) {
           return CustomCompanyOrdersStatus(
-              order: orders[index], orderState: orderState, name: name,);
+            order: orders[index],
+            orderState: widget.orderState,
+            name: widget.name,
+          );
         });
   }
 }
