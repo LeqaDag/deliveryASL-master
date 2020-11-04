@@ -91,6 +91,13 @@ class DriverService {
         .map(_driverListFromSnapshot);
   }
 
+  Stream<List<Driver>> get driverByuserID {
+    return deiverCollection
+        .where('userID', isEqualTo: uid)
+        .snapshots()
+        .map(_driverListFromSnapshot);
+  }
+
   Future<void> deleteDriverData(String uid) async {
     return await deiverCollection.doc(uid).update({'isArchived': true});
   }
