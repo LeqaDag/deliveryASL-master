@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sajeda_app/classes/driver.dart';
 import 'package:sajeda_app/components/driverComponent/updateComponet/update.dart';
+import 'package:sajeda_app/components/widgetsComponent/CustomWidgets.dart';
 import 'package:sajeda_app/services/driverServices.dart';
 
 class Item extends StatelessWidget {
@@ -59,37 +60,22 @@ class Item extends StatelessWidget {
                   IconButton(
                     onPressed: () {
                       return showDialog<void>(
-                        context: context,
-                        barrierDismissible: false, // user must tap button!
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text('حذف سائق'),
-                            content: SingleChildScrollView(
-                              child: ListBody(
-                                children: <Widget>[
-                                  Text('هل ترغب بحذف السائق'),
-                                  Text(driver.name),
-                                ],
-                              ),
-                            ),
-                            actions: <Widget>[
-                              FlatButton(
-                                child: Text('تأكيد'),
+                          context: context,
+                          barrierDismissible: false, // user must tap button!
+                          builder: (BuildContext context) => CustomDialog(
+                                title: "حذف سائق",
+                                description: ' هل ترغب بحذف السائق',
+                                name: driver.name,
+                                buttonText: "تأكيد",
                                 onPressed: () {
                                   DriverService().deleteDriverData(driver.uid);
                                   Navigator.of(context).pop();
                                 },
-                              ),
-                              FlatButton(
-                                child: Text('تراجع'),
-                                onPressed: () {
+                                cancelButton: "الغاء",
+                                cancelPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                              ),
-                            ],
-                          );
-                        },
-                      );
+                              ));
                     },
                     icon: Icon(
                       Icons.delete,

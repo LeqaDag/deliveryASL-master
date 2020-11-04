@@ -30,6 +30,7 @@ class UserService {
 
   Users _userDataFromSnapshot(DocumentSnapshot snapshot) {
     return Users(
+      uid: snapshot.id,
       name: snapshot.data()['name'],
       email: snapshot.data()['email'],
       phoneNumber: snapshot.data()['phoneNumber'],
@@ -54,7 +55,6 @@ class UserService {
   Stream<Users> get userByID {
     return userCollection.doc(uid).snapshots().map(_userDataFromSnapshot);
   }
-
 
   Stream<List<Users>> get users {
     return userCollection

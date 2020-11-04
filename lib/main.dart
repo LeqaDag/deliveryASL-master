@@ -3,7 +3,6 @@ import 'components/orderComponent/store_add_new_order.dart';
 import 'components/pages/loading.dart';
 import 'components/screenComponent/admin_login.dart';
 import 'components/screenComponent/admin_password_change.dart';
-import 'components/screenComponent/admin_home.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
@@ -21,12 +20,10 @@ class MainApp extends StatelessWidget {
         AdminPasswordChange.id: (context) => AdminPasswordChange(),
         '/': (context) => AddNewOders(),
         '/loading': (context) => LoadingPage(),
-        '/admin/home' : (context) => AdminHome(),
       },
       initialRoute: LoginAdmin.id,
     );
   }
 }
-
 
 ///store-and-business

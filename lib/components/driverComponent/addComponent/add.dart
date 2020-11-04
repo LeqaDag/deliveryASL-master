@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:sajeda_app/classes/city.dart';
 import 'package:flutter/material.dart';
-import 'package:sajeda_app/classes/driver.dart';
+import 'package:sajeda_app/components/cityComponent/cityList.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
-import 'package:sajeda_app/services/driverServices.dart';
-
+import 'package:sajeda_app/services/cityServices.dart';
 import '../../../constants.dart';
+import 'package:provider/provider.dart';
 
 class AddDriver extends StatefulWidget {
   final String name;
@@ -26,11 +27,12 @@ class _AddDriverState extends State<AddDriver> {
   final CollectionReference userCollection =
       FirebaseFirestore.instance.collection('users');
   final CollectionReference driverCollection =
-      FirebaseFirestore.instance.collection('driver');
+      FirebaseFirestore.instance.collection('drivers');
 
   String type = 'سائق خاص';
   bool typeResult;
-  String cityID = 'One';
+  String city = 'المدينة';
+  City cc;
   String address = 'One';
   String line = 'One';
 
@@ -218,49 +220,50 @@ class _AddDriverState extends State<AddDriver> {
                       ),
                     ),
                   ),
-                  Container(
-                    margin: EdgeInsets.all(10.0),
-                    child: DropdownButtonFormField(
-                      onChanged: (val) => setState(() => address = val),
-                      items: <String>['One', 'Two', 'Free', 'Four']
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Align(
-                            alignment: Alignment.centerRight,
-                            child: Text(
-                              value,
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                  fontFamily: 'Amiri', fontSize: 16.0),
-                            ),
+                  RaisedButton(
+                    shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                          width: 1.0,
+                          color: Color(0xff636363),
+                        ),
+                        borderRadius: BorderRadius.circular(10)),
+                    color: Colors.white,
+                    elevation: 0,
+                    child: Container(
+                      margin: EdgeInsets.all(10.0),
+                      height: 27,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                            city,
+                            style: TextStyle(
+                                color: Color(0xff316686),
+                                fontFamily: 'Amiri',
+                                fontSize: 18.0),
                           ),
-                        );
-                      }).toList(),
-                      decoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                            borderSide: BorderSide(
-                              width: 1.0,
-                              color: Color(0xff636363),
-                            ),
+                          Icon(
+                            Icons.arrow_drop_down,
+                            color: Color(0xff636363),
+                            size: 25.0,
                           ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                            borderSide: BorderSide(
-                              width: 2.0,
-                              color: Color(0xff73a16a),
-                            ),
-                            //Change color to Color(0xff73a16a)
-                          ),
-                          contentPadding:
-                              EdgeInsets.only(right: 20.0, left: 10.0),
-                          labelText: "المدينة",
-                          labelStyle: TextStyle(
-                              fontFamily: 'Amiri',
-                              fontSize: 18.0,
-                              color: Color(0xff316686))),
+                        ],
+                      ),
                     ),
+                    onPressed: () async {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) =>
+                            _buildAboutDialog(context),
+                      ).then((value) {
+                        setState(() {
+                          cc = value;
+                          city = cc.name;
+                          print(city);
+                        });
+                      });
+                    },
                   ),
                   Container(
                     margin: EdgeInsets.all(10.0),
@@ -418,29 +421,41 @@ class _AddDriverState extends State<AddDriver> {
           .createUserWithEmailAndPassword(
               email: emailController.text, password: passwordController.text)
           .then((result) {
-        userCollection.doc().set({
-          "userID": result.user.uid,
+        // userCollection.doc().set({
+        //   "userID": result.user.uid,
+        //   "email": emailController.text,
+        //   "phoneNumber": phoneController.text,
+        //   "name": driverNameController.text,
+        //   "userType": "2"
+        // }).then((value) {
+        if (type == 'سائق خاص')
+          typeResult = false;
+        else
+          typeResult = true;
+        driverCollection.doc(result.user.uid).set({
           "email": emailController.text,
-          "phoneNumber": phoneController.text,
           "name": driverNameController.text,
-          "userType": "2"
-        }).then((value) {
-          if (type == 'سائق خاص')
-            typeResult = false;
-          else
-            typeResult = true;
-          driverCollection.doc().set({
-            "address": addressController.text,
-            "city": cityID,
-            "line": line,
-            "type": typeResult,
-            "userID": result.user.uid,
-            "isArchived": false
-          });
-          isLoading = false;
-          Navigator.pop(context);
+          "address": addressController.text,
+          "cityID": city,
+          "line": line,
+          "type": typeResult,
+          "userID": result.user.uid,
+          "isArchived": false,
+          "phoneNumber": phoneController.text,
         });
+        isLoading = false;
+        Navigator.pop(context);
       }).catchError((err) {});
     }
   }
+}
+
+Widget _buildAboutDialog(BuildContext context) {
+  return new AlertDialog(
+      content: Container(
+    width: double.maxFinite,
+    height: double.maxFinite,
+    child: StreamProvider<List<City>>.value(
+        value: CityService().citys, child: CityList()),
+  ));
 }

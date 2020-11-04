@@ -5,8 +5,9 @@ class OrderService {
   final String uid;
   final String businesID;
   final String orderState;
+  final String driverID;
 
-  OrderService({this.uid, this.businesID, this.orderState});
+  OrderService({this.uid, this.businesID, this.orderState, this.driverID});
   final CollectionReference orderCollection =
       FirebaseFirestore.instance.collection('orders');
 
@@ -30,6 +31,21 @@ class OrderService {
       'businesID': order.businesID,
       'driverID': order.driverID,
       'isArchived': order.isArchived,
+    });
+  }
+
+  Future<void> updateOrderStatus(Order order) async {
+    return await orderCollection.doc(uid).update({
+      'isCancelld': order.isCancelld,
+      'isReturn': order.isReturn,
+      'isDone': order.isDone,
+      'price': order.price,
+      'totalPrice': order.totalPrice,
+      'type': order.type,
+      'description': order.description,
+      'date': order.date,
+      'note': order.note,
+      'customerID': order.customerID,
     });
   }
 
@@ -313,6 +329,15 @@ class OrderService {
 
   Stream<List<Order>> get ordersBusinessByState {
     switch (orderState) {
+      case 'driverOrders':
+        {
+          return orderCollection
+              .where('driverID', isEqualTo: driverID)
+              .where('isArchived', isEqualTo: false)
+              .snapshots()
+              .map(_orderListFromSnapshot);
+        }
+        break;
       case 'all':
         {
           return orderCollection
@@ -425,5 +450,12 @@ class OrderService {
         .where('isArchived', isEqualTo: false)
         .snapshots()
         .map(_orderListFromSnapshot);
+  }
+
+  Future<String> get orderDescription {
+    return orderCollection
+        .doc(uid)
+        .get()
+        .then((value) => value.data()['description']);
   }
 }

@@ -695,3 +695,176 @@ class _CityChoiceState extends State<CityChoice> {
     );
   }
 }
+
+class CustomDialog extends StatelessWidget {
+  final String title, description, name, buttonText, cancelButton;
+  final Image image;
+  final Function onPressed, cancelPressed;
+
+  CustomDialog(
+      {@required this.title,
+      @required this.description,
+      @required this.buttonText,
+      this.image,
+      this.name,
+      this.onPressed,
+      @required this.cancelButton,
+      this.cancelPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(Consts.padding),
+      ),
+      elevation: 0.0,
+      backgroundColor: Colors.transparent,
+      child: dialogContent(context),
+    );
+  }
+
+  dialogContent(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        // Positioned(
+        //   left: Consts.padding,
+        //   right: Consts.padding,
+        //   child: CircleAvatar(
+        //     backgroundColor: Colors.white,
+        //     radius: Consts.avatarRadius,
+        //     child: Container(
+        //       child: Icon(
+        //         Icons.delete,
+        //         color: Colors.red,
+        //         size: 30,
+        //       ),
+        //     ),
+        //   ),
+        // ),
+        Container(
+          padding: EdgeInsets.only(
+            top: Consts.padding,
+            bottom: Consts.padding,
+            left: Consts.padding,
+            right: Consts.padding,
+          ),
+          // margin: EdgeInsets.only(top: Consts.avatarRadius),
+          decoration: new BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.circular(Consts.padding),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black26,
+                blurRadius: 10.0,
+                offset: const Offset(0.0, 10.0),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min, // To make the card compact
+            children: <Widget>[
+              Icon(
+                Icons.delete,
+                color: Colors.red,
+                size: 70,
+              ),
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 24.0,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              SizedBox(height: 16.0),
+              Text(
+                description,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16.0,
+                ),
+              ),
+              Text(
+                name,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16.0,
+                ),
+              ),
+              SizedBox(height: 24.0),
+              Align(
+                alignment: Alignment.bottomLeft,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    FlatButton(
+                      onPressed: cancelPressed, // To close the dialog
+                      child: Text(
+                        cancelButton,
+                        style: TextStyle(
+                          fontFamily: 'Amiri',
+                          fontSize: 18.0,
+                          color: Color(0xff316686),
+                        ),
+                      ),
+                    ),
+                    FlatButton(
+                      onPressed: onPressed,
+                      child: Text(
+                        buttonText,
+                        style: TextStyle(
+                          fontFamily: 'Amiri',
+                          fontSize: 18.0,
+                          color: Color(0xff316686),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class Consts {
+  Consts._();
+
+  static const double padding = 16.0;
+  static const double avatarRadius = 66.0;
+}
+
+/// Start Information Order From Driver TextField Status.
+
+class CustomTextFieldOrderStatus extends StatelessWidget {
+  final String imageBath;
+  final String dbDriverStatus;
+  CustomTextFieldOrderStatus(this.imageBath, this.dbDriverStatus);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 20, right: 20),
+      child: TextFormField(
+        enabled: false,
+        decoration: InputDecoration(
+          icon: Image.asset(
+            imageBath,
+          ),
+          contentPadding: EdgeInsets.all(10),
+          labelText: dbDriverStatus, // from db
+          disabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(
+              width: 0.5,
+            ),
+          ),
+
+          //contentPadding: EdgeInsets.only(right: 10, left: 20),
+        ),
+      ),
+    );
+  }
+}

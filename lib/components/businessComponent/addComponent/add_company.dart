@@ -251,7 +251,7 @@ class _AddCompanyState extends State<AddCompany> {
           .createUserWithEmailAndPassword(
               email: emailController.text, password: passwordController.text)
           .then((result) {
-        companyCollection.doc().set({
+        companyCollection.doc(result.user.uid).set({
           "userID": result.user.uid,
           "email": emailController.text,
           "phoneNumber": phoneController.text,

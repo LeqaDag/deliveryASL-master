@@ -64,6 +64,20 @@ class CustomerService {
         .then((value) => value.data()['name']);
   }
 
+  Future<int> get customerPhoneNumber {
+    return customerCollection
+        .doc(uid)
+        .get()
+        .then((value) => value.data()['phoneNumber']);
+  }
+
+  Future<int> get customerAdditionalPhoneNumber {
+    return customerCollection
+        .doc(uid)
+        .get()
+        .then((value) => value.data()['phoneNumberAdditional']);
+  }
+
   Future<String> get customerAdress {
     return customerCollection
         .doc(uid)
@@ -80,5 +94,19 @@ class CustomerService {
 
   Future<void> deleteUserData(String uid) async {
     return await customerCollection.doc(uid).update({'isArchived': true});
+  }
+
+  Future<String> get customerCity {
+    return customerCollection
+        .doc(uid)
+        .get()
+        .then((value) => value.data()['cityID']);
+  }
+
+  Stream<Customer> get customerByID {
+    return customerCollection
+        .doc(uid)
+        .snapshots()
+        .map(_customerDataFromSnapshot);
   }
 }

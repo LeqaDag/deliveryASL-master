@@ -11,8 +11,8 @@ import 'package:sajeda_app/services/cityServices.dart';
 import '../../../constants.dart';
 
 class AddDeliveryCost extends StatefulWidget {
-  final String name, businessID, businessName;
-  AddDeliveryCost({this.name, this.businessID, this.businessName});
+  final String name, businessID, businessName, busID;
+  AddDeliveryCost({this.name, this.businessID, this.businessName, this.busID});
 
   @override
   _AddDeliveryCostState createState() => _AddDeliveryCostState();
@@ -22,6 +22,7 @@ class _AddDeliveryCostState extends State<AddDeliveryCost> {
   final _formKey = GlobalKey<FormState>();
   static List<String> deliveryCostList = [null];
   static List<String> cityList = [null];
+ static List<String> priceList = [null];
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +71,7 @@ class _AddDeliveryCostState extends State<AddDeliveryCost> {
                                       deliveryPrice: price,
                                       adminID: user.uid,
                                       city: cityList[index],
-                                      businesID: widget.businessID));
+                                      businesID: widget.busID));
                             });
                             Navigator.pop(context);
                           }
@@ -115,6 +116,7 @@ class _AddDeliveryCostState extends State<AddDeliveryCost> {
   List<Widget> _getAll() {
     List<Widget> friendsTextFields = [];
     cityList.length = deliveryCostList.length;
+    deliveryCostList.length = deliveryCostList.length;
 
     for (int i = 0; i < deliveryCostList.length; i++) {
       friendsTextFields.add(Padding(

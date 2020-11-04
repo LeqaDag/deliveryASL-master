@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,6 +13,7 @@ import 'package:sajeda_app/services/cityServices.dart';
 import 'package:sajeda_app/services/customerServices.dart';
 import 'package:sajeda_app/services/orderServices.dart';
 import 'package:provider/provider.dart';
+import 'package:toast/toast.dart';
 
 class AddNewOdersByBusiness extends StatefulWidget {
   final String name, uid;
@@ -25,12 +27,18 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
   final _formKey = GlobalKey<FormState>();
   String customerCityID = 'One';
   String datehh = "";
+  String city = 'المدينة',
+      cityID,
+      deliveryPrice = "0",
+      typeOrder = ' نوع التوصيل';
+  City cc;
+  int totalPrice = 0;
 
   //Order Filed
   TextEditingController orderDescription = new TextEditingController();
   TextEditingController orderPrice = new TextEditingController();
   bool orderType = false;
-  List<int> orderTotalPrice = [10, 20];
+  List<int> orderTotalPrice = [0];
   DateTime orderDate = new DateTime.now();
   TextEditingController orderNote = new TextEditingController();
 
@@ -41,6 +49,7 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
       new TextEditingController();
   TextEditingController customerAddress = new TextEditingController();
   //
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,7 +74,32 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
               key: _formKey,
               child: Column(
                 children: <Widget>[
-                  _customerName(customerName),
+                  Container(
+                    margin: EdgeInsets.only(
+                        top: 10, bottom: 10, left: 10, right: 10),
+                    child: TextFormField(
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'ادخل اسم الزبون';
+                        }
+                        return null;
+                      },
+                      controller: customerName,
+                      decoration: InputDecoration(
+                        contentPadding:
+                            EdgeInsets.only(right: 20.0, left: 10.0),
+                        labelText: "اسم الزبون",
+                        labelStyle: TextStyle(
+                          fontFamily: 'Amiri',
+                          fontSize: 18.0,
+                          color: Color(0xff316686),
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                  ),
                   Row(
                     children: <Widget>[
                       _customerPhoneNumber(
@@ -77,7 +111,68 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
                   Row(
                     children: <Widget>[
                       //sajeda code
-                      _cityChoice(),
+                      Expanded(
+                        flex: 2,
+                        child: Container(
+                          margin: EdgeInsets.only(
+                              top: 10, bottom: 10, left: 10, right: 10),
+                          child: RaisedButton(
+                            shape: RoundedRectangleBorder(
+                                side: BorderSide(
+                                  width: 1.0,
+                                  color: Color(0xff636363),
+                                ),
+                                borderRadius: BorderRadius.circular(10)),
+                            color: Colors.white,
+                            elevation: 0,
+                            child: Container(
+                              margin: EdgeInsets.all(10.0),
+                              height: 27,
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text(
+                                    city,
+                                    style: TextStyle(
+                                        color: Color(0xff316686),
+                                        fontFamily: 'Amiri',
+                                        fontSize: 18.0),
+                                  ),
+                                  Icon(
+                                    Icons.arrow_drop_down,
+                                    color: Color(0xff636363),
+                                    size: 25.0,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            onPressed: () async {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) =>
+                                    _buildAboutDialog(context),
+                              ).then((value) {
+                                setState(() {
+                                  cc = value;
+                                  cityID = cc.uid;
+                                  city = cc.name;
+                                  FirebaseFirestore.instance
+                                      .collection('deliveries_costs')
+                                      .where('businesID', isEqualTo: widget.uid)
+                                      .where('city', isEqualTo: city)
+                                      .get()
+                                      .then((value) => {
+                                            deliveryPrice =
+                                                value.docs[0]["deliveryPrice"]
+                                          });
+                                });
+                              });
+                            },
+                          ),
+                        ),
+                      ),
                       //sajeda code
                       _customerAddress(customerAddress),
                     ],
@@ -95,13 +190,135 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
                   ),
                   Row(
                     children: <Widget>[
-                      _deliveryPriceByCity(),
-                      _oderPrice(orderPrice),
-                      _totalOderPrice(),
+                      Expanded(
+                        flex: 3,
+                        child: Container(
+                          margin: EdgeInsets.only(
+                              top: 10, bottom: 10, left: 10, right: 10),
+                          child: TextFormField(
+                            onChanged: (String newValue) {
+                              setState(() {
+                                deliveryPrice = newValue;
+                              });
+                            },
+                            enabled: false,
+                            decoration: InputDecoration(
+                              labelText: deliveryPrice,
+                              labelStyle: TextStyle(
+                                  fontFamily: 'Amiri',
+                                  fontSize: 18.0,
+                                  color: Colors.red),
+                              contentPadding: EdgeInsets.only(right: 20.0),
+                              filled: true,
+                              fillColor: Color(0xffC6C4C4),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 3,
+                        child: Container(
+                          margin: EdgeInsets.only(
+                              top: 10, bottom: 10, left: 10, right: 0),
+                          child: TextFormField(
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'ادخل سعر المنتج ';
+                              }
+                              return null;
+                            },
+                            onChanged: (value) {
+                              orderTotalPrice[0] =
+                                  (int.parse(value) + int.parse(deliveryPrice));
+                            },
+                            controller: orderPrice,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              labelText: "سعر المنتج",
+                              labelStyle: TextStyle(
+                                  fontFamily: 'Amiri',
+                                  fontSize: 18.0,
+                                  color: Color(0xff316686)),
+                              contentPadding: EdgeInsets.only(right: 20.0),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 3,
+                        child: Container(
+                          margin: EdgeInsets.only(
+                              top: 10, bottom: 10, left: 10, right: 0),
+                          child: TextFormField(
+                            enabled: false,
+                            decoration: InputDecoration(
+                              labelText: orderTotalPrice[0].toString(),
+                              contentPadding: EdgeInsets.only(right: 20.0),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                   _notes(orderNote),
-                  _addNewOrderButton(),
+                  Container(
+                    child: RaisedButton(
+                        padding: EdgeInsets.only(right: 60, left: 60),
+                        color: Color(0xff73A16A),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18.0),
+                          side: BorderSide(color: Color(0xff73A16A)),
+                        ),
+                        onPressed: () async {
+                          if (_formKey.currentState.validate()) {
+                            print(int.parse(orderPrice.text) +
+                                int.parse(deliveryPrice));
+                            if (typeOrder == 'مستعجل') orderType = true;
+                            Customer customer = new Customer(
+                                name: customerName.text,
+                                phoneNumber:
+                                    int.parse(customerPhoneNumber.text),
+                                phoneNumberAdditional: int.parse(
+                                    customerPhoneNumberAdditional.text),
+                                cityID: city,
+                                address: customerAddress.text,
+                                businesID: widget.uid,
+                                isArchived: false);
+                            String customerID = await CustomerService()
+                                .addcustomerData(customer);
+
+                            await OrderService().addOrderData(new Order(
+                                price: int.parse(orderPrice.text),
+                                totalPrice: orderTotalPrice,
+                                type: orderType,
+                                description: orderDescription.text,
+                                date: orderDate,
+                                note: orderNote.text,
+                                customerID: customerID,
+                                businesID: widget.uid,
+                                driverID: ""));
+                            Toast.show("تم اضافة الطلبية بنجاح", context,
+                                duration: Toast.LENGTH_LONG,
+                                gravity: Toast.BOTTOM);
+                            await Future.delayed(Duration(milliseconds: 1000));
+                            Navigator.of(context).pop();
+                          }
+                        },
+                        child: Text('اضافة',
+                            style: TextStyle(
+                                fontFamily: 'Amiri',
+                                fontSize: 18.0,
+                                color: Colors.white))),
+                  ),
                 ],
               ),
             )
@@ -110,70 +327,6 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
       ),
     );
   }
-
-  // ملاحظة: عند الاضافة الى قاعدة البيانات لا بد من اعطاء براميتر لكل دالة وخصاية المفتاح للدوال
-  Widget _deliveryPriceByCity() {
-    return Expanded(
-      flex: 3,
-      child: Container(
-        margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
-        child: TextFormField(
-          enabled: false,
-          decoration: InputDecoration(
-            labelStyle: TextStyle(
-                fontFamily: 'Amiri', fontSize: 18.0, color: Colors.red),
-            contentPadding: EdgeInsets.only(right: 20.0),
-            filled: true,
-            fillColor: Color(0xffC6C4C4),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        ),
-      ),
-    );
-  } // سعر التوصيل حسب المدينة المختارة
-
-  Widget _oderPrice(TextEditingController fieldController) {
-    return Expanded(
-      flex: 3,
-      child: Container(
-        margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 0),
-        child: TextFormField(
-          controller: fieldController,
-          keyboardType: TextInputType.number,
-          decoration: InputDecoration(
-            labelText: "سعر المنتج",
-            labelStyle: TextStyle(
-                fontFamily: 'Amiri', fontSize: 18.0, color: Color(0xff316686)),
-            contentPadding: EdgeInsets.only(right: 20.0),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        ),
-      ),
-    );
-  } // سعر المنتج المدخل من قبل البائع
-
-  Widget _totalOderPrice() {
-    return Expanded(
-      flex: 3,
-      child: Container(
-        margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 0),
-        child: TextFormField(
-          enabled: false,
-          decoration: InputDecoration(
-            labelText: "السعر الكلي",
-            contentPadding: EdgeInsets.only(right: 20.0),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        ),
-      ),
-    );
-  } // السعر الكلي للمنتح = سعر التوصيل + سعر المنتج ،، وهو الذي يظهر للسائق
 
   Widget _infoLabel(String lableText, Icon icon) {
     return Container(
@@ -199,27 +352,6 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
     );
   }
 
-  Widget _customerName(TextEditingController fieldController) {
-    return Container(
-      margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
-      child: TextFormField(
-        controller: fieldController,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
-          labelText: "اسم الزبون",
-          labelStyle: TextStyle(
-            fontFamily: 'Amiri',
-            fontSize: 18.0,
-            color: Color(0xff316686),
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _customerPhoneNumber(
       String labletext, double right, TextEditingController fieldController) {
     return Expanded(
@@ -227,6 +359,12 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
       child: Container(
         margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: right),
         child: TextFormField(
+          // validator: (value) {
+          //   if (value.isEmpty) {
+          //     return 'ادخل رقم الزبون';
+          //   }
+          //   return null;
+          // },
           controller: fieldController,
           keyboardType: TextInputType.numberWithOptions(decimal: true),
           decoration: InputDecoration(
@@ -246,30 +384,18 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
     );
   }
 
-  Widget _cityChoice() {
-    return Expanded(
-      flex: 2,
-      child: Container(
-        margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
-        child: RaisedButton(
-          child: Text("المدينه"),
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) => _buildAboutDialog(context),
-            ).then((value) => print(value));
-          },
-        ),
-      ),
-    );
-  }
-
   Widget _customerAddress(TextEditingController fieldController) {
     return Expanded(
       flex: 3,
       child: Container(
         margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 0),
         child: TextFormField(
+          validator: (value) {
+            if (value.isEmpty) {
+              return 'ادخل العنوان';
+            }
+            return null;
+          },
           controller: fieldController,
           decoration: InputDecoration(
             contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
@@ -292,6 +418,12 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
     return Container(
       margin: EdgeInsets.all(10),
       child: TextFormField(
+        validator: (value) {
+          if (value.isEmpty) {
+            return 'ادخل الطلبية';
+          }
+          return null;
+        },
         controller: fieldController,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
@@ -314,7 +446,7 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
         child: DropdownButtonFormField(
           onChanged: (String newValue) {
             setState(() {
-              customerCityID = newValue;
+              typeOrder = newValue;
             });
           },
           items: <String>['عادي', 'مستعجل']
@@ -359,15 +491,16 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
   }
 
   Widget _orderDate() {
+    final date = DateTime.now();
     return Expanded(
       flex: 3,
       child: Container(
         margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 0),
         child: TextFormField(
-          enabled: false,
+          //enabled: false,
           decoration: InputDecoration(
             contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
-            labelText: datehh,
+            labelText: date.toString(),
             prefixIcon: Icon(
               Icons.date_range,
               color: Color(0xff316686),
@@ -376,6 +509,16 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
               borderRadius: BorderRadius.circular(10),
             ),
           ),
+          onTap: () async {
+            final date = await showDatePicker(
+                context: context,
+                firstDate: DateTime(DateTime.now().year),
+                initialDate: DateTime.now(),
+                lastDate: DateTime(2100));
+            if (date != null) {
+              print(date);
+            }
+          },
         ),
       ),
     );
@@ -412,42 +555,5 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
       child: StreamProvider<List<City>>.value(
           value: CityService().citys, child: CityList()),
     ));
-  }
-
-  Widget _addNewOrderButton() {
-    return Container(
-      child: RaisedButton(
-          padding: EdgeInsets.only(right: 60, left: 60),
-          color: Color(0xff73A16A),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18.0),
-            side: BorderSide(color: Color(0xff73A16A)),
-          ),
-          onPressed: () async {
-            Customer customer = new Customer(
-                name: customerName.text,
-                phoneNumber: int.parse(customerPhoneNumber.text),
-                phoneNumberAdditional:
-                    int.parse(customerPhoneNumberAdditional.text),
-                cityID: customerCityID,
-                address: customerAddress.text,
-                isArchived: false);
-            String customerID =
-                await CustomerService().addcustomerData(customer);
-
-            await OrderService().addOrderData(new Order(
-              price: int.parse(orderPrice.text),
-              totalPrice: orderTotalPrice,
-              type: orderType,
-              description: orderDescription.text,
-              date: orderDate,
-              note: orderNote.text,
-              customerID: customerID,
-            ));
-          },
-          child: Text('اضافة',
-              style: TextStyle(
-                  fontFamily: 'Amiri', fontSize: 18.0, color: Colors.white))),
-    );
   }
 }

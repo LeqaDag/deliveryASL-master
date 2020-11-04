@@ -27,6 +27,7 @@ class SubLineServices {
 
   SubLine _subLineDataFromSnapshot(DocumentSnapshot snapshot) {
     return SubLine(
+      uid: snapshot.id,
       name: snapshot.data()['name'],
       index: snapshot.data()['index'],
       mainLineID: snapshot.data()['mainLineID'],

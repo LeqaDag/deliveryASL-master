@@ -30,6 +30,7 @@ class BusinessService {
 
   Business _businessDataFromSnapshot(DocumentSnapshot snapshot) {
     return Business(
+      uid: snapshot.id,
       name: snapshot.data()['name'],
       email: snapshot.data()['email'],
       phoneNumber: snapshot.data()['phoneNumber'],
@@ -65,6 +66,7 @@ class BusinessService {
         .map(_businessListFromSnapshot);
   }
 
+
   Future<String> get businessName {
     return businessCollection
         .doc(uid)
@@ -74,5 +76,19 @@ class BusinessService {
 
   Future<void> deleteBusinessData(String uid) async {
     return await businessCollection.doc(uid).update({'isArchived': true});
+  }
+
+  Future<String> get businessPhoneNumber {
+    return businessCollection
+        .doc(uid)
+        .get()
+        .then((value) => value.data()['phoneNumber']);
+  }
+
+  Future<String> businessID(String businessId) {
+    return businessCollection
+        .where("userID", isEqualTo: businessId)
+        .get()
+        .then((value) => value.docs[0].id);
   }
 }
