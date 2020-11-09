@@ -599,4 +599,8 @@ class OrderService {
         .get()
         .then((value) => value.size);
   }
+
+  Future<void> get updateDriverPrice {
+    return orderCollection.doc(uid).update({'driverPrice': driverPrice});
+  }
 }
