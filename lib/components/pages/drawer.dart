@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sajeda_app/components/invoiceComponent/invoice_admin.dart';
+import 'package:sajeda_app/components/lineComponent/all_lines.dart';
 import 'package:sajeda_app/components/screenComponent/admin_home.dart';
 import 'package:sajeda_app/components/screenComponent/admin_login.dart';
 import 'package:sajeda_app/components/screenComponent/admin_orders.dart';
@@ -179,6 +180,14 @@ class AdminDrawer extends StatelessWidget {
                         fontFamily: 'Amiri'),
                   ),
                   leading: Image.asset('assets/track-order.png'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AllLines(name: name)),
+                    );
+                  },
                 ),
               ),
             ),
@@ -199,6 +208,7 @@ class AdminDrawer extends StatelessWidget {
                   ),
                   leading: Image.asset('assets/invoice.png'),
                   onTap: () {
+                    Navigator.pop(context);
                     Navigator.push(
                       context,
                       MaterialPageRoute(

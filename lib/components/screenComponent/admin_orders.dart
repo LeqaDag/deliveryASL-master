@@ -11,7 +11,7 @@ import 'urgent_orders.dart';
 
 import 'package:sajeda_app/components/widgetsComponent/CustomWidgets.dart';
 import '../../constants.dart';
-import 'all_orders.dart';
+import 'delivery_orders.dart';
 import 'canceled_orders.dart';
 
 class AdminOrders extends StatelessWidget {

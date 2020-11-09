@@ -130,7 +130,7 @@ class _AddLineState extends State<AddLine> {
                                     ),
                                     contentPadding: EdgeInsets.only(
                                         right: 20.0, left: 10.0),
-                                    labelText: "خط التوصيل",
+                                    labelText: "المدينة",
                                     labelStyle: TextStyle(
                                         fontFamily: 'Amiri',
                                         fontSize: 18.0,

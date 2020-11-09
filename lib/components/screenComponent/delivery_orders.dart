@@ -15,7 +15,7 @@ class AllOrders extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(" كافة الطورد"),
+          title: Text("الطرود الموزعة"),
           backgroundColor: kAppBarColor,
           centerTitle: true,
         ),
@@ -24,9 +24,9 @@ class AllOrders extends StatelessWidget {
         body: Directionality(
           textDirection: TextDirection.rtl,
           child: StreamProvider<List<Order>>.value(
-            value: OrderService().ordersByState('allOrder'),
+            value: OrderService().ordersByState('isDelivery'),
             child: OrderList(
-              orderState: 'allOrder',
+              orderState: 'isDelivery',
               name: name,
             ),
           ),

@@ -6,8 +6,14 @@ class OrderService {
   final String businesID;
   final String orderState;
   final String driverID;
+  final int driverPrice;
 
-  OrderService({this.uid, this.businesID, this.orderState, this.driverID});
+  OrderService(
+      {this.uid,
+      this.businesID,
+      this.orderState,
+      this.driverID,
+      this.driverPrice});
   final CollectionReference orderCollection =
       FirebaseFirestore.instance.collection('orders');
 
@@ -31,6 +37,7 @@ class OrderService {
       'businesID': order.businesID,
       'driverID': order.driverID,
       'isArchived': order.isArchived,
+      'driverPrice': order.driverPrice,
     });
   }
 
@@ -69,6 +76,7 @@ class OrderService {
       businesID: snapshot.data()['businesID'],
       driverID: snapshot.data()['driverID'],
       isArchived: snapshot.data()['isArchived'],
+      driverPrice: snapshot.data()['driverPrice'],
     );
   }
 
@@ -93,6 +101,7 @@ class OrderService {
         businesID: doc.data()['businesID'] ?? '',
         driverID: doc.data()['driverID'] ?? '',
         isArchived: doc.data()['isArchived'] ?? '',
+        driverPrice: doc.data()['driverPrice'] ?? '',
       );
     }).toList();
   }
@@ -429,10 +438,35 @@ class OrderService {
     return await orderCollection.doc(uid).update({'isArchived': true});
   }
 
+  //Update Order State
+  //To is Received
   Future<void> get updateOrderToisReceived {
     return orderCollection
         .doc(uid)
         .update({'isReceived': true, 'isLoading': false});
+  }
+
+  //To is Delivery
+  Future<void> get updateOrderToisDelivery {
+    return orderCollection.doc(uid).update(
+        {'isDelivery': true, 'isReceived': false, 'driverID': driverID});
+  }
+
+  //To is Urgent
+  Future<void> get updateOrderToisUrgent {
+    return orderCollection.doc(uid).update({
+      'isDelivery': true,
+      'isReceived': false,
+      'isUrgent': true,
+      'driverID': driverID
+    });
+  }
+
+  Future<int> get driverPriceData {
+    return orderCollection
+        .doc(uid)
+        .get()
+        .then((value) => value.data()['driverPrice']);
   }
 
   //get Business Orders
@@ -457,5 +491,9 @@ class OrderService {
         .doc(uid)
         .get()
         .then((value) => value.data()['description']);
+  }
+
+  Future<void> get updateDriverPrice {
+    return orderCollection.doc(uid).update({'driverPrice': driverPrice});
   }
 }

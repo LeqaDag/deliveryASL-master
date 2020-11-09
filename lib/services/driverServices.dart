@@ -83,6 +83,13 @@ class DriverService {
         .map(_driverListFromSnapshot);
   }
 
+  Future<String> get driverName {
+    return deiverCollection
+        .doc(uid)
+        .get()
+        .then((value) => value.data()['name']);
+  }
+
   Stream<List<Driver>> get driversBymainLineID {
     return deiverCollection
         .where('mainLineID', isEqualTo: mainLineID)

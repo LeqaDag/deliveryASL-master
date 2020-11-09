@@ -9,6 +9,8 @@ class Order {
   DateTime date;
   String note;
 
+  int driverPrice;
+
   bool isLoading;
   bool isReceived;
   bool isDelivery;
@@ -42,6 +44,7 @@ class Order {
     this.isDone = false,
     this.businesID,
     this.driverID = '',
+    this.driverPrice = 0,
     @required this.customerID,
     this.isArchived = false,
     this.deleteDate,
