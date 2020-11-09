@@ -7,6 +7,7 @@ import 'package:sajeda_app/components/pages/drawer.dart';
 import 'package:sajeda_app/services/cityServices.dart';
 import 'package:sajeda_app/classes/mainLine.dart';
 import 'package:sajeda_app/services/mainLineServices.dart';
+import 'package:toast/toast.dart';
 
 import '../../../constants.dart';
 
@@ -39,7 +40,6 @@ class _AddDriverState extends State<AddDriver> {
   String city = 'المدينة';
   City cc;
   String address = 'One';
-
 
   TextEditingController emailController = TextEditingController();
   TextEditingController driverNameController = TextEditingController();
@@ -284,7 +284,6 @@ class _AddDriverState extends State<AddDriver> {
                         }
                       },
                     ),
-                    
                   ),
                   Container(
                     margin: EdgeInsets.all(10.0),
@@ -457,36 +456,38 @@ class _AddDriverState extends State<AddDriver> {
       firebaseAuth
           .createUserWithEmailAndPassword(
               email: emailController.text, password: passwordController.text)
-          .then((result) {
-        // userCollection.doc().set({
-        //   "userID": result.user.uid,
-        //   "email": emailController.text,
-        //   "phoneNumber": phoneController.text,
-        //   "name": driverNameController.text,
-        //   "userType": "2"
-        // }).then((value) {
-        if (type == 'سائق خاص')
-          typeResult = false;
-        else
-          typeResult = true;
-        driverCollection.doc(result.user.uid).set({
-          "email": emailController.text,
-          "name": driverNameController.text,
-          "address": addressController.text,
-          "cityID": cityID,
-          "mainLineID": mainLineID,
-          "type": typeResult,
+          .then((result) async {
+        userCollection.doc().set({
           "userID": result.user.uid,
-          "isArchived": false,
+          "email": emailController.text,
           "phoneNumber": phoneController.text,
+          "name": driverNameController.text,
           "userType": "2"
         }).then((value) {
-        
-          isLoading = false;
-          Navigator.pop(context);
+          if (type == 'سائق خاص')
+            typeResult = false;
+          else
+            typeResult = true;
+          driverCollection.doc(result.user.uid).set({
+            "email": emailController.text,
+            "name": driverNameController.text,
+            "address": addressController.text,
+            "cityID": cityID,
+            "mainLineID": mainLineID,
+            "type": typeResult,
+            "userID": result.user.uid,
+            "isArchived": false,
+            "phoneNumber": phoneController.text,
+          }).then((value) {
+            isLoading = false;
+            Navigator.pop(context);
+          });
         });
         isLoading = false;
-        Navigator.pop(context);
+        Toast.show("تم اضافة سائق بنجاح", context,
+            duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+        await Future.delayed(Duration(milliseconds: 1000));
+        Navigator.of(context).pop();
       }).catchError((err) {});
     }
   }

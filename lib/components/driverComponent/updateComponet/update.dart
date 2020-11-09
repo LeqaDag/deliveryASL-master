@@ -304,38 +304,38 @@ class _UpdateDriverState extends State<UpdateDriver> {
                             ),
                           ),
                         ),
-                        Container(
-                          margin: EdgeInsets.all(10.0),
-                          child: TextFormField(
-                            initialValue: driverData.passowrd,
-                            onChanged: (val) => setState(() => passowrd = val),
-                            obscureText: true,
-                            decoration: InputDecoration(
-                              labelText: 'كلمة المرور',
-                              labelStyle: TextStyle(
-                                fontFamily: 'Amiri',
-                                fontSize: 18.0,
-                                color: Color(0xff316686),
-                              ),
-                              contentPadding: EdgeInsets.only(right: 20.0),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                                borderSide: BorderSide(
-                                  width: 1.0,
-                                  color: Color(0xff636363),
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                                borderSide: BorderSide(
-                                  width: 2.0,
-                                  color: Color(0xff73a16a),
-                                ),
-                                //Change color to Color(0xff73a16a)
-                              ),
-                            ),
-                          ),
-                        ),
+                        // Container(
+                        //   margin: EdgeInsets.all(10.0),
+                        //   child: TextFormField(
+                        //     initialValue: driverData.passowrd,
+                        //     onChanged: (val) => setState(() => passowrd = val),
+                        //     obscureText: true,
+                        //     decoration: InputDecoration(
+                        //       labelText: 'كلمة المرور',
+                        //       labelStyle: TextStyle(
+                        //         fontFamily: 'Amiri',
+                        //         fontSize: 18.0,
+                        //         color: Color(0xff316686),
+                        //       ),
+                        //       contentPadding: EdgeInsets.only(right: 20.0),
+                        //       enabledBorder: OutlineInputBorder(
+                        //         borderRadius: BorderRadius.circular(10.0),
+                        //         borderSide: BorderSide(
+                        //           width: 1.0,
+                        //           color: Color(0xff636363),
+                        //         ),
+                        //       ),
+                        //       focusedBorder: OutlineInputBorder(
+                        //         borderRadius: BorderRadius.circular(10.0),
+                        //         borderSide: BorderSide(
+                        //           width: 2.0,
+                        //           color: Color(0xff73a16a),
+                        //         ),
+                        //         //Change color to Color(0xff73a16a)
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
                         Container(
                           margin: EdgeInsets.all(10.0),
                           child: StreamBuilder<List<MainLine>>(

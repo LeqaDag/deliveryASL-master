@@ -69,4 +69,8 @@ class CityService {
   Future<void> deletecityData(String uid) async {
     return await cityCollection.doc(uid).update({'isArchived': true});
   }
+
+  Future<String> get cityName {
+    return cityCollection.doc(uid).get().then((value) => value.data()['name']);
+  }
 }

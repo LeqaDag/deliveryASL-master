@@ -66,7 +66,6 @@ class BusinessService {
         .map(_businessListFromSnapshot);
   }
 
-
   Future<String> get businessName {
     return businessCollection
         .doc(uid)

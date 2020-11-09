@@ -3,6 +3,7 @@ import 'package:sajeda_app/classes/driver.dart';
 import 'package:sajeda_app/components/driverComponent/updateComponet/update.dart';
 import 'package:sajeda_app/components/widgetsComponent/CustomWidgets.dart';
 import 'package:sajeda_app/services/driverServices.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Item extends StatelessWidget {
   final Driver driver;
@@ -39,10 +40,20 @@ class Item extends StatelessWidget {
               ),
             ),
             Container(
-              width: 100.0,
+              width: 150.0,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
+                  IconButton(
+                    onPressed: () {
+                      launch('tel:' +
+                          Uri.encodeComponent('${driver.phoneNumber}'));
+                    },
+                    icon: Icon(
+                      Icons.phone,
+                      color: Colors.orange,
+                    ),
+                  ),
                   IconButton(
                     onPressed: () {
                       Navigator.push(

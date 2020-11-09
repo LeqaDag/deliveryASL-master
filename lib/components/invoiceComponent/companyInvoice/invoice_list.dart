@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sajeda_app/classes/busines.dart';
-import 'package:sajeda_app/components/invoiceComponent/all_invoice.dart';
+import 'package:sajeda_app/components/invoiceComponent/companyInvoice/all_invoice.dart';
 
-import '../../constants.dart';
+import '../../../constants.dart';
 
 class InvoiceList extends StatefulWidget {
   final String name;

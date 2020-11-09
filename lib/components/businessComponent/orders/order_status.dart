@@ -36,13 +36,6 @@ class OrderStatus extends StatelessWidget {
               )),
           centerTitle: true,
           backgroundColor: kAppBarColor,
-          actions: <Widget>[
-            IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.search),
-              color: Colors.white,
-            ),
-          ],
         ),
         drawer: BusinessDrawer(name: name, uid: uid),
         body: ListView(

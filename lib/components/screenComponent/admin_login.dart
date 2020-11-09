@@ -117,9 +117,10 @@ class _LoginAdminState extends State<LoginAdmin> {
                   validator: (input) {
                     if (input.isEmpty) {
                       return "الرجاء ادخال كلمة المرور";
-                    } else if (input.length < 7) {
-                      return 'كلمة المرور غير مطابقة';
                     }
+                    // } else if (input.length < 7) {
+                    //   return 'كلمة المرور غير مطابقة';
+                    // }
                     return null;
                   },
                   controller: passwordController,

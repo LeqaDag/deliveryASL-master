@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sajeda_app/classes/invoice.dart';
 
 class InvoiceService {
-  final String uid, businessId;
-  InvoiceService({this.uid, this.businessId});
+  final String uid, businessId, driverId;
+  InvoiceService({this.uid, this.businessId, this.driverId});
 
   final CollectionReference invoiceCollection =
       FirebaseFirestore.instance.collection('invoice');
@@ -15,6 +15,9 @@ class InvoiceService {
       'note': invoice.note,
       'paidPrice': invoice.paidPrice,
       'totalPrice': invoice.totalPrice,
+      'driverID': invoice.driverID,
+      'totalPriceDriver': invoice.totalPriceDriver,
+      'paidPriceDriver': invoice.paidPriceDriver,
     });
   }
 
@@ -25,6 +28,9 @@ class InvoiceService {
       'note': invoice.note,
       'paidPrice': invoice.paidPrice,
       'totalPrice': invoice.totalPrice,
+      'driverID': invoice.driverID,
+      'totalPriceDriver': invoice.totalPriceDriver,
+      'paidPriceDriver': invoice.paidPriceDriver,
     });
   }
 
@@ -36,6 +42,9 @@ class InvoiceService {
       note: snapshot.data()['note'],
       paidPrice: snapshot.data()['paidPrice'],
       totalPrice: snapshot.data()['totalPrice'],
+      driverID: snapshot.data()['driverID'],
+      totalPriceDriver: snapshot.data()['totalPriceDriver'],
+      paidPriceDriver: snapshot.data()['paidPriceDriver'],
     );
   }
 
@@ -48,6 +57,9 @@ class InvoiceService {
         note: doc.data()['note'] ?? '',
         paidPrice: doc.data()['paidPrice'] ?? '',
         totalPrice: doc.data()['totalPrice'] ?? '',
+        driverID: doc.data()['driverID'] ?? '',
+        totalPriceDriver: doc.data()['totalPriceDriver'] ?? '',
+        paidPriceDriver: doc.data()['paidPriceDriver'] ?? '',
       );
     }).toList();
   }
@@ -79,6 +91,13 @@ class InvoiceService {
         .where("businessID", isEqualTo: businessId)
         .get()
         .then((value) => value.docs[0]["totalPrice"]);
+  }
+
+  Future<int> totalPriceDriver(String driverId) {
+    return invoiceCollection
+        .where("driverID", isEqualTo: driverId)
+        .get()
+        .then((value) => value.docs[0]["totalPriceDriver"]);
   }
 
   Future<int> paidPrice(String businessId) {

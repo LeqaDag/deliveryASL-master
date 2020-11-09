@@ -1,23 +1,27 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sajeda_app/classes/busines.dart';
+import 'package:sajeda_app/classes/driver.dart';
 import 'package:sajeda_app/classes/invoice.dart';
 import 'package:sajeda_app/services/businessServices.dart';
+import 'package:sajeda_app/services/driverServices.dart';
 import 'package:sajeda_app/services/invoiceServices.dart';
 import 'package:sajeda_app/services/orderServices.dart';
 
-import '../../constants.dart';
+import '../../../constants.dart';
+import 'add_invoice_driver.dart';
 
-class AllInvoice extends StatelessWidget {
+class AllInvoiceDrivers extends StatelessWidget {
   final Color color;
   final Function onTapBox;
-  final String businessId, name;
+  final String driverId, name;
 
-  AllInvoice({
+  AllInvoiceDrivers({
     @required this.color,
     @required this.onTapBox,
-    @required this.businessId,
+    @required this.driverId,
     this.name,
   });
 
@@ -25,22 +29,12 @@ class AllInvoice extends StatelessWidget {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    int totalPrice;
 
-    return StreamBuilder<Business>(
-        stream: BusinessService(uid: businessId).businessByID,
+    return StreamBuilder<Driver>(
+        stream: DriverService(uid: driverId).driverByID,
         builder: (context, snapshot) {
-          print(businessId);
-          // FirebaseFirestore.instance
-          //     .collection('invoice')
-          //     .where('businessID', isEqualTo: businessId)
-          //     .where('isArchived', isEqualTo: false)
-          //     .get()
-          //     .then((value) => {totalPrice = value.docs[0]["totalPrice"]});
-
-          // print(totalPrice);
           if (snapshot.hasData) {
-            Business business = snapshot.data;
+            Driver driver = snapshot.data;
             return Card(
               elevation: 5,
               margin: EdgeInsets.fromLTRB(1.0, 5.0, 1.0, 16.0),
@@ -69,11 +63,11 @@ class AllInvoice extends StatelessWidget {
                                 child: Icon(
                                   Icons.account_circle,
                                   color: KEditIconColor,
-                                  size: 35,
+                                  size: 30,
                                 ),
                               ),
                               Text(
-                                business.name,
+                                driver.name,
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -114,17 +108,53 @@ class AllInvoice extends StatelessWidget {
                                     right: height * 0.025,
                                     top: height * 0,
                                     bottom: height * 0),
-                                child: Image.asset('assets/price.png'),
+                                child: Image.asset(
+                                  'assets/price.png',
+                                  scale: 1.5,
+                                ),
                               ),
+                              FutureBuilder<int>(
+                                  future: InvoiceService(driverId: driverId)
+                                      .totalPriceDriver(driverId),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.data == null) {
+                                      return Text(
+                                        "0",
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: "Amiri",
+                                        ),
+                                      );
+                                    } else {
+                                      return Text(
+                                        snapshot.data.toString() ?? "",
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: "Amiri",
+                                        ),
+                                      );
+                                    }
+                                  }),
                               SizedBox(
-                                width: 33,
+                                width: 40,
                               ),
-                              Text(
-                                totalPrice.toString() ?? "",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: "Amiri",
+                              IconButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => AddInvoiceDriver(
+                                              driverId: driverId,
+                                              name: name,
+                                              driverName: driver.name,
+                                            )),
+                                  );
+                                },
+                                icon: Icon(
+                                  Icons.add,
+                                  color: Colors.grey,
                                 ),
                               ),
                             ],
@@ -169,8 +199,8 @@ class AllInvoice extends StatelessWidget {
                           color: KBadgeColorAndContainerBorderColorReadyOrders,
                         ),
                         FutureBuilder<int>(
-                            future: OrderService(businesID: businessId)
-                                .countBusinessOrderByStateOrder("isDone"),
+                            future: OrderService(driverID: driverId)
+                                .countDriverOrderByStateOrder("isDone"),
                             builder: (context, snapshot) {
                               print(snapshot.data);
                               return Text(
@@ -185,8 +215,8 @@ class AllInvoice extends StatelessWidget {
                           color: KBadgeColorAndContainerBorderColorReturnOrders,
                         ),
                         FutureBuilder<int>(
-                            future: OrderService(businesID: businessId)
-                                .countBusinessOrderByStateOrder("isReturn"),
+                            future: OrderService(driverID: driverId)
+                                .countDriverOrderByStateOrder("isReturn"),
                             builder: (context, snapshot) {
                               print(snapshot.data);
                               return Text(
@@ -202,8 +232,57 @@ class AllInvoice extends StatelessWidget {
                               KBadgeColorAndContainerBorderColorCancelledOrders,
                         ),
                         FutureBuilder<int>(
-                            future: OrderService(businesID: businessId)
-                                .countBusinessOrderByStateOrder("isCancelld"),
+                            future: OrderService(driverID: driverId)
+                                .countDriverOrderByStateOrder("isCancelld"),
+                            builder: (context, snapshot) {
+                              print(snapshot.data);
+                              return Text(
+                                ":${snapshot.data.toString()} " ?? "0",
+                              );
+                            }),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Icon(
+                          Icons.business_center_outlined,
+                          color: KAllOrdersListTileColor,
+                        ),
+                        FutureBuilder<int>(
+                            future: OrderService(driverID: driverId)
+                                .countDriverOrderByStateOrder("isDelivery"),
+                            builder: (context, snapshot) {
+                              print(snapshot.data);
+                              return Text(
+                                ":${snapshot.data.toString()} " ?? "0",
+                              );
+                            }),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Icon(
+                          Icons.arrow_circle_up_rounded,
+                          color: KBadgeColorAndContainerBorderColorLoadingOrder,
+                        ),
+                        FutureBuilder<int>(
+                            future: OrderService(driverID: driverId)
+                                .countDriverOrderByStateOrder("isLoading"),
+                            builder: (context, snapshot) {
+                              print(snapshot.data);
+                              return Text(
+                                ":${snapshot.data.toString()} " ?? "0",
+                              );
+                            }),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Icon(
+                          Icons.assignment_turned_in_outlined,
+                          color:
+                              KBadgeColorAndContainerBorderColorRecipientOrder,
+                        ),
+                        FutureBuilder<int>(
+                            future: OrderService(driverID: driverId)
+                                .countDriverOrderByStateOrder("isReceived"),
                             builder: (context, snapshot) {
                               print(snapshot.data);
                               return Text(

@@ -17,7 +17,7 @@ class _DriverOrderListState extends State<DriverOrderList> {
   @override
   Widget build(BuildContext context) {
     final pendingOrders = Provider.of<List<Order>>(context).where((order) {
-          return order.isReceived == true;
+          return order.isDelivery == true;
         }).toList() ??
         [];
     final doneOrders = Provider.of<List<Order>>(context).where((order) {
@@ -102,8 +102,8 @@ class _CustomDriverOrdersState extends State<CustomDriverOrders> {
           height: 100,
           child: Card(
             color: color,
-            elevation: 5,
-            margin: EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 16.0),
+            elevation: 4,
+            margin: EdgeInsets.fromLTRB(0.0, 1.0, 0.0, 11.0),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(0.0),
             ),
@@ -122,10 +122,10 @@ class _CustomDriverOrdersState extends State<CustomDriverOrders> {
                             children: <Widget>[
                               Padding(
                                 padding: EdgeInsets.only(
-                                    left: height * 0.025,
-                                    right: height * 0.025,
-                                    top: height * 0,
-                                    bottom: height * 0),
+                                  left: height * 0.025,
+                                  right: height * 0.025,
+                                  top: height * 0,
+                                ),
                                 child: Icon(
                                   Icons.person,
                                   color: Colors.blueGrey,
@@ -152,10 +152,10 @@ class _CustomDriverOrdersState extends State<CustomDriverOrders> {
                             children: <Widget>[
                               Padding(
                                 padding: EdgeInsets.only(
-                                    left: height * 0.025,
-                                    right: height * 0.025,
-                                    top: height * 0,
-                                    bottom: height * 0),
+                                  left: height * 0.025,
+                                  right: height * 0.025,
+                                  top: height * 0,
+                                ),
                                 child: Icon(
                                   Icons.date_range,
                                   color: Colors.blueGrey,
@@ -183,10 +183,10 @@ class _CustomDriverOrdersState extends State<CustomDriverOrders> {
                             children: <Widget>[
                               Padding(
                                 padding: EdgeInsets.only(
-                                    left: height * 0.025,
-                                    right: height * 0.025,
-                                    top: height * 0,
-                                    bottom: height * 0),
+                                  left: height * 0.025,
+                                  right: height * 0.025,
+                                  top: height * 0,
+                                ),
                                 child: Icon(
                                   Icons.location_on,
                                   color: Colors.blueGrey,
@@ -213,10 +213,10 @@ class _CustomDriverOrdersState extends State<CustomDriverOrders> {
                             children: <Widget>[
                               Padding(
                                 padding: EdgeInsets.only(
-                                    left: height * 0.025,
-                                    right: height * 0.025,
-                                    top: height * 0,
-                                    bottom: height * 0),
+                                  left: height * 0.025,
+                                  right: height * 0.025,
+                                  top: height * 0,
+                                ),
                                 child: Image.asset('assets/price.png'),
                               ),
                               Text(
@@ -232,7 +232,7 @@ class _CustomDriverOrdersState extends State<CustomDriverOrders> {
                         ]),
                   ),
                   SizedBox(
-                    width: 50,
+                    width: 20,
                   ),
                 ]),
           )),

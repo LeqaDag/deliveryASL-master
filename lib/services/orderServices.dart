@@ -31,6 +31,7 @@ class OrderService {
       'businesID': order.businesID,
       'driverID': order.driverID,
       'isArchived': order.isArchived,
+      'driverPrice': order.driverPrice
     });
   }
 
@@ -46,54 +47,55 @@ class OrderService {
       'date': order.date,
       'note': order.note,
       'customerID': order.customerID,
+      'driverPrice': order.driverPrice
     });
   }
 
   Order _orderDataFromSnapshot(DocumentSnapshot snapshot) {
     return Order(
-      uid: snapshot.id,
-      price: snapshot.data()['price'],
-      totalPrice: snapshot.data()['totalPrice'].cast<int>(),
-      type: snapshot.data()['type'],
-      description: snapshot.data()['description'],
-      date: snapshot.data()['date'].toDate(),
-      note: snapshot.data()['note'],
-      isLoading: snapshot.data()['isLoading'],
-      isReceived: snapshot.data()['isReceived'],
-      isDelivery: snapshot.data()['isDelivery'],
-      isUrgent: snapshot.data()['isUrgent'],
-      isCancelld: snapshot.data()['isCancelld'],
-      isReturn: snapshot.data()['isReturn'],
-      isDone: snapshot.data()['isDone'],
-      customerID: snapshot.data()['customerID'],
-      businesID: snapshot.data()['businesID'],
-      driverID: snapshot.data()['driverID'],
-      isArchived: snapshot.data()['isArchived'],
-    );
+        uid: snapshot.id,
+        price: snapshot.data()['price'],
+        totalPrice: snapshot.data()['totalPrice'].cast<int>(),
+        type: snapshot.data()['type'],
+        description: snapshot.data()['description'],
+        date: snapshot.data()['date'].toDate(),
+        note: snapshot.data()['note'],
+        isLoading: snapshot.data()['isLoading'],
+        isReceived: snapshot.data()['isReceived'],
+        isDelivery: snapshot.data()['isDelivery'],
+        isUrgent: snapshot.data()['isUrgent'],
+        isCancelld: snapshot.data()['isCancelld'],
+        isReturn: snapshot.data()['isReturn'],
+        isDone: snapshot.data()['isDone'],
+        customerID: snapshot.data()['customerID'],
+        businesID: snapshot.data()['businesID'],
+        driverID: snapshot.data()['driverID'],
+        isArchived: snapshot.data()['isArchived'],
+        driverPrice: snapshot.data()['driverPrice']);
   }
 
   List<Order> _orderListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) {
       return Order(
-        uid: doc.reference.id,
-        price: doc.data()['price'] ?? '',
-        totalPrice: doc.data()['totalPrice'].cast<int>() ?? '',
-        type: doc.data()['type'] ?? '',
-        description: doc.data()['description'] ?? '',
-        date: doc.data()['date'].toDate() ?? '',
-        note: doc.data()['note'] ?? '',
-        isLoading: doc.data()['isLoading'] ?? '',
-        isReceived: doc.data()['isReceived'] ?? '',
-        isDelivery: doc.data()['isDelivery'] ?? '',
-        isUrgent: doc.data()['isUrgent'] ?? '',
-        isCancelld: doc.data()['isCancelld'] ?? '',
-        isReturn: doc.data()['isReturn'] ?? '',
-        isDone: doc.data()['isDone'] ?? '',
-        customerID: doc.data()['customerID'] ?? '',
-        businesID: doc.data()['businesID'] ?? '',
-        driverID: doc.data()['driverID'] ?? '',
-        isArchived: doc.data()['isArchived'] ?? '',
-      );
+          uid: doc.reference.id,
+          price: doc.data()['price'] ?? '',
+          totalPrice: doc.data()['totalPrice'].cast<int>() ?? '',
+          type: doc.data()['type'] ?? '',
+          description: doc.data()['description'] ?? '',
+          date: doc.data()['date'].toDate() ?? '',
+          note: doc.data()['note'] ?? '',
+          isLoading: doc.data()['isLoading'] ?? '',
+          isReceived: doc.data()['isReceived'] ?? '',
+          isDelivery: doc.data()['isDelivery'] ?? '',
+          isUrgent: doc.data()['isUrgent'] ?? '',
+          isCancelld: doc.data()['isCancelld'] ?? '',
+          isReturn: doc.data()['isReturn'] ?? '',
+          isDone: doc.data()['isDone'] ?? '',
+          customerID: doc.data()['customerID'] ?? '',
+          businesID: doc.data()['businesID'] ?? '',
+          driverID: doc.data()['driverID'] ?? '',
+          isArchived: doc.data()['isArchived'] ?? '',
+          driverPrice: doc.data()['driverPrice'] ?? '');
     }).toList();
   }
 
@@ -457,5 +459,113 @@ class OrderService {
         .doc(uid)
         .get()
         .then((value) => value.data()['description']);
+  }
+
+  // Future<int> totalBusinessPrice(String businessID) {
+  //   int totalPrice = 0;
+  //   return orderCollection
+  //       .where('businesID', isEqualTo: businessID)
+  //       .where('isArchived', isEqualTo: false)
+  //       .get()
+  //       .then((value) => value.forEach((key, val) {
+  //           totalPrice+= val.data()['price'];
+  //         }));
+  // }
+
+  Future<int> countDriverOrderByStateOrder(String orderState) {
+    switch (orderState) {
+      case 'isLoading':
+        {
+          return orderCollection
+              .where('isLoading', isEqualTo: true)
+              .where('driverID', isEqualTo: driverID)
+              .where('isArchived', isEqualTo: false)
+              .get()
+              .then((value) => value.size);
+        }
+        break;
+      case 'isReceived':
+        {
+          return orderCollection
+              .where('isReceived', isEqualTo: true)
+              .where('driverID', isEqualTo: driverID)
+              .where('isArchived', isEqualTo: false)
+              .get()
+              .then((value) => value.size);
+        }
+        break;
+      case 'isUrgent':
+        {
+          return orderCollection
+              .where('isUrgent', isEqualTo: true)
+              .where('driverID', isEqualTo: driverID)
+              .where('isArchived', isEqualTo: false)
+              .get()
+              .then((value) => value.size);
+        }
+        break;
+      case 'isCancelld':
+        {
+          return orderCollection
+              .where('isCancelld', isEqualTo: true)
+              .where('driverID', isEqualTo: driverID)
+              .where('isArchived', isEqualTo: false)
+              .get()
+              .then((value) => value.size);
+        }
+        break;
+      case 'isDelivery':
+        {
+          return orderCollection
+              .where('isDelivery', isEqualTo: true)
+              .where('driverID', isEqualTo: driverID)
+              .where('isArchived', isEqualTo: false)
+              .get()
+              .then((value) => value.size);
+        }
+        break;
+      case 'isDone':
+        {
+          return orderCollection
+              .where('isDone', isEqualTo: true)
+              .where('driverID', isEqualTo: driverID)
+              .where('isArchived', isEqualTo: false)
+              .get()
+              .then((value) => value.size);
+        }
+        break;
+      case 'isReturn':
+        {
+          return orderCollection
+              .where('isReturn', isEqualTo: true)
+              .where('driverID', isEqualTo: driverID)
+              .where('isArchived', isEqualTo: false)
+              .get()
+              .then((value) => value.size);
+        }
+        break;
+      default:
+        {
+          return null;
+        }
+        break;
+    }
+  }
+
+  Stream<List<Order>> driverAllOrders(String driverId) {
+    return orderCollection
+        .where('driverID', isEqualTo: driverId)
+        .where('isArchived', isEqualTo: false)
+        .snapshots()
+        .map(_orderListFromSnapshot);
+  }
+
+  //get driver Orders
+  Future<int> countDriverOrders(String driverId) {
+    return orderCollection
+        .where('driverID', isEqualTo: driverId)
+        .where('isArchived', isEqualTo: false)
+        .get()
+        .then((value) => value.size);
   }
 }
