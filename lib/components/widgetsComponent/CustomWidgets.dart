@@ -87,7 +87,7 @@ class CustomCardAndListTileAddLine extends StatelessWidget {
           spacing: -15,
           children: <Widget>[
             IconButton(
-              icon: Icon(Icons.edit, color: KEditIconColor),
+              icon: Icon(Icons.edit, color: Colors.green),
               onPressed: () {
                 Navigator.push(
                   context,
@@ -99,41 +99,26 @@ class CustomCardAndListTileAddLine extends StatelessWidget {
               },
             ),
             IconButton(
-                icon: Icon(Icons.delete, color: KTrashIconColor),
+                icon: Icon(Icons.delete, color: Colors.red),
                 onPressed: () {
                   return showDialog<void>(
-                    context: context,
-                    barrierDismissible: false, // user must tap button!
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Text('حذف سائق'),
-                        content: SingleChildScrollView(
-                          child: ListBody(
-                            children: <Widget>[
-                              Text('هل ترغب بحذف السائق'),
-                              Text(mainLine.name),
-                            ],
-                          ),
-                        ),
-                        actions: <Widget>[
-                          FlatButton(
-                            child: Text('تأكيد'),
+                      context: context,
+                      barrierDismissible: false, // user must tap button!
+                      builder: (BuildContext context) => CustomDialog(
+                            title: "حذف خط سير",
+                            description: ' هل ترغب بحذف خط السير',
+                            name: mainLine.name,
+                            buttonText: "تأكيد",
                             onPressed: () {
                               MainLineServices()
                                   .deleteMainLineData(mainLine.uid);
                               Navigator.of(context).pop();
                             },
-                          ),
-                          FlatButton(
-                            child: Text('تراجع'),
-                            onPressed: () {
+                            cancelButton: "الغاء",
+                            cancelPressed: () {
                               Navigator.of(context).pop();
                             },
-                          ),
-                        ],
-                      );
-                    },
-                  );
+                          ));
                 }),
           ],
         ),
@@ -179,7 +164,7 @@ class CustomContainer extends StatelessWidget {
       onTap: onTap,
       child: Container(
           height: height * 0.15,
-          width: width * 0.28,
+          width: width * 0.29,
 
           //child: Image.asset("assets/OrdersBox.png"),
           decoration: BoxDecoration(
@@ -187,12 +172,10 @@ class CustomContainer extends StatelessWidget {
             border: Border.all(
                 style: BorderStyle.solid, width: 1, color: Colors.grey),
             borderRadius: BorderRadius.circular(20),
-            image: DecorationImage(
-              image: imagepath,
-            ),
+            image: DecorationImage(image: imagepath, scale: 1.5),
           ),
           child: Padding(
-            padding: const EdgeInsets.only(top: 80),
+            padding: const EdgeInsets.only(top: 90),
             child: Text(
               text,
               textAlign: TextAlign.center,
@@ -424,12 +407,32 @@ class CustomCardAndListTile extends StatelessWidget {
                           );
                         }
                       }),
+                  // IconButton(
+                  //     icon: Icon(Icons.edit, color: KEditIconColor),
+                  //     onPressed: null),
                   IconButton(
-                      icon: Icon(Icons.edit, color: KEditIconColor),
-                      onPressed: null),
-                  IconButton(
-                      icon: Icon(Icons.delete, color: KTrashIconColor),
-                      onPressed: null),
+                      icon: Icon(Icons.delete, color: Colors.red),
+                      onPressed: () {
+                        return showDialog<void>(
+                            context: context,
+                            barrierDismissible: false, // user must tap button!
+                            builder: (BuildContext context) => CustomDialog(
+                                  title: "حذف شركة ",
+                                  description:
+                                      ' هل ترغب بحذف الشركة وجميع طرودها؟',
+                                  name: business.name,
+                                  buttonText: "تأكيد",
+                                  onPressed: () {
+                                    BusinessService()
+                                        .deleteBusinessData(business.uid);
+                                    Navigator.of(context).pop();
+                                  },
+                                  cancelButton: "الغاء",
+                                  cancelPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ));
+                      }),
                 ],
               ),
             ),

@@ -19,6 +19,4 @@ class DeliveriesStatusServices {
       'date': deliveryStatus.date,
     });
   }
-
-  
 }

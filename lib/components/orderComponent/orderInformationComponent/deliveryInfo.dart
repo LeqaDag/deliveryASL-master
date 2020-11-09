@@ -68,29 +68,74 @@ class DeliveryInfo extends StatelessWidget {
                                     children: <Widget>[
                                       _customTitle(
                                           "معلومات الاتصال بـ ${business.name}"),
-
-                                      _labelTextField(Icons.phone, Colors.green,
-                                          business.phoneNumber.toString()),
+                                      GestureDetector(
+                                          onTap: () {
+                                            print(customer.phoneNumber
+                                                .toString());
+                                            launch("tel:" +
+                                                Uri.encodeComponent(
+                                                    "${business.phoneNumber.toString()}"));
+                                          },
+                                          child: Container(
+                                            width: double.infinity,
+                                            height: 35,
+                                            child: TextField(
+                                              enabled: false,
+                                              decoration: InputDecoration(
+                                                contentPadding: EdgeInsets.only(
+                                                    top: 7,
+                                                    bottom: 7,
+                                                    right: 8),
+                                                prefixIcon: Icon(
+                                                  Icons.phone,
+                                                  color: Colors.green,
+                                                  size: 20,
+                                                ),
+                                                hintText: business.phoneNumber
+                                                    .toString(), //String Data form DB.
+                                              ),
+                                            ),
+                                          )),
                                       _labelTextField(Icons.email,
                                           Colors.red[600], business.email),
-
                                       _customTitle("معلومات الزبون"),
-
                                       _labelTextField(Icons.person,
                                           Colors.purple, customer.name),
-                                      _labelTextFieldPhone(
-                                          Icons.phone,
-                                          Colors.green,
-                                          customer.phoneNumber.toString()),
+                                      GestureDetector(
+                                          onTap: () {
+                                            print(customer.phoneNumber
+                                                .toString());
+                                            launch("tel:" +
+                                                Uri.encodeComponent(
+                                                    "0${customer.phoneNumber.toString()}"));
+                                          },
+                                          child: Container(
+                                            width: double.infinity,
+                                            height: 35,
+                                            child: TextField(
+                                              enabled: false,
+                                              decoration: InputDecoration(
+                                                contentPadding: EdgeInsets.only(
+                                                    top: 7,
+                                                    bottom: 7,
+                                                    right: 8),
+                                                prefixIcon: Icon(
+                                                  Icons.phone,
+                                                  color: Colors.green,
+                                                  size: 20,
+                                                ),
+                                                hintText:
+                                                    "0${customer.phoneNumber.toString()}", //String Data form DB.
+                                              ),
+                                            ),
+                                          )),
                                       _labelTextFieldCity(Icons.location_on,
                                           Colors.blue, customer.cityID),
-
                                       _customTitle("معلومات الطلبية"),
-
                                       _labelTextField(Icons.short_text,
                                           Colors.green[700], order.description),
-                                      _labelTextFieldPrice(order.price
-                                          .toString()),
+                                      _labelTextFieldPrice(
+                                          order.price.toString()),
                                       _labelTextField(
                                           Icons.date_range,
                                           Colors.deepPurpleAccent[200],
@@ -98,7 +143,6 @@ class DeliveryInfo extends StatelessWidget {
                                               .format(order.date)),
                                       _labelTextField(Icons.scatter_plot,
                                           Colors.grey, orderType),
-
                                       StreamBuilder<Driver>(
                                         stream:
                                             DriverService(uid: order.driverID)
@@ -158,7 +202,27 @@ class DeliveryInfo extends StatelessWidget {
     return [
       _customTitle("معلومات السائق"),
       _labelTextField(Icons.person, Colors.amber[600], driver.name),
-      _labelTextField(Icons.phone, Colors.green, driver.phoneNumber),
+      GestureDetector(
+          onTap: () {
+            launch("tel:" +
+                Uri.encodeComponent("${driver.phoneNumber.toString()}"));
+          },
+          child: Container(
+            width: double.infinity,
+            height: 35,
+            child: TextField(
+              enabled: false,
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.only(top: 7, bottom: 7, right: 8),
+                prefixIcon: Icon(
+                  Icons.phone,
+                  color: Colors.green,
+                  size: 20,
+                ),
+                hintText: driver.phoneNumber.toString(), //String Data form DB.
+              ),
+            ),
+          )),
       _labelTextFieldCity(Icons.person_pin, Colors.blue, driver.cityID),
       _labelTextFieldMainLine(
           Icons.location_on, Colors.grey, driver.mainLineID),

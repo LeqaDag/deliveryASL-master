@@ -3,13 +3,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:sajeda_app/classes/busines.dart';
 import 'package:sajeda_app/classes/city.dart';
 import 'package:sajeda_app/classes/customer.dart';
 import 'package:sajeda_app/classes/order.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
+import 'package:sajeda_app/services/businessServices.dart';
 import 'package:sajeda_app/services/cityServices.dart';
 import 'package:sajeda_app/services/customerServices.dart';
 import 'package:sajeda_app/services/orderServices.dart';
+import 'package:toast/toast.dart';
 
 class AddNewOders extends StatefulWidget {
   final String name;
@@ -22,9 +25,10 @@ class AddNewOders extends StatefulWidget {
 class _AddNewOdersState extends State<AddNewOders> {
   final _formKey = GlobalKey<FormState>();
   String customerCityID = 'One';
-  String datehh = "";
+  String datehh = "" ,typeOrder = ' نوع التوصيل';
   List<City> cities;
-  String cityID;
+  List<Business> business;
+  String cityID, businessID;
   //Order Filed
   TextEditingController orderDescription = new TextEditingController();
   TextEditingController orderPrice = new TextEditingController();
@@ -85,11 +89,15 @@ class _AddNewOdersState extends State<AddNewOders> {
                     "معلومات الطلبية",
                     Icon(Icons.info, color: Colors.white, size: 30),
                   ),
+                  Row(
+                    children: <Widget>[
+                      _businessChoice(),
+                    ],
+                  ),
                   _orderDescription(orderDescription),
                   Row(
                     children: <Widget>[
                       _deliveryType(),
-                      _orderDate(),
                     ],
                   ),
                   Row(
@@ -361,7 +369,7 @@ class _AddNewOdersState extends State<AddNewOders> {
         child: DropdownButtonFormField(
           onChanged: (String newValue) {
             setState(() {
-              customerCityID = newValue;
+              typeOrder = newValue;
             });
           },
           items: <String>['عادي', 'مستعجل']
@@ -461,30 +469,128 @@ class _AddNewOdersState extends State<AddNewOders> {
             side: BorderSide(color: Color(0xff73A16A)),
           ),
           onPressed: () async {
-            Customer customer = new Customer(
-                name: customerName.text,
-                phoneNumber: int.parse(customerPhoneNumber.text),
-                phoneNumberAdditional:
-                    int.parse(customerPhoneNumberAdditional.text),
-                cityID: customerCityID,
-                address: customerAddress.text,
-                isArchived: false);
-            String customerID =
-                await CustomerService().addcustomerData(customer);
+            if (_formKey.currentState.validate()) {
+                            // print(int.parse(orderPrice.text) +
+                            //     int.parse(deliveryPrice));
+                            if (typeOrder == 'مستعجل') orderType = true;
+                            Customer customer = new Customer(
+                                name: customerName.text,
+                                phoneNumber:
+                                    int.parse(customerPhoneNumber.text),
+                                phoneNumberAdditional: int.parse(
+                                    customerPhoneNumberAdditional.text),
+                                cityID: cityID,
+                                address: customerAddress.text,
+                                businesID:businessID,
+                                isArchived: false);
+                            String customerID = await CustomerService()
+                                .addcustomerData(customer);
 
-            await OrderService().addOrderData(new Order(
-              price: int.parse(orderPrice.text),
-              totalPrice: orderTotalPrice,
-              type: orderType,
-              description: orderDescription.text,
-              date: orderDate,
-              note: orderNote.text,
-              customerID: customerID,
-            ));
+                            await OrderService().addOrderData(new Order(
+                                price: int.parse(orderPrice.text),
+                                totalPrice: orderTotalPrice,
+                                type: orderType,
+                                description: orderDescription.text,
+                                date: orderDate,
+                                note: orderNote.text,
+                                customerID: customerID,
+                                businesID: businessID,
+                                driverID: ""));
+                            Toast.show("تم اضافة الطلبية بنجاح", context,
+                                duration: Toast.LENGTH_LONG,
+                                gravity: Toast.BOTTOM);
+                            await Future.delayed(Duration(milliseconds: 1000));
+                            Navigator.of(context).pop();
+                          }
+            // Customer customer = new Customer(
+            //     name: customerName.text,
+            //     phoneNumber: int.parse(customerPhoneNumber.text),
+            //     phoneNumberAdditional:
+            //         int.parse(customerPhoneNumberAdditional.text),
+            //     cityID: customerCityID,
+            //     address: customerAddress.text,
+            //     isArchived: false);
+            // String customerID =
+            //     await CustomerService().addcustomerData(customer);
+
+            // await OrderService().addOrderData(new Order(
+            //     price: int.parse(orderPrice.text),
+            //     totalPrice: orderTotalPrice,
+            //     type: orderType,
+            //     description: orderDescription.text,
+            //     date: orderDate,
+            //     note: orderNote.text,
+            //     customerID: customerID,
+            //     businesID: businessID));
           },
           child: Text('اضافة',
               style: TextStyle(
                   fontFamily: 'Amiri', fontSize: 18.0, color: Colors.white))),
+    );
+  }
+
+  Widget _businessChoice() {
+    return Expanded(
+      flex: 2,
+      child: Container(
+        margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
+        child: StreamBuilder<List<Business>>(
+            stream: BusinessService().business,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Text('يتم التحميل ...');
+              } else {
+                business = snapshot.data;
+                return DropdownButtonFormField<String>(
+                  value: businessID,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide(
+                        width: 1.0,
+                        color: Color(0xff636363),
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide(
+                        width: 2.0,
+                        color: Color(0xff73a16a),
+                      ),
+                    ),
+                    contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
+                    labelText: "الشركة",
+                    labelStyle: TextStyle(
+                      fontFamily: 'Amiri',
+                      fontSize: 18.0,
+                      color: Color(0xff316686),
+                    ),
+                  ),
+                  items: business.map(
+                    (bus) {
+                      return DropdownMenuItem<String>(
+                        value: bus.uid.toString(),
+                        child: Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              bus.name,
+                              style: TextStyle(
+                                fontFamily: 'Amiri',
+                                fontSize: 16.0,
+                              ),
+                            )),
+                      );
+                    },
+                  ).toList(),
+                  onChanged: (val) {
+                    setState(() {
+                      businessID = val;
+                    });
+                  },
+                );
+              }
+            }),
+      ),
     );
   }
 }

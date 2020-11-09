@@ -61,8 +61,34 @@ class ReturnInfo extends StatelessWidget {
                                       _customTitle(
                                           "معلومات الاتصال بـ ${business.name}"),
 
-                                      _labelTextField(Icons.phone, Colors.green,
-                                          business.phoneNumber.toString()),
+                                      GestureDetector(
+                                          onTap: () {
+                                            print(customer.phoneNumber
+                                                .toString());
+                                            launch("tel:" +
+                                                Uri.encodeComponent(
+                                                    "${business.phoneNumber.toString()}"));
+                                          },
+                                          child: Container(
+                                            width: double.infinity,
+                                            height: 35,
+                                            child: TextField(
+                                              enabled: false,
+                                              decoration: InputDecoration(
+                                                contentPadding: EdgeInsets.only(
+                                                    top: 7,
+                                                    bottom: 7,
+                                                    right: 8),
+                                                prefixIcon: Icon(
+                                                  Icons.phone,
+                                                  color: Colors.green,
+                                                  size: 20,
+                                                ),
+                                                hintText: business.phoneNumber
+                                                    .toString(), //String Data form DB.
+                                              ),
+                                            ),
+                                          )),
                                       _labelTextField(Icons.email,
                                           Colors.red[600], business.email),
 
@@ -70,10 +96,32 @@ class ReturnInfo extends StatelessWidget {
 
                                       _labelTextField(Icons.person,
                                           Colors.purple, customer.name),
-                                      _labelTextFieldPhone(
-                                          Icons.phone,
-                                          Colors.green,
-                                          customer.phoneNumber.toString()),
+                                      GestureDetector(
+                                          onTap: () {
+                                            launch("tel:" +
+                                                Uri.encodeComponent(
+                                                    "0${customer.phoneNumber.toString()}"));
+                                          },
+                                          child: Container(
+                                            width: double.infinity,
+                                            height: 35,
+                                            child: TextField(
+                                              enabled: false,
+                                              decoration: InputDecoration(
+                                                contentPadding: EdgeInsets.only(
+                                                    top: 7,
+                                                    bottom: 7,
+                                                    right: 8),
+                                                prefixIcon: Icon(
+                                                  Icons.phone,
+                                                  color: Colors.green,
+                                                  size: 20,
+                                                ),
+                                                hintText:
+                                                    "0${customer.phoneNumber.toString()}", //String Data form DB.
+                                              ),
+                                            ),
+                                          )),
                                       _labelTextField(Icons.location_on,
                                           Colors.blue, customer.cityID),
 

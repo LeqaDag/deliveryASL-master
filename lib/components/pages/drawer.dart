@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sajeda_app/components/adminComponent/admin_secretary_home.dart';
 import 'package:sajeda_app/components/invoiceComponent/invoice_admin.dart';
 import 'package:sajeda_app/components/lineComponent/all_lines.dart';
 import 'package:sajeda_app/components/screenComponent/admin_home.dart';
@@ -213,6 +214,33 @@ class AdminDrawer extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                           builder: (context) => InvoiceAdmin(name: name)),
+                    );
+                  },
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0),
+              child: Card(
+                color: Color(0xff464646),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: ListTile(
+                  title: Text(
+                    'العاملين',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18.0,
+                        fontFamily: 'Amiri'),
+                  ),
+                  leading: Image.asset('assets/adminwhite.png'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AdminSecretaryHome(name: name)),
                     );
                   },
                 ),

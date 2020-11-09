@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sajeda_app/classes/subLine.dart';
 import 'package:sajeda_app/components/lineComponent/subLineComponent/updateSubLine.dart';
+import 'package:sajeda_app/components/widgetsComponent/CustomWidgets.dart';
 import 'package:sajeda_app/services/subLineServices.dart';
 
 class SubLineList extends StatefulWidget {
@@ -82,39 +83,25 @@ class _SubLineListState extends State<SubLineList> {
                           IconButton(
                             onPressed: () {
                               return showDialog<void>(
-                                context: context,
-                                barrierDismissible:
-                                    false, // user must tap button!
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Text('حذف سائق'),
-                                    content: SingleChildScrollView(
-                                      child: ListBody(
-                                        children: <Widget>[
-                                          Text('هل ترغب بحذف السائق'),
-                                          Text(subLineItem.name),
-                                        ],
-                                      ),
-                                    ),
-                                    actions: <Widget>[
-                                      FlatButton(
-                                        child: Text('تأكيد'),
+                                  context: context,
+                                  barrierDismissible:
+                                      false, // user must tap button!
+                                  builder: (BuildContext context) =>
+                                      CustomDialog(
+                                        title: "حذف خط فرعي",
+                                        description: ' هل ترغب بحذف خط فرعي',
+                                        name: subLineItem.name,
+                                        buttonText: "تأكيد",
                                         onPressed: () {
                                           SubLineServices().deletesubLineData(
                                               subLineItem.uid);
                                           Navigator.of(context).pop();
                                         },
-                                      ),
-                                      FlatButton(
-                                        child: Text('تراجع'),
-                                        onPressed: () {
+                                        cancelButton: "الغاء",
+                                        cancelPressed: () {
                                           Navigator.of(context).pop();
                                         },
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
+                                      ));
                             },
                             icon: Icon(
                               Icons.delete,
