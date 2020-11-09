@@ -20,31 +20,31 @@ class Order {
   String businesID;
   String driverID;
   String customerID;
-
+  int driverPrice;
   bool isArchived;
   DateTime deleteDate;
   String deleteUser;
 
-  Order({
-    this.uid,
-    @required this.price,
-    @required this.totalPrice,
-    @required this.type,
-    @required this.description,
-    @required this.date,
-    @required this.note,
-    this.isLoading = true,
-    this.isReceived = false,
-    this.isDelivery = false,
-    this.isUrgent = false,
-    this.isCancelld = false,
-    this.isReturn = false,
-    this.isDone = false,
-    this.businesID,
-    this.driverID = '',
-    @required this.customerID,
-    this.isArchived = false,
-    this.deleteDate,
-    this.deleteUser,
-  });
+  Order(
+      {this.uid,
+      @required this.price,
+      @required this.totalPrice,
+      @required this.type,
+      @required this.description,
+      @required this.date,
+      @required this.note,
+      this.isLoading = true,
+      this.isReceived = false,
+      this.isDelivery = false,
+      this.isUrgent = false,
+      this.isCancelld = false,
+      this.isReturn = false,
+      this.isDone = false,
+      this.businesID,
+      this.driverID = '',
+      @required this.customerID,
+      this.isArchived = false,
+      this.deleteDate,
+      this.deleteUser,
+      this.driverPrice = 0});
 }

@@ -2,18 +2,26 @@ import 'package:flutter/material.dart';
 
 import '../../../constants.dart';
 
-class CustomCompanyOrdersItemsStatus extends StatelessWidget {
+class CustomCompanyOrdersItemsStatus extends StatefulWidget {
   final int y;
   final Function click;
 
   CustomCompanyOrdersItemsStatus(this.y, this.click);
+
+  @override
+  _CustomCompanyOrdersItemsStatusState createState() =>
+      _CustomCompanyOrdersItemsStatusState();
+}
+
+class _CustomCompanyOrdersItemsStatusState
+    extends State<CustomCompanyOrdersItemsStatus> {
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     String x = "1028";
     Color color;
 
-    switch (y) {
+    switch (widget.y) {
       case 0:
         {
           color = KReadyOrdersListTileColor;
@@ -72,7 +80,7 @@ class CustomCompanyOrdersItemsStatus extends StatelessWidget {
     }
 
     return InkWell(
-      onTap: click,
+      onTap: widget.click,
       child: Container(
         width: double.infinity,
         height: 133,

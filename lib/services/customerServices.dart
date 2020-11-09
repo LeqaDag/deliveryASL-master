@@ -3,9 +3,14 @@ import 'package:sajeda_app/classes/customer.dart';
 
 class CustomerService {
   final String uid;
-  CustomerService({this.uid});
+  String cityId;
+
+  CustomerService({this.uid, this.cityId});
   final CollectionReference customerCollection =
       FirebaseFirestore.instance.collection('customers');
+
+  final CollectionReference cityCollection =
+      FirebaseFirestore.instance.collection('citys');
 
   Future<String> addcustomerData(Customer customer) async {
     DocumentReference docReference = customerCollection.doc();
@@ -100,7 +105,12 @@ class CustomerService {
     return customerCollection
         .doc(uid)
         .get()
-        .then((value) => value.data()['cityID']);
+        .then((value) => cityId = value.data()['cityID']);
+    // print(cityId);
+    // return cityCollection
+    //     .doc(cityId)
+    //     .get()
+    //     .then((value) => value.data()['name']);
   }
 
   Stream<Customer> get customerByID {

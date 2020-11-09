@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sajeda_app/classes/busines.dart';
+import 'package:sajeda_app/classes/city.dart';
 import 'package:sajeda_app/classes/customer.dart';
 import 'package:sajeda_app/classes/deliveryStatus.dart';
 import 'package:sajeda_app/classes/order.dart';
 import 'package:sajeda_app/components/pages/driver_drawer.dart';
 import 'package:sajeda_app/components/pages/loadingData.dart';
 import 'package:sajeda_app/services/businessServices.dart';
+import 'package:sajeda_app/services/cityServices.dart';
 import 'package:sajeda_app/services/customerServices.dart';
 import 'package:sajeda_app/services/deliveryStatusServices.dart';
 import 'package:sajeda_app/services/orderServices.dart';
@@ -27,6 +30,7 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
   String type, status;
   bool isCancelld, isReturn, isDone;
   final _formKey = GlobalKey<FormState>();
+  String cityId;
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +53,7 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                             BusinessService(uid: order.businesID).businessByID,
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
+                            Business business = snapshot.data;
                             return Scaffold(
                                 appBar: AppBar(
                                   title: Text(" طرد ${customer.name}",
@@ -155,9 +160,9 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                             snapshot) {
                                                           return InkWell(
                                                             child: Text(
-                                                              " 0${snapshot.data.toString()} ",
+                                                              " ${snapshot.data.toString()} ",
                                                               style: TextStyle(
-                                                                fontSize: 16,
+                                                                fontSize: 14,
                                                                 color: Colors
                                                                     .green,
                                                                 fontWeight:
@@ -419,41 +424,100 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: <Widget>[
+                                          // Container(
+                                          //   width: width - 50,
+                                          //   height: 80,
+                                          //   child: StreamBuilder<City>(
+                                          //       stream: CityService(uid: cityId)
+                                          //           .cityByID,
+                                          //       builder: (context, snapshot) {
+                                          //         City city = snapshot.data;
+                                          //         return TextField(
+                                          //           enabled: false,
+                                          //           decoration: InputDecoration(
+                                          //             contentPadding:
+                                          //                 EdgeInsets.only(
+                                          //                     top: 7,
+                                          //                     bottom: 7,
+                                          //                     right: 8),
+                                          //             prefixIcon: Icon(
+                                          //               Icons.location_on,
+                                          //               color: Colors.blueGrey,
+                                          //             ),
+                                          //             hintText: city
+                                          //                 .name, //String Data form DB.
+                                          //           ),
+                                          //         );
+                                          //       }),
+                                          // ),
+                                          FutureBuilder<String>(
+                                              future: CustomerService(
+                                                      uid: order.customerID)
+                                                  .customerCity,
+                                              builder: (context, snapshot) {
+                                                if (snapshot.hasData) {
+                                                  cityId = snapshot.data;
+                                                  print(cityId);
+
+                                                  return Text(
+                                                    "",
+                                                  );
+                                                } else {
+                                                  return Text(
+                                                    "",
+                                                  );
+                                                }
+                                              }),
                                           Container(
-                                              width: width - 50,
-                                              height: 80,
-                                              child: Card(
-                                                margin: EdgeInsets.fromLTRB(
-                                                    0.0, 10.0, 0.0, 16.0),
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10.0),
-                                                ),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  children: <Widget>[
-                                                    Padding(
-                                                      padding: EdgeInsets.only(
-                                                          left: height * 0.025,
-                                                          right: height * 0.025,
-                                                          top: height * 0,
-                                                          bottom: height * 0),
-                                                      child: Icon(
-                                                        Icons.location_on,
-                                                        color: Colors.blueGrey,
+                                            width: width - 50,
+                                            height: 80,
+                                            child: StreamBuilder<City>(
+                                                stream: CityService(uid: cityId)
+                                                    .cityByID,
+                                                builder: (context, snapshot) {
+                                                  City city = snapshot.data;
+                                                  // print(cityId);
+                                                  if (snapshot.data == null) {
+                                                    return Card(
+                                                      margin:
+                                                          EdgeInsets.fromLTRB(
+                                                              0.0,
+                                                              10.0,
+                                                              0.0,
+                                                              16.0),
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10.0),
                                                       ),
-                                                    ),
-                                                    FutureBuilder<String>(
-                                                        future: CustomerService(
-                                                                uid: order
-                                                                    .customerID)
-                                                            .customerAdress,
-                                                        builder: (context,
-                                                            snapshot) {
-                                                          return Text(
-                                                            snapshot.data ?? "",
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        children: <Widget>[
+                                                          Padding(
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                                    left: height *
+                                                                        0.025,
+                                                                    right:
+                                                                        height *
+                                                                            0.025,
+                                                                    top:
+                                                                        height *
+                                                                            0,
+                                                                    bottom:
+                                                                        height *
+                                                                            0),
+                                                            child: Icon(
+                                                              Icons.location_on,
+                                                              color: Colors
+                                                                  .blueGrey,
+                                                            ),
+                                                          ),
+                                                          Text(
+                                                            "يتم التحميل ... ",
                                                             style: TextStyle(
                                                               fontSize: 16,
                                                               fontWeight:
@@ -462,11 +526,88 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                               fontFamily:
                                                                   "Amiri",
                                                             ),
-                                                          );
-                                                        }),
-                                                  ],
-                                                ),
-                                              )),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  } else {
+                                                    return Card(
+                                                      margin:
+                                                          EdgeInsets.fromLTRB(
+                                                              0.0,
+                                                              10.0,
+                                                              0.0,
+                                                              16.0),
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10.0),
+                                                      ),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        children: <Widget>[
+                                                          Padding(
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                                    left: height *
+                                                                        0.025,
+                                                                    right:
+                                                                        height *
+                                                                            0.025,
+                                                                    top:
+                                                                        height *
+                                                                            0,
+                                                                    bottom:
+                                                                        height *
+                                                                            0),
+                                                            child: Icon(
+                                                              Icons.location_on,
+                                                              color: Colors
+                                                                  .blueGrey,
+                                                            ),
+                                                          ),
+                                                          Text(
+                                                            city.name ?? "",
+                                                            style: TextStyle(
+                                                              fontSize: 16,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontFamily:
+                                                                  "Amiri",
+                                                            ),
+                                                          ),
+                                                          FutureBuilder<String>(
+                                                              future: CustomerService(
+                                                                      uid: order
+                                                                          .customerID)
+                                                                  .customerAdress,
+                                                              builder: (context,
+                                                                  snapshot) {
+                                                                return Text(
+                                                                  " - ${snapshot.data}" ??
+                                                                      "",
+                                                                  style:
+                                                                      TextStyle(
+                                                                    fontSize:
+                                                                        16,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    fontFamily:
+                                                                        "Amiri",
+                                                                  ),
+                                                                );
+                                                              }),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  }
+                                                }),
+                                          )
                                         ],
                                       ),
                                       Row(
@@ -827,5 +968,11 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
             return LoadingData();
           }
         });
+  }
+}
+
+class CustomerInformation {
+  Widget build(BuildContext context) {
+    return TabBarView(children: []);
   }
 }

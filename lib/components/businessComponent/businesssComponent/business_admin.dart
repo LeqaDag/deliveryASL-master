@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sajeda_app/classes/busines.dart';
 import 'package:sajeda_app/components/businessComponent/addComponent/add_company.dart';
 import 'package:sajeda_app/components/businessComponent/businesssComponent/business_list.dart';
+import 'package:sajeda_app/components/businessComponent/searchComponent/companiesAdminSearch.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
 import 'package:provider/provider.dart';
 import 'package:sajeda_app/services/businessServices.dart';
@@ -27,7 +28,13 @@ class BusinessAdmin extends StatelessWidget {
           backgroundColor: kAppBarColor,
           actions: <Widget>[
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CloudFirestoreSearch()),
+                );
+              },
               icon: Icon(Icons.search),
               color: Colors.white,
             ),

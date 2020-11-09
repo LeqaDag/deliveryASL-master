@@ -22,7 +22,7 @@ class _AddDeliveryCostState extends State<AddDeliveryCost> {
   final _formKey = GlobalKey<FormState>();
   static List<String> deliveryCostList = [null];
   static List<String> cityList = [null];
- static List<String> priceList = [null];
+  static List<String> priceList = [null];
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +68,7 @@ class _AddDeliveryCostState extends State<AddDeliveryCost> {
 
                               await DeliveriesCostsServices()
                                   .addDeliveryCostData(new DeliveriesCosts(
-                                      deliveryPrice: price,
+                                      deliveryPrice: priceList[index],
                                       adminID: user.uid,
                                       city: cityList[index],
                                       businesID: widget.busID));
@@ -179,6 +179,8 @@ class _FriendTextFieldsState extends State<FriendTextFields> {
   TextEditingController _priceController;
   String city;
   City cc;
+  List<City> cities;
+  String cityID;
 
   @override
   void initState() {
@@ -236,12 +238,78 @@ class _FriendTextFieldsState extends State<FriendTextFields> {
             });
           },
         ),
+        // Expanded(
+        //   child: Container(
+        //     margin: EdgeInsets.all(10.0),
+        //     child: StreamBuilder<List<City>>(
+        //       stream: CityService().citys,
+        //       builder: (context, snapshot) {
+        //         if (!snapshot.hasData) {
+        //           return Text('Loading...');
+        //         } else {
+        //           cities = snapshot.data;
+        //           print(cities);
+        //           // city = city.name;
+        //           return DropdownButtonFormField<String>(
+        //             value: cityID,
+        //             decoration: InputDecoration(
+        //                 enabledBorder: OutlineInputBorder(
+        //                   borderRadius: BorderRadius.circular(10.0),
+        //                   borderSide: BorderSide(
+        //                     width: 1.0,
+        //                     color: Color(0xff636363),
+        //                   ),
+        //                 ),
+        //                 focusedBorder: OutlineInputBorder(
+        //                   borderRadius: BorderRadius.circular(10.0),
+        //                   borderSide: BorderSide(
+        //                     width: 2.0,
+        //                     color: Color(0xff73a16a),
+        //                   ),
+        //                 ),
+        //                 contentPadding:
+        //                     EdgeInsets.only(right: 20.0, left: 10.0),
+        //                 labelText: "المدينة",
+        //                 labelStyle: TextStyle(
+        //                     fontFamily: 'Amiri',
+        //                     fontSize: 18.0,
+        //                     color: Color(0xff316686))),
+        //             items: cities.map(
+        //               (city) {
+        //                 return DropdownMenuItem<String>(
+        //                   value: city.uid.toString(),
+        //                   child: Align(
+        //                     alignment: Alignment.centerRight,
+        //                     child: Text(
+        //                       city.name,
+        //                       style: TextStyle(
+        //                         fontFamily: 'Amiri',
+        //                         fontSize: 16.0,
+        //                       ),
+        //                     ),
+        //                   ),
+        //                 );
+        //               },
+        //             ).toList(),
+        //             onChanged: (val) {
+        //               setState(() {
+        //                 cityID = val;
+        //                 _AddDeliveryCostState.cityList[widget.index] = cityID;
+        //                 print(cityID);
+        //               });
+        //             },
+        //           );
+        //         }
+        //       },
+        //     ),
+        //   ),
+        // ),
         Expanded(
           child: Container(
             margin: EdgeInsets.all(10.0),
             child: TextFormField(
               onChanged: (v) =>
-                  _AddDeliveryCostState.deliveryCostList[widget.index] = v,
+                  _AddDeliveryCostState.priceList[widget.index] = v,
               keyboardType: TextInputType.number,
               controller: _priceController,
               validator: (value) {

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:sajeda_app/classes/city.dart';
 import 'package:sajeda_app/components/businessComponent/businesssComponent/business_admin.dart';
 import 'package:sajeda_app/services/cityServices.dart';
+import 'package:toast/toast.dart';
 
 import '../../../constants.dart';
 
@@ -26,6 +27,8 @@ class _AddCompanyState extends State<AddCompany> {
 
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
+  final CollectionReference userCollection =
+      FirebaseFirestore.instance.collection('users');
   final CollectionReference companyCollection =
       FirebaseFirestore.instance.collection('businesss');
 
@@ -314,21 +317,34 @@ class _AddCompanyState extends State<AddCompany> {
           .createUserWithEmailAndPassword(
               email: emailController.text, password: passwordController.text)
           .then((result) {
-        companyCollection.doc(result.user.uid).set({
+        userCollection.doc().set({
           "userID": result.user.uid,
           "email": emailController.text,
           "phoneNumber": phoneController.text,
           "name": companyNameController.text,
-          "password": passwordController.text,
-          "isArchived": false,
+          "userType": "1"
         }).then((value) {
-          isLoading = false;
-          Navigator.pop(context);
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(
-          //       builder: (context) => AddDeliveryCost()),
-          // );
+          companyCollection.doc(result.user.uid).set({
+            "userID": result.user.uid,
+            "email": emailController.text,
+            "phoneNumber": phoneController.text,
+            "name": companyNameController.text,
+            "password": passwordController.text,
+            "cityID": cityID,
+            "isArchived": false,
+          }).then((value) async {
+            isLoading = false;
+
+            Toast.show("تم اضافة شركة بنجاح", context,
+                duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+            await Future.delayed(Duration(milliseconds: 1000));
+            Navigator.of(context).pop();
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(
+            //       builder: (context) => AddDeliveryCost()),
+            // );
+          });
         });
       }).catchError((err) {});
     }
