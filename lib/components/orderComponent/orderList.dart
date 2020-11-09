@@ -21,7 +21,6 @@ class _OrderListState extends State<OrderList> {
     if (orders != []) {
       final ids = orders.map((e) => e.businesID).toSet();
       orders.retainWhere((x) => ids.remove(x.businesID));
-      print("KKKK");
       return ListView.builder(
         itemCount: orders.length,
         itemBuilder: (context, index) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:sajeda_app/components/adminComponent/admin_secretary_home.dart';
 import 'package:sajeda_app/components/businessComponent/businesssComponent/business_admin.dart';
 import 'package:sajeda_app/components/driverComponent/driversComponent/driveradmin.dart';
 import 'package:sajeda_app/components/invoiceComponent/invoice_admin.dart';
@@ -129,25 +130,35 @@ class AdminHome extends StatelessWidget {
                           ),
                           CustomBoxSize(height: 0.05),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.only(right: 25),
-                                child: CustomContainer(
-                                    width: 0.28,
-                                    height: 0.15,
-                                    imagepath:
-                                        AssetImage("assets/Accounting.png"),
-                                    text: "الحسابات المالية",
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                InvoiceAdmin(name: name)),
-                                      );
-                                    }),
-                              ),
+                              CustomContainer(
+                                  width: 0.28,
+                                  height: 0.15,
+                                  imagepath:
+                                      AssetImage("assets/Accounting.png"),
+                                  text: "الحسابات المالية",
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              InvoiceAdmin(name: name)),
+                                    );
+                                  }),
+                              CustomContainer(
+                                  width: 0.28,
+                                  height: 0.15,
+                                  imagepath: AssetImage("assets/admin.png"),
+                                  text: " العاملين",
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              AdminSecretaryHome(name: name)),
+                                    );
+                                  }),
                             ],
                           ),
                         ],

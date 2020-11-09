@@ -31,6 +31,7 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
   bool isCancelld, isReturn, isDone;
   final _formKey = GlobalKey<FormState>();
   String cityId;
+  DateTime deliveryDate = new DateTime.now();
 
   @override
   Widget build(BuildContext context) {
