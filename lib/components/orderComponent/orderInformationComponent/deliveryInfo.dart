@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:sajeda_app/classes/busines.dart';
+import 'package:sajeda_app/classes/city.dart';
 import 'package:sajeda_app/classes/customer.dart';
+import 'package:sajeda_app/classes/driver.dart';
+import 'package:sajeda_app/classes/mainLine.dart';
 import 'package:sajeda_app/classes/order.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
 import 'package:sajeda_app/components/pages/loadingData.dart';
 import 'package:sajeda_app/services/businessServices.dart';
+import 'package:sajeda_app/services/cityServices.dart';
 import 'package:sajeda_app/services/customerServices.dart';
+import 'package:sajeda_app/services/driverServices.dart';
+import 'package:sajeda_app/services/mainLineServices.dart';
 import 'package:sajeda_app/services/orderServices.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:url_launcher/url_launcher.dart';
@@ -76,7 +82,7 @@ class DeliveryInfo extends StatelessWidget {
                                           Icons.phone,
                                           Colors.green,
                                           customer.phoneNumber.toString()),
-                                      _labelTextField(Icons.location_on,
+                                      _labelTextFieldCity(Icons.location_on,
                                           Colors.blue, customer.cityID),
 
                                       _customTitle("معلومات الطلبية"),
@@ -84,7 +90,7 @@ class DeliveryInfo extends StatelessWidget {
                                       _labelTextField(Icons.short_text,
                                           Colors.green[700], order.description),
                                       _labelTextFieldPrice(order.price
-                                          .toString()), // تغير الايكونات بعد اضافتها على الاجهزة بشكل رسمي
+                                          .toString()),
                                       _labelTextField(
                                           Icons.date_range,
                                           Colors.deepPurpleAccent[200],
@@ -93,9 +99,26 @@ class DeliveryInfo extends StatelessWidget {
                                       _labelTextField(Icons.scatter_plot,
                                           Colors.grey, orderType),
 
-                                      _customTitle("معلومات السائق"),
-
-                                      // مش فاهمها منيح لانو اعتقد بوجوب وجود خيار بعد سؤال هل تود تصنيف الطرد نعم او لا ووجوب خيار تعديل اسم السائق بعد اختيارهز لهذا تركتة فارغا لنقاشه
+                                      StreamBuilder<Driver>(
+                                        stream:
+                                            DriverService(uid: order.driverID)
+                                                .driverByID,
+                                        builder: (context, snapshot) {
+                                          if (snapshot.hasData) {
+                                            return Column(
+                                              children:
+                                                  _driverInfo(snapshot.data),
+                                            );
+                                          } else {
+                                            return Container();
+                                          }
+                                        },
+                                      ),
+                                      _customTitle("معلومات التوصيل"),
+                                      _labelTextField(
+                                          Icons.blur_on,
+                                          Colors.black,
+                                          "لا يوجد معلومات حالياً"),
                                     ],
                                   ),
                                 ));
@@ -129,6 +152,17 @@ class DeliveryInfo extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  List<Widget> _driverInfo(Driver driver) {
+    return [
+      _customTitle("معلومات السائق"),
+      _labelTextField(Icons.person, Colors.amber[600], driver.name),
+      _labelTextField(Icons.phone, Colors.green, driver.phoneNumber),
+      _labelTextFieldCity(Icons.person_pin, Colors.blue, driver.cityID),
+      _labelTextFieldMainLine(
+          Icons.location_on, Colors.grey, driver.mainLineID),
+    ];
   }
 
   Widget _labelTextFieldPhone(IconData icon, Color color, String text) {
@@ -191,6 +225,54 @@ class DeliveryInfo extends StatelessWidget {
           hintText: text, //String Data form DB.
         ),
       ),
+    );
+  }
+
+  Widget _labelTextFieldCity(IconData icon, Color color, String text) {
+    return Container(
+      width: double.infinity,
+      height: 35,
+      child: StreamBuilder<City>(
+          stream: CityService(uid: text).cityByID,
+          builder: (context, snapshot) {
+            City city = snapshot.data;
+            return TextField(
+              enabled: false,
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.only(top: 7, bottom: 7, right: 8),
+                prefixIcon: Icon(
+                  icon,
+                  color: color,
+                  size: 20,
+                ),
+                hintText: city.name, //String Data form DB.
+              ),
+            );
+          }),
+    );
+  }
+
+  Widget _labelTextFieldMainLine(IconData icon, Color color, String text) {
+    return Container(
+      width: double.infinity,
+      height: 35,
+      child: StreamBuilder<MainLine>(
+          stream: MainLineServices(uid: text).mainLineByID,
+          builder: (context, snapshot) {
+            MainLine mainLine = snapshot.data;
+            return TextField(
+              enabled: false,
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.only(top: 7, bottom: 7, right: 8),
+                prefixIcon: Icon(
+                  icon,
+                  color: color,
+                  size: 20,
+                ),
+                hintText: mainLine.name, //String Data form DB.
+              ),
+            );
+          }),
     );
   }
 }

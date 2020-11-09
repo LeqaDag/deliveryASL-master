@@ -180,7 +180,6 @@ class AdminDrawer extends StatelessWidget {
                         fontFamily: 'Amiri'),
                   ),
                   leading: Image.asset('assets/track-order.png'),
-                  selected: true,
                   onTap: () {
                     Navigator.pop(context);
                     Navigator.push(
@@ -209,6 +208,7 @@ class AdminDrawer extends StatelessWidget {
                   ),
                   leading: Image.asset('assets/invoice.png'),
                   onTap: () {
+                    Navigator.pop(context);
                     Navigator.push(
                       context,
                       MaterialPageRoute(

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:sajeda_app/classes/busines.dart';
+import 'package:sajeda_app/classes/city.dart';
 import 'package:sajeda_app/classes/customer.dart';
 import 'package:sajeda_app/classes/order.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
 import 'package:sajeda_app/components/pages/loadingData.dart';
 import 'package:sajeda_app/components/screenComponent/admin_orders.dart';
 import 'package:sajeda_app/services/businessServices.dart';
+import 'package:sajeda_app/services/cityServices.dart';
 import 'package:sajeda_app/services/customerServices.dart';
 import 'package:sajeda_app/services/orderServices.dart';
 import 'package:intl/intl.dart' as intl;
@@ -77,7 +79,7 @@ class LoadingInfo extends StatelessWidget {
                                           Icons.phone,
                                           Colors.green,
                                           customer.phoneNumber.toString()),
-                                      _labelTextField(Icons.location_on,
+                                      _labelTextFieldCity(Icons.location_on,
                                           Colors.blue, customer.cityID),
 
                                       _customTitle("معلومات الطلبية"),
@@ -232,6 +234,30 @@ class LoadingInfo extends StatelessWidget {
           hintText: text, //String Data form DB.
         ),
       ),
+    );
+  }
+
+  Widget _labelTextFieldCity(IconData icon, Color color, String text) {
+    return Container(
+      width: double.infinity,
+      height: 35,
+      child: StreamBuilder<City>(
+          stream: CityService(uid: text).cityByID,
+          builder: (context, snapshot) {
+            City city = snapshot.data;
+            return TextField(
+              enabled: false,
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.only(top: 7, bottom: 7, right: 8),
+                prefixIcon: Icon(
+                  icon,
+                  color: color,
+                  size: 20,
+                ),
+                hintText: city.name, //String Data form DB.
+              ),
+            );
+          }),
     );
   }
 }

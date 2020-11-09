@@ -6,8 +6,14 @@ class OrderService {
   final String businesID;
   final String orderState;
   final String driverID;
+  final int driverPrice;
 
-  OrderService({this.uid, this.businesID, this.orderState, this.driverID});
+  OrderService(
+      {this.uid,
+      this.businesID,
+      this.orderState,
+      this.driverID,
+      this.driverPrice});
   final CollectionReference orderCollection =
       FirebaseFirestore.instance.collection('orders');
 
@@ -431,10 +437,35 @@ class OrderService {
     return await orderCollection.doc(uid).update({'isArchived': true});
   }
 
+  //Update Order State
+  //To is Received
   Future<void> get updateOrderToisReceived {
     return orderCollection
         .doc(uid)
         .update({'isReceived': true, 'isLoading': false});
+  }
+
+  //To is Delivery
+  Future<void> get updateOrderToisDelivery {
+    return orderCollection.doc(uid).update(
+        {'isDelivery': true, 'isReceived': false, 'driverID': driverID});
+  }
+
+  //To is Urgent
+  Future<void> get updateOrderToisUrgent {
+    return orderCollection.doc(uid).update({
+      'isDelivery': true,
+      'isReceived': false,
+      'isUrgent': true,
+      'driverID': driverID
+    });
+  }
+
+  Future<int> get driverPriceData {
+    return orderCollection
+        .doc(uid)
+        .get()
+        .then((value) => value.data()['driverPrice']);
   }
 
   //get Business Orders
