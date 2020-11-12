@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sajeda_app/classes/busines.dart';
 import 'package:sajeda_app/classes/order.dart';
+import 'package:sajeda_app/components/businessComponent/addComponent/addDeliveryCost.dart';
 import 'package:sajeda_app/components/businessComponent/addComponent/add_delivery_cost.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
 import 'package:sajeda_app/components/widgetsComponent/CustomWidgets.dart';
@@ -152,7 +153,7 @@ class AllBuisness extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => AddDeliveryCost(
+                              builder: (context) => AddDeliveryCost2(
                                   businessID: businessID,
                                   businessName: business.name,
                                   name: name,

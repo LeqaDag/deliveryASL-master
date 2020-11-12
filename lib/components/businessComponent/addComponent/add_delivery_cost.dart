@@ -1,9 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:sajeda_app/classes/city.dart';
 import 'package:sajeda_app/classes/deliveriesCost.dart';
-import 'package:sajeda_app/components/cityComponent/cityList.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
 import 'package:sajeda_app/services/DeliveriesCostsServices.dart';
 import 'package:sajeda_app/services/cityServices.dart';
@@ -20,22 +18,15 @@ class AddDeliveryCost extends StatefulWidget {
 
 class _AddDeliveryCostState extends State<AddDeliveryCost> {
   final _formKey = GlobalKey<FormState>();
-  TextEditingController _priceController;
-  static List<String> deliveryCostList = [null];
+
   static List<String> cityList = [null];
   static List<String> priceList = [null];
   @override
   void initState() {
     super.initState();
     priceList = [null];
-
-    _priceController = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    priceList = [null];
-    super.dispose();
+    cityList = [null];
+    // _priceController = new TextEditingController();
   }
 
   @override
@@ -82,7 +73,7 @@ class _AddDeliveryCostState extends State<AddDeliveryCost> {
                                   .addDeliveryCostData(new DeliveriesCosts(
                                       deliveryPrice: price,
                                       adminID: user.uid,
-                                      city: "cityList[index]",
+                                      city: cityList[index],
                                       businesID: widget.busID));
                             });
                             Navigator.pop(context);
@@ -156,8 +147,11 @@ class _AddDeliveryCostState extends State<AddDeliveryCost> {
         if (add) {
           // add new text-fields at the top of all friends textfields
           priceList.insert(index, null);
-        } else
+          cityList.insert(index, null);
+        } else {
           priceList.removeAt(index);
+          cityList.removeAt(index);
+        }
         setState(() {});
       },
       child: Container(
@@ -186,8 +180,6 @@ class FriendTextFields extends StatefulWidget {
 
 class _FriendTextFieldsState extends State<FriendTextFields> {
   TextEditingController _priceController;
-  String city;
-  City cc;
   List<City> cities;
   String cityID;
 
@@ -195,134 +187,78 @@ class _FriendTextFieldsState extends State<FriendTextFields> {
   void initState() {
     super.initState();
     _priceController = TextEditingController();
-    city = 'المدينة';
-  }
-
-  @override
-  void dispose() {
-    _priceController.dispose();
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _priceController.text =
-          _AddDeliveryCostState.priceList[widget.index] ?? '';
-    });
     return Row(
       children: <Widget>[
-        RaisedButton(
-          shape: RoundedRectangleBorder(
-              side: BorderSide(
-                width: 1.0,
-                color: Color(0xff636363),
-              ),
-              borderRadius: BorderRadius.circular(10)),
-          color: Colors.white,
-          elevation: 0,
+        Expanded(
           child: Container(
             margin: EdgeInsets.all(10.0),
-            height: 27,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(
-                  city,
-                  style: TextStyle(
-                      color: Color(0xff316686),
-                      fontFamily: 'Amiri',
-                      fontSize: 18.0),
-                ),
-                Icon(
-                  Icons.arrow_drop_down,
-                  color: Color(0xff636363),
-                  size: 25.0,
-                ),
-              ],
+            child: StreamBuilder<List<City>>(
+              stream: CityService().citys,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return Text('Loading...');
+                } else {
+                  cities = snapshot.data;
+                  return DropdownButtonFormField<String>(
+                    value: cityID,
+                    decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          borderSide: BorderSide(
+                            width: 1.0,
+                            color: Color(0xff636363),
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          borderSide: BorderSide(
+                            width: 2.0,
+                            color: Color(0xff73a16a),
+                          ),
+                        ),
+                        contentPadding:
+                            EdgeInsets.only(right: 20.0, left: 10.0),
+                        labelText: "المدينة",
+                        labelStyle: TextStyle(
+                            fontFamily: 'Amiri',
+                            fontSize: 18.0,
+                            color: Color(0xff316686))),
+                    items: cities.map(
+                      (city) {
+                        return DropdownMenuItem<String>(
+                          value: city.uid.toString(),
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              city.name,
+                              style: TextStyle(
+                                fontFamily: 'Amiri',
+                                fontSize: 16.0,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ).toList(),
+                    onChanged: (val) {
+                      setState(() {
+                        cityID = val;
+                      });
+                      _AddDeliveryCostState.cityList[widget.index] = cityID;
+                      print(_AddDeliveryCostState.cityList[widget.index]);
+                    },
+                    onSaved: (v) =>
+                        _AddDeliveryCostState.cityList[widget.index] = v,
+                  );
+                }
+              },
             ),
           ),
-          onPressed: () async {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) => _buildAboutDialog(context),
-            ).then((value) {
-              setState(() {
-                cc = value;
-                city = cc.name;
-                _AddDeliveryCostState.cityList[widget.index] = city;
-                print(city);
-              });
-            });
-          },
         ),
-        // Expanded(
-        //   child: Container(
-        //     margin: EdgeInsets.all(10.0),
-        //     child: StreamBuilder<List<City>>(
-        //       stream: CityService().citys,
-        //       builder: (context, snapshot) {
-        //         if (!snapshot.hasData) {
-        //           return Text('Loading...');
-        //         } else {
-        //           cities = snapshot.data;
-        //           print(cities);
-        //           // city = city.name;
-        //           return DropdownButtonFormField<String>(
-        //             value: cityID,
-        //             decoration: InputDecoration(
-        //                 enabledBorder: OutlineInputBorder(
-        //                   borderRadius: BorderRadius.circular(10.0),
-        //                   borderSide: BorderSide(
-        //                     width: 1.0,
-        //                     color: Color(0xff636363),
-        //                   ),
-        //                 ),
-        //                 focusedBorder: OutlineInputBorder(
-        //                   borderRadius: BorderRadius.circular(10.0),
-        //                   borderSide: BorderSide(
-        //                     width: 2.0,
-        //                     color: Color(0xff73a16a),
-        //                   ),
-        //                 ),
-        //                 contentPadding:
-        //                     EdgeInsets.only(right: 20.0, left: 10.0),
-        //                 labelText: "المدينة",
-        //                 labelStyle: TextStyle(
-        //                     fontFamily: 'Amiri',
-        //                     fontSize: 18.0,
-        //                     color: Color(0xff316686))),
-        //             items: cities.map(
-        //               (city) {
-        //                 return DropdownMenuItem<String>(
-        //                   value: city.uid.toString(),
-        //                   child: Align(
-        //                     alignment: Alignment.centerRight,
-        //                     child: Text(
-        //                       city.name,
-        //                       style: TextStyle(
-        //                         fontFamily: 'Amiri',
-        //                         fontSize: 16.0,
-        //                       ),
-        //                     ),
-        //                   ),
-        //                 );
-        //               },
-        //             ).toList(),
-        //             onChanged: (val) {
-        //               setState(() {
-        //                 cityID = val;
-        //                 _AddDeliveryCostState.cityList[widget.index] = cityID;
-        //                 print(cityID);
-        //               });
-        //             },
-        //           );
-        //         }
-        //       },
-        //     ),
-        //   ),
-        // ),
         Expanded(
           child: Container(
             margin: EdgeInsets.all(10.0),
@@ -366,14 +302,4 @@ class _FriendTextFieldsState extends State<FriendTextFields> {
       ],
     );
   }
-}
-
-Widget _buildAboutDialog(BuildContext context) {
-  return new AlertDialog(
-      content: Container(
-    width: double.maxFinite,
-    height: double.maxFinite,
-    child: StreamProvider<List<City>>.value(
-        value: CityService().citys, child: CityList()),
-  ));
 }
