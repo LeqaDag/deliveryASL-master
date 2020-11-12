@@ -6,14 +6,25 @@ class AuthService {
   var _prefs = SharedPreferences.getInstance();
   String _storageKeyMobileToken = "token";
 
+  User _userFromFirebaseUser(User user) {
+    return user != null ?  user : null;
+  }
+
+  Stream<User> get user {
+    return _firebaseAuth
+        .authStateChanges()
+        //.map((FirebaseUser user) => _userFromFirebaseUser(user));
+        .map(_userFromFirebaseUser);
+  }
+
   // signIn
   Future signIn(String email, String password) async {
     try {
-      UserCredential result = await _firebaseAuth.signInWithEmailAndPassword(
-          email: email, password: password);
-      User user = result.user;
-      return user;
-      //return (await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password)).user.uid;
+      return (await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      ))
+          .user;
     } catch (e) {
       print(e.message);
     }

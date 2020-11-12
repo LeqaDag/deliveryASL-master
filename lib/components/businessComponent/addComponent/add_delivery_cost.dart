@@ -20,9 +20,23 @@ class AddDeliveryCost extends StatefulWidget {
 
 class _AddDeliveryCostState extends State<AddDeliveryCost> {
   final _formKey = GlobalKey<FormState>();
+  TextEditingController _priceController;
   static List<String> deliveryCostList = [null];
   static List<String> cityList = [null];
   static List<String> priceList = [null];
+  @override
+  void initState() {
+    super.initState();
+    priceList = [null];
+
+    _priceController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    priceList = [null];
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,16 +75,14 @@ class _AddDeliveryCostState extends State<AddDeliveryCost> {
                           final FirebaseAuth auth = FirebaseAuth.instance;
                           final User user = auth.currentUser;
                           if (_formKey.currentState.validate()) {
-                            deliveryCostList
-                                .asMap()
-                                .forEach((index, price) async {
+                            priceList.asMap().forEach((index, price) async {
                               print(price);
 
                               await DeliveriesCostsServices()
                                   .addDeliveryCostData(new DeliveriesCosts(
-                                      deliveryPrice: priceList[index],
+                                      deliveryPrice: price,
                                       adminID: user.uid,
-                                      city: cityList[index],
+                                      city: "cityList[index]",
                                       businesID: widget.busID));
                             });
                             Navigator.pop(context);
@@ -115,10 +127,7 @@ class _AddDeliveryCostState extends State<AddDeliveryCost> {
 
   List<Widget> _getAll() {
     List<Widget> friendsTextFields = [];
-    cityList.length = deliveryCostList.length;
-    deliveryCostList.length = deliveryCostList.length;
-
-    for (int i = 0; i < deliveryCostList.length; i++) {
+    for (int i = 0; i < priceList.length; i++) {
       friendsTextFields.add(Padding(
         padding: const EdgeInsets.symmetric(vertical: 16.0),
         child: Container(
@@ -130,7 +139,7 @@ class _AddDeliveryCostState extends State<AddDeliveryCost> {
                 width: 16,
               ),
               // we need add button at last friends row
-              _addRemoveButton(i == deliveryCostList.length - 1, i),
+              _addRemoveButton(i == priceList.length - 1, i),
             ],
           ),
         ),
@@ -146,9 +155,9 @@ class _AddDeliveryCostState extends State<AddDeliveryCost> {
       onTap: () {
         if (add) {
           // add new text-fields at the top of all friends textfields
-          deliveryCostList.insert(index, null);
+          priceList.insert(index, null);
         } else
-          deliveryCostList.removeAt(index);
+          priceList.removeAt(index);
         setState(() {});
       },
       child: Container(
@@ -190,7 +199,17 @@ class _FriendTextFieldsState extends State<FriendTextFields> {
   }
 
   @override
+  void dispose() {
+    _priceController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _priceController.text =
+          _AddDeliveryCostState.priceList[widget.index] ?? '';
+    });
     return Row(
       children: <Widget>[
         RaisedButton(
@@ -310,6 +329,7 @@ class _FriendTextFieldsState extends State<FriendTextFields> {
             child: TextFormField(
               onChanged: (v) =>
                   _AddDeliveryCostState.priceList[widget.index] = v,
+              onSaved: (v) => _AddDeliveryCostState.priceList[widget.index] = v,
               keyboardType: TextInputType.number,
               controller: _priceController,
               validator: (value) {
