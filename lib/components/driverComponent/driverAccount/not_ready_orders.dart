@@ -12,6 +12,7 @@ import 'package:sajeda_app/services/cityServices.dart';
 import 'package:sajeda_app/services/customerServices.dart';
 import 'package:sajeda_app/services/deliveryStatusServices.dart';
 import 'package:sajeda_app/services/orderServices.dart';
+import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../constants.dart';
@@ -28,7 +29,7 @@ class NotReadyOrderDetails extends StatefulWidget {
 class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
   TextEditingController noteController = TextEditingController();
   String type, status;
-  bool isCancelld, isReturn, isDone;
+  bool isCancelld, isReturn, isDone, isDelivery;
   final _formKey = GlobalKey<FormState>();
   String cityId;
   DateTime deliveryDate = new DateTime.now();
@@ -831,6 +832,7 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                     isDone = true;
                                                     isCancelld = false;
                                                     isReturn = false;
+                                                    isDelivery = false;
                                                   } else if (type ==
                                                       'لم يتم الرد على الهاتف') {
                                                     status = "2";
@@ -840,47 +842,55 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                     isDone = true;
                                                     isCancelld = false;
                                                     isReturn = false;
+                                                    isDelivery = false;
                                                   } else if (type ==
                                                       'ملغية بسبب خطأ في المنتج') {
                                                     status = "4";
                                                     isDone = false;
                                                     isCancelld = true;
                                                     isReturn = false;
+                                                    isDelivery = false;
                                                   } else if (type ==
                                                       'ملغية لاسباب شخصية') {
                                                     status = "5";
                                                     isDone = false;
                                                     isCancelld = true;
                                                     isReturn = false;
+                                                    isDelivery = false;
                                                   } else if (type ==
                                                       'ملغية لاسباب أخرى') {
                                                     status = "6";
                                                     isDone = false;
                                                     isCancelld = true;
                                                     isReturn = false;
+                                                    isDelivery = false;
                                                   } else if (type ==
                                                       'راجعة بسبب خطأ في المنتج') {
                                                     status = "7";
                                                     isDone = false;
                                                     isCancelld = false;
                                                     isReturn = true;
+                                                    isDelivery = false;
                                                   } else if (type ==
                                                       'راجعة لاسباب شخصية') {
                                                     status = "8";
                                                     isDone = false;
                                                     isCancelld = false;
                                                     isReturn = true;
+                                                    isDelivery = false;
                                                   } else if (type ==
                                                       'راجعة لاسباب أخرى') {
                                                     status = "9";
                                                     isDone = false;
                                                     isCancelld = false;
                                                     isReturn = true;
+                                                    isDelivery = false;
                                                   } else if (type == 'مؤجلة') {
                                                     status = "10";
                                                     isDone = false;
                                                     isCancelld = true;
                                                     isReturn = false;
+                                                    isDelivery = false;
                                                   } else if (type ==
                                                       'تم فقدان الطرد') {
                                                     status = "11";
@@ -929,6 +939,8 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                                 isCancelld,
                                                             isReturn: isReturn,
                                                             isDone: isDone,
+                                                            isDelivery:
+                                                                isDelivery,
                                                             price: order.price,
                                                             totalPrice: order
                                                                 .totalPrice,
@@ -940,7 +952,17 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                             customerID: order
                                                                 .customerID));
                                                     // Notification here for the admin
-                                                    Navigator.pop(context);
+                                                    Toast.show(
+                                                        "تم تعديل حالة الطرد",
+                                                        context,
+                                                        duration:
+                                                            Toast.LENGTH_LONG,
+                                                        gravity: Toast.BOTTOM);
+                                                    await Future.delayed(
+                                                        Duration(
+                                                            milliseconds:
+                                                                1000));
+                                                    Navigator.of(context).pop();
                                                   }
                                                 },
                                                 color: Color(0xff73a16a),

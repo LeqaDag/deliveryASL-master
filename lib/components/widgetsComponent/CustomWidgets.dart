@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sajeda_app/classes/busines.dart';
 import 'package:sajeda_app/classes/city.dart';
@@ -110,6 +111,8 @@ class CustomCardAndListTileAddLine extends StatelessWidget {
                             name: mainLine.name,
                             buttonText: "تأكيد",
                             onPressed: () {
+                              // final FirebaseAuth auth = FirebaseAuth.instance;
+                              // final User user = auth.currentUser;
                               MainLineServices()
                                   .deleteMainLineData(mainLine.uid);
                               Navigator.of(context).pop();
@@ -423,8 +426,11 @@ class CustomCardAndListTile extends StatelessWidget {
                                   name: business.name,
                                   buttonText: "تأكيد",
                                   onPressed: () {
-                                    BusinessService()
-                                        .deleteBusinessData(business.uid);
+                                    final FirebaseAuth auth =
+                                        FirebaseAuth.instance;
+                                    final User user = auth.currentUser;
+                                    BusinessService().deleteBusinessData(
+                                        business.uid, user.uid);
                                     Navigator.of(context).pop();
                                   },
                                   cancelButton: "الغاء",

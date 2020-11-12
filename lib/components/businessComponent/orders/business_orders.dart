@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sajeda_app/classes/order.dart';
@@ -203,8 +204,11 @@ class _CustomCompanyOrdersStatusState extends State<CustomCompanyOrdersStatus> {
                                 name: customerName,
                                 buttonText: "تأكيد",
                                 onPressed: () {
-                                  OrderService()
-                                      .deleteOrderData(widget.order.uid);
+                                  final FirebaseAuth auth =
+                                      FirebaseAuth.instance;
+                                  final User user = auth.currentUser;
+                                  OrderService().deleteOrderData(
+                                      widget.order.uid, user.uid);
                                   Navigator.of(context).pop();
                                 },
                                 cancelButton: "الغاء",
