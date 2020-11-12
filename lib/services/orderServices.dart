@@ -37,7 +37,7 @@ class OrderService {
       'businesID': order.businesID,
       'driverID': order.driverID,
       'isArchived': order.isArchived,
-      'driverPrice': order.driverPrice
+      'driverPrice': order.driverPrice,
     });
   }
 
@@ -46,6 +46,7 @@ class OrderService {
       'isCancelld': order.isCancelld,
       'isReturn': order.isReturn,
       'isDone': order.isDone,
+      'isDelivery': order.isDelivery,
       'price': order.price,
       'totalPrice': order.totalPrice,
       'type': order.type,
@@ -433,8 +434,11 @@ class OrderService {
     }
   }
 
-  Future<void> deleteOrderData(String uid) async {
-    return await orderCollection.doc(uid).update({'isArchived': true});
+  Future<void> deleteOrderData(String uid, String whoUser) async {
+    return await orderCollection.doc(uid).update({
+      'isArchived': true,
+      'deleteUser': whoUser,
+    });
   }
 
   //Update Order State

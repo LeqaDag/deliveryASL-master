@@ -73,8 +73,11 @@ class BusinessService {
         .then((value) => value.data()['name']);
   }
 
-  Future<void> deleteBusinessData(String uid) async {
-    return await businessCollection.doc(uid).update({'isArchived': true});
+  Future<void> deleteBusinessData(String uid, String whoUser) async {
+    return await businessCollection.doc(uid).update({
+      'isArchived': true,
+      'deleteUser': whoUser,
+    });
   }
 
   Future<String> get businessPhoneNumber {

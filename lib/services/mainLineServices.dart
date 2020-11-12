@@ -55,8 +55,8 @@ class MainLineServices {
         .snapshots()
         .map(_mainLineDataFromSnapshot);
   }
- 
- Stream<List<MainLine>> get mainLineByCityID {
+
+  Stream<List<MainLine>> get mainLineByCityID {
     return mainLineCollection
         .where('cityID', isEqualTo: cityID)
         .snapshots()
@@ -71,6 +71,8 @@ class MainLineServices {
   }
 
   Future<void> deleteMainLineData(String uid) async {
-    return await mainLineCollection.doc(uid).update({'isArchived': true});
+    return await mainLineCollection
+        .doc(uid)
+        .update({'isArchived': true });
   }
 }

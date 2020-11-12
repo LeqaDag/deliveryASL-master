@@ -1,4 +1,5 @@
 import 'package:badges/badges.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -127,8 +128,11 @@ class AllBuisness extends StatelessWidget {
                                   name: business.name,
                                   buttonText: "تأكيد",
                                   onPressed: () {
-                                    BusinessService()
-                                        .deleteBusinessData(businessID);
+                                    final FirebaseAuth auth =
+                                        FirebaseAuth.instance;
+                                    final User user = auth.currentUser;
+                                    BusinessService().deleteBusinessData(
+                                        businessID, user.uid);
                                     Navigator.of(context).pop();
                                   },
                                   cancelButton: "الغاء",
