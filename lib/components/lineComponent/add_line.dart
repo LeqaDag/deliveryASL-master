@@ -23,7 +23,11 @@ class _AddLineState extends State<AddLine> {
   static List<String> subLineList = [null];
   List<City> cities;
   String cityID;
-
+@override
+  void initState() {
+    subLineList = [null];
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

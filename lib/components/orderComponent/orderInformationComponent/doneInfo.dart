@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sajeda_app/classes/busines.dart';
 import 'package:sajeda_app/classes/city.dart';
 import 'package:sajeda_app/classes/customer.dart';
+import 'package:sajeda_app/classes/deliveryStatus.dart';
 import 'package:sajeda_app/classes/driver.dart';
 import 'package:sajeda_app/classes/mainLine.dart';
 import 'package:sajeda_app/classes/order.dart';
@@ -10,6 +11,7 @@ import 'package:sajeda_app/components/pages/loadingData.dart';
 import 'package:sajeda_app/services/businessServices.dart';
 import 'package:sajeda_app/services/cityServices.dart';
 import 'package:sajeda_app/services/customerServices.dart';
+import 'package:sajeda_app/services/deliveryStatusServices.dart';
 import 'package:sajeda_app/services/driverServices.dart';
 import 'package:sajeda_app/services/mainLineServices.dart';
 import 'package:sajeda_app/services/orderServices.dart';
@@ -114,11 +116,21 @@ class DoneInfo extends StatelessWidget {
                                           }
                                         },
                                       ),
-                                      _customTitle("معلومات التوصيل"),
-                                      _labelTextField(
-                                          Icons.blur_on,
-                                          Colors.black,
-                                          "لا يوجد معلومات حالياً"),
+                                      StreamBuilder<List<DeliveryStatus>>(
+                                        stream: DeliveriesStatusServices(
+                                                orderID: order.uid)
+                                            .deliveryStatusData,
+                                        builder: (context, snapshot) {
+                                          if (snapshot.hasData) {
+                                            return Column(
+                                              children: _deliveryStatus(
+                                                  snapshot.data[0]),
+                                            );
+                                          } else {
+                                            return Container();
+                                          }
+                                        },
+                                      ),
                                     ],
                                   ),
                                 ));
@@ -145,6 +157,37 @@ class DoneInfo extends StatelessWidget {
       _labelTextFieldMainLine(
           Icons.location_on, Colors.grey, driver.mainLineID),
     ];
+  }
+
+  List<Widget> _deliveryStatus(DeliveryStatus deliveryStatus) {
+    return [
+      _customTitle("معلومات التوصيل"),
+      _labelTextField(Icons.done_outline, Colors.green[700],
+          _orderState(deliveryStatus.status)),
+      _labelTextField(Icons.date_range, Colors.green,
+          intl.DateFormat('yyyy-MM-dd').format(deliveryStatus.date)),
+    ];
+  }
+
+  String _orderState(String status) {
+    switch (status) {
+      case '1':
+        {
+          return 'تم التوصيل';
+        }
+        break;
+      case '3':
+        {
+          return 'تم التوصيل مع تغيير السعر';
+        }
+        break;
+
+      default:
+        {
+          return "";
+        }
+        break;
+    }
   }
 
   Widget _customTitle(String title) {

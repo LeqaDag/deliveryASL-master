@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:sajeda_app/classes/busines.dart';
+import 'package:sajeda_app/classes/city.dart';
 import 'package:sajeda_app/classes/customer.dart';
+import 'package:sajeda_app/classes/deliveryStatus.dart';
+import 'package:sajeda_app/classes/driver.dart';
+import 'package:sajeda_app/classes/driver.dart';
+import 'package:sajeda_app/classes/mainLine.dart';
 import 'package:sajeda_app/classes/order.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
 import 'package:sajeda_app/components/pages/loadingData.dart';
 import 'package:sajeda_app/services/businessServices.dart';
+import 'package:sajeda_app/services/cityServices.dart';
 import 'package:sajeda_app/services/customerServices.dart';
+import 'package:sajeda_app/services/deliveryStatusServices.dart';
+import 'package:sajeda_app/services/driverServices.dart';
+import 'package:sajeda_app/services/mainLineServices.dart';
 import 'package:sajeda_app/services/orderServices.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:url_launcher/url_launcher.dart';
@@ -93,9 +102,36 @@ class CancelldInfo extends StatelessWidget {
                                       _labelTextField(Icons.scatter_plot,
                                           Colors.grey, orderType),
 
-                                      _customTitle("معلومات السائق"),
-
-                                      // مش فاهمها منيح لانو اعتقد بوجوب وجود خيار بعد سؤال هل تود تصنيف الطرد نعم او لا ووجوب خيار تعديل اسم السائق بعد اختيارهز لهذا تركتة فارغا لنقاشه
+                                      StreamBuilder<Driver>(
+                                        stream:
+                                            DriverService(uid: order.driverID)
+                                                .driverByID,
+                                        builder: (context, snapshot) {
+                                          if (snapshot.hasData) {
+                                            return Column(
+                                              children:
+                                                  _driverInfo(snapshot.data),
+                                            );
+                                          } else {
+                                            return Container();
+                                          }
+                                        },
+                                      ),
+                                      StreamBuilder<List<DeliveryStatus>>(
+                                        stream: DeliveriesStatusServices(
+                                                orderID: order.uid)
+                                            .deliveryStatusData,
+                                        builder: (context, snapshot) {
+                                          if (snapshot.hasData) {
+                                            return Column(
+                                              children: _deliveryStatus(
+                                                  snapshot.data[0]),
+                                            );
+                                          } else {
+                                            return Container();
+                                          }
+                                        },
+                                      ),
                                     ],
                                   ),
                                 ));
@@ -111,6 +147,52 @@ class CancelldInfo extends StatelessWidget {
             return LoadingData();
           }
         });
+  }
+
+  List<Widget> _driverInfo(Driver driver) {
+    return [
+      _customTitle("معلومات السائق"),
+      _labelTextField(Icons.person, Colors.amber[600], driver.name),
+      _labelTextField(Icons.phone, Colors.green, driver.phoneNumber),
+      _labelTextFieldCity(Icons.person_pin, Colors.blue, driver.cityID),
+      _labelTextFieldMainLine(
+          Icons.location_on, Colors.grey, driver.mainLineID),
+    ];
+  }
+
+  List<Widget> _deliveryStatus(DeliveryStatus deliveryStatus) {
+    return [
+      _customTitle("معلومات التوصيل"),
+      _labelTextField(
+          Icons.block, Colors.red[700], _orderState(deliveryStatus.status)),
+      _labelTextField(Icons.date_range, Colors.green,
+          intl.DateFormat('yyyy-MM-dd').format(deliveryStatus.date)),
+    ];
+  }
+
+  String _orderState(String status) {
+    switch (status) {
+      case '5':
+        {
+          return 'ملغية لاسباب شخصية';
+        }
+        break;
+      case '6':
+        {
+          return 'ملغية لاسباب أخرى';
+        }
+        break;
+      case '4':
+        {
+          return 'ملغية بسبب خطأ في المنتج';
+        }
+        break;
+      default:
+        {
+          return "";
+        }
+        break;
+    }
   }
 
   Widget _customTitle(String title) {
@@ -135,9 +217,6 @@ class CancelldInfo extends StatelessWidget {
     return Container(
       width: double.infinity,
       height: 35,
-      // margin: EdgeInsets.only(right:width*0.04 ,left:width*0.04 ),
-      // color: KCustomCompanyOrdersStatus,
-
       child: TextField(
         onTap: () => launch("tel:0595114481"),
         enabled: false,
@@ -190,6 +269,56 @@ class CancelldInfo extends StatelessWidget {
           ),
           hintText: text, //String Data form DB.
         ),
+      ),
+    );
+  }
+
+  Widget _labelTextFieldCity(IconData icon, Color color, String text) {
+    return Container(
+      width: double.infinity,
+      height: 35,
+      child: StreamBuilder<City>(
+        stream: CityService(uid: text).cityByID,
+        builder: (context, snapshot) {
+          City city = snapshot.data;
+          return TextField(
+            enabled: false,
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.only(top: 7, bottom: 7, right: 8),
+              prefixIcon: Icon(
+                icon,
+                color: color,
+                size: 20,
+              ),
+              hintText: city.name, //String Data form DB.
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _labelTextFieldMainLine(IconData icon, Color color, String text) {
+    return Container(
+      width: double.infinity,
+      height: 35,
+      child: StreamBuilder<MainLine>(
+        stream: MainLineServices(uid: text).mainLineByID,
+        builder: (context, snapshot) {
+          MainLine mainLine = snapshot.data;
+          return TextField(
+            enabled: false,
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.only(top: 7, bottom: 7, right: 8),
+              prefixIcon: Icon(
+                icon,
+                color: color,
+                size: 20,
+              ),
+              hintText: mainLine.name, //String Data form DB.
+            ),
+          );
+        },
       ),
     );
   }

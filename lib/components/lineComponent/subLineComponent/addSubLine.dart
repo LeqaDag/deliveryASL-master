@@ -19,6 +19,11 @@ class AddSubLine extends StatefulWidget {
 class _AddSubLineState extends State<AddSubLine> {
   final _formKey = GlobalKey<FormState>();
   static List<String> subLineList = [null];
+  @override
+  void initState() {
+    subLineList = [null];
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
