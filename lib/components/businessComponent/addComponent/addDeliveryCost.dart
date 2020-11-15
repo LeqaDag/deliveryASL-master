@@ -8,20 +8,20 @@ import 'package:sajeda_app/services/cityServices.dart';
 
 import '../../../constants.dart';
 
-class AddDeliveryCost2 extends StatefulWidget {
+class AddDeliveryCost extends StatefulWidget {
   final String name, businessID, businessName, busID;
-  AddDeliveryCost2({this.name, this.businessID, this.businessName, this.busID});
+  AddDeliveryCost({this.name, this.businessID, this.businessName, this.busID});
 
   @override
-  _AddDeliveryCost2State createState() => _AddDeliveryCost2State();
+  _AddDeliveryCostState createState() => _AddDeliveryCostState();
 }
 
-class _AddDeliveryCost2State extends State<AddDeliveryCost2> {
+class _AddDeliveryCostState extends State<AddDeliveryCost> {
   final _formKey = GlobalKey<FormState>();
 
   List<City> cities;
   String cityID;
-
+  Map<String, TextEditingController> formListController = {};
   @override
   void initState() {
     super.initState();
@@ -61,9 +61,12 @@ class _AddDeliveryCost2State extends State<AddDeliveryCost2> {
                           if (snapshot.hasData) {
                             cities = snapshot.data;
 
-                            for (var i = 0; i < cities.length; i++) {
-                              return _addComponent(cities[i]);
-                            }
+                            return ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: cities.length,
+                                itemBuilder: (context, index) {
+                                  return _addComponent(cities[index]);
+                                });
                           } else {
                             return Container();
                           }
@@ -78,6 +81,16 @@ class _AddDeliveryCost2State extends State<AddDeliveryCost2> {
                           final FirebaseAuth auth = FirebaseAuth.instance;
                           final User user = auth.currentUser;
                           if (_formKey.currentState.validate()) {
+                            cities.asMap().forEach((index, city) async {
+                              print(city);
+
+                              await DeliveriesCostsServices()
+                                  .addDeliveryCostData(new DeliveriesCosts(
+                                      deliveryPrice: formListController[city.uid].text,
+                                      adminID: user.uid,
+                                      city: city.uid,
+                                      businesID: widget.busID));
+                            });
                             Navigator.pop(context);
                           }
                         },
@@ -119,58 +132,62 @@ class _AddDeliveryCost2State extends State<AddDeliveryCost2> {
   }
 
   Widget _addComponent(City city) {
-    return Row(
-      children: <Widget>[
-        Expanded(
-          child: Container(
-            margin: EdgeInsets.all(10.0),
-            child: Text(
-              city.name,
-              style: TextStyle(
-                fontSize: 22.0,
-                color: Colors.purple[900],
-                fontFamily: 'Amiri',
-              ),
-            ),
-          ),
-        ),
-        Expanded(
-          child: Container(
-            margin: EdgeInsets.all(10.0),
-            child: TextFormField(
-              keyboardType: TextInputType.number,
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'ادخل سعر التوصيل';
-                }
-                return null;
-              },
-              decoration: InputDecoration(
-                labelText: 'سعر التوصيل',
-                labelStyle: TextStyle(
-                    fontFamily: 'Amiri',
-                    fontSize: 18.0,
-                    color: Color(0xff316686)),
-                contentPadding: EdgeInsets.only(right: 20.0),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                  borderSide: BorderSide(
-                    width: 1.0,
-                    color: Color(0xff636363),
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                  borderSide: BorderSide(
-                    width: 2.0,
-                    color: Color(0xff73a16a),
-                  ),
+    formListController[city.uid]=new TextEditingController();
+    return Container(
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: Container(
+              margin: EdgeInsets.all(10.0),
+              child: Text(
+                city.name,
+                style: TextStyle(
+                  fontSize: 22.0,
+                  color: Colors.purple[900],
+                  fontFamily: 'Amiri',
                 ),
               ),
             ),
           ),
-        ),
-      ],
+          Expanded(
+            child: Container(
+              margin: EdgeInsets.all(10.0),
+              child: TextFormField(
+                controller: formListController[city.uid],
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'ادخل سعر التوصيل';
+                  }
+                  return null;
+                },
+                decoration: InputDecoration(
+                  labelText: 'سعر التوصيل',
+                  labelStyle: TextStyle(
+                      fontFamily: 'Amiri',
+                      fontSize: 18.0,
+                      color: Color(0xff316686)),
+                  contentPadding: EdgeInsets.only(right: 20.0),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide(
+                      width: 1.0,
+                      color: Color(0xff636363),
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide(
+                      width: 2.0,
+                      color: Color(0xff73a16a),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
