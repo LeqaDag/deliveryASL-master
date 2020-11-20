@@ -545,7 +545,7 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                             future: CustomerService(uid: order.customerID)
                                 .customerName,
                             builder: (context, snapshot) {
-                              print(order.customerID);
+                              // print(order.customerID);
                               return Text(
                                 snapshot.data ?? "",
                                 style: TextStyle(
@@ -608,7 +608,7 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                               future:
                                   DriverService(uid: order.driverID).driverName,
                               builder: (context, snapshot) {
-                                print(snapshot.data);
+                                // print(snapshot.data);
                                 return Text(
                                   snapshot.data ?? "",
                                   style: TextStyle(
@@ -652,15 +652,26 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                                 return StreamBuilder<City>(
                                     stream: CityService(uid: cityID).cityByID,
                                     builder: (context, snapshot) {
-                                      City city = snapshot.data;
-                                      return Text(
-                                        city.name,
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: "Amiri",
-                                        ),
-                                      );
+                                      if (snapshot.hasData) {
+                                        City city = snapshot.data;
+                                        return Text(
+                                          city.name,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: "Amiri",
+                                          ),
+                                        );
+                                      } else {
+                                        return Text(
+                                          "",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: "Amiri",
+                                          ),
+                                        );
+                                      }
                                     });
                               }),
                         ],
@@ -803,6 +814,237 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
           ),
         ),
       );
+    }
+    if (orderState == 'sheet') {
+      return InkWell(
+        child: Container(
+          width: width - 50,
+          child: Card(
+            elevation: 5,
+            margin: EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 16.0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(0.0),
+            ),
+            //color: KCustomCompanyOrdersStatus,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  width: width / 2,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Row(
+                        //3
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(
+                                left: height * 0.025,
+                                right: height * 0.025,
+                                top: height * 0,
+                                bottom: height * 0),
+                            child: Icon(
+                              Icons.person,
+                              color: Colors.green[800],
+                            ),
+                          ),
+
+                          //  SizedBox(width: 33,),
+                          FutureBuilder<String>(
+                            future: CustomerService(uid: order.customerID)
+                                .customerName,
+                            builder: (context, snapshot) {
+                              // print(order.customerID);
+                              return Text(
+                                snapshot.data ?? "",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: "Amiri",
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                      Row(
+                        //3
+                        mainAxisAlignment: MainAxisAlignment.start,
+
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(
+                                left: height * 0.025,
+                                right: height * 0.025,
+                                top: height * 0,
+                                bottom: height * 0),
+                            child: Icon(
+                              Icons.date_range,
+                              color: Colors.blueGrey,
+                            ),
+                          ),
+
+                          //  SizedBox(width: 33,),
+                          Text(
+                            intl.DateFormat('yyyy-MM-dd').format(order.date),
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "Amiri",
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        //3
+                        mainAxisAlignment: MainAxisAlignment.start,
+
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(
+                                left: height * 0.025,
+                                right: height * 0.025,
+                                top: height * 0,
+                                bottom: height * 0),
+                            child: Icon(
+                              Icons.location_city,
+                              color: Colors.purple[800],
+                            ),
+                          ),
+
+                          //  SizedBox(width: 33,),
+                          FutureBuilder<String>(
+                              future: BusinessService(uid: order.businesID)
+                                  .businessName,
+                              builder: (context, snapshot) {
+                                // print(snapshot.data);
+                                return Text(
+                                  snapshot.data ?? "",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "Amiri",
+                                  ),
+                                );
+                              }),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Row(
+                        //3
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(
+                                left: height * 0.025,
+                                right: height * 0.025,
+                                top: height * 0,
+                                bottom: height * 0),
+                            child: Icon(
+                              Icons.location_on,
+                              color: Colors.blue[800],
+                            ),
+                          ),
+                          //  SizedBox(width: 33,),
+                          FutureBuilder<String>(
+                              future: CustomerService(uid: order.customerID)
+                                  .customerCity,
+                              builder: (context, snapshot) {
+                                String cityID = snapshot.data;
+                                return StreamBuilder<City>(
+                                    stream: CityService(uid: cityID).cityByID,
+                                    builder: (context, snapshot) {
+                                      if (snapshot.hasData) {
+                                        City city = snapshot.data;
+                                        return Text(
+                                          city.name,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: "Amiri",
+                                          ),
+                                        );
+                                      } else {
+                                        return Text(
+                                          "",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: "Amiri",
+                                          ),
+                                        );
+                                      }
+                                    });
+                              }),
+                        ],
+                      ),
+                      Row(
+                        //3
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(
+                                left: height * 0.025,
+                                right: height * 0.025,
+                                top: height * 0,
+                                bottom: height * 0),
+                            child: Image.asset('assets/price.png'),
+                          ),
+
+                          //  SizedBox(width: 33,),
+                          Text(
+                            order.price.toString(),
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "Amiri",
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        //3
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(
+                                left: height * 0.025,
+                                right: height * 0.025,
+                                top: height * 0,
+                                bottom: height * 0),
+                            child: Icon(
+                              Icons.subdirectory_arrow_left,
+                              color: Colors.blue[800],
+                            ),
+                          ),
+                          //  SizedBox(width: 33,),
+                          Text(
+                            "تم التوصيل",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "Amiri",
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
     } else {
       return InkWell(
         onTap: () {
@@ -852,7 +1094,7 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                             future: CustomerService(uid: order.customerID)
                                 .customerName,
                             builder: (context, snapshot) {
-                              print(order.customerID);
+                              // print(order.customerID);
                               return Text(
                                 snapshot.data ?? "",
                                 style: TextStyle(

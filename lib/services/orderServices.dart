@@ -489,6 +489,51 @@ class OrderService {
         .map(_orderListFromSnapshot);
   }
 
+  //daily sheet for driver
+  Stream<List<Order>> get sheetList {
+    var today = new DateTime.now();
+    today = new DateTime(today.year, today.month, today.day);
+    return orderCollection
+        .where('driverID', isEqualTo: driverID)
+        // .where("date", isGreaterThan: today)
+        .where('isArchived', isEqualTo: false)
+        .snapshots()
+        .map(_orderListFromSnapshot);
+  }
+
+  // Count orders state isDone for Daily sheet
+  Future<int> get countIsDoneInDailySheet {
+    return orderCollection
+        .where('driverID', isEqualTo: driverID)
+        .where('isDone', isEqualTo: true)
+        // .where("date", isGreaterThan: today)
+        .where('isArchived', isEqualTo: false)
+        .get()
+        .then((value) => value.size);
+  }
+
+  // Count orders state isReturn for Daily sheet
+  Future<int> get countIsReturnInDailySheet {
+    return orderCollection
+        .where('driverID', isEqualTo: driverID)
+        .where('isReturn', isEqualTo: true)
+        // .where("date", isGreaterThan: today)
+        .where('isArchived', isEqualTo: false)
+        .get()
+        .then((value) => value.size);
+  }
+
+// Count orders state isCancelld for Daily sheet
+  Future<int> get countIsCancelldInDailySheet {
+    return orderCollection
+        .where('driverID', isEqualTo: driverID)
+        .where('isCancelld', isEqualTo: true)
+        // .where("date", isGreaterThan: today)
+        .where('isArchived', isEqualTo: false)
+        .get()
+        .then((value) => value.size);
+  }
+
   Future<String> get orderDescription {
     return orderCollection
         .doc(uid)
