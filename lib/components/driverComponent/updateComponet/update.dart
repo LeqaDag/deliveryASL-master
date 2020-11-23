@@ -10,7 +10,7 @@ import 'package:sajeda_app/services/mainLineServices.dart';
 
 class UpdateDriver extends StatefulWidget {
   final String driverID, name;
-  const UpdateDriver({this.driverID, this.name});
+  UpdateDriver({this.driverID, this.name});
   @override
   _UpdateDriverState createState() => _UpdateDriverState();
 }
