@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sajeda_app/components/businessComponent/business_main.dart';
 import 'package:sajeda_app/components/driverComponent/driverAccount/driver_main.dart';
 import '../../constants.dart';
@@ -136,6 +137,7 @@ class _LoginAdminState extends State<LoginAdmin> {
                   height: 50,
                   child: FlatButton(
                     onPressed: () {
+                      //signIn(emailController.text,  passwordController.text);
                       _signInWithEmailAndPassword();
                     },
                     color: kAdminLoginBackGroundButtonColor,
@@ -208,6 +210,19 @@ class _LoginAdminState extends State<LoginAdmin> {
     );
   }
 
+  Future signIn(String email, String password) async {
+    String errorMessage;
+
+    try {
+      await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+    } on PlatformException catch (e) {
+      print(e.message);
+    } on Exception catch (e) {
+      print(e);
+    }
+  }
+
   void _signInWithEmailAndPassword() async {
     final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
     if (_formKey.currentState.validate()) {
@@ -226,7 +241,9 @@ class _LoginAdminState extends State<LoginAdmin> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                  builder: (context) => AdminHome(name: value.docs[0]["name"])),
+                  builder: (context) => AdminHome(
+                        name: value.docs[0]["name"],
+                      )),
             );
           } else if (value.docs[0]["userType"] == '1') {
             Navigator.pushReplacement(

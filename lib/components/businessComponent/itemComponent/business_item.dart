@@ -252,7 +252,7 @@ class _CustomCompanyOrdersStatusState extends State<CustomCompanyOrdersStatus> {
       orderState = "ملغي";
     } else if (widget.order.isDelivery == true) {
       color = KAllOrdersListTileColor;
-      icon = Icons.add_circle;
+      icon = Icons.business_center_outlined;
       orderState = "جاهز للتوزيع";
     } else if (widget.order.isDone == true) {
       color = KBadgeColorAndContainerBorderColorReadyOrders;
@@ -260,11 +260,11 @@ class _CustomCompanyOrdersStatusState extends State<CustomCompanyOrdersStatus> {
       orderState = "جاهز";
     } else if (widget.order.isLoading == true) {
       color = KBadgeColorAndContainerBorderColorLoadingOrder;
-      icon = Icons.add_circle;
+      icon = Icons.arrow_circle_up_rounded;
       orderState = "محمل";
     } else if (widget.order.isUrgent == true) {
       color = KBadgeColorAndContainerBorderColorUrgentOrders;
-      icon = Icons.add_circle;
+      icon = Icons.info_outline;
       orderState = "مستعجل";
     } else if (widget.order.isReturn == true) {
       color = KBadgeColorAndContainerBorderColorReturnOrders;
@@ -272,7 +272,7 @@ class _CustomCompanyOrdersStatusState extends State<CustomCompanyOrdersStatus> {
       orderState = "راجع";
     } else if (widget.order.isReceived == true) {
       color = KBadgeColorAndContainerBorderColorRecipientOrder;
-      icon = Icons.add_circle;
+      icon = Icons.assignment_turned_in_outlined;
       orderState = "تم استلامه";
     }
 

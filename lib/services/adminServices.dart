@@ -74,4 +74,8 @@ class AdminService {
   Future<void> deleteAdminData(String uid) async {
     return await adminCollection.doc(uid).update({'isArchived': true});
   }
+
+  Future<String> get adminType {
+    return adminCollection.doc(uid).get().then((value) => value.data()['type']);
+  }
 }

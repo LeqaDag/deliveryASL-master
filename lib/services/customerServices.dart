@@ -21,6 +21,7 @@ class CustomerService {
       'cityID': customer.cityID,
       'address': customer.address,
       'businesID': customer.businesID,
+      'cityName': customer.cityName,
       'isArchived': customer.isArchived,
     });
     return docReference.id;
@@ -28,30 +29,30 @@ class CustomerService {
 
   Customer _customerDataFromSnapshot(DocumentSnapshot snapshot) {
     return Customer(
-      uid: snapshot.id,
-      name: snapshot.data()['name'],
-      phoneNumber: snapshot.data()['phoneNumber'],
-      phoneNumberAdditional: snapshot.data()['phoneNumberAdditional'],
-      cityID: snapshot.data()['cityID'],
-      address: snapshot.data()['address'],
-      businesID: snapshot.data()['businesID'],
-      isArchived: snapshot.data()['isArchived'],
-    );
+        uid: snapshot.id,
+        name: snapshot.data()['name'],
+        phoneNumber: snapshot.data()['phoneNumber'],
+        phoneNumberAdditional: snapshot.data()['phoneNumberAdditional'],
+        cityID: snapshot.data()['cityID'],
+        address: snapshot.data()['address'],
+        businesID: snapshot.data()['businesID'],
+        isArchived: snapshot.data()['isArchived'],
+        cityName: snapshot.data()['cityName']);
   }
 
   List<Customer> _customerListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) {
       //print(doc.data);
       return Customer(
-        uid: doc.reference.id,
-        name: doc.data()['name'] ?? '',
-        phoneNumber: doc.data()['phoneNumber'] ?? '',
-        phoneNumberAdditional: doc.data()['phoneNumberAdditional'] ?? '',
-        cityID: doc.data()['cityID'] ?? '',
-        address: doc.data()['address'] ?? '',
-        businesID: doc.data()['businesID'] ?? '',
-        isArchived: doc.data()['isArchived'] ?? '',
-      );
+          uid: doc.reference.id,
+          name: doc.data()['name'] ?? '',
+          phoneNumber: doc.data()['phoneNumber'] ?? '',
+          phoneNumberAdditional: doc.data()['phoneNumberAdditional'] ?? '',
+          cityID: doc.data()['cityID'] ?? '',
+          address: doc.data()['address'] ?? '',
+          businesID: doc.data()['businesID'] ?? '',
+          isArchived: doc.data()['isArchived'] ?? '',
+          cityName: doc.data()['cityName'] ?? '');
     }).toList();
   }
 
@@ -105,7 +106,7 @@ class CustomerService {
     return customerCollection
         .doc(uid)
         .get()
-        .then((value) => cityId = value.data()['cityID']);
+        .then((value) => cityId = value.data()['cityName']);
     // print(cityId);
     // return cityCollection
     //     .doc(cityId)

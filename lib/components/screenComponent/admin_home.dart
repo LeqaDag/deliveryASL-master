@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:sajeda_app/components/adminComponent/admin_secretary_home.dart';
@@ -12,12 +13,16 @@ import 'admin_orders.dart';
 
 class AdminHome extends StatelessWidget {
   final String name;
-  AdminHome({this.name});
+  final bool type;
+  AdminHome({this.name, this.type});
 
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final User user = auth.currentUser;
+    print(user.uid);
 
     return Directionality(
       textDirection: TextDirection.rtl,
