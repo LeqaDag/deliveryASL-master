@@ -4,15 +4,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:sajeda_app/classes/city.dart';
 import 'package:sajeda_app/classes/customer.dart';
+import 'package:sajeda_app/classes/deliveriesCost.dart';
 import 'package:sajeda_app/classes/order.dart';
-import 'package:sajeda_app/components/cityComponent/cityList.dart';
 import 'package:sajeda_app/components/pages/business_drawer.dart';
-import 'package:sajeda_app/services/cityServices.dart';
+import 'package:sajeda_app/services/DeliveriesCostsServices.dart';
 import 'package:sajeda_app/services/customerServices.dart';
 import 'package:sajeda_app/services/orderServices.dart';
-import 'package:provider/provider.dart';
 import 'package:toast/toast.dart';
 
 class AddNewOdersByBusiness extends StatefulWidget {
@@ -26,19 +24,24 @@ class AddNewOdersByBusiness extends StatefulWidget {
 class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
   final _formKey = GlobalKey<FormState>();
   String customerCityID = 'One';
-  String datehh = "";
-  String city = 'المدينة',
-      cityID,
-      deliveryPrice = "0",
-      typeOrder = ' نوع التوصيل';
-  City cc;
-  int totalPrice = 0;
+  String datehh = "", typeOrder = ' نوع التوصيل';
+  String city = 'المدينة', cityID, cityName = "", cityId = "";
+  List<DeliveriesCosts> cities;
+  List<int> orderTotalPrice = [0];
+  static String deliveryPrice = "0";
+
+  @override
+  void initState() {
+    deliveryPrice = "0";
+    orderTotalPrice = [0];
+    super.initState();
+  }
 
   //Order Filed
   TextEditingController orderDescription = new TextEditingController();
   TextEditingController orderPrice = new TextEditingController();
   bool orderType = false;
-  List<int> orderTotalPrice = [0];
+
   DateTime orderDate = new DateTime.now();
   TextEditingController orderNote = new TextEditingController();
 
@@ -114,61 +117,78 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
                       Expanded(
                         flex: 2,
                         child: Container(
-                          margin: EdgeInsets.only(
-                              top: 10, bottom: 10, left: 10, right: 10),
-                          child: RaisedButton(
-                            shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                  width: 1.0,
-                                  color: Color(0xff636363),
-                                ),
-                                borderRadius: BorderRadius.circular(10)),
-                            color: Colors.white,
-                            elevation: 0,
-                            child: Container(
-                              margin: EdgeInsets.all(10.0),
-                              height: 27,
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text(
-                                    city,
-                                    style: TextStyle(
-                                        color: Color(0xff316686),
-                                        fontFamily: 'Amiri',
-                                        fontSize: 18.0),
-                                  ),
-                                  Icon(
-                                    Icons.arrow_drop_down,
-                                    color: Color(0xff636363),
-                                    size: 25.0,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            onPressed: () async {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) =>
-                                    _buildAboutDialog(context),
-                              ).then((value) {
-                                setState(() {
-                                  cc = value;
-                                  cityID = cc.uid;
-                                  city = cc.name;
-                                  FirebaseFirestore.instance
-                                      .collection('deliveries_costs')
-                                      .where('businesID', isEqualTo: widget.uid)
-                                      .where('city', isEqualTo: city)
-                                      .get()
-                                      .then((value) => {
-                                            deliveryPrice =
-                                                value.docs[0]["deliveryPrice"]
-                                          });
-                                });
-                              });
+                          margin: EdgeInsets.all(10.0),
+                          child: StreamBuilder<List<DeliveriesCosts>>(
+                            stream:
+                                DeliveriesCostsServices(businessId: widget.uid)
+                                    .deliveryCostsBusiness,
+                            builder: (context, snapshot) {
+                              if (!snapshot.hasData) {
+                                return Text('Loading...');
+                              } else {
+                                cities = snapshot.data;
+                                return DropdownButtonFormField<String>(
+                                  value: cityID,
+                                  decoration: InputDecoration(
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                        borderSide: BorderSide(
+                                          width: 1.0,
+                                          color: Color(0xff636363),
+                                        ),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                        borderSide: BorderSide(
+                                          width: 2.0,
+                                          color: Color(0xff73a16a),
+                                        ),
+                                      ),
+                                      contentPadding: EdgeInsets.only(
+                                          right: 20.0, left: 10.0),
+                                      labelText: "المدينة",
+                                      labelStyle: TextStyle(
+                                          fontFamily: 'Amiri',
+                                          fontSize: 18.0,
+                                          color: Color(0xff316686))),
+                                  items: cities.map(
+                                    (city) {
+                                      return DropdownMenuItem<String>(
+                                        value: city.city.toString(),
+                                        child: Align(
+                                          alignment: Alignment.centerRight,
+                                          child: Text(
+                                            city.name,
+                                            style: TextStyle(
+                                              fontFamily: 'Amiri',
+                                              fontSize: 16.0,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ).toList(),
+                                  onChanged: (val) {
+                                    setState(() {
+                                      cityID = val;
+                                      FirebaseFirestore.instance
+                                          .collection('deliveries_costs')
+                                          .where('city', isEqualTo: cityID)
+                                          .get()
+                                          .then((value) => {
+                                                setState(() {
+                                                  deliveryPrice = value.docs[0]
+                                                      ["deliveryPrice"];
+                                                  cityName =
+                                                      value.docs[0]["name"];
+                                                })
+                                              });
+                                    });
+                                  },
+                                );
+                              }
                             },
                           ),
                         ),
@@ -231,8 +251,10 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
                               return null;
                             },
                             onChanged: (value) {
-                              orderTotalPrice[0] =
-                                  (int.parse(value) + int.parse(deliveryPrice));
+                              setState(() {
+                                orderTotalPrice[0] = (int.parse(value) +
+                                    int.parse(deliveryPrice));
+                              });
                             },
                             controller: orderPrice,
                             keyboardType: TextInputType.number,
@@ -280,8 +302,6 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
                         ),
                         onPressed: () async {
                           if (_formKey.currentState.validate()) {
-                            print(int.parse(orderPrice.text) +
-                                int.parse(deliveryPrice));
                             if (typeOrder == 'مستعجل') orderType = true;
                             Customer customer = new Customer(
                                 name: customerName.text,
@@ -289,7 +309,8 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
                                     int.parse(customerPhoneNumber.text),
                                 phoneNumberAdditional: int.parse(
                                     customerPhoneNumberAdditional.text),
-                                cityID: city,
+                                cityID: cityID,
+                                cityName: cityName,
                                 address: customerAddress.text,
                                 businesID: widget.uid,
                                 isArchived: false);
@@ -359,12 +380,14 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
       child: Container(
         margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: right),
         child: TextFormField(
-          // validator: (value) {
-          //   if (value.isEmpty) {
-          //     return 'ادخل رقم الزبون';
-          //   }
-          //   return null;
-          // },
+          validator: (value) {
+            if (value.isEmpty) {
+              return 'ادخل رقم جوال';
+            } else if (value.length != 10 || value.length > 10) {
+              return 'الرجاء ادخال رقم جوال صحيح';
+            }
+            return null;
+          },
           controller: fieldController,
           keyboardType: TextInputType.numberWithOptions(decimal: true),
           decoration: InputDecoration(
@@ -515,9 +538,7 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
                 firstDate: DateTime(DateTime.now().year),
                 initialDate: DateTime.now(),
                 lastDate: DateTime(2100));
-            if (date != null) {
-              print(date);
-            }
+            if (date != null) {}
           },
         ),
       ),
@@ -545,15 +566,5 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
         ),
       ),
     );
-  }
-
-  Widget _buildAboutDialog(BuildContext context) {
-    return new AlertDialog(
-        content: Container(
-      width: double.maxFinite,
-      height: double.maxFinite,
-      child: StreamProvider<List<City>>.value(
-          value: CityService().citys, child: CityList()),
-    ));
   }
 }

@@ -17,9 +17,9 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       routes: {
         LoginAdmin.id: (context) => LoginAdmin(),
-        AdminPasswordChange.id: (context) => AdminPasswordChange(),
-        '/': (context) => AddNewOders(),
-        '/loading': (context) => LoadingPage(),
+        // AdminPasswordChange.id: (context) => AdminPasswordChange(),
+        // '/': (context) => AddNewOders(),
+        // '/loading': (context) => LoadingPage(),
       },
       initialRoute: LoginAdmin.id,
     );

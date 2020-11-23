@@ -129,7 +129,7 @@ class DriverDrawer extends StatelessWidget {
                   onTap: () {
                     AuthService _authService = AuthService();
                     _authService.signOut();
-                    Navigator.pop(context);
+
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => LoginAdmin()),

@@ -17,10 +17,16 @@ class BusinessMain extends StatefulWidget {
 }
 
 class _BusinessMainState extends State<BusinessMain> {
+  String orderNumber = "0";
+  @override
+  void initState() {
+    orderNumber = "0";
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     int totalPrice = 0, paidPrice = 0, remainingPrice = 0;
-    print(widget.uid);
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
@@ -67,8 +73,10 @@ class _BusinessMainState extends State<BusinessMain> {
                               future: OrderService()
                                   .countBusinessOrders(widget.uid),
                               builder: (context, snapshot) {
+                                orderNumber = snapshot.data.toString();
+
                                 return Text(
-                                  snapshot.data.toString() ?? "",
+                                  orderNumber ?? "",
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
@@ -106,7 +114,6 @@ class _BusinessMainState extends State<BusinessMain> {
                                   .total(widget.uid),
                               builder: (context, snapshot) {
                                 totalPrice = snapshot.data;
-                                print(totalPrice);
                                 if (totalPrice == null) {
                                   return Text(
                                     "0",

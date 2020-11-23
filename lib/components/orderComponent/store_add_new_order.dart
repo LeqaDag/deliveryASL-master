@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,8 +7,10 @@ import 'package:flutter/widgets.dart';
 import 'package:sajeda_app/classes/busines.dart';
 import 'package:sajeda_app/classes/city.dart';
 import 'package:sajeda_app/classes/customer.dart';
+import 'package:sajeda_app/classes/deliveriesCost.dart';
 import 'package:sajeda_app/classes/order.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
+import 'package:sajeda_app/services/DeliveriesCostsServices.dart';
 import 'package:sajeda_app/services/businessServices.dart';
 import 'package:sajeda_app/services/cityServices.dart';
 import 'package:sajeda_app/services/customerServices.dart';
@@ -25,15 +28,25 @@ class AddNewOders extends StatefulWidget {
 class _AddNewOdersState extends State<AddNewOders> {
   final _formKey = GlobalKey<FormState>();
   String customerCityID = 'One';
-  String datehh = "" ,typeOrder = ' نوع التوصيل';
-  List<City> cities;
+  String datehh = "", typeOrder = ' نوع التوصيل';
+  List<DeliveriesCosts> cities;
   List<Business> business;
-  String cityID, businessID;
+  String cityID, businessID = "", bus, cityName = "", cityId = "";
+  List<int> orderTotalPrice = [0];
+  static String deliveryPrice = "0";
+
+  @override
+  void initState() {
+    deliveryPrice = "0";
+    orderTotalPrice = [0];
+    businessID = "";
+    super.initState();
+  }
+
   //Order Filed
   TextEditingController orderDescription = new TextEditingController();
   TextEditingController orderPrice = new TextEditingController();
   bool orderType = false;
-  List<int> orderTotalPrice = [10, 20];
   DateTime orderDate = new DateTime.now();
   TextEditingController orderNote = new TextEditingController();
 
@@ -60,6 +73,11 @@ class _AddNewOdersState extends State<AddNewOders> {
         textDirection: TextDirection.rtl,
         child: ListView(
           children: <Widget>[
+            Row(
+              children: <Widget>[
+                _businessChoice(),
+              ],
+            ),
             _infoLabel(
               "معلومات الزبون",
               Icon(Icons.person, color: Colors.white, size: 30),
@@ -89,11 +107,6 @@ class _AddNewOdersState extends State<AddNewOders> {
                     "معلومات الطلبية",
                     Icon(Icons.info, color: Colors.white, size: 30),
                   ),
-                  Row(
-                    children: <Widget>[
-                      _businessChoice(),
-                    ],
-                  ),
                   _orderDescription(orderDescription),
                   Row(
                     children: <Widget>[
@@ -102,9 +115,85 @@ class _AddNewOdersState extends State<AddNewOders> {
                   ),
                   Row(
                     children: <Widget>[
-                      _deliveryPriceByCity(),
-                      _oderPrice(orderPrice),
-                      _totalOderPrice(),
+                      Expanded(
+                        flex: 3,
+                        child: Container(
+                          margin: EdgeInsets.only(
+                              top: 10, bottom: 10, left: 10, right: 10),
+                          child: TextFormField(
+                            onChanged: (String newValue) {
+                              setState(() {
+                                deliveryPrice = newValue;
+                              });
+                            },
+                            enabled: false,
+                            decoration: InputDecoration(
+                              labelText: deliveryPrice,
+                              labelStyle: TextStyle(
+                                  fontFamily: 'Amiri',
+                                  fontSize: 18.0,
+                                  color: Colors.red),
+                              contentPadding: EdgeInsets.only(right: 20.0),
+                              filled: true,
+                              fillColor: Color(0xffC6C4C4),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 3,
+                        child: Container(
+                          margin: EdgeInsets.only(
+                              top: 10, bottom: 10, left: 10, right: 0),
+                          child: TextFormField(
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'ادخل سعر المنتج ';
+                              }
+                              return null;
+                            },
+                            onChanged: (value) {
+                              setState(() {
+                                orderTotalPrice[0] = (int.parse(value) +
+                                    int.parse(deliveryPrice));
+                              });
+                            },
+                            controller: orderPrice,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              labelText: "سعر المنتج",
+                              labelStyle: TextStyle(
+                                  fontFamily: 'Amiri',
+                                  fontSize: 18.0,
+                                  color: Color(0xff316686)),
+                              contentPadding: EdgeInsets.only(right: 20.0),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 3,
+                        child: Container(
+                          margin: EdgeInsets.only(
+                              top: 10, bottom: 10, left: 10, right: 0),
+                          child: TextFormField(
+                            enabled: false,
+                            decoration: InputDecoration(
+                              labelText: orderTotalPrice[0].toString(),
+                              contentPadding: EdgeInsets.only(right: 20.0),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                   _notes(orderNote),
@@ -117,70 +206,6 @@ class _AddNewOdersState extends State<AddNewOders> {
       ),
     );
   }
-
-  // ملاحظة: عند الاضافة الى قاعدة البيانات لا بد من اعطاء براميتر لكل دالة وخصاية المفتاح للدوال
-  Widget _deliveryPriceByCity() {
-    return Expanded(
-      flex: 3,
-      child: Container(
-        margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
-        child: TextFormField(
-          enabled: false,
-          decoration: InputDecoration(
-            labelStyle: TextStyle(
-                fontFamily: 'Amiri', fontSize: 18.0, color: Colors.red),
-            contentPadding: EdgeInsets.only(right: 20.0),
-            filled: true,
-            fillColor: Color(0xffC6C4C4),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        ),
-      ),
-    );
-  } // سعر التوصيل حسب المدينة المختارة
-
-  Widget _oderPrice(TextEditingController fieldController) {
-    return Expanded(
-      flex: 3,
-      child: Container(
-        margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 0),
-        child: TextFormField(
-          controller: fieldController,
-          keyboardType: TextInputType.number,
-          decoration: InputDecoration(
-            labelText: "سعر المنتج",
-            labelStyle: TextStyle(
-                fontFamily: 'Amiri', fontSize: 18.0, color: Color(0xff316686)),
-            contentPadding: EdgeInsets.only(right: 20.0),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        ),
-      ),
-    );
-  } // سعر المنتج المدخل من قبل البائع
-
-  Widget _totalOderPrice() {
-    return Expanded(
-      flex: 3,
-      child: Container(
-        margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 0),
-        child: TextFormField(
-          enabled: false,
-          decoration: InputDecoration(
-            labelText: "السعر الكلي",
-            contentPadding: EdgeInsets.only(right: 20.0),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        ),
-      ),
-    );
-  } // السعر الكلي للمنتح = سعر التوصيل + سعر المنتج ،، وهو الذي يظهر للسائق
 
   Widget _infoLabel(String lableText, Icon icon) {
     return Container(
@@ -258,8 +283,9 @@ class _AddNewOdersState extends State<AddNewOders> {
       flex: 2,
       child: Container(
         margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
-        child: StreamBuilder<List<City>>(
-            stream: CityService().citys,
+        child: StreamBuilder<List<DeliveriesCosts>>(
+            stream: DeliveriesCostsServices(businessId: businessID)
+                .deliveryCostsBusiness,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Text('Loading...');
@@ -293,7 +319,7 @@ class _AddNewOdersState extends State<AddNewOders> {
                   items: cities.map(
                     (city) {
                       return DropdownMenuItem<String>(
-                        value: city.uid.toString(),
+                        value: city.city.toString(),
                         child: Align(
                             alignment: Alignment.centerRight,
                             child: Text(
@@ -309,7 +335,17 @@ class _AddNewOdersState extends State<AddNewOders> {
                   onChanged: (val) {
                     setState(() {
                       cityID = val;
-                      print(cityID);
+                      FirebaseFirestore.instance
+                          .collection('deliveries_costs')
+                          .where('city', isEqualTo: cityID)
+                          .get()
+                          .then((value) => {
+                                setState(() {
+                                  deliveryPrice =
+                                      value.docs[0]["deliveryPrice"];
+                                  cityName = value.docs[0]["name"];
+                                })
+                              });
                     });
                   },
                 );
@@ -413,29 +449,6 @@ class _AddNewOdersState extends State<AddNewOders> {
     );
   }
 
-  Widget _orderDate() {
-    return Expanded(
-      flex: 3,
-      child: Container(
-        margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 0),
-        child: TextFormField(
-          enabled: false,
-          decoration: InputDecoration(
-            contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
-            labelText: datehh,
-            prefixIcon: Icon(
-              Icons.date_range,
-              color: Color(0xff316686),
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _notes(TextEditingController fieldController) {
     return Container(
       margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
@@ -470,38 +483,37 @@ class _AddNewOdersState extends State<AddNewOders> {
           ),
           onPressed: () async {
             if (_formKey.currentState.validate()) {
-                            // print(int.parse(orderPrice.text) +
-                            //     int.parse(deliveryPrice));
-                            if (typeOrder == 'مستعجل') orderType = true;
-                            Customer customer = new Customer(
-                                name: customerName.text,
-                                phoneNumber:
-                                    int.parse(customerPhoneNumber.text),
-                                phoneNumberAdditional: int.parse(
-                                    customerPhoneNumberAdditional.text),
-                                cityID: cityID,
-                                address: customerAddress.text,
-                                businesID:businessID,
-                                isArchived: false);
-                            String customerID = await CustomerService()
-                                .addcustomerData(customer);
+              // print(int.parse(orderPrice.text) +
+              //     int.parse(deliveryPrice));
+              if (typeOrder == 'مستعجل') orderType = true;
+              Customer customer = new Customer(
+                  name: customerName.text,
+                  phoneNumber: int.parse(customerPhoneNumber.text),
+                  phoneNumberAdditional:
+                      int.parse(customerPhoneNumberAdditional.text),
+                  cityID: cityID,
+                  cityName: cityName,
+                  address: customerAddress.text,
+                  businesID: businessID,
+                  isArchived: false);
+              String customerID =
+                  await CustomerService().addcustomerData(customer);
 
-                            await OrderService().addOrderData(new Order(
-                                price: int.parse(orderPrice.text),
-                                totalPrice: orderTotalPrice,
-                                type: orderType,
-                                description: orderDescription.text,
-                                date: orderDate,
-                                note: orderNote.text,
-                                customerID: customerID,
-                                businesID: businessID,
-                                driverID: ""));
-                            Toast.show("تم اضافة الطلبية بنجاح", context,
-                                duration: Toast.LENGTH_LONG,
-                                gravity: Toast.BOTTOM);
-                            await Future.delayed(Duration(milliseconds: 1000));
-                            Navigator.of(context).pop();
-                          }
+              await OrderService().addOrderData(new Order(
+                  price: int.parse(orderPrice.text),
+                  totalPrice: orderTotalPrice,
+                  type: orderType,
+                  description: orderDescription.text,
+                  date: orderDate,
+                  note: orderNote.text,
+                  customerID: customerID,
+                  businesID: businessID,
+                  driverID: ""));
+              Toast.show("تم اضافة الطلبية بنجاح", context,
+                  duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+              await Future.delayed(Duration(milliseconds: 1000));
+              Navigator.of(context).pop();
+            }
             // Customer customer = new Customer(
             //     name: customerName.text,
             //     phoneNumber: int.parse(customerPhoneNumber.text),
@@ -542,7 +554,7 @@ class _AddNewOdersState extends State<AddNewOders> {
               } else {
                 business = snapshot.data;
                 return DropdownButtonFormField<String>(
-                  value: businessID,
+                  value: bus,
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
@@ -585,6 +597,9 @@ class _AddNewOdersState extends State<AddNewOders> {
                   onChanged: (val) {
                     setState(() {
                       businessID = val;
+                      deliveryPrice = "0";
+                      orderTotalPrice[0] = 0;
+                      orderPrice.text = "";
                     });
                   },
                 );

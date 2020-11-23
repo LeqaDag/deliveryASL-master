@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sajeda_app/classes/deliveriesCost.dart';
 
 class DeliveriesCostsServices {
-  final String uid;
-  DeliveriesCostsServices({this.uid});
+  final String uid, businessId;
+  DeliveriesCostsServices({this.uid, this.businessId});
 
   final CollectionReference deliveryCostCollection =
       FirebaseFirestore.instance.collection('deliveries_costs');
@@ -16,6 +16,7 @@ class DeliveriesCostsServices {
       'city': deliveryCost.city,
       'businesID': deliveryCost.businesID,
       'isArchived': deliveryCost.isArchived,
+      'name' : deliveryCost.name
     });
   }
 
@@ -34,6 +35,7 @@ class DeliveriesCostsServices {
       city: snapshot.data()['city'],
       businesID: snapshot.data()['businesID'],
       isArchived: snapshot.data()['isArchived'],
+      name: snapshot.data()['name']
     );
   }
 
@@ -47,6 +49,7 @@ class DeliveriesCostsServices {
         city: doc.data()['city'] ?? '',
         businesID: doc.data()['businesID'] ?? '',
         isArchived: doc.data()['isArchived'] ?? '',
+        name: doc.data()['name']??''
       );
     }).toList();
   }
@@ -61,6 +64,14 @@ class DeliveriesCostsServices {
   Stream<List<DeliveriesCosts>> get deliveryCosts {
     return deliveryCostCollection
         .where('isArchived', isEqualTo: false)
+        .snapshots()
+        .map(_deliveryCostListFromSnapshot);
+  }
+
+  Stream<List<DeliveriesCosts>> get deliveryCostsBusiness {
+    return deliveryCostCollection
+        .where('isArchived', isEqualTo: false)
+        .where('businesID', isEqualTo: businessId)
         .snapshots()
         .map(_deliveryCostListFromSnapshot);
   }

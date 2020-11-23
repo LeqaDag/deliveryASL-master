@@ -452,55 +452,37 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                           //         );
                                           //       }),
                                           // ),
-                                          FutureBuilder<String>(
-                                              future: CustomerService(
-                                                      uid: order.customerID)
-                                                  .customerCity,
-                                              builder: (context, snapshot) {
-                                                if (snapshot.hasData) {
-                                                  cityId = snapshot.data;
-                                                  print(cityId);
-
-                                                  return Text(
-                                                    "",
-                                                  );
-                                                } else {
-                                                  return Text(
-                                                    "",
-                                                  );
-                                                }
-                                              }),
                                           Container(
-                                            width: width - 50,
-                                            height: 80,
-                                            child: StreamBuilder<City>(
-                                                stream: CityService(uid: cityId)
-                                                    .cityByID,
-                                                builder: (context, snapshot) {
-                                                  City city = snapshot.data;
-                                                  // print(cityId);
-                                                  if (snapshot.data == null) {
-                                                    return Card(
-                                                      margin:
-                                                          EdgeInsets.fromLTRB(
-                                                              0.0,
-                                                              10.0,
-                                                              0.0,
-                                                              16.0),
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10.0),
-                                                      ),
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
-                                                        children: <Widget>[
-                                                          Padding(
-                                                            padding:
-                                                                EdgeInsets.only(
+                                              width: width - 50,
+                                              height: 80,
+                                              child: FutureBuilder<String>(
+                                                  future: CustomerService(
+                                                          uid: order.customerID)
+                                                      .customerCity,
+                                                  builder: (context, snapshot) {
+                                                    if (snapshot.hasData) {
+                                                      cityId = snapshot.data;
+                                                      return Card(
+                                                          margin: EdgeInsets
+                                                              .fromLTRB(
+                                                                  0.0,
+                                                                  10.0,
+                                                                  0.0,
+                                                                  16.0),
+                                                          shape:
+                                                              RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10.0),
+                                                          ),
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .start,
+                                                            children: <Widget>[
+                                                              Padding(
+                                                                padding: EdgeInsets.only(
                                                                     left: height *
                                                                         0.025,
                                                                     right:
@@ -512,104 +494,55 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                                     bottom:
                                                                         height *
                                                                             0),
-                                                            child: Icon(
-                                                              Icons.location_on,
-                                                              color: Colors
-                                                                  .blueGrey,
-                                                            ),
-                                                          ),
-                                                          Text(
-                                                            "يتم التحميل ... ",
-                                                            style: TextStyle(
-                                                              fontSize: 16,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              fontFamily:
-                                                                  "Amiri",
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    );
-                                                  } else {
-                                                    return Card(
-                                                      margin:
-                                                          EdgeInsets.fromLTRB(
-                                                              0.0,
-                                                              10.0,
-                                                              0.0,
-                                                              16.0),
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10.0),
-                                                      ),
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
-                                                        children: <Widget>[
-                                                          Padding(
-                                                            padding:
-                                                                EdgeInsets.only(
-                                                                    left: height *
-                                                                        0.025,
-                                                                    right:
-                                                                        height *
-                                                                            0.025,
-                                                                    top:
-                                                                        height *
-                                                                            0,
-                                                                    bottom:
-                                                                        height *
-                                                                            0),
-                                                            child: Icon(
-                                                              Icons.location_on,
-                                                              color: Colors
-                                                                  .blueGrey,
-                                                            ),
-                                                          ),
-                                                          Text(
-                                                            city.name ?? "",
-                                                            style: TextStyle(
-                                                              fontSize: 16,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              fontFamily:
-                                                                  "Amiri",
-                                                            ),
-                                                          ),
-                                                          FutureBuilder<String>(
-                                                              future: CustomerService(
-                                                                      uid: order
-                                                                          .customerID)
-                                                                  .customerAdress,
-                                                              builder: (context,
-                                                                  snapshot) {
-                                                                return Text(
-                                                                  " - ${snapshot.data}" ??
-                                                                      "",
-                                                                  style:
-                                                                      TextStyle(
-                                                                    fontSize:
-                                                                        16,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    fontFamily:
-                                                                        "Amiri",
-                                                                  ),
-                                                                );
-                                                              }),
-                                                        ],
-                                                      ),
-                                                    );
-                                                  }
-                                                }),
-                                          )
+                                                                child: Icon(
+                                                                  Icons
+                                                                      .location_on,
+                                                                  color: Colors
+                                                                      .blueGrey,
+                                                                ),
+                                                              ),
+                                                              Text(
+                                                                cityId ?? "",
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontSize: 16,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  fontFamily:
+                                                                      "Amiri",
+                                                                ),
+                                                              ),
+                                                              FutureBuilder<
+                                                                      String>(
+                                                                  future: CustomerService(
+                                                                          uid: order
+                                                                              .customerID)
+                                                                      .customerAdress,
+                                                                  builder: (context,
+                                                                      snapshot) {
+                                                                    return Text(
+                                                                      " - ${snapshot.data}" ??
+                                                                          "",
+                                                                      style:
+                                                                          TextStyle(
+                                                                        fontSize:
+                                                                            16,
+                                                                        fontWeight:
+                                                                            FontWeight.bold,
+                                                                        fontFamily:
+                                                                            "Amiri",
+                                                                      ),
+                                                                    );
+                                                                  }),
+                                                            ],
+                                                          ));
+                                                    } else {
+                                                      return Text(
+                                                        "",
+                                                      );
+                                                    }
+                                                  })),
                                         ],
                                       ),
                                       Row(

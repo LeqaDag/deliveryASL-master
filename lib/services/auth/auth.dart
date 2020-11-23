@@ -7,7 +7,7 @@ class AuthService {
   String _storageKeyMobileToken = "token";
 
   User _userFromFirebaseUser(User user) {
-    return user != null ?  user : null;
+    return user != null ? user : null;
   }
 
   Stream<User> get user {

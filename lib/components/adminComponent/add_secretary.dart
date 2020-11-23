@@ -143,6 +143,8 @@ class _AddSecretaryState extends State<AddSecretary> {
                       validator: (value) {
                         if (value.isEmpty) {
                           return 'الرجاء ادخال رقم الجوال';
+                        } else if (value.length != 10 || value.length > 10) {
+                          return 'الرجاء ادخال رقم جوال صحيح';
                         }
                         return null;
                       },
