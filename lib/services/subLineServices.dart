@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'dart:math';
 import '../classes/subLine.dart';
 
 class SubLineServices {
@@ -75,10 +75,14 @@ class SubLineServices {
         .map(_subLineListFromSnapshot);
   }
 
-//   Stream<int> get maxIndex {
-//     return subLineCollection.where('isArchived', isEqualTo: false)
-//         .where('mainLineID', isEqualTo: mainLineID).get().then((value) {
-// return value.docs.map()
-//         })
-//   } 
+  Future<int> get maxIndex {
+    return subLineCollection
+        .where('isArchived', isEqualTo: false)
+        .where('mainLineID', isEqualTo: mainLineID)
+        .get()
+        .then((value) {
+      return value.docs.map<int>((e) => e['indexLine']).reduce(max);
+    });
+  }
 }
+// value.data()['indexLine'].reduce(max);
