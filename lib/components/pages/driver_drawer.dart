@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sajeda_app/components/driverComponent/driverAccount/driver_main.dart';
 import 'package:sajeda_app/components/driverComponent/driverAccount/driver_profile.dart';
+import 'package:sajeda_app/components/driverComponent/sheetComponent/driver_daily_sheet.dart';
 import 'package:sajeda_app/components/screenComponent/admin_login.dart';
 import 'package:sajeda_app/services/auth/auth.dart';
 
@@ -105,6 +106,35 @@ class DriverDrawer extends StatelessWidget {
                       MaterialPageRoute(
                           builder: (context) =>
                               DriverProfile(name: name, uid: uid)),
+                    );
+                  },
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0),
+              child: Card(
+                color: Color(0xff464646),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: ListTile(
+                  title: Text(
+                    'الانجاز اليومي',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18.0,
+                        fontFamily: 'Amiri'),
+                  ),
+                  leading: Image.asset('assets/profile-business-drawer.png',
+                      width: 32),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              DriverDailySheet(name: name, driverID: uid)),
                     );
                   },
                 ),

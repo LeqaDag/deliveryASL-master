@@ -351,6 +351,7 @@ class OrderService {
         {
           return orderCollection
               .where('businesID', isEqualTo: businesID)
+              .where('cityID', isEqualTo: "APdWKRxcqyKRgrMteEdU")
               .where('isArchived', isEqualTo: false)
               .snapshots()
               .map(_orderListFromSnapshot);

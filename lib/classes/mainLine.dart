@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 class MainLine {
   String uid;
   String name;
-  String cityID;
+  //String cityID;
 
   bool isArchived;
   DateTime deleteDate;
@@ -12,7 +12,7 @@ class MainLine {
   MainLine({
     this.uid,
     @required this.name,
-    @required this.cityID,
+    //@required this.cityID,
     this.isArchived = false,
     this.deleteDate,
     this.deleteUser,

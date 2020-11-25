@@ -494,7 +494,41 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
+    IconData icon;
+    String stateOrder;
+    Color color;
     TextEditingController driverPrice = new TextEditingController();
+
+    if (order.isCancelld == true) {
+      color = KBadgeColorAndContainerBorderColorCancelledOrders;
+      icon = Icons.cancel;
+      stateOrder = "ملغي";
+    } else if (order.isDelivery == true) {
+      color = KAllOrdersListTileColor;
+      icon = Icons.business_center_outlined;
+      stateOrder = "جاهز للتوزيع";
+    } else if (order.isDone == true) {
+      color = KBadgeColorAndContainerBorderColorReadyOrders;
+      icon = Icons.done;
+      stateOrder = "جاهز";
+    } else if (order.isLoading == true) {
+      color = KBadgeColorAndContainerBorderColorLoadingOrder;
+      icon = Icons.arrow_circle_up_rounded;
+      stateOrder = "محمل";
+    } else if (order.isUrgent == true) {
+      color = KBadgeColorAndContainerBorderColorUrgentOrders;
+      icon = Icons.info_outline;
+      stateOrder = "مستعجل";
+    } else if (order.isReturn == true) {
+      color = KBadgeColorAndContainerBorderColorReturnOrders;
+      icon = Icons.restore;
+      stateOrder = "راجع";
+    } else if (order.isReceived == true) {
+      color = KBadgeColorAndContainerBorderColorRecipientOrder;
+      icon = Icons.assignment_turned_in_outlined;
+      stateOrder = "تم استلامه";
+    }
+
     if (orderState == 'isDone') {
       return InkWell(
         onTap: () {
@@ -940,7 +974,6 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Row(
-                        //3
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
                           Padding(
@@ -954,36 +987,31 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                               color: Colors.blue[800],
                             ),
                           ),
-                          //  SizedBox(width: 33,),
                           FutureBuilder<String>(
                               future: CustomerService(uid: order.customerID)
                                   .customerCity,
                               builder: (context, snapshot) {
-                                String cityID = snapshot.data;
-                                return StreamBuilder<City>(
-                                    stream: CityService(uid: cityID).cityByID,
-                                    builder: (context, snapshot) {
-                                      if (snapshot.hasData) {
-                                        City city = snapshot.data;
-                                        return Text(
-                                          city.name,
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: "Amiri",
-                                          ),
-                                        );
-                                      } else {
-                                        return Text(
-                                          "",
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: "Amiri",
-                                          ),
-                                        );
-                                      }
-                                    });
+                                return Text(
+                                  snapshot.data ?? "",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "Amiri",
+                                  ),
+                                );
+                              }),
+                          FutureBuilder<String>(
+                              future: CustomerService(uid: order.customerID)
+                                  .customerAdress,
+                              builder: (context, snapshot) {
+                                return Text(
+                                  ' - ${snapshot.data}' ?? "",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "Amiri",
+                                  ),
+                                );
                               }),
                         ],
                       ),
@@ -1022,13 +1050,13 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                                 top: height * 0,
                                 bottom: height * 0),
                             child: Icon(
-                              Icons.subdirectory_arrow_left,
-                              color: Colors.blue[800],
+                              icon,
+                              color: color,
                             ),
                           ),
                           //  SizedBox(width: 33,),
                           Text(
-                            "تم التوصيل",
+                            stateOrder,
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,

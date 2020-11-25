@@ -21,13 +21,15 @@ class _AddLineState extends State<AddLine> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController _mainLineController = new TextEditingController();
   static List<String> subLineList = [null];
-  List<City> cities;
+  static List<String> citiesList = [null];
   String cityID;
-@override
+  @override
   void initState() {
     subLineList = [null];
+    citiesList = [null];
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -106,66 +108,66 @@ class _AddLineState extends State<AddLine> {
                     SizedBox(
                       height: 20,
                     ),
-                    Container(
-                      margin: EdgeInsets.all(10.0),
-                      child: StreamBuilder<List<City>>(
-                          stream: CityService().citys,
-                          builder: (context, snapshot) {
-                            if (!snapshot.hasData) {
-                              return Text('Loading...');
-                            } else {
-                              cities = snapshot.data;
-                              return DropdownButtonFormField<String>(
-                                value: cityID,
-                                decoration: InputDecoration(
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      borderSide: BorderSide(
-                                        width: 1.0,
-                                        color: Color(0xff636363),
-                                      ),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      borderSide: BorderSide(
-                                        width: 2.0,
-                                        color: Color(0xff73a16a),
-                                      ),
-                                    ),
-                                    contentPadding: EdgeInsets.only(
-                                        right: 20.0, left: 10.0),
-                                    labelText: "المدينة",
-                                    labelStyle: TextStyle(
-                                        fontFamily: 'Amiri',
-                                        fontSize: 18.0,
-                                        color: Color(0xff316686))),
-                                items: cities.map(
-                                  (city) {
-                                    return DropdownMenuItem<String>(
-                                      value: city.uid.toString(),
-                                      child: Align(
-                                        alignment: Alignment.centerRight,
-                                        child: Text(
-                                          city.name,
-                                          style: TextStyle(
-                                            fontFamily: 'Amiri',
-                                            fontSize: 16.0,
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ).toList(),
-                                onChanged: (val) {
-                                  setState(() {
-                                    cityID = val;
-                                    print(cityID);
-                                  });
-                                },
-                              );
-                            }
-                          }),
-                    ),
+                    // Container(
+                    //   margin: EdgeInsets.all(10.0),
+                    //   child: StreamBuilder<List<City>>(
+                    //       stream: CityService().citys,
+                    //       builder: (context, snapshot) {
+                    //         if (!snapshot.hasData) {
+                    //           return Text('Loading...');
+                    //         } else {
+                    //           cities = snapshot.data;
+                    //           return DropdownButtonFormField<String>(
+                    //             value: cityID,
+                    //             decoration: InputDecoration(
+                    //                 enabledBorder: OutlineInputBorder(
+                    //                   borderRadius: BorderRadius.circular(10.0),
+                    //                   borderSide: BorderSide(
+                    //                     width: 1.0,
+                    //                     color: Color(0xff636363),
+                    //                   ),
+                    //                 ),
+                    //                 focusedBorder: OutlineInputBorder(
+                    //                   borderRadius: BorderRadius.circular(10.0),
+                    //                   borderSide: BorderSide(
+                    //                     width: 2.0,
+                    //                     color: Color(0xff73a16a),
+                    //                   ),
+                    //                 ),
+                    //                 contentPadding: EdgeInsets.only(
+                    //                     right: 20.0, left: 10.0),
+                    //                 labelText: "المدينة",
+                    //                 labelStyle: TextStyle(
+                    //                     fontFamily: 'Amiri',
+                    //                     fontSize: 18.0,
+                    //                     color: Color(0xff316686))),
+                    //             items: cities.map(
+                    //               (city) {
+                    //                 return DropdownMenuItem<String>(
+                    //                   value: city.uid.toString(),
+                    //                   child: Align(
+                    //                     alignment: Alignment.centerRight,
+                    //                     child: Text(
+                    //                       city.name,
+                    //                       style: TextStyle(
+                    //                         fontFamily: 'Amiri',
+                    //                         fontSize: 16.0,
+                    //                       ),
+                    //                     ),
+                    //                   ),
+                    //                 );
+                    //               },
+                    //             ).toList(),
+                    //             onChanged: (val) {
+                    //               setState(() {
+                    //                 cityID = val;
+                    //                 print(cityID);
+                    //               });
+                    //             },
+                    //           );
+                    //         }
+                    //       }),
+                    // ),
                     ..._getFriends(),
                     SizedBox(
                       height: 40,
@@ -180,7 +182,7 @@ class _AddLineState extends State<AddLine> {
                             String mainLineID = await MainLineServices()
                                 .addMainLineData(new MainLine(
                               name: _mainLineController.text,
-                              cityID: cityID,
+                              // cityID: cityID,
                             ));
 
                             subLineList.asMap().forEach((index, subline) async {
@@ -189,6 +191,7 @@ class _AddLineState extends State<AddLine> {
                                   new SubLine(
                                       mainLineID: mainLineID,
                                       indexLine: index,
+                                      cityID: citiesList[index],
                                       name: subline));
                             });
 
@@ -261,8 +264,10 @@ class _AddLineState extends State<AddLine> {
         if (add) {
           // add new text-fields at the top of all friends textfields
           subLineList.insert(index, null);
+          citiesList.insert(index, null);
         } else
           subLineList.removeAt(index);
+        citiesList.removeAt(index);
         setState(() {});
       },
       child: Container(
@@ -290,7 +295,8 @@ class FriendTextFields extends StatefulWidget {
 
 class _FriendTextFieldsState extends State<FriendTextFields> {
   TextEditingController _nameController;
-
+  List<City> cities;
+  String cityID;
   @override
   void initState() {
     super.initState();
@@ -299,41 +305,108 @@ class _FriendTextFieldsState extends State<FriendTextFields> {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: _nameController,
-      onChanged: (v) => _AddLineState.subLineList[widget.index] = v,
-      onSaved: (v) => _AddLineState.subLineList[widget.index] = v,
-      decoration: InputDecoration(
-        labelText: 'الخط الفرعي',
-        labelStyle: TextStyle(
-            fontFamily: 'Amiri', fontSize: 18.0, color: Color(0xff316686)),
-        contentPadding: EdgeInsets.only(right: 20.0),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(
-            width: 1.0,
-            color: Color(0xff636363),
+    return Row(
+      children: <Widget>[
+        Expanded(
+            child: TextFormField(
+          controller: _nameController,
+          onChanged: (v) => _AddLineState.subLineList[widget.index] = v,
+          onSaved: (v) => _AddLineState.subLineList[widget.index] = v,
+          decoration: InputDecoration(
+            labelText: 'الخط الفرعي',
+            labelStyle: TextStyle(
+                fontFamily: 'Amiri', fontSize: 18.0, color: Color(0xff316686)),
+            contentPadding: EdgeInsets.only(right: 20.0),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.0),
+              borderSide: BorderSide(
+                width: 1.0,
+                color: Color(0xff636363),
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.0),
+              borderSide: BorderSide(
+                width: 2.0,
+                color: Color(0xff73a16a),
+              ),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.0),
+              borderSide: BorderSide(
+                width: 2.0,
+                color: Colors.red[600],
+              ),
+            ),
           ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(
-            width: 2.0,
-            color: Color(0xff73a16a),
-          ),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(
-            width: 2.0,
-            color: Colors.red[600],
-          ),
-        ),
-      ),
-      validator: (v) {
-        if (v.trim().isEmpty) return 'رجاءً أدخل اسم الخط الفرعي ';
-        return null;
-      },
+          validator: (v) {
+            if (v.trim().isEmpty) return 'رجاءً أدخل اسم الخط الفرعي ';
+            return null;
+          },
+        )),
+        Expanded(
+            child: Container(
+          margin: EdgeInsets.all(10.0),
+          child: StreamBuilder<List<City>>(
+              stream: CityService().citys,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return Text('Loading...');
+                } else {
+                  cities = snapshot.data;
+                  return DropdownButtonFormField<String>(
+                    value: _AddLineState.citiesList[widget.index],
+                    decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          borderSide: BorderSide(
+                            width: 1.0,
+                            color: Color(0xff636363),
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          borderSide: BorderSide(
+                            width: 2.0,
+                            color: Color(0xff73a16a),
+                          ),
+                        ),
+                        contentPadding:
+                            EdgeInsets.only(right: 20.0, left: 10.0),
+                        labelText: "المدينة",
+                        labelStyle: TextStyle(
+                            fontFamily: 'Amiri',
+                            fontSize: 18.0,
+                            color: Color(0xff316686))),
+                    items: cities.map(
+                      (city) {
+                        return DropdownMenuItem<String>(
+                          value: city.uid.toString(),
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              city.name,
+                              style: TextStyle(
+                                fontFamily: 'Amiri',
+                                fontSize: 16.0,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ).toList(),
+                    onChanged: (val) {
+                      setState(() {
+                        // cityID = val;
+                        _AddLineState.citiesList[widget.index] = val;
+                        // print(cityID);
+                      });
+                    },
+                  );
+                }
+              }),
+        )),
+      ],
     );
   }
 }

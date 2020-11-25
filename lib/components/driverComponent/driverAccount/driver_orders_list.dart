@@ -138,7 +138,7 @@ class _CustomDriverOrdersState extends State<CustomDriverOrders> {
                                 return Text(
                                   snapshot.data ?? "",
                                   style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     fontWeight: FontWeight.bold,
                                     fontFamily: "Amiri",
                                   ),
@@ -200,7 +200,7 @@ class _CustomDriverOrdersState extends State<CustomDriverOrders> {
                                 return Text(
                                   snapshot.data ?? "",
                                   style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     fontWeight: FontWeight.bold,
                                     fontFamily: "Amiri",
                                   ),
@@ -214,7 +214,7 @@ class _CustomDriverOrdersState extends State<CustomDriverOrders> {
                                 return Text(
                                   ' - ${snapshot.data}' ?? "",
                                   style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     fontWeight: FontWeight.bold,
                                     fontFamily: "Amiri",
                                   ),
@@ -236,7 +236,7 @@ class _CustomDriverOrdersState extends State<CustomDriverOrders> {
                           Text(
                             widget.order.price.toString(),
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 14,
                               fontWeight: FontWeight.bold,
                               fontFamily: "Amiri",
                             ),
