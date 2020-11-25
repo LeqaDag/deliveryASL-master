@@ -24,6 +24,7 @@ class SubLineServices {
   Future<void> updateData(SubLine subLine) async {
     return await subLineCollection.doc(uid).update({
       'name': subLine.name,
+      'cityID': subLine.cityID,
     });
   }
 
