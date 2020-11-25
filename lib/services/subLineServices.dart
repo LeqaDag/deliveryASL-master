@@ -74,4 +74,11 @@ class SubLineServices {
         .snapshots()
         .map(_subLineListFromSnapshot);
   }
+
+//   Stream<int> get maxIndex {
+//     return subLineCollection.where('isArchived', isEqualTo: false)
+//         .where('mainLineID', isEqualTo: mainLineID).get().then((value) {
+// return value.docs.map()
+//         })
+//   } 
 }
