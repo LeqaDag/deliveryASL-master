@@ -11,7 +11,8 @@ import '../../../constants.dart';
 
 class AddInvoiceDriver extends StatefulWidget {
   final String name, driverId, driverName;
-  AddInvoiceDriver({this.name, this.driverId, this.driverName});
+  final int total;
+  AddInvoiceDriver({this.name, this.driverId, this.driverName, this.total});
 
   @override
   _AddInvoiceDriverState createState() => _AddInvoiceDriverState();
@@ -22,7 +23,6 @@ class _AddInvoiceDriverState extends State<AddInvoiceDriver> {
   bool isLoading = false;
 
   List<Order> orders;
-  int total;
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
   final CollectionReference invoiceCollection =
@@ -113,16 +113,10 @@ class _AddInvoiceDriverState extends State<AddInvoiceDriver> {
                             stream:
                                 OrderService().driverAllOrders(widget.driverId),
                             builder: (context, snapshot) {
-                              int totalPrice = 0;
                               if (!snapshot.hasData) {
                                 return Text('0');
                               } else {
-                                orders = snapshot.data;
-                                orders.forEach((element) {
-                                  totalPrice += element.driverPrice;
-                                  total = totalPrice;
-                                });
-                                return Text(totalPrice.toString());
+                                return Text(widget.total.toString());
                               }
                             }),
                       ],
@@ -254,7 +248,7 @@ class _AddInvoiceDriverState extends State<AddInvoiceDriver> {
       "adminID": user.uid,
       "driverID": widget.driverId,
       "paidPriceDriver": int.parse(priceController.text),
-      "totalPriceDriver": total,
+      "totalPriceDriver": widget.total,
       "isArchived": false,
     }).then((value) async {
       isLoading = false;

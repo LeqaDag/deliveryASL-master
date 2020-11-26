@@ -242,7 +242,7 @@ class _LoginAdminState extends State<LoginAdmin> {
               context,
               MaterialPageRoute(
                   builder: (context) => AdminHome(
-                        name: value.docs[0]["name"],
+                        name: value.docs[0]["name"], 
                       )),
             );
           } else if (value.docs[0]["userType"] == '1') {

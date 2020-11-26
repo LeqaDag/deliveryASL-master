@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:sajeda_app/classes/busines.dart';
 import 'package:sajeda_app/classes/driver.dart';
 import 'package:sajeda_app/classes/invoice.dart';
+import 'package:sajeda_app/classes/order.dart';
 import 'package:sajeda_app/services/businessServices.dart';
 import 'package:sajeda_app/services/driverServices.dart';
 import 'package:sajeda_app/services/invoiceServices.dart';
@@ -17,7 +18,8 @@ class AllInvoiceDrivers extends StatelessWidget {
   final Color color;
   final Function onTapBox;
   final String driverId, name;
-
+  List<Order> orders;
+  int total = 0;
   AllInvoiceDrivers({
     @required this.color,
     @required this.onTapBox,
@@ -113,11 +115,13 @@ class AllInvoiceDrivers extends StatelessWidget {
                                   scale: 1.5,
                                 ),
                               ),
-                              FutureBuilder<int>(
-                                  future: InvoiceService(driverId: driverId)
-                                      .totalPriceDriver(driverId),
+                              StreamBuilder<List<Order>>(
+                                  stream:
+                                      OrderService().driversAllOrders(driverId),
                                   builder: (context, snapshot) {
-                                    if (snapshot.data == null) {
+                                    int totalPrice = 0;
+
+                                    if (!snapshot.hasData) {
                                       return Text(
                                         "0",
                                         style: TextStyle(
@@ -127,8 +131,14 @@ class AllInvoiceDrivers extends StatelessWidget {
                                         ),
                                       );
                                     } else {
+                                      orders = snapshot.data;
+                                      orders.forEach((element) {
+                                        totalPrice += element.driverPrice;
+                                        print(totalPrice);
+                                        total = totalPrice;
+                                      });
                                       return Text(
-                                        snapshot.data.toString() ?? "",
+                                        total.toString() ?? "",
                                         style: TextStyle(
                                           fontSize: 15,
                                           fontWeight: FontWeight.bold,
@@ -149,6 +159,7 @@ class AllInvoiceDrivers extends StatelessWidget {
                                               driverId: driverId,
                                               name: name,
                                               driverName: driver.name,
+                                              total: total
                                             )),
                                   );
                                 },

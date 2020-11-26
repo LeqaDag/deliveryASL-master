@@ -37,7 +37,8 @@ class _MainLineDetailsState extends State<MainLineDetails> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => AddSubLine(name: widget.name,mainLineID : mainLine.uid),
+                          builder: (context) => AddSubLine(
+                              name: widget.name, mainLineID: mainLine.uid),
                         ),
                       );
                     },
@@ -72,12 +73,33 @@ class _MainLineDetailsState extends State<MainLineDetails> {
                   child: StreamProvider<List<SubLine>>.value(
                     value:
                         SubLineServices(mainLineID: widget.mainLineID).subLines,
-                    child: SubLineList(name: widget.name),
+                    child: SubLineList1(
+                        name: widget.name, mainLineID: widget.mainLineID),
+                    catchError: (_, __) => null,
                   ),
                 ));
           } else {
             return LoadingData();
           }
         });
+  }
+}
+
+class SubLineList1 extends StatefulWidget {
+  final String name, mainLineID;
+  SubLineList1({this.name, this.mainLineID});
+  @override
+  _SubLineList1State createState() => _SubLineList1State();
+}
+
+class _SubLineList1State extends State<SubLineList1> {
+  @override
+  Widget build(BuildContext context) {
+    
+    return StreamProvider<List<SubLine>>.value(
+      value: SubLineServices().subLines1,
+      child: SubLineList(name: widget.name, mainLineID: widget.mainLineID),
+      catchError: (_, __) => null,
+    );
   }
 }

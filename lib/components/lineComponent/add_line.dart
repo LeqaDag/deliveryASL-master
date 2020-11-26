@@ -23,6 +23,7 @@ class _AddLineState extends State<AddLine> {
   static List<String> subLineList = [null];
   static List<String> citiesList = [null];
   String cityID;
+  String region = '  المنطقة';
   @override
   void initState() {
     subLineList = [null];
@@ -105,6 +106,56 @@ class _AddLineState extends State<AddLine> {
                         },
                       ),
                     ),
+                    Container(
+                      margin: EdgeInsets.only(
+                          top: 10, bottom: 10, left: 10, right: 10),
+                      child: DropdownButtonFormField(
+                        onChanged: (String newValue) {
+                          setState(() {
+                            region = newValue;
+                          });
+                        },
+                        items: <String>['الوسط', 'الشمال', 'الجنوب']
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Text(
+                                value,
+                                textAlign: TextAlign.right,
+                                style: TextStyle(
+                                    fontFamily: 'Amiri', fontSize: 16.0),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                        decoration: InputDecoration(
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: BorderSide(
+                                width: 1.0,
+                                color: Color(0xff636363),
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: BorderSide(
+                                width: 2.0,
+                                color: Color(0xff73a16a),
+                              ),
+                              //Change color to Color(0xff73a16a)
+                            ),
+                            contentPadding:
+                                EdgeInsets.only(right: 20.0, left: 10.0),
+                            labelText: "المنطقة",
+                            labelStyle: TextStyle(
+                                fontFamily: 'Amiri',
+                                fontSize: 18.0,
+                                color: Color(0xff316686))),
+                      ),
+                    ),
+
                     SizedBox(
                       height: 20,
                     ),
@@ -181,9 +232,10 @@ class _AddLineState extends State<AddLine> {
 
                             String mainLineID = await MainLineServices()
                                 .addMainLineData(new MainLine(
-                              name: _mainLineController.text,
-                              // cityID: cityID,
-                            ));
+                                    name: _mainLineController.text,
+                                    region: region
+                                    // cityID: cityID,
+                                    ));
 
                             subLineList.asMap().forEach((index, subline) async {
                               print(subline);

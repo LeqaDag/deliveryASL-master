@@ -7,10 +7,12 @@ import 'package:flutter/widgets.dart';
 import 'package:sajeda_app/classes/customer.dart';
 import 'package:sajeda_app/classes/deliveriesCost.dart';
 import 'package:sajeda_app/classes/order.dart';
+import 'package:sajeda_app/classes/subLine.dart';
 import 'package:sajeda_app/components/pages/business_drawer.dart';
 import 'package:sajeda_app/services/DeliveriesCostsServices.dart';
 import 'package:sajeda_app/services/customerServices.dart';
 import 'package:sajeda_app/services/orderServices.dart';
+import 'package:sajeda_app/services/subLineServices.dart';
 import 'package:toast/toast.dart';
 
 class AddNewOdersByBusiness extends StatefulWidget {
@@ -25,8 +27,14 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
   final _formKey = GlobalKey<FormState>();
   String customerCityID = 'One';
   String datehh = "", typeOrder = ' نوع التوصيل';
-  String city = 'المدينة', cityID, cityName = "", cityId = "";
+  String city = 'المدينة',
+      cityID,
+      cityName = "",
+      cityId = "",
+      subline,
+      cityIDAddress;
   List<DeliveriesCosts> cities;
+  List<SubLine> sublines;
   List<int> orderTotalPrice = [0];
   static String deliveryPrice = "0";
 
@@ -173,6 +181,7 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
                                   onChanged: (val) {
                                     setState(() {
                                       cityID = val;
+                                      cityIDAddress = val;
                                       FirebaseFirestore.instance
                                           .collection('deliveries_costs')
                                           .where('city', isEqualTo: cityID)
@@ -194,6 +203,11 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
                         ),
                       ),
                       //sajeda code
+                      _subLineChoice(),
+                    ],
+                  ),
+                  Row(
+                    children: <Widget>[
                       _customerAddress(customerAddress),
                     ],
                   ),
@@ -326,6 +340,7 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
                                 note: orderNote.text,
                                 customerID: customerID,
                                 businesID: widget.uid,
+                                sublineID: subline,
                                 driverID: ""));
                             Toast.show("تم اضافة الطلبية بنجاح", context,
                                 duration: Toast.LENGTH_LONG,
@@ -345,6 +360,83 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
             )
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _subLineChoice() {
+    return Expanded(
+      flex: 2,
+      child: Container(
+        margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
+        child: StreamBuilder<List<SubLine>>(
+            stream: SubLineServices(cityID: cityIDAddress).subLinesCustomers,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Text('Loading...');
+              } else {
+                sublines = snapshot.data;
+                return DropdownButtonFormField<String>(
+                  value: subline,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide(
+                        width: 1.0,
+                        color: Color(0xff636363),
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide(
+                        width: 2.0,
+                        color: Color(0xff73a16a),
+                      ),
+                    ),
+                    contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
+                    labelText: "العنوان الفرعي",
+                    labelStyle: TextStyle(
+                      fontFamily: 'Amiri',
+                      fontSize: 18.0,
+                      color: Color(0xff316686),
+                    ),
+                  ),
+                  items: sublines.map(
+                    (subline) {
+                      return DropdownMenuItem<String>(
+                        value: subline.uid.toString(),
+                        child: Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              subline.name,
+                              style: TextStyle(
+                                fontFamily: 'Amiri',
+                                fontSize: 16.0,
+                              ),
+                            )),
+                      );
+                    },
+                  ).toList(),
+                  onChanged: (val) {
+                    setState(() {
+                      subline = val;
+                      print(subline);
+                      // FirebaseFirestore.instance
+                      //     .collection('deliveries_costs')
+                      //     .where('city', isEqualTo: cityID)
+                      //     .get()
+                      //     .then((value) => {
+                      //           setState(() {
+                      //             deliveryPrice =
+                      //                 value.docs[0]["deliveryPrice"];
+                      //             cityName = value.docs[0]["name"];
+                      //           })
+                      //         });
+                    });
+                  },
+                );
+              }
+            }),
       ),
     );
   }

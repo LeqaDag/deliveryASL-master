@@ -25,28 +25,31 @@ class Order {
   bool isArchived;
   DateTime deleteDate;
   String deleteUser;
+  int indexLine;
+  String sublineID;
 
-  Order({
-    this.uid,
-    @required this.price,
-    @required this.totalPrice,
-    @required this.type,
-    @required this.description,
-    @required this.date,
-    @required this.note,
-    this.isLoading = true,
-    this.isReceived = false,
-    this.isDelivery = false,
-    this.isUrgent = false,
-    this.isCancelld = false,
-    this.isReturn = false,
-    this.isDone = false,
-    this.businesID,
-    this.driverID = '',
-    this.driverPrice = 0,
-    @required this.customerID,
-    this.isArchived = false,
-    this.deleteDate,
-    this.deleteUser,
-  });
+  Order(
+      {this.uid,
+      @required this.price,
+      @required this.totalPrice,
+      @required this.type,
+      @required this.description,
+      @required this.date,
+      @required this.note,
+      this.isLoading = true,
+      this.isReceived = false,
+      this.isDelivery = false,
+      this.isUrgent = false,
+      this.isCancelld = false,
+      this.isReturn = false,
+      this.isDone = false,
+      this.businesID,
+      this.driverID = '',
+      this.driverPrice = 0,
+      this.indexLine = 0,
+      @required this.customerID,
+      this.isArchived = false,
+      this.deleteDate,
+      this.deleteUser,
+      this.sublineID});
 }

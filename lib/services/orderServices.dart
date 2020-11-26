@@ -38,6 +38,8 @@ class OrderService {
       'driverID': order.driverID,
       'isArchived': order.isArchived,
       'driverPrice': order.driverPrice,
+      'sublineID': order.sublineID,
+      'indexLine': order.indexLine
     });
   }
 
@@ -78,6 +80,8 @@ class OrderService {
         businesID: snapshot.data()['businesID'],
         driverID: snapshot.data()['driverID'],
         isArchived: snapshot.data()['isArchived'],
+        sublineID: snapshot.data()['sublineID'],
+        indexLine: snapshot.data()['indexLine'],
         driverPrice: snapshot.data()['driverPrice']);
   }
 
@@ -102,7 +106,9 @@ class OrderService {
           businesID: doc.data()['businesID'] ?? '',
           driverID: doc.data()['driverID'] ?? '',
           isArchived: doc.data()['isArchived'] ?? '',
-          driverPrice: doc.data()['driverPrice'] ?? '');
+          driverPrice: doc.data()['driverPrice'] ?? '',
+          indexLine: doc.data()['indexLine'] ?? '',
+          sublineID: doc.data()['sublineID'] ?? '');
     }).toList();
   }
 
@@ -341,8 +347,7 @@ class OrderService {
       case 'driverOrders':
         {
           return orderCollection
-              .where('driverID', isEqualTo: driverID)
-              .where('isArchived', isEqualTo: false)
+              .orderBy('indexLine', descending: false)
               .snapshots()
               .map(_orderListFromSnapshot);
         }
@@ -490,6 +495,15 @@ class OrderService {
         .map(_orderListFromSnapshot);
   }
 
+  Stream<List<Order>> driversAllOrders(String driverID) {
+    return orderCollection
+        .where('driverID', isEqualTo: driverID)
+        .where('isArchived', isEqualTo: false)
+        .where('isDone', isEqualTo: true)
+        .snapshots()
+        .map(_orderListFromSnapshot);
+  }
+
   //daily sheet for driver
   Stream<List<Order>> get sheetList {
     var today = new DateTime.now();
@@ -498,6 +512,19 @@ class OrderService {
         .where('driverID', isEqualTo: driverID)
         // .where("date", isGreaterThan: today)
         .where('isArchived', isEqualTo: false)
+        .snapshots()
+        .map(_orderListFromSnapshot);
+  }
+
+  //daily sheet for driver
+  Stream<List<Order>> get sheetListDriver {
+    var today = new DateTime.now();
+    today = new DateTime(today.year, today.month, today.day);
+    return orderCollection
+        //.where('driverID', isEqualTo: driverID)
+        // .where("date", isGreaterThan: today)
+        //.where('isArchived', isEqualTo: false)
+        .orderBy('indexLine', descending: false)
         .snapshots()
         .map(_orderListFromSnapshot);
   }
@@ -512,6 +539,16 @@ class OrderService {
         .get()
         .then((value) => value.size);
   }
+
+  // Future<int> totalDriverPriceDoneOrders(String driverPrice) {
+  //   return orderCollection
+  //       .where('driverID', isEqualTo: driverID)
+  //       .where('isDone', isEqualTo: true)
+  //       .where('isArchived', isEqualTo: false)
+  //       .where('driverPrice', isEqualTo: driverPrice)
+  //       .get()
+  //       .then((value) => value.docs[0]['driverPrice']);
+  // }
 
   // Count orders state isReturn for Daily sheet
   Future<int> get countIsReturnInDailySheet {

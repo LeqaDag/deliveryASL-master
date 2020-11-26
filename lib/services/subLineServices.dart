@@ -58,7 +58,13 @@ class SubLineServices {
   Stream<List<SubLine>> get subLines {
     return subLineCollection
         .where('isArchived', isEqualTo: false)
-        .where('mainLineID', isEqualTo: mainLineID)
+        .snapshots()
+        .map(_subLineListFromSnapshot);
+  }
+
+  Stream<List<SubLine>> get subLines1 {
+    return subLineCollection
+        .orderBy('indexLine', descending: false)
         .snapshots()
         .map(_subLineListFromSnapshot);
   }

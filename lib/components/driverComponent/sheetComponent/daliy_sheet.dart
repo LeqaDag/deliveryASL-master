@@ -19,6 +19,10 @@ class DailySheet extends StatefulWidget {
 class _DailySheetState extends State<DailySheet> {
   TextEditingController doneController = new TextEditingController();
   TextEditingController returnController = new TextEditingController();
+  TextEditingController totalController = new TextEditingController();
+  TextEditingController driverPriceController = new TextEditingController();
+  String doneOrders;
+  List<Order> orders;
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Driver>(
@@ -195,24 +199,55 @@ class _DailySheetState extends State<DailySheet> {
                           Expanded(
                             flex: 4,
                             child: Padding(
-                              padding: const EdgeInsets.only(
-                                top: 8,
-                                left: 10,
-                              ),
-                              child: TextField(
-                                decoration: InputDecoration(
-                                  enabled: false,
-                                  contentPadding:
-                                      EdgeInsets.only(right: 10.0, left: 10.0),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide(
-                                      color: Colors.black,
-                                      width: 4,
-                                    ),
-                                  ),
-                                ),
-                              ),
+                              padding: const EdgeInsets.only(top: 8.0, left: 8),
+                              child: StreamBuilder<List<Order>>(
+                                  stream: OrderService()
+                                      .driversAllOrders(driverData.uid),
+                                  builder: (context, snapshot) {
+                                    int totalPrice = 0;
+
+                                    if (!snapshot.hasData) {
+                                      return TextFormField(
+                                        initialValue: "0",
+                                        decoration: InputDecoration(
+                                          enabled: false,
+                                          contentPadding: EdgeInsets.only(
+                                              right: 10.0, left: 10.0),
+                                          border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            borderSide: BorderSide(
+                                              color: Colors.black,
+                                              width: 4,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    } else {
+                                      orders = snapshot.data;
+                                      orders.forEach((element) {
+                                        totalPrice += element.totalPrice[0];
+                                        totalController.text =
+                                            totalPrice.toString();
+                                      });
+                                      return TextFormField(
+                                        controller: totalController,
+                                        decoration: InputDecoration(
+                                          enabled: false,
+                                          contentPadding: EdgeInsets.only(
+                                              right: 10.0, left: 10.0),
+                                          border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            borderSide: BorderSide(
+                                              color: Colors.black,
+                                              width: 4,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  }),
                             ),
                           ),
                           Expanded(
@@ -232,20 +267,54 @@ class _DailySheetState extends State<DailySheet> {
                             flex: 4,
                             child: Padding(
                               padding: const EdgeInsets.only(top: 8.0, left: 8),
-                              child: TextField(
-                                decoration: InputDecoration(
-                                  enabled: false,
-                                  contentPadding:
-                                      EdgeInsets.only(right: 10.0, left: 10.0),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide(
-                                      color: Colors.black,
-                                      width: 4,
-                                    ),
-                                  ),
-                                ),
-                              ),
+                              child: StreamBuilder<List<Order>>(
+                                  stream: OrderService()
+                                      .driversAllOrders(driverData.uid),
+                                  builder: (context, snapshot) {
+                                    int totalPrice = 0;
+
+                                    if (!snapshot.hasData) {
+                                      return TextFormField(
+                                        initialValue: "0",
+                                        decoration: InputDecoration(
+                                          enabled: false,
+                                          contentPadding: EdgeInsets.only(
+                                              right: 10.0, left: 10.0),
+                                          border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            borderSide: BorderSide(
+                                              color: Colors.black,
+                                              width: 4,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    } else {
+                                      orders = snapshot.data;
+                                      orders.forEach((element) {
+                                        totalPrice += element.driverPrice;
+                                        driverPriceController.text =
+                                            totalPrice.toString();
+                                      });
+                                      return TextFormField(
+                                        controller: driverPriceController,
+                                        decoration: InputDecoration(
+                                          enabled: false,
+                                          contentPadding: EdgeInsets.only(
+                                              right: 10.0, left: 10.0),
+                                          border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            borderSide: BorderSide(
+                                              color: Colors.black,
+                                              width: 4,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  }),
                             ),
                           ),
                         ],

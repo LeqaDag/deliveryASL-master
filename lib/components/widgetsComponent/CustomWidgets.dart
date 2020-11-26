@@ -739,105 +739,105 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Container(
-                            height: 30,
-                            width: 30,
-                            margin: EdgeInsets.only(
-                                top: 3.0, left: 22, bottom: 3.0, right: 44),
-                            child: RaisedButton(
-                              color: Colors.green[800],
-                              onPressed: () {
-                                return showDialog<String>(
-                                  context: context,
-                                  child: new AlertDialog(
-                                    contentPadding: const EdgeInsets.all(16.0),
-                                    content: new Row(
-                                      children: <Widget>[
-                                        Expanded(
-                                          child: Directionality(
-                                            textDirection: TextDirection.rtl,
-                                            child: TextField(
-                                              controller: driverPrice,
-                                              keyboardType:
-                                                  TextInputType.number,
-                                              decoration: InputDecoration(
-                                                labelText: 'سعر الطرد لسائق',
-                                                labelStyle: TextStyle(
-                                                  fontFamily: 'Amiri',
-                                                  fontSize: 18.0,
-                                                  color: Color(0xff316686),
-                                                ),
-                                                contentPadding: EdgeInsets.only(
-                                                    right: 20.0),
-                                                enabledBorder:
-                                                    OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10.0),
-                                                  borderSide: BorderSide(
-                                                    width: 1.0,
-                                                    color: Color(0xff636363),
-                                                  ),
-                                                ),
-                                                focusedBorder:
-                                                    OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10.0),
-                                                  borderSide: BorderSide(
-                                                    width: 2.0,
-                                                    color: Color(0xff73a16a),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    actions: <Widget>[
-                                      new FlatButton(
-                                          child: Text(
-                                            'تم',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily: "Amiri",
-                                            ),
-                                          ),
-                                          onPressed: () {
-                                            OrderService(
-                                                    uid: order.uid,
-                                                    driverPrice: int.parse(
-                                                        driverPrice.text))
-                                                .updateDriverPrice;
-                                            Navigator.pop(context);
-                                          })
-                                    ],
-                                  ),
-                                );
-                              },
-                              child: Icon(
-                                Icons.add,
-                                size: 17.0,
-                                color: Colors.white,
-                              ),
-                              padding: EdgeInsets.all(0.0),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                                left: height * 0.025,
-                                right: height * 0.025,
-                                top: height * 0,
-                                bottom: height * 0),
-                            child: StreamBuilder<Order>(
-                                stream: OrderService(uid: order.uid).orderData,
-                                builder: (context, snapshot) {
-                                  Order orderData = snapshot.data;
-                                  return Text(orderData.driverPrice.toString());
-                                }),
-                          ),
+                          // Container(
+                          //   height: 30,
+                          //   width: 30,
+                          //   margin: EdgeInsets.only(
+                          //       top: 3.0, left: 22, bottom: 3.0, right: 44),
+                          //   child: RaisedButton(
+                          //     color: Colors.green[800],
+                          //     onPressed: () {
+                          //       return showDialog<String>(
+                          //         context: context,
+                          //         child: new AlertDialog(
+                          //           contentPadding: const EdgeInsets.all(16.0),
+                          //           content: new Row(
+                          //             children: <Widget>[
+                          //               Expanded(
+                          //                 child: Directionality(
+                          //                   textDirection: TextDirection.rtl,
+                          //                   child: TextField(
+                          //                     controller: driverPrice,
+                          //                     keyboardType:
+                          //                         TextInputType.number,
+                          //                     decoration: InputDecoration(
+                          //                       labelText: 'سعر الطرد لسائق',
+                          //                       labelStyle: TextStyle(
+                          //                         fontFamily: 'Amiri',
+                          //                         fontSize: 18.0,
+                          //                         color: Color(0xff316686),
+                          //                       ),
+                          //                       contentPadding: EdgeInsets.only(
+                          //                           right: 20.0),
+                          //                       enabledBorder:
+                          //                           OutlineInputBorder(
+                          //                         borderRadius:
+                          //                             BorderRadius.circular(
+                          //                                 10.0),
+                          //                         borderSide: BorderSide(
+                          //                           width: 1.0,
+                          //                           color: Color(0xff636363),
+                          //                         ),
+                          //                       ),
+                          //                       focusedBorder:
+                          //                           OutlineInputBorder(
+                          //                         borderRadius:
+                          //                             BorderRadius.circular(
+                          //                                 10.0),
+                          //                         borderSide: BorderSide(
+                          //                           width: 2.0,
+                          //                           color: Color(0xff73a16a),
+                          //                         ),
+                          //                       ),
+                          //                     ),
+                          //                   ),
+                          //                 ),
+                          //               ),
+                          //             ],
+                          //           ),
+                          //           actions: <Widget>[
+                          //             new FlatButton(
+                          //                 child: Text(
+                          //                   'تم',
+                          //                   style: TextStyle(
+                          //                     fontSize: 16,
+                          //                     fontWeight: FontWeight.bold,
+                          //                     fontFamily: "Amiri",
+                          //                   ),
+                          //                 ),
+                          //                 onPressed: () {
+                          //                   OrderService(
+                          //                           uid: order.uid,
+                          //                           driverPrice: int.parse(
+                          //                               driverPrice.text))
+                          //                       .updateDriverPrice;
+                          //                   Navigator.pop(context);
+                          //                 })
+                          //           ],
+                          //         ),
+                          //       );
+                          //     },
+                          //     child: Icon(
+                          //       Icons.add,
+                          //       size: 17.0,
+                          //       color: Colors.white,
+                          //     ),
+                          //     padding: EdgeInsets.all(0.0),
+                          //   ),
+                          // ),
+                          // Padding(
+                          //   padding: EdgeInsets.only(
+                          //       left: height * 0.025,
+                          //       right: height * 0.025,
+                          //       top: height * 0,
+                          //       bottom: height * 0),
+                          //   child: StreamBuilder<Order>(
+                          //       stream: OrderService(uid: order.uid).orderData,
+                          //       builder: (context, snapshot) {
+                          //         Order orderData = snapshot.data;
+                          //         return Text(orderData.driverPrice.toString());
+                          //       }),
+                          // ),
                         ],
                       ),
                     ],

@@ -47,7 +47,6 @@ class _AddNewOdersState extends State<AddNewOders> {
     deliveryPrice = "0";
     orderTotalPrice = [0];
     businessID = "";
-    // cityIDAddress = "";
     super.initState();
   }
 
@@ -597,6 +596,7 @@ class _AddNewOdersState extends State<AddNewOders> {
                   note: orderNote.text,
                   customerID: customerID,
                   businesID: businessID,
+                  sublineID: subline,
                   driverID: ""));
               Toast.show("تم اضافة الطلبية بنجاح", context,
                   duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
