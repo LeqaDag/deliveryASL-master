@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:sajeda_app/classes/city.dart';
 import 'package:sajeda_app/classes/mainLine.dart';
 import 'package:sajeda_app/classes/subLine.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
+import 'package:sajeda_app/services/cityServices.dart';
 import 'package:sajeda_app/services/mainLineServices.dart';
 import 'package:sajeda_app/services/subLineServices.dart';
 
@@ -19,9 +21,12 @@ class AddSubLine extends StatefulWidget {
 class _AddSubLineState extends State<AddSubLine> {
   final _formKey = GlobalKey<FormState>();
   static List<String> subLineList = [null];
+  static Map<int, TextEditingController> subLineListController = {};
+  static List<String> citiesList = [null];
   @override
   void initState() {
     subLineList = [null];
+    citiesList = [null];
     super.initState();
   }
 
@@ -98,12 +103,12 @@ class _AddSubLineState extends State<AddSubLine> {
                       margin: EdgeInsets.all(40.0),
                       child: RaisedButton(
                         onPressed: () async {
-                          subLineList.asMap().forEach((index, subline) async {
+                          subLineListController.forEach((index, subline) async {
                             print(subline);
                             await SubLineServices().addSubLineData(new SubLine(
                                 mainLineID: widget.mainLineID,
                                 indexLine: index,
-                                name: subline));
+                                name: subline.text));
                           });
                           Navigator.pop(context);
                         },
@@ -173,8 +178,13 @@ class _AddSubLineState extends State<AddSubLine> {
         if (add) {
           // add new text-fields at the top of all friends textfields
           subLineList.insert(index, null);
-        } else
+          citiesList.insert(index, null);
+        } else {
           subLineList.removeAt(index);
+          citiesList.removeAt(index);
+
+          subLineListController.remove(index);
+        }
         setState(() {});
       },
       child: Container(
@@ -201,50 +211,122 @@ class FriendTextFields extends StatefulWidget {
 }
 
 class _FriendTextFieldsState extends State<FriendTextFields> {
-  TextEditingController _nameController;
-
+  List<City> cities;
+  String cityID;
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController();
+    _AddSubLineState.subLineListController[widget.index] =
+        new TextEditingController();
   }
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: _nameController,
-      onChanged: (v) => _AddSubLineState.subLineList[widget.index] = v,
-      decoration: InputDecoration(
-        labelText: 'الخط الفرعي',
-        labelStyle: TextStyle(
-            fontFamily: 'Amiri', fontSize: 18.0, color: Color(0xff316686)),
-        contentPadding: EdgeInsets.only(right: 20.0),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(
-            width: 1.0,
-            color: Color(0xff636363),
+    return Row(
+      children: <Widget>[
+        Expanded(
+          child: Container(
+            margin: EdgeInsets.all(10.0),
+            child: StreamBuilder<List<City>>(
+              stream: CityService().citys,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return Text('Loading...');
+                } else {
+                  cities = snapshot.data;
+                  return DropdownButtonFormField<String>(
+                    value: _AddSubLineState.citiesList[widget.index],
+                    decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          borderSide: BorderSide(
+                            width: 1.0,
+                            color: Color(0xff636363),
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          borderSide: BorderSide(
+                            width: 2.0,
+                            color: Color(0xff73a16a),
+                          ),
+                        ),
+                        contentPadding:
+                            EdgeInsets.only(right: 20.0, left: 10.0),
+                        labelText: "المدينة",
+                        labelStyle: TextStyle(
+                            fontFamily: 'Amiri',
+                            fontSize: 18.0,
+                            color: Color(0xff316686))),
+                    items: cities.map(
+                      (city) {
+                        return DropdownMenuItem<String>(
+                          value: city.uid.toString(),
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              city.name,
+                              style: TextStyle(
+                                fontFamily: 'Amiri',
+                                fontSize: 16.0,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ).toList(),
+                    onChanged: (val) {
+                      setState(() {
+                        // cityID = val;
+                        _AddSubLineState.citiesList[widget.index] = val;
+                        // print(cityID);
+                      });
+                    },
+                  );
+                }
+              },
+            ),
           ),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(
-            width: 2.0,
-            color: Color(0xff73a16a),
+        Expanded(
+          child: TextFormField(
+            controller: _AddSubLineState.subLineListController[widget.index],
+            decoration: InputDecoration(
+              labelText: 'الخط الفرعي',
+              labelStyle: TextStyle(
+                  fontFamily: 'Amiri',
+                  fontSize: 18.0,
+                  color: Color(0xff316686)),
+              contentPadding: EdgeInsets.only(right: 20.0),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: BorderSide(
+                  width: 1.0,
+                  color: Color(0xff636363),
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: BorderSide(
+                  width: 2.0,
+                  color: Color(0xff73a16a),
+                ),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: BorderSide(
+                  width: 2.0,
+                  color: Colors.red[600],
+                ),
+              ),
+            ),
+            validator: (v) {
+              if (v.trim().isEmpty) return 'رجاءً أدخل اسم الخط الفرعي ';
+              return null;
+            },
           ),
         ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: BorderSide(
-            width: 2.0,
-            color: Colors.red[600],
-          ),
-        ),
-      ),
-      validator: (v) {
-        if (v.trim().isEmpty) return 'رجاءً أدخل اسم الخط الفرعي ';
-        return null;
-      },
+      ],
     );
   }
 }
