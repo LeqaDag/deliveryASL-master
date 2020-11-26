@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:sajeda_app/classes/city.dart';
 import 'package:sajeda_app/classes/subLine.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
 import 'package:sajeda_app/components/pages/loadingData.dart';
+import 'package:sajeda_app/services/cityServices.dart';
 import 'package:sajeda_app/services/subLineServices.dart';
 
 import '../../../constants.dart';
@@ -18,7 +20,8 @@ class UpdateSubLine extends StatefulWidget {
 class _UpdateSubLineState extends State<UpdateSubLine> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController _subLineController = new TextEditingController();
-
+  List<City> cities;
+  String cityID;
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<SubLine>(
@@ -60,6 +63,68 @@ class _UpdateSubLineState extends State<UpdateSubLine> {
                                 color: Color(0xff316686),
                                 size: 44.0,
                               ),
+                            ),
+                          ),
+                          Container(
+                            margin: EdgeInsets.all(10.0),
+                            child: StreamBuilder<List<City>>(
+                              stream: CityService().citys,
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData) {
+                                  return Text('Loading...');
+                                } else {
+                                  cities = snapshot.data;
+                                  return DropdownButtonFormField<String>(
+                                    value: cityID,
+                                    decoration: InputDecoration(
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                          borderSide: BorderSide(
+                                            width: 1.0,
+                                            color: Color(0xff636363),
+                                          ),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                          borderSide: BorderSide(
+                                            width: 2.0,
+                                            color: Color(0xff73a16a),
+                                          ),
+                                        ),
+                                        contentPadding: EdgeInsets.only(
+                                            right: 20.0, left: 10.0),
+                                        labelText: "المدينة",
+                                        labelStyle: TextStyle(
+                                            fontFamily: 'Amiri',
+                                            fontSize: 18.0,
+                                            color: Color(0xff316686))),
+                                    items: cities.map(
+                                      (city) {
+                                        return DropdownMenuItem<String>(
+                                          value: city.uid.toString(),
+                                          child: Align(
+                                            alignment: Alignment.centerRight,
+                                            child: Text(
+                                              city.name,
+                                              style: TextStyle(
+                                                fontFamily: 'Amiri',
+                                                fontSize: 16.0,
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ).toList(),
+                                    onChanged: (val) {
+                                      setState(() {
+                                        cityID = val;
+                                      });
+                                    },
+                                  );
+                                }
+                              },
                             ),
                           ),
                           Container(
@@ -112,6 +177,7 @@ class _UpdateSubLineState extends State<UpdateSubLine> {
                               onPressed: () async {
                                 if (_formKey.currentState.validate()) {
                                   subLine.name = _subLineController.text;
+                                  subLine.cityID = cityID;
                                   await SubLineServices(uid: subLine.uid)
                                       .updateData(subLine);
                                   Navigator.pop(context);

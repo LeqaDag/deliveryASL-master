@@ -23,6 +23,7 @@ class _AddSubLineState extends State<AddSubLine> {
   static List<String> subLineList = [null];
   static Map<int, TextEditingController> subLineListController = {};
   static List<String> citiesList = [null];
+
   @override
   void initState() {
     subLineList = [null];
@@ -32,121 +33,136 @@ class _AddSubLineState extends State<AddSubLine> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text("اضافة خط توصيل فرعي",
-            style: TextStyle(fontSize: 20.0, fontFamily: 'Amiri')),
-        backgroundColor: kAppBarColor,
-        centerTitle: true,
-      ),
-      endDrawer: Directionality(
-          textDirection: TextDirection.rtl,
-          child: AdminDrawer(
-            name: widget.name,
-          )),
-      body: Directionality(
-        textDirection: TextDirection.rtl,
-        child: ListView(
-          children: [
-            Form(
-              key: _formKey,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+    return FutureBuilder<int>(
+        future: SubLineServices(mainLineID: widget.mainLineID).maxIndex,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            int maxIndex = snapshot.data +1;
+            print(maxIndex);
+            return Scaffold(
+              backgroundColor: Colors.white,
+              appBar: AppBar(
+                title: Text("اضافة خط توصيل فرعي",
+                    style: TextStyle(fontSize: 20.0, fontFamily: 'Amiri')),
+                backgroundColor: kAppBarColor,
+                centerTitle: true,
+              ),
+              endDrawer: Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: AdminDrawer(
+                    name: widget.name,
+                  )),
+              body: Directionality(
+                textDirection: TextDirection.rtl,
+                child: ListView(
                   children: [
-                    Center(
-                      child: Container(
-                        width: 50,
-                        height: 120,
-                        child: Icon(
-                          Icons.location_on,
-                          color: Color(0xff316686),
-                          size: 44.0,
-                        ),
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.all(40.0),
-                      child: StreamBuilder<MainLine>(
-                          stream: MainLineServices(uid: widget.mainLineID)
-                              .mainLineByID,
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              MainLine mainLine = snapshot.data;
-                              return Text(
-                                "خط التوصيل الرئيسي ${mainLine.name}",
-                                style: TextStyle(
-                                  fontSize: 18.0,
+                    Form(
+                      key: _formKey,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Center(
+                              child: Container(
+                                width: 50,
+                                height: 120,
+                                child: Icon(
+                                  Icons.location_on,
                                   color: Color(0xff316686),
-                                  fontFamily: 'Amiri',
+                                  size: 44.0,
                                 ),
-                              );
-                            } else {
-                              return Text(
-                                "جاري التحميل ....",
-                                style: TextStyle(
-                                  fontSize: 16.0,
-                                  color: Color(0xff316686),
-                                  fontFamily: 'Amiri',
-                                ),
-                              );
-                            }
-                          }),
-                    ),
-                    ..._getFriends(),
-                    SizedBox(
-                      height: 40,
-                    ),
-                    Container(
-                      margin: EdgeInsets.all(40.0),
-                      child: RaisedButton(
-                        onPressed: () async {
-                          subLineListController.forEach((index, subline) async {
-                            print(subline);
-                            await SubLineServices().addSubLineData(new SubLine(
-                                mainLineID: widget.mainLineID,
-                                indexLine: index,
-                                name: subline.text));
-                          });
-                          Navigator.pop(context);
-                        },
-                        padding: EdgeInsets.all(10.0),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.circular(30.0)),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              'إضافة',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontFamily: 'Amiri',
-                                  fontSize: 24.0),
+                              ),
                             ),
+                            Container(
+                              margin: EdgeInsets.all(40.0),
+                              child: StreamBuilder<MainLine>(
+                                  stream:
+                                      MainLineServices(uid: widget.mainLineID)
+                                          .mainLineByID,
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      MainLine mainLine = snapshot.data;
+                                      return Text(
+                                        "خط التوصيل الرئيسي ${mainLine.name}",
+                                        style: TextStyle(
+                                          fontSize: 18.0,
+                                          color: Color(0xff316686),
+                                          fontFamily: 'Amiri',
+                                        ),
+                                      );
+                                    } else {
+                                      return Text(
+                                        "جاري التحميل ....",
+                                        style: TextStyle(
+                                          fontSize: 16.0,
+                                          color: Color(0xff316686),
+                                          fontFamily: 'Amiri',
+                                        ),
+                                      );
+                                    }
+                                  }),
+                            ),
+                            ..._getFriends(),
                             SizedBox(
-                              width: 40.0,
+                              height: 40,
                             ),
-                            Icon(
-                              Icons.add_circle,
-                              color: Colors.white,
-                              size: 32.0,
+                            Container(
+                              margin: EdgeInsets.all(40.0),
+                              child: RaisedButton(
+                                onPressed: () async {
+                                  subLineListController
+                                      .forEach((index, subline) async {
+                                    print(subline);
+                                    await SubLineServices().addSubLineData(
+                                        new SubLine(
+                                            mainLineID: widget.mainLineID,
+                                            indexLine: index + maxIndex,
+                                            cityID: citiesList[index],
+                                            name: subline.text));
+                                  });
+                                  Navigator.pop(context);
+                                },
+                                padding: EdgeInsets.all(10.0),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                        new BorderRadius.circular(30.0)),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text(
+                                      'إضافة',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontFamily: 'Amiri',
+                                          fontSize: 24.0),
+                                    ),
+                                    SizedBox(
+                                      width: 40.0,
+                                    ),
+                                    Icon(
+                                      Icons.add_circle,
+                                      color: Colors.white,
+                                      size: 32.0,
+                                    ),
+                                  ],
+                                ),
+                                color: Color(0xff73a16a),
+                              ),
                             ),
                           ],
                         ),
-                        color: Color(0xff73a16a),
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
-          ],
-        ),
-      ),
-    );
+            );
+          } else {
+            return Center(child: Image.asset("assets/EmptyOrder.png"));
+          }
+        });
   }
 
   List<Widget> _getFriends() {
