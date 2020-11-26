@@ -4,9 +4,9 @@ import '../classes/subLine.dart';
 
 class SubLineServices {
   final String uid;
-  final String mainLineID;
+  final String mainLineID, cityID;
 
-  SubLineServices({this.uid, this.mainLineID});
+  SubLineServices({this.uid, this.mainLineID, this.cityID});
 
   final CollectionReference subLineCollection =
       FirebaseFirestore.instance.collection('subLines');
@@ -17,6 +17,7 @@ class SubLineServices {
       'indexLine': subLine.indexLine,
       'mainLineID': subLine.mainLineID,
       'isArchived': subLine.isArchived,
+      'cityID': subLine.cityID,
     });
   }
 
@@ -33,6 +34,7 @@ class SubLineServices {
       indexLine: snapshot.data()['indexLine'],
       mainLineID: snapshot.data()['mainLineID'],
       isArchived: snapshot.data()['isArchived'],
+      cityID: snapshot.data()['cityID'],
     );
   }
 
@@ -44,6 +46,7 @@ class SubLineServices {
         indexLine: doc.data()['indexLine'] ?? '',
         mainLineID: doc.data()['mainLineID'] ?? '',
         isArchived: doc.data()['isArchived'] ?? '',
+        cityID: doc.data()['cityID'] ?? '',
       );
     }).toList();
   }
@@ -55,12 +58,26 @@ class SubLineServices {
   Stream<List<SubLine>> get subLines {
     return subLineCollection
         .where('isArchived', isEqualTo: false)
-        .where('mainLineID', isEqualTo: mainLineID)
+        .snapshots()
+        .map(_subLineListFromSnapshot);
+  }
+
+  Stream<List<SubLine>> get subLines1 {
+    return subLineCollection
+        .orderBy('indexLine', descending: false)
         .snapshots()
         .map(_subLineListFromSnapshot);
   }
 
   Future<void> deletesubLineData(String uid) async {
     return await subLineCollection.doc(uid).update({'isArchived': true});
+  }
+
+  Stream<List<SubLine>> get subLinesCustomers {
+    return subLineCollection
+        .where('isArchived', isEqualTo: false)
+        .where('cityID', isEqualTo: cityID)
+        .snapshots()
+        .map(_subLineListFromSnapshot);
   }
 }

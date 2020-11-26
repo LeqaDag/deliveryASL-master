@@ -5,16 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sajeda_app/classes/busines.dart';
-import 'package:sajeda_app/classes/city.dart';
 import 'package:sajeda_app/classes/customer.dart';
 import 'package:sajeda_app/classes/deliveriesCost.dart';
 import 'package:sajeda_app/classes/order.dart';
+import 'package:sajeda_app/classes/subLine.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
 import 'package:sajeda_app/services/DeliveriesCostsServices.dart';
 import 'package:sajeda_app/services/businessServices.dart';
-import 'package:sajeda_app/services/cityServices.dart';
 import 'package:sajeda_app/services/customerServices.dart';
 import 'package:sajeda_app/services/orderServices.dart';
+import 'package:sajeda_app/services/subLineServices.dart';
 import 'package:toast/toast.dart';
 
 class AddNewOders extends StatefulWidget {
@@ -30,8 +30,15 @@ class _AddNewOdersState extends State<AddNewOders> {
   String customerCityID = 'One';
   String datehh = "", typeOrder = ' نوع التوصيل';
   List<DeliveriesCosts> cities;
+  List<SubLine> sublines;
   List<Business> business;
-  String cityID, businessID = "", bus, cityName = "", cityId = "";
+  String cityID,
+      subline,
+      businessID = "",
+      bus,
+      cityName = "",
+      cityId = "",
+      cityIDAddress;
   List<int> orderTotalPrice = [0];
   static String deliveryPrice = "0";
 
@@ -97,9 +104,12 @@ class _AddNewOdersState extends State<AddNewOders> {
                   ),
                   Row(
                     children: <Widget>[
-                      //sajeda code
                       _cityChoice(),
-                      //sajeda code
+                      _subLineChoice(),
+                    ],
+                  ),
+                  Row(
+                    children: <Widget>[
                       _customerAddress(customerAddress),
                     ],
                   ),
@@ -335,6 +345,7 @@ class _AddNewOdersState extends State<AddNewOders> {
                   onChanged: (val) {
                     setState(() {
                       cityID = val;
+                      cityIDAddress = val;
                       FirebaseFirestore.instance
                           .collection('deliveries_costs')
                           .where('city', isEqualTo: cityID)
@@ -346,6 +357,83 @@ class _AddNewOdersState extends State<AddNewOders> {
                                   cityName = value.docs[0]["name"];
                                 })
                               });
+                    });
+                  },
+                );
+              }
+            }),
+      ),
+    );
+  }
+
+  Widget _subLineChoice() {
+    return Expanded(
+      flex: 2,
+      child: Container(
+        margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
+        child: StreamBuilder<List<SubLine>>(
+            stream: SubLineServices(cityID: cityIDAddress).subLinesCustomers,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Text('Loading...');
+              } else {
+                sublines = snapshot.data;
+                return DropdownButtonFormField<String>(
+                  value: subline,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide(
+                        width: 1.0,
+                        color: Color(0xff636363),
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide(
+                        width: 2.0,
+                        color: Color(0xff73a16a),
+                      ),
+                    ),
+                    contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
+                    labelText: "العنوان الفرعي",
+                    labelStyle: TextStyle(
+                      fontFamily: 'Amiri',
+                      fontSize: 18.0,
+                      color: Color(0xff316686),
+                    ),
+                  ),
+                  items: sublines.map(
+                    (subline) {
+                      return DropdownMenuItem<String>(
+                        value: subline.uid.toString(),
+                        child: Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              subline.name,
+                              style: TextStyle(
+                                fontFamily: 'Amiri',
+                                fontSize: 16.0,
+                              ),
+                            )),
+                      );
+                    },
+                  ).toList(),
+                  onChanged: (val) {
+                    setState(() {
+                      subline = val;
+                      print(subline);
+                      // FirebaseFirestore.instance
+                      //     .collection('deliveries_costs')
+                      //     .where('city', isEqualTo: cityID)
+                      //     .get()
+                      //     .then((value) => {
+                      //           setState(() {
+                      //             deliveryPrice =
+                      //                 value.docs[0]["deliveryPrice"];
+                      //             cityName = value.docs[0]["name"];
+                      //           })
+                      //         });
                     });
                   },
                 );
@@ -508,6 +596,7 @@ class _AddNewOdersState extends State<AddNewOders> {
                   note: orderNote.text,
                   customerID: customerID,
                   businesID: businessID,
+                  sublineID: subline,
                   driverID: ""));
               Toast.show("تم اضافة الطلبية بنجاح", context,
                   duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);

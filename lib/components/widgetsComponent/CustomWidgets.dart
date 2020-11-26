@@ -494,7 +494,41 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
+    IconData icon;
+    String stateOrder;
+    Color color;
     TextEditingController driverPrice = new TextEditingController();
+
+    if (order.isCancelld == true) {
+      color = KBadgeColorAndContainerBorderColorCancelledOrders;
+      icon = Icons.cancel;
+      stateOrder = "ملغي";
+    } else if (order.isDelivery == true) {
+      color = KAllOrdersListTileColor;
+      icon = Icons.business_center_outlined;
+      stateOrder = "جاهز للتوزيع";
+    } else if (order.isDone == true) {
+      color = KBadgeColorAndContainerBorderColorReadyOrders;
+      icon = Icons.done;
+      stateOrder = "جاهز";
+    } else if (order.isLoading == true) {
+      color = KBadgeColorAndContainerBorderColorLoadingOrder;
+      icon = Icons.arrow_circle_up_rounded;
+      stateOrder = "محمل";
+    } else if (order.isUrgent == true) {
+      color = KBadgeColorAndContainerBorderColorUrgentOrders;
+      icon = Icons.info_outline;
+      stateOrder = "مستعجل";
+    } else if (order.isReturn == true) {
+      color = KBadgeColorAndContainerBorderColorReturnOrders;
+      icon = Icons.restore;
+      stateOrder = "راجع";
+    } else if (order.isReceived == true) {
+      color = KBadgeColorAndContainerBorderColorRecipientOrder;
+      icon = Icons.assignment_turned_in_outlined;
+      stateOrder = "تم استلامه";
+    }
+
     if (orderState == 'isDone') {
       return InkWell(
         onTap: () {
@@ -705,105 +739,105 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Container(
-                            height: 30,
-                            width: 30,
-                            margin: EdgeInsets.only(
-                                top: 3.0, left: 22, bottom: 3.0, right: 44),
-                            child: RaisedButton(
-                              color: Colors.green[800],
-                              onPressed: () {
-                                return showDialog<String>(
-                                  context: context,
-                                  child: new AlertDialog(
-                                    contentPadding: const EdgeInsets.all(16.0),
-                                    content: new Row(
-                                      children: <Widget>[
-                                        Expanded(
-                                          child: Directionality(
-                                            textDirection: TextDirection.rtl,
-                                            child: TextField(
-                                              controller: driverPrice,
-                                              keyboardType:
-                                                  TextInputType.number,
-                                              decoration: InputDecoration(
-                                                labelText: 'سعر الطرد لسائق',
-                                                labelStyle: TextStyle(
-                                                  fontFamily: 'Amiri',
-                                                  fontSize: 18.0,
-                                                  color: Color(0xff316686),
-                                                ),
-                                                contentPadding: EdgeInsets.only(
-                                                    right: 20.0),
-                                                enabledBorder:
-                                                    OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10.0),
-                                                  borderSide: BorderSide(
-                                                    width: 1.0,
-                                                    color: Color(0xff636363),
-                                                  ),
-                                                ),
-                                                focusedBorder:
-                                                    OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10.0),
-                                                  borderSide: BorderSide(
-                                                    width: 2.0,
-                                                    color: Color(0xff73a16a),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    actions: <Widget>[
-                                      new FlatButton(
-                                          child: Text(
-                                            'تم',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily: "Amiri",
-                                            ),
-                                          ),
-                                          onPressed: () {
-                                            OrderService(
-                                                    uid: order.uid,
-                                                    driverPrice: int.parse(
-                                                        driverPrice.text))
-                                                .updateDriverPrice;
-                                            Navigator.pop(context);
-                                          })
-                                    ],
-                                  ),
-                                );
-                              },
-                              child: Icon(
-                                Icons.add,
-                                size: 17.0,
-                                color: Colors.white,
-                              ),
-                              padding: EdgeInsets.all(0.0),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                                left: height * 0.025,
-                                right: height * 0.025,
-                                top: height * 0,
-                                bottom: height * 0),
-                            child: StreamBuilder<Order>(
-                                stream: OrderService(uid: order.uid).orderData,
-                                builder: (context, snapshot) {
-                                  Order orderData = snapshot.data;
-                                  return Text(orderData.driverPrice.toString());
-                                }),
-                          ),
+                          // Container(
+                          //   height: 30,
+                          //   width: 30,
+                          //   margin: EdgeInsets.only(
+                          //       top: 3.0, left: 22, bottom: 3.0, right: 44),
+                          //   child: RaisedButton(
+                          //     color: Colors.green[800],
+                          //     onPressed: () {
+                          //       return showDialog<String>(
+                          //         context: context,
+                          //         child: new AlertDialog(
+                          //           contentPadding: const EdgeInsets.all(16.0),
+                          //           content: new Row(
+                          //             children: <Widget>[
+                          //               Expanded(
+                          //                 child: Directionality(
+                          //                   textDirection: TextDirection.rtl,
+                          //                   child: TextField(
+                          //                     controller: driverPrice,
+                          //                     keyboardType:
+                          //                         TextInputType.number,
+                          //                     decoration: InputDecoration(
+                          //                       labelText: 'سعر الطرد لسائق',
+                          //                       labelStyle: TextStyle(
+                          //                         fontFamily: 'Amiri',
+                          //                         fontSize: 18.0,
+                          //                         color: Color(0xff316686),
+                          //                       ),
+                          //                       contentPadding: EdgeInsets.only(
+                          //                           right: 20.0),
+                          //                       enabledBorder:
+                          //                           OutlineInputBorder(
+                          //                         borderRadius:
+                          //                             BorderRadius.circular(
+                          //                                 10.0),
+                          //                         borderSide: BorderSide(
+                          //                           width: 1.0,
+                          //                           color: Color(0xff636363),
+                          //                         ),
+                          //                       ),
+                          //                       focusedBorder:
+                          //                           OutlineInputBorder(
+                          //                         borderRadius:
+                          //                             BorderRadius.circular(
+                          //                                 10.0),
+                          //                         borderSide: BorderSide(
+                          //                           width: 2.0,
+                          //                           color: Color(0xff73a16a),
+                          //                         ),
+                          //                       ),
+                          //                     ),
+                          //                   ),
+                          //                 ),
+                          //               ),
+                          //             ],
+                          //           ),
+                          //           actions: <Widget>[
+                          //             new FlatButton(
+                          //                 child: Text(
+                          //                   'تم',
+                          //                   style: TextStyle(
+                          //                     fontSize: 16,
+                          //                     fontWeight: FontWeight.bold,
+                          //                     fontFamily: "Amiri",
+                          //                   ),
+                          //                 ),
+                          //                 onPressed: () {
+                          //                   OrderService(
+                          //                           uid: order.uid,
+                          //                           driverPrice: int.parse(
+                          //                               driverPrice.text))
+                          //                       .updateDriverPrice;
+                          //                   Navigator.pop(context);
+                          //                 })
+                          //           ],
+                          //         ),
+                          //       );
+                          //     },
+                          //     child: Icon(
+                          //       Icons.add,
+                          //       size: 17.0,
+                          //       color: Colors.white,
+                          //     ),
+                          //     padding: EdgeInsets.all(0.0),
+                          //   ),
+                          // ),
+                          // Padding(
+                          //   padding: EdgeInsets.only(
+                          //       left: height * 0.025,
+                          //       right: height * 0.025,
+                          //       top: height * 0,
+                          //       bottom: height * 0),
+                          //   child: StreamBuilder<Order>(
+                          //       stream: OrderService(uid: order.uid).orderData,
+                          //       builder: (context, snapshot) {
+                          //         Order orderData = snapshot.data;
+                          //         return Text(orderData.driverPrice.toString());
+                          //       }),
+                          // ),
                         ],
                       ),
                     ],
@@ -940,7 +974,6 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Row(
-                        //3
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
                           Padding(
@@ -954,36 +987,31 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                               color: Colors.blue[800],
                             ),
                           ),
-                          //  SizedBox(width: 33,),
                           FutureBuilder<String>(
                               future: CustomerService(uid: order.customerID)
                                   .customerCity,
                               builder: (context, snapshot) {
-                                String cityID = snapshot.data;
-                                return StreamBuilder<City>(
-                                    stream: CityService(uid: cityID).cityByID,
-                                    builder: (context, snapshot) {
-                                      if (snapshot.hasData) {
-                                        City city = snapshot.data;
-                                        return Text(
-                                          city.name,
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: "Amiri",
-                                          ),
-                                        );
-                                      } else {
-                                        return Text(
-                                          "",
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: "Amiri",
-                                          ),
-                                        );
-                                      }
-                                    });
+                                return Text(
+                                  snapshot.data ?? "",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "Amiri",
+                                  ),
+                                );
+                              }),
+                          FutureBuilder<String>(
+                              future: CustomerService(uid: order.customerID)
+                                  .customerAdress,
+                              builder: (context, snapshot) {
+                                return Text(
+                                  ' - ${snapshot.data}' ?? "",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "Amiri",
+                                  ),
+                                );
                               }),
                         ],
                       ),
@@ -1022,13 +1050,13 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                                 top: height * 0,
                                 bottom: height * 0),
                             child: Icon(
-                              Icons.subdirectory_arrow_left,
-                              color: Colors.blue[800],
+                              icon,
+                              color: color,
                             ),
                           ),
                           //  SizedBox(width: 33,),
                           Text(
-                            "تم التوصيل",
+                            stateOrder,
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,

@@ -2,21 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sajeda_app/classes/driver.dart';
 import 'package:sajeda_app/classes/order.dart';
-import 'package:sajeda_app/components/driverComponent/sheetComponent/sheetList.dart';
-import 'package:sajeda_app/components/pages/drawer.dart';
+import 'package:sajeda_app/components/pages/driver_drawer.dart';
+import 'package:sajeda_app/services/businessServices.dart';
+import 'package:sajeda_app/services/customerServices.dart';
 import 'package:sajeda_app/services/driverServices.dart';
 import 'package:sajeda_app/services/orderServices.dart';
+import 'package:intl/intl.dart' as intl;
 
 import '../../../constants.dart';
 
-class DailySheet extends StatefulWidget {
+class DriverDailySheet extends StatefulWidget {
   final String driverID, name;
-  DailySheet({this.driverID, this.name});
+  DriverDailySheet({this.driverID, this.name});
   @override
-  _DailySheetState createState() => _DailySheetState();
+  _DriverDailySheetState createState() => _DriverDailySheetState();
 }
 
-class _DailySheetState extends State<DailySheet> {
+class _DriverDailySheetState extends State<DriverDailySheet> {
   TextEditingController doneController = new TextEditingController();
   TextEditingController returnController = new TextEditingController();
   TextEditingController totalController = new TextEditingController();
@@ -33,7 +35,7 @@ class _DailySheetState extends State<DailySheet> {
             return Scaffold(
               endDrawer: Directionality(
                   textDirection: TextDirection.rtl,
-                  child: AdminDrawer(
+                  child: DriverDrawer(
                     name: widget.name,
                   )),
               appBar: AppBar(
@@ -321,11 +323,10 @@ class _DailySheetState extends State<DailySheet> {
                       ),
                       Container(
                         child: StreamProvider<List<Order>>.value(
-                          value:
-                              OrderService(driverID: widget.driverID).sheetList,
-                          child: SheetList(
-                            name: widget.name,
-                          ),
+                          value: OrderService(driverID: widget.driverID)
+                              .sheetListDriver,
+                          child: SheetListDriver(
+                              name: widget.name, driverID: widget.driverID),
                           catchError: (_, __) => null,
                         ),
                       ),
@@ -342,5 +343,335 @@ class _DailySheetState extends State<DailySheet> {
             );
           }
         });
+  }
+}
+
+class SheetListDriver extends StatefulWidget {
+  final String name, driverID;
+  SheetListDriver({this.name, this.driverID});
+
+  @override
+  _SheetListDriverState createState() => _SheetListDriverState();
+}
+
+class _SheetListDriverState extends State<SheetListDriver> {
+  @override
+  Widget build(BuildContext context) {
+    //final orders = Provider.of<List<Order>>(context) ?? [];
+    final orders = Provider.of<List<Order>>(context).where((order) {
+          return order.driverID == widget.driverID;
+        }).toList() ??
+        [];
+
+    if (orders != [] && orders != null) {
+      return ListView.separated(
+        shrinkWrap: true,
+        itemCount: orders.length,
+        physics: ScrollPhysics(),
+        itemBuilder: (context, index) {
+          return AllDriverOrders(
+              order: orders[index], name: widget.name, uid: widget.driverID);
+        },
+        separatorBuilder: (context, index) {
+          return Divider();
+        },
+      );
+    } else {
+      return Center(
+        child: Container(
+          child: Image.asset("assets/EmptyOrder.png"),
+        ),
+      );
+    }
+  }
+}
+
+class AllDriverOrders extends StatefulWidget {
+  final Order order;
+  final String name, uid;
+
+  AllDriverOrders({this.order, this.name, this.uid});
+
+  @override
+  _AllDriverOrdersState createState() => _AllDriverOrdersState();
+}
+
+class _AllDriverOrdersState extends State<AllDriverOrders> {
+  Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+    Color color;
+
+    IconData icon;
+    String stateOrder;
+    Color colorIcon;
+
+    if (widget.order.isCancelld == true) {
+      colorIcon = KBadgeColorAndContainerBorderColorCancelledOrders;
+      icon = Icons.cancel;
+      stateOrder = "ملغي";
+    } else if (widget.order.isDelivery == true) {
+      colorIcon = KAllOrdersListTileColor;
+      icon = Icons.business_center_outlined;
+      stateOrder = "جاهز للتوزيع";
+    } else if (widget.order.isDone == true) {
+      colorIcon = KBadgeColorAndContainerBorderColorReadyOrders;
+      icon = Icons.done;
+      stateOrder = "جاهز";
+    } else if (widget.order.isLoading == true) {
+      colorIcon = KBadgeColorAndContainerBorderColorLoadingOrder;
+      icon = Icons.arrow_circle_up_rounded;
+      stateOrder = "محمل";
+    } else if (widget.order.isUrgent == true) {
+      colorIcon = KBadgeColorAndContainerBorderColorUrgentOrders;
+      icon = Icons.info_outline;
+      stateOrder = "مستعجل";
+    } else if (widget.order.isReturn == true) {
+      colorIcon = KBadgeColorAndContainerBorderColorReturnOrders;
+      icon = Icons.restore;
+      stateOrder = "راجع";
+    } else if (widget.order.isReceived == true) {
+      colorIcon = KBadgeColorAndContainerBorderColorRecipientOrder;
+      icon = Icons.assignment_turned_in_outlined;
+      stateOrder = "تم استلامه";
+    }
+    if (widget.order.isArchived == true) {
+      return Visibility(
+        child: Text("Gone"),
+        visible: false,
+      );
+    } else {
+      return InkWell(
+        child: Container(
+          width: width - 50,
+          child: Card(
+            elevation: 5,
+            margin: EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 16.0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(0.0),
+            ),
+            //color: KCustomCompanyOrdersStatus,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  width: width / 2,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Row(
+                        //3
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(
+                                left: height * 0.025,
+                                right: height * 0.025,
+                                top: height * 0,
+                                bottom: height * 0),
+                            child: Icon(
+                              Icons.person,
+                              color: Colors.green[800],
+                            ),
+                          ),
+
+                          //  SizedBox(width: 33,),
+                          FutureBuilder<String>(
+                            future:
+                                CustomerService(uid: widget.order.customerID)
+                                    .customerName,
+                            builder: (context, snapshot) {
+                              // print(order.customerID);
+                              return Text(
+                                snapshot.data ?? "",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: "Amiri",
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                      Row(
+                        //3
+                        mainAxisAlignment: MainAxisAlignment.start,
+
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(
+                                left: height * 0.025,
+                                right: height * 0.025,
+                                top: height * 0,
+                                bottom: height * 0),
+                            child: Icon(
+                              Icons.date_range,
+                              color: Colors.blueGrey,
+                            ),
+                          ),
+
+                          //  SizedBox(width: 33,),
+                          Text(
+                            intl.DateFormat('yyyy-MM-dd')
+                                .format(widget.order.date),
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "Amiri",
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        //3
+                        mainAxisAlignment: MainAxisAlignment.start,
+
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(
+                                left: height * 0.025,
+                                right: height * 0.025,
+                                top: height * 0,
+                                bottom: height * 0),
+                            child: Icon(
+                              Icons.location_city,
+                              color: Colors.purple[800],
+                            ),
+                          ),
+
+                          //  SizedBox(width: 33,),
+                          FutureBuilder<String>(
+                              future:
+                                  BusinessService(uid: widget.order.businesID)
+                                      .businessName,
+                              builder: (context, snapshot) {
+                                // print(snapshot.data);
+                                return Text(
+                                  snapshot.data ?? "",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "Amiri",
+                                  ),
+                                );
+                              }),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(
+                                left: height * 0.025,
+                                right: height * 0.025,
+                                top: height * 0,
+                                bottom: height * 0),
+                            child: Icon(
+                              Icons.location_on,
+                              color: Colors.blue[800],
+                            ),
+                          ),
+                          FutureBuilder<String>(
+                              future:
+                                  CustomerService(uid: widget.order.customerID)
+                                      .customerCity,
+                              builder: (context, snapshot) {
+                                return Text(
+                                  snapshot.data ?? "",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "Amiri",
+                                  ),
+                                );
+                              }),
+                          FutureBuilder<String>(
+                              future:
+                                  CustomerService(uid: widget.order.customerID)
+                                      .customerAdress,
+                              builder: (context, snapshot) {
+                                return Text(
+                                  ' - ${snapshot.data}' ?? "",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "Amiri",
+                                  ),
+                                );
+                              }),
+                        ],
+                      ),
+                      Row(
+                        //3
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(
+                                left: height * 0.025,
+                                right: height * 0.025,
+                                top: height * 0,
+                                bottom: height * 0),
+                            child: Image.asset('assets/price.png'),
+                          ),
+
+                          //  SizedBox(width: 33,),
+                          Text(
+                            widget.order.price.toString(),
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "Amiri",
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        //3
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(
+                                left: height * 0.025,
+                                right: height * 0.025,
+                                top: height * 0,
+                                bottom: height * 0),
+                            child: Icon(
+                              icon,
+                              color: colorIcon,
+                            ),
+                          ),
+                          //  SizedBox(width: 33,),
+                          Text(
+                            stateOrder,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "Amiri",
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
   }
 }

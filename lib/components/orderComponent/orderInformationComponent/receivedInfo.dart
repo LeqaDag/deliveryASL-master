@@ -30,13 +30,14 @@ class ReceivedInfo extends StatefulWidget {
 class _ReceivedInfoState extends State<ReceivedInfo> {
   String driverName = 'اسم السائق';
   Driver driver;
-
+  final _formKey = GlobalKey<FormState>();
   List<MainLine> mainLines;
   String mainLineID;
 
   List<Driver> driverList;
   String driverID;
-  bool selected = false;
+  bool selected = false, driverSelected = false;
+  TextEditingController driverPrice = new TextEditingController();
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Order>(
@@ -245,9 +246,17 @@ class _ReceivedInfoState extends State<ReceivedInfo> {
                                           },
                                         ),
                                       ),
+
                                       Container(
                                         child: selected
                                             ? _driverDrop()
+                                            : Container(
+                                                child: Text(""),
+                                              ),
+                                      ),
+                                      Container(
+                                        child: driverSelected
+                                            ? _driverPriceLine()
                                             : Container(
                                                 child: Text(""),
                                               ),
@@ -261,22 +270,29 @@ class _ReceivedInfoState extends State<ReceivedInfo> {
                                                   new BorderRadius.circular(
                                                       30.0)),
                                           onPressed: () {
-                                            if (driverID == "" &&
-                                                driverID == null) {
-                                            } else {
-                                              if (order.type) {
-                                                OrderService(
-                                                        uid: widget.uid,
-                                                        driverID: driverID)
-                                                    .updateOrderToisUrgent;
+                                            if (_formKey.currentState
+                                                .validate()) {
+                                              if (driverID == "" &&
+                                                  driverID == null) {
                                               } else {
+                                                if (order.type) {
+                                                  OrderService(
+                                                          uid: widget.uid,
+                                                          driverID: driverID)
+                                                      .updateOrderToisUrgent;
+                                                } else {
+                                                  OrderService(
+                                                          uid: widget.uid,
+                                                          driverID: driverID)
+                                                      .updateOrderToisDelivery;
+                                                }
                                                 OrderService(
                                                         uid: widget.uid,
-                                                        driverID: driverID)
-                                                    .updateOrderToisDelivery;
+                                                        driverPrice: int.parse(
+                                                            driverPrice.text))
+                                                    .updateDriverPrice;
+                                                Navigator.pop(context);
                                               }
-
-                                              Navigator.pop(context);
                                             }
                                           },
                                           color: Color(0xff73a16a),
@@ -380,6 +396,7 @@ class _ReceivedInfoState extends State<ReceivedInfo> {
                   onChanged: (val) {
                     setState(() {
                       driverID = val;
+                      driverSelected = true;
                     });
                   },
                 );
@@ -393,6 +410,41 @@ class _ReceivedInfoState extends State<ReceivedInfo> {
         child: Text("ssssss"),
       );
     }
+  }
+
+  Widget _driverPriceLine() {
+    return Form(
+        key: _formKey,
+        child: Container(
+          margin: EdgeInsets.all(10.0),
+          child: TextFormField(
+            validator: (value) {
+              if (value.isEmpty) {
+                return 'ادخل سعر التوصيل للسائق ';
+              }
+              return null;
+            },
+            controller: driverPrice,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              labelText: " سعر التوصيل للسائق",
+              labelStyle: TextStyle(
+                  fontFamily: 'Amiri',
+                  fontSize: 16.0,
+                  color: Color(0xff316686)),
+              contentPadding: EdgeInsets.only(right: 20.0),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          ),
+        ));
+    // OrderService(
+    //         uid: order.uid,
+    //         driverPrice: int.parse(
+    //             driverPrice.text))
+    //     .updateDriverPrice;
+    // Navigator.pop(context);
   }
 
   Widget _customTitle(String title) {
