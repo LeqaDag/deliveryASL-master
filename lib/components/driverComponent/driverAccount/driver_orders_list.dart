@@ -272,20 +272,9 @@ class DriverOrderList extends StatefulWidget {
 class _DriverOrderListState extends State<DriverOrderList> {
   @override
   Widget build(BuildContext context) {
-    final pendingOrders = Provider.of<List<Order>>(context).where((order) {
-          return order.isArchived == false;
-        }).toList() ??
-        [];
-    final doneOrders = Provider.of<List<Order>>(context).where((order) {
-          // return order.isDone == true;
-          return order.isArchived == false;
-        }).toList() ??
-        [];
-    final stuckOrders = Provider.of<List<Order>>(context).where((order) {
-          // return order.isReturn == true;
-          return order.isArchived == false;
-        }).toList() ??
-        [];
+    final pendingOrders = Provider.of<List<Order>>(context) ?? [];
+    final doneOrders = Provider.of<List<Order>>(context) ?? [];
+    final stuckOrders = Provider.of<List<Order>>(context) ?? [];
     return TabBarView(children: [
       ListView.builder(
         itemCount: pendingOrders.length,
