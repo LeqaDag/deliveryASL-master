@@ -1,18 +1,16 @@
 import 'package:flutter/cupertino.dart';
 
-class MainLine {
+class Location {
   String uid;
   String name;
-  String locationID;
 
   bool isArchived;
   DateTime deleteDate;
   String deleteUser;
 
-  MainLine({
+  Location({
     this.uid,
     @required this.name,
-    @required this.locationID,
     this.isArchived = false,
     this.deleteDate,
     this.deleteUser,

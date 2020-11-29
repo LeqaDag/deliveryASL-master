@@ -15,8 +15,7 @@ class MainLineServices {
 
     await docReference.set({
       'name': mainLine.name,
-      'region': mainLine.region,
-      //'cityID': mainLine.cityID,
+      'locationID': mainLine.locationID,
       'isArchived': mainLine.isArchived,
     });
 
@@ -26,8 +25,7 @@ class MainLineServices {
   Future<void> updateData(MainLine mainLine) async {
     return await mainLineCollection.doc(uid).update({
       'name': mainLine.name,
-      'region': mainLine.region,
-      //'cityID': mainLine.cityID,
+      'locationID': mainLine.locationID,
     });
   }
 
@@ -35,8 +33,7 @@ class MainLineServices {
     return MainLine(
       uid: snapshot.id,
       name: snapshot.data()['name'],
-      region: snapshot.data()['region'],
-      // cityID: snapshot.data()['cityID'],
+      locationID: snapshot.data()['locationID'],
       isArchived: snapshot.data()['isArchived'],
     );
   }
@@ -46,8 +43,7 @@ class MainLineServices {
       return MainLine(
         uid: doc.reference.id,
         name: doc.data()['name'] ?? '',
-        region: doc.data()['region'] ?? '',
-        // cityID: doc.data()['cityID'] ?? '',
+        locationID: doc.data()['locationID'] ?? '',
         isArchived: doc.data()['isArchived'] ?? '',
       );
     }).toList();

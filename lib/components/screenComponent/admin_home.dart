@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:sajeda_app/components/adminComponent/admin_secretary_home.dart';
 import 'package:sajeda_app/components/businessComponent/businesssComponent/business_admin.dart';
+import 'package:sajeda_app/components/cityComponent/city_admin.dart';
 import 'package:sajeda_app/components/driverComponent/driversComponent/driveradmin.dart';
 import 'package:sajeda_app/components/invoiceComponent/invoice_admin.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
@@ -164,6 +165,30 @@ class AdminHome extends StatelessWidget {
                                               AdminSecretaryHome(name: name)),
                                     );
                                   }),
+                            ],
+                          ),
+                          CustomBoxSize(height: 0.05),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    right: 21, bottom: 20),
+                                child: CustomContainer(
+                                    width: 0.28,
+                                    height: 0.15,
+                                    imagepath:
+                                        AssetImage("assets/city-100.png"),
+                                    text: "المدن",
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                AdminCitiesHome(name: name)),
+                                      );
+                                    }),
+                              ),
                             ],
                           ),
                         ],

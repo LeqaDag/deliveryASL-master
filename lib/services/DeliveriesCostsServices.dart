@@ -13,10 +13,10 @@ class DeliveriesCostsServices {
       'deliveryPrice': deliveryCost.deliveryPrice,
       'note': deliveryCost.note,
       'adminID': deliveryCost.adminID,
-      'city': deliveryCost.city,
+      'locationID': deliveryCost.locationID,
       'businesID': deliveryCost.businesID,
       'isArchived': deliveryCost.isArchived,
-      'name' : deliveryCost.name
+      'locationName': deliveryCost.locationName
     });
   }
 
@@ -28,29 +28,27 @@ class DeliveriesCostsServices {
 
   DeliveriesCosts _deliveryCostDataFromSnapshot(DocumentSnapshot snapshot) {
     return DeliveriesCosts(
-      uid: snapshot.id,
-      deliveryPrice: snapshot.data()['deliveryPrice'],
-      note: snapshot.data()['note'],
-      adminID: snapshot.data()['adminID'],
-      city: snapshot.data()['city'],
-      businesID: snapshot.data()['businesID'],
-      isArchived: snapshot.data()['isArchived'],
-      name: snapshot.data()['name']
-    );
+        uid: snapshot.id,
+        deliveryPrice: snapshot.data()['deliveryPrice'],
+        note: snapshot.data()['note'],
+        adminID: snapshot.data()['adminID'],
+        locationID: snapshot.data()['locationID'],
+        businesID: snapshot.data()['businesID'],
+        isArchived: snapshot.data()['isArchived'],
+        locationName: snapshot.data()['locationName']);
   }
 
   List<DeliveriesCosts> _deliveryCostListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) {
       return DeliveriesCosts(
-        uid: doc.reference.id,
-        deliveryPrice: doc.data()['deliveryPrice'] ?? '',
-        note: doc.data()['note'] ?? '',
-        adminID: doc.data()['adminID'] ?? '',
-        city: doc.data()['city'] ?? '',
-        businesID: doc.data()['businesID'] ?? '',
-        isArchived: doc.data()['isArchived'] ?? '',
-        name: doc.data()['name']??''
-      );
+          uid: doc.reference.id,
+          deliveryPrice: doc.data()['deliveryPrice'] ?? '',
+          note: doc.data()['note'] ?? '',
+          adminID: doc.data()['adminID'] ?? '',
+          locationID: doc.data()['locationID'] ?? '',
+          businesID: doc.data()['businesID'] ?? '',
+          isArchived: doc.data()['isArchived'] ?? '',
+          locationName: doc.data()['locationName'] ?? '');
     }).toList();
   }
 
