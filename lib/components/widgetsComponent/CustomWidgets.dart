@@ -579,8 +579,8 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                             future: CustomerService(uid: order.customerID)
                                 .customerName,
                             builder: (context, snapshot) {
-                              // print(order.customerID);
-                              return Text(
+                              if (snapshot.hasData) {
+                                return Text(
                                 snapshot.data ?? "",
                                 style: TextStyle(
                                   fontSize: 16,
@@ -588,6 +588,17 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                                   fontFamily: "Amiri",
                                 ),
                               );
+                              } else {
+                                return Text(
+                                 "",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: "Amiri",
+                                ),
+                              );
+                              }
+                              
                             },
                           ),
                         ],
@@ -643,7 +654,8 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                                   DriverService(uid: order.driverID).driverName,
                               builder: (context, snapshot) {
                                 // print(snapshot.data);
-                                return Text(
+                                if (snapshot.hasData) {
+                                  return Text(
                                   snapshot.data ?? "",
                                   style: TextStyle(
                                     fontSize: 16,
@@ -651,6 +663,17 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                                     fontFamily: "Amiri",
                                   ),
                                 );
+                                } else {
+                                  return Text(
+                                   "",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "Amiri",
+                                  ),
+                                );
+                                }
+                                
                               }),
                         ],
                       ),
