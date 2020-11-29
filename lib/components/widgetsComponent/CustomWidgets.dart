@@ -525,7 +525,7 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
       stateOrder = "راجع";
     } else if (order.isReceived == true) {
       color = KBadgeColorAndContainerBorderColorRecipientOrder;
-      icon = Icons.assignment;
+      icon = Icons.assignment_turned_in_outlined;
       stateOrder = "تم استلامه";
     }
 
