@@ -1,18 +1,20 @@
 import 'package:flutter/cupertino.dart';
 
-class MainLine {
+class DriverDeliveryCost {
   String uid;
-  String name;
+  String driverID;
+  int cost;
   String locationID;
 
   bool isArchived;
   DateTime deleteDate;
   String deleteUser;
 
-  MainLine({
+  DriverDeliveryCost({
     this.uid,
-    @required this.name,
-    @required this.locationID,
+    @required this.driverID,
+    this.cost,
+    this.locationID,
     this.isArchived = false,
     this.deleteDate,
     this.deleteUser,

@@ -28,7 +28,7 @@ class AddNewOders extends StatefulWidget {
 class _AddNewOdersState extends State<AddNewOders> {
   final _formKey = GlobalKey<FormState>();
   String customerCityID = 'One';
-  String datehh = "", typeOrder = ' نوع التوصيل';
+  String datehh = "";
   List<DeliveriesCosts> cities;
   List<SubLine> sublines;
   List<Business> business;
@@ -118,11 +118,11 @@ class _AddNewOdersState extends State<AddNewOders> {
                     Icon(Icons.info, color: Colors.white, size: 30),
                   ),
                   _orderDescription(orderDescription),
-                  Row(
-                    children: <Widget>[
-                      _deliveryType(),
-                    ],
-                  ),
+                  // Row(
+                  //   children: <Widget>[
+                  //     _deliveryType(),
+                  //   ],
+                  // ),
                   Row(
                     children: <Widget>[
                       Expanded(
@@ -329,11 +329,11 @@ class _AddNewOdersState extends State<AddNewOders> {
                   items: cities.map(
                     (city) {
                       return DropdownMenuItem<String>(
-                        value: city.city.toString(),
+                        value: city.locationID.toString(),
                         child: Align(
                             alignment: Alignment.centerRight,
                             child: Text(
-                              city.name,
+                              city.locationName,
                               style: TextStyle(
                                 fontFamily: 'Amiri',
                                 fontSize: 16.0,
@@ -348,13 +348,13 @@ class _AddNewOdersState extends State<AddNewOders> {
                       cityIDAddress = val;
                       FirebaseFirestore.instance
                           .collection('deliveries_costs')
-                          .where('city', isEqualTo: cityID)
+                          .where('locationID', isEqualTo: cityID)
                           .get()
                           .then((value) => {
                                 setState(() {
                                   deliveryPrice =
                                       value.docs[0]["deliveryPrice"];
-                                  cityName = value.docs[0]["name"];
+                                  cityName = value.docs[0]["locationName"];
                                 })
                               });
                     });
@@ -485,57 +485,57 @@ class _AddNewOdersState extends State<AddNewOders> {
     );
   }
 
-  Widget _deliveryType() {
-    return Expanded(
-      flex: 2,
-      child: Container(
-        margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
-        child: DropdownButtonFormField(
-          onChanged: (String newValue) {
-            setState(() {
-              typeOrder = newValue;
-            });
-          },
-          items: <String>['عادي', 'مستعجل']
-              .map<DropdownMenuItem<String>>((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  value,
-                  textAlign: TextAlign.right,
-                  style: TextStyle(fontFamily: 'Amiri', fontSize: 16.0),
-                ),
-              ),
-            );
-          }).toList(),
-          decoration: InputDecoration(
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
-                borderSide: BorderSide(
-                  width: 1.0,
-                  color: Color(0xff636363),
-                ),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
-                borderSide: BorderSide(
-                  width: 2.0,
-                  color: Color(0xff73a16a),
-                ),
-                //Change color to Color(0xff73a16a)
-              ),
-              contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
-              labelText: "نوع التوصيل",
-              labelStyle: TextStyle(
-                  fontFamily: 'Amiri',
-                  fontSize: 18.0,
-                  color: Color(0xff316686))),
-        ),
-      ),
-    );
-  }
+  // Widget _deliveryType() {
+  //   return Expanded(
+  //     flex: 2,
+  //     child: Container(
+  //       margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
+  //       child: DropdownButtonFormField(
+  //         onChanged: (String newValue) {
+  //           setState(() {
+  //             typeOrder = newValue;
+  //           });
+  //         },
+  //         items: <String>['عادي', 'مستعجل']
+  //             .map<DropdownMenuItem<String>>((String value) {
+  //           return DropdownMenuItem<String>(
+  //             value: value,
+  //             child: Align(
+  //               alignment: Alignment.centerRight,
+  //               child: Text(
+  //                 value,
+  //                 textAlign: TextAlign.right,
+  //                 style: TextStyle(fontFamily: 'Amiri', fontSize: 16.0),
+  //               ),
+  //             ),
+  //           );
+  //         }).toList(),
+  //         decoration: InputDecoration(
+  //             enabledBorder: OutlineInputBorder(
+  //               borderRadius: BorderRadius.circular(10.0),
+  //               borderSide: BorderSide(
+  //                 width: 1.0,
+  //                 color: Color(0xff636363),
+  //               ),
+  //             ),
+  //             focusedBorder: OutlineInputBorder(
+  //               borderRadius: BorderRadius.circular(10.0),
+  //               borderSide: BorderSide(
+  //                 width: 2.0,
+  //                 color: Color(0xff73a16a),
+  //               ),
+  //               //Change color to Color(0xff73a16a)
+  //             ),
+  //             contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
+  //             labelText: "نوع التوصيل",
+  //             labelStyle: TextStyle(
+  //                 fontFamily: 'Amiri',
+  //                 fontSize: 18.0,
+  //                 color: Color(0xff316686))),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _notes(TextEditingController fieldController) {
     return Container(
@@ -573,7 +573,7 @@ class _AddNewOdersState extends State<AddNewOders> {
             if (_formKey.currentState.validate()) {
               // print(int.parse(orderPrice.text) +
               //     int.parse(deliveryPrice));
-              if (typeOrder == 'مستعجل') orderType = true;
+              
               Customer customer = new Customer(
                   name: customerName.text,
                   phoneNumber: int.parse(customerPhoneNumber.text),
@@ -590,7 +590,7 @@ class _AddNewOdersState extends State<AddNewOders> {
               await OrderService().addOrderData(new Order(
                   price: int.parse(orderPrice.text),
                   totalPrice: orderTotalPrice,
-                  type: orderType,
+                  type: false,
                   description: orderDescription.text,
                   date: orderDate,
                   note: orderNote.text,
