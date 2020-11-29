@@ -164,11 +164,11 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
                                   items: cities.map(
                                     (city) {
                                       return DropdownMenuItem<String>(
-                                        value: city.city.toString(),
+                                        value: city.locationID.toString(),
                                         child: Align(
                                           alignment: Alignment.centerRight,
                                           child: Text(
-                                            city.name,
+                                            city.locationName,
                                             style: TextStyle(
                                               fontFamily: 'Amiri',
                                               fontSize: 16.0,

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sajeda_app/classes/city.dart';
+import 'package:sajeda_app/classes/location.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
 import 'package:sajeda_app/services/cityServices.dart';
+import 'package:sajeda_app/services/locationServices.dart';
 import 'package:sajeda_app/services/mainLineServices.dart';
 import 'package:sajeda_app/services/subLineServices.dart';
 
@@ -24,8 +26,10 @@ class _AddLineState extends State<AddLine> {
   TextEditingController _mainLineController = new TextEditingController();
   static List<String> subLineList = [null];
   static List<String> citiesList = [null];
-  String cityID;
+  String cityID, locationID;
   String region = '  المنطقة';
+  List<Location> locations;
+
   @override
   void initState() {
     subLineList = [null];
@@ -69,6 +73,67 @@ class _AddLineState extends State<AddLine> {
                     ),
                     Container(
                       margin: EdgeInsets.all(10.0),
+                      child: StreamBuilder<List<Location>>(
+                        stream: LocationService().locations,
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return Text('Loading...');
+                          } else {
+                            locations = snapshot.data;
+                            return DropdownButtonFormField<String>(
+                              value: locationID,
+                              decoration: InputDecoration(
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderSide: BorderSide(
+                                      width: 1.0,
+                                      color: Color(0xff636363),
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderSide: BorderSide(
+                                      width: 2.0,
+                                      color: Color(0xff73a16a),
+                                    ),
+                                  ),
+                                  contentPadding:
+                                      EdgeInsets.only(right: 20.0, left: 10.0),
+                                  labelText: "المنطقة",
+                                  labelStyle: TextStyle(
+                                      fontFamily: 'Amiri',
+                                      fontSize: 18.0,
+                                      color: Color(0xff316686))),
+                              items: locations.map(
+                                (location) {
+                                  return DropdownMenuItem<String>(
+                                    value: location.uid.toString(),
+                                    child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Text(
+                                        location.name,
+                                        style: TextStyle(
+                                          fontFamily: 'Amiri',
+                                          fontSize: 16.0,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ).toList(),
+                              onChanged: (val) {
+                                setState(() {
+                                  locationID = val;
+                                  print(locationID);
+                                });
+                              },
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.all(10.0),
                       child: TextFormField(
                         controller: _mainLineController,
                         decoration: InputDecoration(
@@ -108,56 +173,55 @@ class _AddLineState extends State<AddLine> {
                         },
                       ),
                     ),
-                    Container(
-                      margin: EdgeInsets.only(
-                          top: 10, bottom: 10, left: 10, right: 10),
-                      child: DropdownButtonFormField(
-                        onChanged: (String newValue) {
-                          setState(() {
-                            region = newValue;
-                          });
-                        },
-                        items: <String>['الوسط', 'الشمال', 'الجنوب']
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Align(
-                              alignment: Alignment.centerRight,
-                              child: Text(
-                                value,
-                                textAlign: TextAlign.right,
-                                style: TextStyle(
-                                    fontFamily: 'Amiri', fontSize: 16.0),
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                        decoration: InputDecoration(
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                              borderSide: BorderSide(
-                                width: 1.0,
-                                color: Color(0xff636363),
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                              borderSide: BorderSide(
-                                width: 2.0,
-                                color: Color(0xff73a16a),
-                              ),
-                              //Change color to Color(0xff73a16a)
-                            ),
-                            contentPadding:
-                                EdgeInsets.only(right: 20.0, left: 10.0),
-                            labelText: "المنطقة",
-                            labelStyle: TextStyle(
-                                fontFamily: 'Amiri',
-                                fontSize: 18.0,
-                                color: Color(0xff316686))),
-                      ),
-                    ),
-
+                    // Container(
+                    //   margin: EdgeInsets.only(
+                    //       top: 10, bottom: 10, left: 10, right: 10),
+                    //   child: DropdownButtonFormField(
+                    //     onChanged: (String newValue) {
+                    //       setState(() {
+                    //         region = newValue;
+                    //       });
+                    //     },
+                    //     items: <String>['الوسط', 'الشمال', 'الجنوب']
+                    //         .map<DropdownMenuItem<String>>((String value) {
+                    //       return DropdownMenuItem<String>(
+                    //         value: value,
+                    //         child: Align(
+                    //           alignment: Alignment.centerRight,
+                    //           child: Text(
+                    //             value,
+                    //             textAlign: TextAlign.right,
+                    //             style: TextStyle(
+                    //                 fontFamily: 'Amiri', fontSize: 16.0),
+                    //           ),
+                    //         ),
+                    //       );
+                    //     }).toList(),
+                    //     decoration: InputDecoration(
+                    //         enabledBorder: OutlineInputBorder(
+                    //           borderRadius: BorderRadius.circular(10.0),
+                    //           borderSide: BorderSide(
+                    //             width: 1.0,
+                    //             color: Color(0xff636363),
+                    //           ),
+                    //         ),
+                    //         focusedBorder: OutlineInputBorder(
+                    //           borderRadius: BorderRadius.circular(10.0),
+                    //           borderSide: BorderSide(
+                    //             width: 2.0,
+                    //             color: Color(0xff73a16a),
+                    //           ),
+                    //           //Change color to Color(0xff73a16a)
+                    //         ),
+                    //         contentPadding:
+                    //             EdgeInsets.only(right: 20.0, left: 10.0),
+                    //         labelText: "المنطقة",
+                    //         labelStyle: TextStyle(
+                    //             fontFamily: 'Amiri',
+                    //             fontSize: 18.0,
+                    //             color: Color(0xff316686))),
+                    //   ),
+                    // ),
                     SizedBox(
                       height: 20,
                     ),
@@ -175,9 +239,8 @@ class _AddLineState extends State<AddLine> {
                             String mainLineID = await MainLineServices()
                                 .addMainLineData(new MainLine(
                                     name: _mainLineController.text,
-                                    region: region
-                                    // cityID: cityID,
-                                    ));
+                                    locationID: locationID,
+                                    isArchived: false));
 
                             subLineListController
                                 .forEach((index, subline) async {
@@ -297,7 +360,9 @@ class FriendTextFields extends StatefulWidget {
 
 class _FriendTextFieldsState extends State<FriendTextFields> {
   List<City> cities;
+
   String cityID;
+
   @override
   void initState() {
     super.initState();

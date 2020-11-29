@@ -5,9 +5,9 @@ class DeliveriesCosts {
   String deliveryPrice;
   String note;
   String adminID;
-  String city;
+  String locationID;
   String businesID;
-  String name;
+  String locationName;
 
   bool isArchived;
   DateTime deleteDate;
@@ -18,10 +18,10 @@ class DeliveriesCosts {
       @required this.deliveryPrice,
       this.note,
       @required this.adminID,
-      @required this.city,
+      @required this.locationID,
       @required this.businesID,
+      @required this.locationName,
       this.isArchived = false,
       this.deleteDate,
-      this.deleteUser,
-      this.name});
+      this.deleteUser});
 }

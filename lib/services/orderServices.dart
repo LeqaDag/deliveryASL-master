@@ -33,6 +33,7 @@ class OrderService {
       'isCancelld': order.isCancelld,
       'isReturn': order.isReturn,
       'isDone': order.isDone,
+      'isPaid': order.isPaid,
       'customerID': order.customerID,
       'businesID': order.businesID,
       'driverID': order.driverID,
@@ -48,6 +49,7 @@ class OrderService {
       'isCancelld': order.isCancelld,
       'isReturn': order.isReturn,
       'isDone': order.isDone,
+      'isPaid': order.isPaid,
       'isDelivery': order.isDelivery,
       'price': order.price,
       'totalPrice': order.totalPrice,
@@ -76,6 +78,7 @@ class OrderService {
         isCancelld: snapshot.data()['isCancelld'],
         isReturn: snapshot.data()['isReturn'],
         isDone: snapshot.data()['isDone'],
+        isPaid: snapshot.data()['isPaid'],
         customerID: snapshot.data()['customerID'],
         businesID: snapshot.data()['businesID'],
         driverID: snapshot.data()['driverID'],
@@ -85,6 +88,7 @@ class OrderService {
         driverPrice: snapshot.data()['driverPrice']);
   }
 
+// isPaid
   List<Order> _orderListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) {
       return Order(
@@ -102,6 +106,7 @@ class OrderService {
           isCancelld: doc.data()['isCancelld'] ?? '',
           isReturn: doc.data()['isReturn'] ?? '',
           isDone: doc.data()['isDone'] ?? '',
+          isPaid: doc.data()['isPaid'] ?? '',
           customerID: doc.data()['customerID'] ?? '',
           businesID: doc.data()['businesID'] ?? '',
           driverID: doc.data()['driverID'] ?? '',
@@ -151,6 +156,7 @@ class OrderService {
   Future<int> get orderDone {
     return orderCollection
         .where('isDone', isEqualTo: true)
+        .where('isPaid', isEqualTo: false)
         .where('isArchived', isEqualTo: false)
         .get()
         .then((value) => value.size);
@@ -356,7 +362,7 @@ class OrderService {
         {
           return orderCollection
               .where('businesID', isEqualTo: businesID)
-              .where('cityID', isEqualTo: "APdWKRxcqyKRgrMteEdU")
+              // .where('cityID', isEqualTo: "APdWKRxcqyKRgrMteEdU")
               .where('isArchived', isEqualTo: false)
               .snapshots()
               .map(_orderListFromSnapshot);

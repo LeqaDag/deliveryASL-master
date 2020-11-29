@@ -18,6 +18,7 @@ class Order {
   bool isCancelld;
   bool isReturn;
   bool isDone;
+  bool isPaid;
 
   String businesID;
   String driverID;
@@ -33,7 +34,7 @@ class Order {
       @required this.price,
       @required this.totalPrice,
       @required this.type,
-      @required this.description,
+      this.description,
       @required this.date,
       @required this.note,
       this.isLoading = true,
@@ -43,6 +44,7 @@ class Order {
       this.isCancelld = false,
       this.isReturn = false,
       this.isDone = false,
+      this.isPaid = false,
       this.businesID,
       this.driverID = '',
       this.driverPrice = 0,

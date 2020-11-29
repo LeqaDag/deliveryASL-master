@@ -2,9 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sajeda_app/classes/city.dart';
 import 'package:sajeda_app/classes/deliveriesCost.dart';
+import 'package:sajeda_app/classes/location.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
 import 'package:sajeda_app/services/DeliveriesCostsServices.dart';
 import 'package:sajeda_app/services/cityServices.dart';
+import 'package:sajeda_app/services/locationServices.dart';
+import 'package:toast/toast.dart';
 
 import '../../../constants.dart';
 
@@ -19,7 +22,7 @@ class AddDeliveryCost extends StatefulWidget {
 class _AddDeliveryCostState extends State<AddDeliveryCost> {
   final _formKey = GlobalKey<FormState>();
 
-  List<City> cities;
+  List<Location> locations;
   String cityID;
   Map<String, TextEditingController> formListController = {};
   @override
@@ -46,93 +49,102 @@ class _AddDeliveryCostState extends State<AddDeliveryCost> {
           )),
       body: Directionality(
         textDirection: TextDirection.rtl,
-        child: ListView(
-          children: [
-            Form(
-              key: _formKey,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    StreamBuilder<List<City>>(
-                        stream: CityService().citys,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            cities = snapshot.data;
+        child: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  StreamBuilder<List<Location>>(
+                      stream: LocationService().locations,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          locations = snapshot.data;
 
-                            return ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: cities.length,
-                                itemBuilder: (context, index) {
-                                  return _addComponent(cities[index]);
-                                });
-                          } else {
-                            return Container();
-                          }
-                        }),
-                    SizedBox(
-                      height: 40,
-                    ),
-                    Container(
-                      margin: EdgeInsets.all(40.0),
-                      child: RaisedButton(
-                        onPressed: () {
-                          final FirebaseAuth auth = FirebaseAuth.instance;
-                          final User user = auth.currentUser;
-                          if (_formKey.currentState.validate()) {
-                            cities.asMap().forEach((index, city) async {
-                              print(city);
+                          return ListView.separated(
+                            physics: ScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: locations.length,
+                            itemBuilder: (context, index) {
+                              return _addComponent(locations[index]);
+                            },
+                            separatorBuilder: (context, index) {
+                              return Divider();
+                            },
+                          );
+                        } else {
+                          return Container();
+                        }
+                      }),
+                  SizedBox(
+                    height: 40,
+                  ),
+                  Container(
+                    margin: EdgeInsets.all(40.0),
+                    child: RaisedButton(
+                      onPressed: () async {
+                        final FirebaseAuth auth = FirebaseAuth.instance;
+                        final User user = auth.currentUser;
+                        if (_formKey.currentState.validate()) {
+                          locations.asMap().forEach((index, location) async {
+                            print(location);
 
-                              await DeliveriesCostsServices()
-                                  .addDeliveryCostData(new DeliveriesCosts(
-                                      deliveryPrice: formListController[city.uid].text,
-                                      adminID: user.uid,
-                                      city: city.uid,
-                                      businesID: widget.busID));
-                            });
-                            Navigator.pop(context);
-                          }
-                        },
-                        padding: EdgeInsets.all(10.0),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.circular(30.0)),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              'إضافة',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontFamily: 'Amiri',
-                                  fontSize: 24.0),
-                            ),
-                            SizedBox(
-                              width: 40.0,
-                            ),
-                            Icon(
-                              Icons.add_circle,
-                              color: Colors.white,
-                              size: 32.0,
-                            ),
-                          ],
-                        ),
-                        color: Color(0xff73a16a),
+                            await DeliveriesCostsServices().addDeliveryCostData(
+                                new DeliveriesCosts(
+                                    deliveryPrice:
+                                        formListController[location.uid].text,
+                                    adminID: user.uid,
+                                    locationID: location.uid,
+                                    locationName: location.name,
+                                    businesID: widget.busID));
+                          });
+                          Toast.show("تم اضافة اسعار التوصيل بنجاح", context,
+                              duration: Toast.LENGTH_LONG,
+                              gravity: Toast.BOTTOM);
+                          await Future.delayed(Duration(milliseconds: 1000));
+                          Navigator.of(context).pop();
+                        }
+                      },
+                      padding: EdgeInsets.all(10.0),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(30.0)),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            'إضافة',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: 'Amiri',
+                                fontSize: 24.0),
+                          ),
+                          SizedBox(
+                            width: 40.0,
+                          ),
+                          Icon(
+                            Icons.add_circle,
+                            color: Colors.white,
+                            size: 32.0,
+                          ),
+                        ],
                       ),
+                      color: Color(0xff73a16a),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-          ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _addComponent(City city) {
-    formListController[city.uid]=new TextEditingController();
+  Widget _addComponent(Location location) {
+    formListController[location.uid] = new TextEditingController();
     return Container(
       child: Row(
         children: <Widget>[
@@ -140,9 +152,9 @@ class _AddDeliveryCostState extends State<AddDeliveryCost> {
             child: Container(
               margin: EdgeInsets.all(10.0),
               child: Text(
-                city.name,
+                location.name,
                 style: TextStyle(
-                  fontSize: 22.0,
+                  fontSize: 17.0,
                   color: Colors.purple[900],
                   fontFamily: 'Amiri',
                 ),
@@ -153,7 +165,7 @@ class _AddDeliveryCostState extends State<AddDeliveryCost> {
             child: Container(
               margin: EdgeInsets.all(10.0),
               child: TextFormField(
-                controller: formListController[city.uid],
+                controller: formListController[location.uid],
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value.isEmpty) {

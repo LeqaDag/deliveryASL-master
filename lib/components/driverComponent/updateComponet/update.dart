@@ -2,11 +2,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sajeda_app/classes/city.dart';
 import 'package:sajeda_app/classes/driver.dart';
+import 'package:sajeda_app/classes/driverDeliveryCost.dart';
+import 'package:sajeda_app/classes/location.dart';
 import 'package:sajeda_app/classes/mainLine.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
 import 'package:sajeda_app/services/cityServices.dart';
+import 'package:sajeda_app/services/driverDeliveryCostServices.dart';
 import 'package:sajeda_app/services/driverServices.dart';
+import 'package:sajeda_app/services/locationServices.dart';
 import 'package:sajeda_app/services/mainLineServices.dart';
+import 'package:toast/toast.dart';
 
 class UpdateDriver extends StatefulWidget {
   final String driverID, name;
@@ -20,24 +25,36 @@ class _UpdateDriverState extends State<UpdateDriver> {
   List<City> cities;
   String cityID;
 
-  List<MainLine> mainLines;
-  String mainLineID;
-
+  List<Location> locations;
+  String locationID, locationName = "", cityName = "";
+  int driverDeliveryCost = 0;
   String dropdownValue = 'One';
-
-  String driverName;
+  TextEditingController deliveryPriceController = TextEditingController();
+  String driverName, driverDeliveryCostId;
   bool type;
   String email;
   String phoneNumber;
   String passowrd;
   String address;
   String line = 'One';
+
+  @override
+  void initState() {
+    super.initState();
+    driverName = "";
+    email = "";
+    address = "";
+
+    // _priceController = new TextEditingController();
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Driver>(
         stream: DriverService(uid: widget.driverID).driverByID,
         builder: (context, snapshot) {
           Driver driverData = snapshot.data;
+
           return Scaffold(
             appBar: AppBar(
               title: Directionality(
@@ -211,69 +228,82 @@ class _UpdateDriverState extends State<UpdateDriver> {
                             ),
                           ),
                         ),
-                        Container(
-                          margin: EdgeInsets.all(10.0),
-                          child: StreamBuilder<List<City>>(
-                            stream: CityService().citys,
+
+                        FutureBuilder<String>(
+                            future:
+                                CityService(uid: driverData.cityID).cityName,
                             builder: (context, snapshot) {
-                              if (!snapshot.hasData) {
-                                return Text('Loading...');
-                              } else {
-                                cities = snapshot.data;
-                                return DropdownButtonFormField<String>(
-                                  value: cityID,
-                                  onChanged: (val) {
-                                    setState(() {
-                                      cityID = val;
-                                    });
-                                  },
-                                  items: cities.map(
-                                    (city) {
-                                      return DropdownMenuItem<String>(
-                                        value: city.uid.toString(),
-                                        child: Align(
-                                          alignment: Alignment.centerRight,
-                                          child: Text(
-                                            city.name,
-                                            style: TextStyle(
-                                              fontFamily: 'Amiri',
-                                              fontSize: 16.0,
-                                            ),
-                                          ),
-                                        ),
-                                      );
+                              if (snapshot.hasData) {
+                                cityName = snapshot.data.toString();
+                                return Container(
+                                  margin: EdgeInsets.all(10.0),
+                                  child: StreamBuilder<List<City>>(
+                                    stream: CityService().citys,
+                                    builder: (context, snapshot) {
+                                      if (!snapshot.hasData) {
+                                        return Text('Loading...');
+                                      } else {
+                                        cities = snapshot.data;
+                                        return DropdownButtonFormField<String>(
+                                          value: cityID,
+                                          onChanged: (val) {
+                                            setState(() {
+                                              cityID = val;
+                                            });
+                                          },
+                                          items: cities.map(
+                                            (city) {
+                                              return DropdownMenuItem<String>(
+                                                value: city.uid.toString(),
+                                                child: Align(
+                                                  alignment:
+                                                      Alignment.centerRight,
+                                                  child: Text(
+                                                    city.name,
+                                                    style: TextStyle(
+                                                      fontFamily: 'Amiri',
+                                                      fontSize: 16.0,
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          ).toList(),
+                                          decoration: InputDecoration(
+                                              enabledBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10.0),
+                                                borderSide: BorderSide(
+                                                  width: 1.0,
+                                                  color: Color(0xff636363),
+                                                ),
+                                              ),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10.0),
+                                                borderSide: BorderSide(
+                                                  width: 2.0,
+                                                  color: Color(0xff73a16a),
+                                                ),
+                                                //Change color to Color(0xff73a16a)
+                                              ),
+                                              contentPadding: EdgeInsets.only(
+                                                  right: 20.0, left: 10.0),
+                                              labelText: cityName,
+                                              labelStyle: TextStyle(
+                                                  fontFamily: 'Amiri',
+                                                  fontSize: 18.0,
+                                                  color: Color(0xff316686))),
+                                        );
+                                      }
                                     },
-                                  ).toList(),
-                                  decoration: InputDecoration(
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                        borderSide: BorderSide(
-                                          width: 1.0,
-                                          color: Color(0xff636363),
-                                        ),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                        borderSide: BorderSide(
-                                          width: 2.0,
-                                          color: Color(0xff73a16a),
-                                        ),
-                                        //Change color to Color(0xff73a16a)
-                                      ),
-                                      contentPadding: EdgeInsets.only(
-                                          right: 20.0, left: 10.0),
-                                      labelText: "المدينة",
-                                      labelStyle: TextStyle(
-                                          fontFamily: 'Amiri',
-                                          fontSize: 18.0,
-                                          color: Color(0xff316686))),
+                                  ),
                                 );
+                              } else {
+                                return Text("");
                               }
-                            },
-                          ),
-                        ),
+                            }),
+
                         Container(
                           margin: EdgeInsets.all(10.0),
                           child: TextFormField(
@@ -304,72 +334,116 @@ class _UpdateDriverState extends State<UpdateDriver> {
                             ),
                           ),
                         ),
-                        // Container(
-                        //   margin: EdgeInsets.all(10.0),
-                        //   child: TextFormField(
-                        //     initialValue: driverData.passowrd,
-                        //     onChanged: (val) => setState(() => passowrd = val),
-                        //     obscureText: true,
-                        //     decoration: InputDecoration(
-                        //       labelText: 'كلمة المرور',
-                        //       labelStyle: TextStyle(
-                        //         fontFamily: 'Amiri',
-                        //         fontSize: 18.0,
-                        //         color: Color(0xff316686),
-                        //       ),
-                        //       contentPadding: EdgeInsets.only(right: 20.0),
-                        //       enabledBorder: OutlineInputBorder(
-                        //         borderRadius: BorderRadius.circular(10.0),
-                        //         borderSide: BorderSide(
-                        //           width: 1.0,
-                        //           color: Color(0xff636363),
-                        //         ),
-                        //       ),
-                        //       focusedBorder: OutlineInputBorder(
-                        //         borderRadius: BorderRadius.circular(10.0),
-                        //         borderSide: BorderSide(
-                        //           width: 2.0,
-                        //           color: Color(0xff73a16a),
-                        //         ),
-                        //         //Change color to Color(0xff73a16a)
-                        //       ),
-                        //     ),
-                        //   ),
-                        // ),
-                        Container(
-                          margin: EdgeInsets.all(10.0),
-                          child: StreamBuilder<List<MainLine>>(
-                            stream: MainLineServices().mainLines,
+
+                        FutureBuilder<String>(
+                            future: LocationService(uid: driverData.mainLineID)
+                                .cityName(driverData.mainLineID),
                             builder: (context, snapshot) {
-                              if (!snapshot.hasData) {
-                                return Text('Loading...');
-                              } else {
-                                mainLines = snapshot.data;
-                                return DropdownButtonFormField<String>(
-                                  value: mainLineID,
-                                  onChanged: (val) {
-                                    setState(() {
-                                      mainLineID = val;
-                                    });
-                                  },
-                                  items: mainLines.map(
-                                    (mainLine) {
-                                      return DropdownMenuItem<String>(
-                                        value: mainLine.uid.toString(),
-                                        child: Align(
-                                          alignment: Alignment.centerRight,
-                                          child: Text(
-                                            mainLine.name,
-                                            style: TextStyle(
-                                              fontFamily: 'Amiri',
-                                              fontSize: 16.0,
-                                            ),
-                                          ),
-                                        ),
-                                      );
+                              if (snapshot.hasData) {
+                                locationName = snapshot.data.toString();
+                                return Container(
+                                  margin: EdgeInsets.all(10.0),
+                                  child: StreamBuilder<List<Location>>(
+                                    stream: LocationService().locations,
+                                    builder: (context, snapshot) {
+                                      if (!snapshot.hasData) {
+                                        return Text('Loading...');
+                                      } else {
+                                        locations = snapshot.data;
+                                        return DropdownButtonFormField<String>(
+                                          value: locationID,
+                                          onChanged: (val) {
+                                            setState(() {
+                                              locationID = val;
+                                            });
+                                          },
+                                          items: locations.map(
+                                            (location) {
+                                              return DropdownMenuItem<String>(
+                                                value: location.uid.toString(),
+                                                child: Align(
+                                                  alignment:
+                                                      Alignment.centerRight,
+                                                  child: Text(
+                                                    location.name,
+                                                    style: TextStyle(
+                                                      fontFamily: 'Amiri',
+                                                      fontSize: 16.0,
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          ).toList(),
+                                          decoration: InputDecoration(
+                                              enabledBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10.0),
+                                                borderSide: BorderSide(
+                                                  width: 1.0,
+                                                  color: Color(0xff636363),
+                                                ),
+                                              ),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10.0),
+                                                borderSide: BorderSide(
+                                                  width: 2.0,
+                                                  color: Color(0xff73a16a),
+                                                ),
+                                                //Change color to Color(0xff73a16a)
+                                              ),
+                                              contentPadding: EdgeInsets.only(
+                                                  right: 20.0, left: 10.0),
+                                              labelText: locationName,
+                                              labelStyle: TextStyle(
+                                                  fontFamily: 'Amiri',
+                                                  fontSize: 18.0,
+                                                  color: Color(0xff316686))),
+                                        );
+                                      }
                                     },
-                                  ).toList(),
-                                  decoration: InputDecoration(
+                                  ),
+                                );
+                              } else {
+                                return Text("");
+                              }
+                            }),
+
+                        FutureBuilder<String>(
+                            future:
+                                DriverDeliveryCostServices(uid: driverData.uid)
+                                    .driverDeliveryCostId(driverData.uid),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                driverDeliveryCostId = snapshot.data.toString();
+                                return Text("");
+                              } else {
+                                return Text("");
+                              }
+                            }),
+
+                        FutureBuilder<int>(
+                            future:
+                                DriverDeliveryCostServices(uid: driverData.uid)
+                                    .driverPriceData(driverData.uid),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                driverDeliveryCost =
+                                    int.parse(snapshot.data.toString());
+                                return Container(
+                                  margin: EdgeInsets.all(10.0),
+                                  child: TextFormField(
+                                    controller: deliveryPriceController,
+                                    keyboardType: TextInputType.number,
+                                    decoration: InputDecoration(
+                                      labelText: driverDeliveryCost.toString(),
+                                      labelStyle: TextStyle(
+                                          fontFamily: 'Amiri',
+                                          fontSize: 18.0,
+                                          color: Color(0xff316686)),
+                                      contentPadding:
+                                          EdgeInsets.only(right: 20.0),
                                       enabledBorder: OutlineInputBorder(
                                         borderRadius:
                                             BorderRadius.circular(10.0),
@@ -387,18 +461,14 @@ class _UpdateDriverState extends State<UpdateDriver> {
                                         ),
                                         //Change color to Color(0xff73a16a)
                                       ),
-                                      contentPadding: EdgeInsets.only(
-                                          right: 20.0, left: 10.0),
-                                      labelText: "خط التوصيل",
-                                      labelStyle: TextStyle(
-                                          fontFamily: 'Amiri',
-                                          fontSize: 18.0,
-                                          color: Color(0xff316686))),
+                                    ),
+                                  ),
                                 );
+                              } else {
+                                return Text("");
                               }
-                            },
-                          ),
-                        ),
+                            }),
+
                         Container(
                           margin: EdgeInsets.all(40.0),
                           child: RaisedButton(
@@ -418,9 +488,22 @@ class _UpdateDriverState extends State<UpdateDriver> {
                                   address: address ?? snapshot.data.address,
                                   cityID: cityID ?? snapshot.data.cityID,
                                   mainLineID:
-                                      mainLineID ?? snapshot.data.mainLineID,
+                                      locationID ?? snapshot.data.mainLineID,
                                 ));
-                                Navigator.pop(context);
+                                await DriverDeliveryCostServices(
+                                        uid: driverDeliveryCostId)
+                                    .updateData(DriverDeliveryCost(
+                                        driverID: widget.driverID,
+                                        cost: int.parse(
+                                          deliveryPriceController.text,
+                                        )));
+                                Toast.show(
+                                    "تم تعديل معلومات السائق بنجاح", context,
+                                    duration: Toast.LENGTH_LONG,
+                                    gravity: Toast.BOTTOM);
+                                await Future.delayed(
+                                    Duration(milliseconds: 1000));
+                                Navigator.of(context).pop();
                               }
                             },
                             color: Color(0xff73a16a),
