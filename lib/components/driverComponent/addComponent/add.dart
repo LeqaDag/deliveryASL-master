@@ -554,7 +554,7 @@ class _AddDriverState extends State<AddDriver> {
             typeResult = false;
           else
             typeResult = true;
-         await DriverServices().addDriverData(Driver(
+          await DriverServices().addDriverData(Driver(
               uid: result.user.uid,
               name: driverNameController.text,
               type: typeResult,
@@ -564,13 +564,14 @@ class _AddDriverState extends State<AddDriver> {
               cityID: cityID,
               load: int.parse(loadController.text),
               locationID: locationID,
-              userID:result.user.uid,));
+              userID: result.user.uid,
+              ));
 
-            await DriverDeliveryCostServices().addDriverDeliveryCostData(
-                new DriverDeliveryCost(
-                    cost: int.parse(deliveryPriceController.text),
-                    locationID: locationID,
-                    driverID: result.user.uid));
+          await DriverDeliveryCostServices().addDriverDeliveryCostData(
+              new DriverDeliveryCost(
+                  cost: int.parse(deliveryPriceController.text),
+                  locationID: locationID,
+                  driverID: result.user.uid));
         });
         isLoading = false;
         Toast.show("تم اضافة سائق بنجاح", context,

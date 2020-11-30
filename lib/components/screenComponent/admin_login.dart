@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sajeda_app/components/businessComponent/business_main.dart';
 import 'package:sajeda_app/components/driverComponent/driverAccount/driver_main.dart';
+import 'package:sajeda_app/components/pages/loadingData.dart';
 import '../../constants.dart';
 import 'package:toast/toast.dart';
 import 'admin_home.dart';
@@ -235,14 +236,14 @@ class _LoginAdminState extends State<LoginAdmin> {
             .where('userID', isEqualTo: result.user.uid)
             .get()
             .then((value) {
-          print(value.docs[0]["userType"]);
           print(FirebaseAuth.instance.currentUser.uid);
           if (value.docs[0]["userType"] == '0') {
+            LoadingData();
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                   builder: (context) => AdminHome(
-                        name: value.docs[0]["name"], 
+                        name: value.docs[0]["name"],
                       )),
             );
           } else if (value.docs[0]["userType"] == '1') {
@@ -261,13 +262,13 @@ class _LoginAdminState extends State<LoginAdmin> {
                       name: value.docs[0]["name"],
                       uid: FirebaseAuth.instance.currentUser.uid)),
             );
+          } else {
+            return LoadingData();
           }
         });
       }).catchError((err) {
         if (err) {
           print(err.message);
-          Toast.show("تم اضافة الطلبية بنجاح", err.message,
-              duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
         }
       });
     }

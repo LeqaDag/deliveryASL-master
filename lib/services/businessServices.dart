@@ -14,6 +14,8 @@ class BusinessServices {
       'email': business.email,
       'phoneNumber': business.phoneNumber,
       'userID': business.userID,
+      'cityID': business.cityID,
+      'isArchived': business.isArchived,
     });
   }
 
@@ -23,6 +25,7 @@ class BusinessServices {
       'email': business.email,
       'phoneNumber': business.phoneNumber,
       'userID': business.userID,
+      'cityID': business.cityID
     });
   }
 
@@ -33,6 +36,7 @@ class BusinessServices {
       email: snapshot.data()['email'],
       phoneNumber: snapshot.data()['phoneNumber'],
       userID: snapshot.data()['userID'],
+      cityID: snapshot.data()['cityID']
     );
   }
 
@@ -44,6 +48,7 @@ class BusinessServices {
         email: doc.data()['email'] ?? '',
         phoneNumber: doc.data()['phoneNumber'] ?? '',
         userID: doc.data()['userID'] ?? '',
+        cityID: doc.data()['cityID'] ??''
       );
     }).toList();
   }
