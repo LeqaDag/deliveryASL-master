@@ -4,7 +4,8 @@ import 'package:sajeda_app/classes/city.dart';
 class CityServices {
   final String uid;
   final String name;
-  CityServices({this.uid, this.name});
+  final String mainLineID;
+  CityServices({this.uid, this.name,this.mainLineID});
 
   final CollectionReference cityCollection =
       FirebaseFirestore.instance.collection('cities');
@@ -13,12 +14,20 @@ class CityServices {
     return await cityCollection.doc().set({
       'name': city.name,
       'isArchived': city.isArchived,
+      'mainLineID': city.mainLineID,
     });
   }
 
   Future<void> updateData(City city) async {
     return await cityCollection.doc(uid).update({
       'name': city.name,
+    });
+  }
+
+  
+  Future<void> updateMainLine(String mainLineID) async {
+    return await cityCollection.doc(uid).update({
+      'mainLineID': mainLineID,
     });
   }
 
@@ -36,6 +45,7 @@ class CityServices {
         uid: doc.reference.id,
         name: doc.data()['name'] ?? '',
         isArchived: doc.data()['isArchived'] ?? '',
+        mainLineID: doc.data()['mainLineID'] ?? '',
       );
     }).toList();
   }
@@ -54,6 +64,14 @@ class CityServices {
   Stream<List<City>> get citys {
     return cityCollection
         .where('isArchived', isEqualTo: false)
+        .snapshots()
+        .map(_cityListFromSnapshot);
+  }
+
+  Stream<List<City>> get citiesByMainLineID {
+    return cityCollection
+        .where('isArchived', isEqualTo: false)
+        .where('mainLineID', isEqualTo: mainLineID)
         .snapshots()
         .map(_cityListFromSnapshot);
   }
