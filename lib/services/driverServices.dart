@@ -19,7 +19,8 @@ class DriverServices {
       'cityID': driver.cityID,
       'address': driver.address,
       'bonus': driver.bonus,
-      'load': driver.load
+      'load': driver.load,
+      'isArchived': driver.isArchived
     });
   }
 

@@ -167,7 +167,7 @@ class _UpdateDriverState extends State<UpdateDriver> {
                         Container(
                           margin: EdgeInsets.all(10.0),
                           child: TextFormField(
-                            initialValue: driverData.email,
+                            initialValue: driverData.email?? "",
                             onChanged: (val) => setState(() => email = val),
                             keyboardType: TextInputType.emailAddress,
                             decoration: InputDecoration(
@@ -198,7 +198,7 @@ class _UpdateDriverState extends State<UpdateDriver> {
                         Container(
                           margin: EdgeInsets.all(10.0),
                           child: TextFormField(
-                            initialValue: driverData.phoneNumber,
+                            initialValue: driverData.phoneNumber?? "",
                             onChanged: (val) =>
                                 setState(() => phoneNumber = val),
                             keyboardType: TextInputType.phone,

@@ -6,6 +6,7 @@ class Business {
   String email;
   String phoneNumber;
   String userID;
+  String cityID;
 
   bool isArchived;
   DateTime deleteDate;
@@ -19,6 +20,7 @@ class Business {
     @required this.phoneNumber,
     @required this.email,
     @required this.userID,
+    this.cityID,
     this.isArchived = false,
     this.deleteDate,
     this.deleteUser,

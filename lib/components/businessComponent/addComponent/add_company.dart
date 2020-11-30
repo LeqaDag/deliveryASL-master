@@ -2,10 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:sajeda_app/classes/business.dart';
 import 'package:sajeda_app/classes/city.dart';
 import 'package:sajeda_app/classes/deliveriesCost.dart';
 import 'package:sajeda_app/classes/location.dart';
 import 'package:sajeda_app/components/businessComponent/businesssComponent/business_admin.dart';
+import 'package:sajeda_app/services/businessServices.dart';
 import 'package:sajeda_app/services/deliveriesCostsServices.dart';
 import 'package:sajeda_app/services/cityServices.dart';
 import 'package:sajeda_app/services/locationServices.dart';
@@ -33,8 +35,6 @@ class _AddCompanyState extends State<AddCompany> {
 
   final CollectionReference userCollection =
       FirebaseFirestore.instance.collection('users');
-  final CollectionReference companyCollection =
-      FirebaseFirestore.instance.collection('businesss');
 
   TextEditingController emailController = TextEditingController();
   TextEditingController companyNameController = TextEditingController();
@@ -61,13 +61,13 @@ class _AddCompanyState extends State<AddCompany> {
       body: Directionality(
         textDirection: TextDirection.rtl,
         child: SingleChildScrollView(
-                  child: Container(
+          child: Container(
               padding: EdgeInsets.fromLTRB(30.0, 0, 30.0, 0),
               child: Form(
                 key: _formKey,
                 child: ListView(
                   physics: ScrollPhysics(),
-                            shrinkWrap: true,
+                  shrinkWrap: true,
                   children: <Widget>[
                     Container(
                       child: Image.asset('assets/AddCompany.png'),
@@ -363,16 +363,16 @@ class _AddCompanyState extends State<AddCompany> {
           "phoneNumber": phoneController.text,
           "name": companyNameController.text,
           "userType": "1"
-        }).then((value) {
-          companyCollection.doc(result.user.uid).set({
-            "userID": result.user.uid,
-            "email": emailController.text,
-            "phoneNumber": phoneController.text,
-            "name": companyNameController.text,
-            "password": passwordController.text,
-            "cityID": cityID,
-            "isArchived": false,
-          }).then((value) async {
+        }).then((value) async {
+          await BusinessServices()
+              .addBusinessData(Business(
+            userID: result.user.uid,
+            email: emailController.text,
+            phoneNumber: phoneController.text,
+            name: companyNameController.text,
+            cityID: cityID,
+          ))
+              .then((value) async {
             isLoading = false;
             locations.asMap().forEach((index, location) async {
               print(location);
