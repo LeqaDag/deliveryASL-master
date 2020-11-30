@@ -5,7 +5,8 @@ import '../classes/mainLine.dart';
 class MainLineServices {
   final String uid;
   final String cityID;
-  MainLineServices({this.uid, this.cityID});
+  final String locationID;
+  MainLineServices({this.uid, this.cityID,this.locationID});
 
   final CollectionReference mainLineCollection =
       FirebaseFirestore.instance.collection('mainLines');
@@ -59,6 +60,14 @@ class MainLineServices {
   Stream<List<MainLine>> get mainLineByCityID {
     return mainLineCollection
         .where('cityID', isEqualTo: cityID)
+        .snapshots()
+        .map(_mainLineListFromSnapshot);
+  }
+
+  
+  Stream<List<MainLine>> get mainLineByLocationID {
+    return mainLineCollection
+        .where('locationID', isEqualTo: cityID)
         .snapshots()
         .map(_mainLineListFromSnapshot);
   }

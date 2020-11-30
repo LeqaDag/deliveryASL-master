@@ -4,6 +4,8 @@ class City {
   String uid;
   String name;
 
+  String mainLineID;
+
   bool isArchived;
   DateTime deleteDate;
   String deleteUser;
@@ -12,6 +14,7 @@ class City {
     this.uid,
     @required this.name,
     this.isArchived = false,
+    this.mainLineID = '',
     this.deleteDate,
     this.deleteUser,
   });

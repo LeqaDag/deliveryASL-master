@@ -20,6 +20,9 @@ import 'package:sajeda_app/services/orderServices.dart';
 import 'package:sajeda_app/services/subLineServices.dart';
 import 'package:toast/toast.dart';
 
+import '../../classes/mainLine.dart';
+import '../../services/mainLineServices.dart';
+
 class AddNewOders extends StatefulWidget {
   final String name;
   AddNewOders({this.name});
@@ -70,6 +73,9 @@ class _AddNewOdersState extends State<AddNewOders> {
 
   List<Location> locations;
   String locationID;
+
+  List<MainLine> mainLines;
+  String mainLineID;
 
   bool selected = false, driverSelected = false;
   @override
@@ -141,7 +147,7 @@ class _AddNewOdersState extends State<AddNewOders> {
                                   ),
                                   contentPadding:
                                       EdgeInsets.only(right: 20.0, left: 10.0),
-                                  labelText: "خط التوصيل",
+                                  labelText: "المنطقة",
                                   labelStyle: TextStyle(
                                       fontFamily: 'Amiri',
                                       fontSize: 18.0,
@@ -175,6 +181,81 @@ class _AddNewOdersState extends State<AddNewOders> {
                       },
                     ),
                   ),
+                  Container(
+                    child: selected
+                        ? Container(
+                            margin: EdgeInsets.all(10.0),
+                            child: StreamBuilder<List<MainLine>>(
+                              stream: MainLineServices(locationID: locationID)
+                                  .mainLineByCityID,
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData) {
+                                  return Text('Loading...');
+                                } else {
+                                  mainLines = snapshot.data;
+                                  if (mainLines == []) {
+                                    return LoadingData();
+                                  } else {
+                                    return DropdownButtonFormField<String>(
+                                      value: mainLineID,
+                                      decoration: InputDecoration(
+                                          enabledBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10.0),
+                                            borderSide: BorderSide(
+                                              width: 1.0,
+                                              color: Color(0xff636363),
+                                            ),
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10.0),
+                                            borderSide: BorderSide(
+                                              width: 2.0,
+                                              color: Color(0xff73a16a),
+                                            ),
+                                          ),
+                                          contentPadding: EdgeInsets.only(
+                                              right: 20.0, left: 10.0),
+                                          labelText: "خط التوصيل",
+                                          labelStyle: TextStyle(
+                                              fontFamily: 'Amiri',
+                                              fontSize: 18.0,
+                                              color: Color(0xff316686))),
+                                      items: mainLines.map(
+                                        (mainLine) {
+                                          return DropdownMenuItem<String>(
+                                            value: mainLine.uid.toString(),
+                                            child: Align(
+                                              alignment: Alignment.centerRight,
+                                              child: Text(
+                                                mainLine.name,
+                                                style: TextStyle(
+                                                  fontFamily: 'Amiri',
+                                                  fontSize: 16.0,
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ).toList(),
+                                      onChanged: (val) {
+                                        setState(() {
+                                          mainLineID = val;
+                                          selected = true;
+                                        });
+                                      },
+                                    );
+                                  }
+                                }
+                              },
+                            ),
+                          )
+                        : Container(
+                            child: Text(""),
+                          ),
+                  ),
+
                   Row(
                     children: <Widget>[
                       _cityChoice(),
