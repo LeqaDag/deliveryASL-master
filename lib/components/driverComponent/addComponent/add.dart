@@ -521,7 +521,7 @@ class _AddDriverState extends State<AddDriver> {
             "name": driverNameController.text,
             "address": addressController.text,
             "cityID": cityID,
-            "mainLineID": locationID,
+            "locationID": locationID,
             "type": typeResult,
             "userID": result.user.uid,
             "isArchived": false,

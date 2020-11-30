@@ -10,7 +10,7 @@ class Driver {
   String address;
 
   String userID;
-  String mainLineID;
+  String locationID;
 
   String cityID;
 
@@ -30,7 +30,7 @@ class Driver {
     @required this.address,
     @required this.cityID,
     this.userID,
-    @required this.mainLineID,
+    @required this.locationID,
     this.isArchived = false,
     this.deleteDate,
     this.deleteUser,
