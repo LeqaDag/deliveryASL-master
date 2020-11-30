@@ -413,32 +413,32 @@ class CustomCardAndListTile extends StatelessWidget {
                   // IconButton(
                   //     icon: Icon(Icons.edit, color: KEditIconColor),
                   //     onPressed: null),
-                  IconButton(
-                      icon: Icon(Icons.delete, color: Colors.red),
-                      onPressed: () {
-                        return showDialog<void>(
-                            context: context,
-                            barrierDismissible: false, // user must tap button!
-                            builder: (BuildContext context) => CustomDialog(
-                                  title: "حذف شركة ",
-                                  description:
-                                      ' هل ترغب بحذف الشركة وجميع طرودها؟',
-                                  name: business.name,
-                                  buttonText: "تأكيد",
-                                  onPressed: () {
-                                    final FirebaseAuth auth =
-                                        FirebaseAuth.instance;
-                                    final User user = auth.currentUser;
-                                    BusinessService().deleteBusinessData(
-                                        business.uid, user.uid);
-                                    Navigator.of(context).pop();
-                                  },
-                                  cancelButton: "الغاء",
-                                  cancelPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                ));
-                      }),
+                  // IconButton(
+                  //     icon: Icon(Icons.delete, color: Colors.red),
+                  //     onPressed: () {
+                  //       return showDialog<void>(
+                  //           context: context,
+                  //           barrierDismissible: false, // user must tap button!
+                  //           builder: (BuildContext context) => CustomDialog(
+                  //                 title: "حذف شركة ",
+                  //                 description:
+                  //                     ' هل ترغب بحذف الشركة وجميع طرودها؟',
+                  //                 name: business.name,
+                  //                 buttonText: "تأكيد",
+                  //                 onPressed: () {
+                  //                   final FirebaseAuth auth =
+                  //                       FirebaseAuth.instance;
+                  //                   final User user = auth.currentUser;
+                  //                   BusinessService().deleteBusinessData(
+                  //                       business.uid, user.uid);
+                  //                   Navigator.of(context).pop();
+                  //                 },
+                  //                 cancelButton: "الغاء",
+                  //                 cancelPressed: () {
+                  //                   Navigator.of(context).pop();
+                  //                 },
+                  //               ));
+                  //     }),
                 ],
               ),
             ),

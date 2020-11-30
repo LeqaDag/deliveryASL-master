@@ -7,12 +7,15 @@ import 'package:flutter/widgets.dart';
 import 'package:sajeda_app/classes/busines.dart';
 import 'package:sajeda_app/classes/customer.dart';
 import 'package:sajeda_app/classes/deliveriesCost.dart';
+import 'package:sajeda_app/classes/location.dart';
 import 'package:sajeda_app/classes/order.dart';
 import 'package:sajeda_app/classes/subLine.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
+import 'package:sajeda_app/components/pages/loadingData.dart';
 import 'package:sajeda_app/services/DeliveriesCostsServices.dart';
 import 'package:sajeda_app/services/businessServices.dart';
 import 'package:sajeda_app/services/customerServices.dart';
+import 'package:sajeda_app/services/locationServices.dart';
 import 'package:sajeda_app/services/orderServices.dart';
 import 'package:sajeda_app/services/subLineServices.dart';
 import 'package:toast/toast.dart';
@@ -64,6 +67,11 @@ class _AddNewOdersState extends State<AddNewOders> {
       new TextEditingController();
   TextEditingController customerAddress = new TextEditingController();
   //
+
+  List<Location> locations;
+  String locationID;
+
+  bool selected = false, driverSelected = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,6 +109,71 @@ class _AddNewOdersState extends State<AddNewOders> {
                       _customerPhoneNumber(
                           "رقم احتياطي", 0, customerPhoneNumberAdditional),
                     ],
+                  ),
+                  Container(
+                    margin: EdgeInsets.all(10.0),
+                    child: StreamBuilder<List<Location>>(
+                      stream: LocationService().locations,
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return Text('Loading...');
+                        } else {
+                          locations = snapshot.data;
+                          if (locations == []) {
+                            return LoadingData();
+                          } else {
+                            return DropdownButtonFormField<String>(
+                              value: locationID,
+                              decoration: InputDecoration(
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderSide: BorderSide(
+                                      width: 1.0,
+                                      color: Color(0xff636363),
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderSide: BorderSide(
+                                      width: 2.0,
+                                      color: Color(0xff73a16a),
+                                    ),
+                                  ),
+                                  contentPadding:
+                                      EdgeInsets.only(right: 20.0, left: 10.0),
+                                  labelText: "خط التوصيل",
+                                  labelStyle: TextStyle(
+                                      fontFamily: 'Amiri',
+                                      fontSize: 18.0,
+                                      color: Color(0xff316686))),
+                              items: locations.map(
+                                (location) {
+                                  return DropdownMenuItem<String>(
+                                    value: location.uid.toString(),
+                                    child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Text(
+                                        location.name,
+                                        style: TextStyle(
+                                          fontFamily: 'Amiri',
+                                          fontSize: 16.0,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ).toList(),
+                              onChanged: (val) {
+                                setState(() {
+                                  locationID = val;
+                                  selected = true;
+                                });
+                              },
+                            );
+                          }
+                        }
+                      },
+                    ),
                   ),
                   Row(
                     children: <Widget>[
@@ -573,7 +646,7 @@ class _AddNewOdersState extends State<AddNewOders> {
             if (_formKey.currentState.validate()) {
               // print(int.parse(orderPrice.text) +
               //     int.parse(deliveryPrice));
-              
+
               Customer customer = new Customer(
                   name: customerName.text,
                   phoneNumber: int.parse(customerPhoneNumber.text),

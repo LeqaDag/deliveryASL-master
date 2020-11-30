@@ -407,7 +407,7 @@ class _ReceivedInfoState extends State<ReceivedInfo> {
       );
     } else {
       return Container(
-        child: Text("ssssss"),
+        child: Text(""),
       );
     }
   }
@@ -526,6 +526,8 @@ class _ReceivedInfoState extends State<ReceivedInfo> {
       child: StreamBuilder<City>(
           stream: CityService(uid: text).cityByID,
           builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              
             City city = snapshot.data;
             return TextField(
               enabled: false,
@@ -539,6 +541,20 @@ class _ReceivedInfoState extends State<ReceivedInfo> {
                 hintText: city.name, //String Data form DB.
               ),
             );
+            } else {
+            return TextField(
+              enabled: false,
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.only(top: 7, bottom: 7, right: 8),
+                prefixIcon: Icon(
+                  icon,
+                  color: color,
+                  size: 20,
+                ),
+                hintText: "", //String Data form DB.
+              ),
+            );
+            }
           }),
     );
   }

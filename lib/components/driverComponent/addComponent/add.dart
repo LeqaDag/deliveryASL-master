@@ -49,6 +49,7 @@ class _AddDriverState extends State<AddDriver> {
   TextEditingController addressController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController deliveryPriceController = TextEditingController();
+  TextEditingController loadController = TextEditingController();
 
   Map<String, TextEditingController> formListController = {};
 
@@ -429,9 +430,45 @@ class _AddDriverState extends State<AddDriver> {
                           }
                           return null;
                         },
-                        keyboardType: TextInputType.text,
+                        keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                           labelText: 'سعر الخط',
+                          labelStyle: TextStyle(
+                              fontFamily: 'Amiri',
+                              fontSize: 18.0,
+                              color: Color(0xff316686)),
+                          contentPadding: EdgeInsets.only(right: 20.0),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide: BorderSide(
+                              width: 1.0,
+                              color: Color(0xff636363),
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide: BorderSide(
+                              width: 2.0,
+                              color: Color(0xff73a16a),
+                            ),
+                            //Change color to Color(0xff73a16a)
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.all(10.0),
+                      child: TextFormField(
+                        controller: loadController,
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'الرجاء ادخال السعة ';
+                          }
+                          return null;
+                        },
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: 'سعة تحميل السيارة',
                           labelStyle: TextStyle(
                               fontFamily: 'Amiri',
                               fontSize: 18.0,
@@ -526,9 +563,11 @@ class _AddDriverState extends State<AddDriver> {
             "userID": result.user.uid,
             "isArchived": false,
             "phoneNumber": phoneController.text,
+            "load": int.parse(loadController.text),
+            "bouns": 0,
           }).then((value) async {
             isLoading = false;
-
+// loadController
             await DriverDeliveryCostServices().addDriverDeliveryCostData(
                 new DriverDeliveryCost(
                     cost: int.parse(deliveryPriceController.text),
