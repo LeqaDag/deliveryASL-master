@@ -9,6 +9,9 @@ class Driver {
   String passowrd;
   String address;
 
+  int load;
+  int bouns;
+
   String userID;
   String locationID;
 
@@ -29,6 +32,8 @@ class Driver {
     @required this.passowrd,
     @required this.address,
     @required this.cityID,
+    @required this.load,
+    this.bouns = 0,
     this.userID,
     @required this.locationID,
     this.isArchived = false,
