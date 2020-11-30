@@ -336,8 +336,8 @@ class _UpdateDriverState extends State<UpdateDriver> {
                         ),
 
                         FutureBuilder<String>(
-                            future: LocationService(uid: driverData.mainLineID)
-                                .cityName(driverData.mainLineID),
+                            future: LocationService(uid: driverData.locationID)
+                                .cityName(driverData.locationID),
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
                                 locationName = snapshot.data.toString();
@@ -487,8 +487,8 @@ class _UpdateDriverState extends State<UpdateDriver> {
                                   passowrd: passowrd ?? snapshot.data.passowrd,
                                   address: address ?? snapshot.data.address,
                                   cityID: cityID ?? snapshot.data.cityID,
-                                  mainLineID:
-                                      locationID ?? snapshot.data.mainLineID,
+                                  locationID:
+                                      locationID ?? snapshot.data.locationID,
                                 ));
                                 await DriverDeliveryCostServices(
                                         uid: driverDeliveryCostId)

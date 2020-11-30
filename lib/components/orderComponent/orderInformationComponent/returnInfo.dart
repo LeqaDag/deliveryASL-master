@@ -205,7 +205,7 @@ class ReturnInfo extends StatelessWidget {
       _labelTextField(Icons.phone, Colors.green, driver.phoneNumber),
       _labelTextFieldCity(Icons.person_pin, Colors.blue, driver.cityID),
       _labelTextFieldMainLine(
-          Icons.location_on, Colors.grey, driver.mainLineID),
+          Icons.location_on, Colors.grey, driver.locationID),
     ];
   }
 
