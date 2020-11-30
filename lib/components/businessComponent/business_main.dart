@@ -70,7 +70,7 @@ class _BusinessMainState extends State<BusinessMain> {
                             height: 40,
                           ),
                           FutureBuilder<int>(
-                              future: OrderService()
+                              future: OrderServices()
                                   .countBusinessOrders(widget.uid),
                               builder: (context, snapshot) {
                                 orderNumber = snapshot.data.toString();
@@ -110,7 +110,7 @@ class _BusinessMainState extends State<BusinessMain> {
                             height: 40,
                           ),
                           FutureBuilder<int>(
-                              future: InvoiceService(businessId: widget.uid)
+                              future: InvoiceServices(businessId: widget.uid)
                                   .total(widget.uid),
                               builder: (context, snapshot) {
                                 totalPrice = snapshot.data;
@@ -160,7 +160,7 @@ class _BusinessMainState extends State<BusinessMain> {
                             height: 40,
                           ),
                           FutureBuilder<int>(
-                              future: InvoiceService(businessId: widget.uid)
+                              future: InvoiceServices(businessId: widget.uid)
                                   .paidPrice(widget.uid),
                               builder: (context, snapshot) {
                                 if (snapshot.data == null) {
@@ -209,7 +209,7 @@ class _BusinessMainState extends State<BusinessMain> {
                             height: 40,
                           ),
                           FutureBuilder<int>(
-                              future: InvoiceService(businessId: widget.uid)
+                              future: InvoiceServices(businessId: widget.uid)
                                   .paidPrice(widget.uid),
                               builder: (context, snapshot) {
                                 if (snapshot.data == null) {

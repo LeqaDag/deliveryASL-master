@@ -6,7 +6,7 @@ class DeliveriesCostsServices {
   DeliveriesCostsServices({this.uid, this.businessId});
 
   final CollectionReference deliveryCostCollection =
-      FirebaseFirestore.instance.collection('deliveries_costs');
+      FirebaseFirestore.instance.collection('delivery_costs');
 
   Future<void> addDeliveryCostData(DeliveriesCosts deliveryCost) async {
     return await deliveryCostCollection.doc().set({

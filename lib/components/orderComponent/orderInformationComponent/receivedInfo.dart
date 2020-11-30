@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sajeda_app/classes/busines.dart';
+import 'package:sajeda_app/classes/business.dart';
 import 'package:sajeda_app/classes/city.dart';
 import 'package:sajeda_app/classes/customer.dart';
 import 'package:sajeda_app/classes/driver.dart';
@@ -41,7 +41,7 @@ class _ReceivedInfoState extends State<ReceivedInfo> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Order>(
-        stream: OrderService(uid: widget.uid).orderData,
+        stream: OrderServices(uid: widget.uid).orderData,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             Order order = snapshot.data;
@@ -52,13 +52,13 @@ class _ReceivedInfoState extends State<ReceivedInfo> {
               orderType = "مستعجل";
             }
             return StreamBuilder<Customer>(
-                stream: CustomerService(uid: order.customerID).customerData,
+                stream: CustomerServices(uid: order.customerID).customerData,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     Customer customer = snapshot.data;
                     return StreamBuilder<Business>(
                         stream:
-                            BusinessService(uid: order.businesID).businessByID,
+                            BusinessServices(uid: order.businesID).businessByID,
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             Business business = snapshot.data;
@@ -276,17 +276,17 @@ class _ReceivedInfoState extends State<ReceivedInfo> {
                                                   driverID == null) {
                                               } else {
                                                 if (order.type) {
-                                                  OrderService(
+                                                  OrderServices(
                                                           uid: widget.uid,
                                                           driverID: driverID)
                                                       .updateOrderToisUrgent;
                                                 } else {
-                                                  OrderService(
+                                                  OrderServices(
                                                           uid: widget.uid,
                                                           driverID: driverID)
                                                       .updateOrderToisDelivery;
                                                 }
-                                                OrderService(
+                                                OrderServices(
                                                         uid: widget.uid,
                                                         driverPrice: int.parse(
                                                             driverPrice.text))
@@ -343,7 +343,7 @@ class _ReceivedInfoState extends State<ReceivedInfo> {
       return Container(
         margin: EdgeInsets.all(10.0),
         child: StreamBuilder<List<Driver>>(
-          stream: DriverService(mainLineID: mainLineID).driversBymainLineID,
+          stream: DriverServices(mainLineID: mainLineID).driversBymainLineID,
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return Text('Loading...');
@@ -524,7 +524,7 @@ class _ReceivedInfoState extends State<ReceivedInfo> {
       width: double.infinity,
       height: 35,
       child: StreamBuilder<City>(
-          stream: CityService(uid: text).cityByID,
+          stream: CityServices(uid: text).cityByID,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               

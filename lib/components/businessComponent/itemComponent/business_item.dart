@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sajeda_app/classes/busines.dart';
+import 'package:sajeda_app/classes/business.dart';
 import 'package:sajeda_app/classes/order.dart';
 import 'package:sajeda_app/components/businessComponent/addComponent/addDeliveryCost.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
@@ -32,7 +32,7 @@ class AllBuisness extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return StreamBuilder<Business>(
-        stream: BusinessService(uid: businessID).businessByID,
+        stream: BusinessServices(uid: businessID).businessByID,
         builder: (context, snapshot) {
           print(businessID);
           if (snapshot.hasData) {
@@ -49,7 +49,7 @@ class AllBuisness extends StatelessWidget {
                   spacing: -15, // space between two icons
                   children: <Widget>[
                     FutureBuilder<int>(
-                        future: OrderService(businesID: businessID)
+                        future: OrderServices(businesID: businessID)
                             .countBusinessOrders(businessID),
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
@@ -131,7 +131,7 @@ class AllBuisness extends StatelessWidget {
                                     final FirebaseAuth auth =
                                         FirebaseAuth.instance;
                                     final User user = auth.currentUser;
-                                    BusinessService().deleteBusinessData(
+                                    BusinessServices().deleteBusinessData(
                                         businessID, user.uid);
                                     Navigator.of(context).pop();
                                   },
@@ -198,7 +198,7 @@ class BusinessOrders extends StatelessWidget {
         ),
         drawer: AdminDrawer(name: name, uid: uid),
         body: StreamProvider<List<Order>>.value(
-          value: OrderService(businesID: uid, orderState: "all")
+          value: OrderServices(businesID: uid, orderState: "all")
               .ordersBusinessByState,
           child: BusinessOrderListAdmin(name: name, uid: uid),
         ),
@@ -310,7 +310,7 @@ class _CustomCompanyOrdersStatusState extends State<CustomCompanyOrdersStatus> {
                           ),
                           FutureBuilder<String>(
                               future:
-                                  CustomerService(uid: widget.order.customerID)
+                                  CustomerServices(uid: widget.order.customerID)
                                       .customerName,
                               builder: (context, snapshot) {
                                 customerName = snapshot.data;
@@ -341,7 +341,7 @@ class _CustomCompanyOrdersStatusState extends State<CustomCompanyOrdersStatus> {
                           ),
                           FutureBuilder<String>(
                               future:
-                                  CustomerService(uid: widget.order.customerID)
+                                  CustomerServices(uid: widget.order.customerID)
                                       .customerCity,
                               builder: (context, snapshot) {
                                 cityID = snapshot.data.toString();
@@ -351,7 +351,7 @@ class _CustomCompanyOrdersStatusState extends State<CustomCompanyOrdersStatus> {
                                 );
                               }),
                           FutureBuilder<String>(
-                              future: CityService(uid: cityID).cityName,
+                              future: CityServices(uid: cityID).cityName,
                               builder: (context, snapshot) {
                                 print(cityID);
                                 if (snapshot.data == null) {
@@ -376,7 +376,7 @@ class _CustomCompanyOrdersStatusState extends State<CustomCompanyOrdersStatus> {
                               }),
                           FutureBuilder<String>(
                               future:
-                                  CustomerService(uid: widget.order.customerID)
+                                  CustomerServices(uid: widget.order.customerID)
                                       .customerAdress,
                               builder: (context, snapshot) {
                                 return Text(

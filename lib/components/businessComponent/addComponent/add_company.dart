@@ -6,7 +6,7 @@ import 'package:sajeda_app/classes/city.dart';
 import 'package:sajeda_app/classes/deliveriesCost.dart';
 import 'package:sajeda_app/classes/location.dart';
 import 'package:sajeda_app/components/businessComponent/businesssComponent/business_admin.dart';
-import 'package:sajeda_app/services/DeliveriesCostsServices.dart';
+import 'package:sajeda_app/services/deliveriesCostsServices.dart';
 import 'package:sajeda_app/services/cityServices.dart';
 import 'package:sajeda_app/services/locationServices.dart';
 import 'package:toast/toast.dart';
@@ -222,7 +222,7 @@ class _AddCompanyState extends State<AddCompany> {
                     Container(
                       margin: EdgeInsets.all(10.0),
                       child: StreamBuilder<List<City>>(
-                        stream: CityService().citys,
+                        stream: CityServices().citys,
                         builder: (context, snapshot) {
                           if (!snapshot.hasData) {
                             return Text('Loading...');
@@ -280,7 +280,7 @@ class _AddCompanyState extends State<AddCompany> {
                       ),
                     ),
                     StreamBuilder<List<Location>>(
-                        stream: LocationService().locations,
+                        stream: LocationServices().locations,
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             locations = snapshot.data;

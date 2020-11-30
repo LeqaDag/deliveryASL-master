@@ -26,7 +26,7 @@ class _DailySheetState extends State<DailySheet> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Driver>(
-        stream: DriverService(uid: widget.driverID).driverByID,
+        stream: DriverServices(uid: widget.driverID).driverByID,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             Driver driverData = snapshot.data;
@@ -75,7 +75,7 @@ class _DailySheetState extends State<DailySheet> {
                                 left: 10,
                               ),
                               child: FutureBuilder<int>(
-                                  future: OrderService(driverID: driverData.uid)
+                                  future: OrderServices(driverID: driverData.uid)
                                       .countIsDoneInDailySheet,
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
@@ -136,7 +136,7 @@ class _DailySheetState extends State<DailySheet> {
                             child: Padding(
                               padding: const EdgeInsets.only(top: 8.0, left: 8),
                               child: FutureBuilder<int>(
-                                  future: OrderService(driverID: driverData.uid)
+                                  future: OrderServices(driverID: driverData.uid)
                                       .countIsReturnInDailySheet,
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
@@ -201,7 +201,7 @@ class _DailySheetState extends State<DailySheet> {
                             child: Padding(
                               padding: const EdgeInsets.only(top: 8.0, left: 8),
                               child: StreamBuilder<List<Order>>(
-                                  stream: OrderService()
+                                  stream: OrderServices()
                                       .driversAllOrders(driverData.uid),
                                   builder: (context, snapshot) {
                                     int totalPrice = 0;
@@ -268,7 +268,7 @@ class _DailySheetState extends State<DailySheet> {
                             child: Padding(
                               padding: const EdgeInsets.only(top: 8.0, left: 8),
                               child: StreamBuilder<List<Order>>(
-                                  stream: OrderService()
+                                  stream: OrderServices()
                                       .driversAllOrders(driverData.uid),
                                   builder: (context, snapshot) {
                                     int totalPrice = 0;
@@ -322,7 +322,7 @@ class _DailySheetState extends State<DailySheet> {
                       Container(
                         child: StreamProvider<List<Order>>.value(
                           value:
-                              OrderService(driverID: widget.driverID).sheetList,
+                              OrderServices(driverID: widget.driverID).sheetList,
                           child: SheetList(
                             name: widget.name,
                           ),

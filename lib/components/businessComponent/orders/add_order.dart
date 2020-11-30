@@ -9,7 +9,7 @@ import 'package:sajeda_app/classes/deliveriesCost.dart';
 import 'package:sajeda_app/classes/order.dart';
 import 'package:sajeda_app/classes/subLine.dart';
 import 'package:sajeda_app/components/pages/business_drawer.dart';
-import 'package:sajeda_app/services/DeliveriesCostsServices.dart';
+import 'package:sajeda_app/services/deliveriesCostsServices.dart';
 import 'package:sajeda_app/services/customerServices.dart';
 import 'package:sajeda_app/services/orderServices.dart';
 import 'package:sajeda_app/services/subLineServices.dart';
@@ -328,10 +328,10 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
                                 address: customerAddress.text,
                                 businesID: widget.uid,
                                 isArchived: false);
-                            String customerID = await CustomerService()
+                            String customerID = await CustomerServices()
                                 .addcustomerData(customer);
 
-                            await OrderService().addOrderData(new Order(
+                            await OrderServices().addOrderData(new Order(
                                 price: int.parse(orderPrice.text),
                                 totalPrice: orderTotalPrice,
                                 type: orderType,

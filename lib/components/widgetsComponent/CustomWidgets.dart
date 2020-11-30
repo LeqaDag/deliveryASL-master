@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:sajeda_app/classes/busines.dart';
+import 'package:sajeda_app/classes/business.dart';
 import 'package:sajeda_app/classes/city.dart';
 import 'package:sajeda_app/classes/mainLine.dart';
 import 'package:sajeda_app/classes/order.dart';
@@ -350,7 +350,7 @@ class CustomCardAndListTile extends StatelessWidget {
     double height = MediaQuery.of(context).size.height;
 
     return StreamBuilder<Business>(
-      stream: BusinessService(uid: businessID).businessByID,
+      stream: BusinessServices(uid: businessID).businessByID,
       builder: (context, snapshot) {
         //print(snapshot.data);
         if (snapshot.hasData) {
@@ -367,7 +367,7 @@ class CustomCardAndListTile extends StatelessWidget {
                 spacing: -15, // space between two icons
                 children: <Widget>[
                   FutureBuilder<int>(
-                      future: OrderService(businesID: businessID)
+                      future: OrderServices(businesID: businessID)
                           .countBusinessOrderByStateOrder(orderState),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
@@ -576,7 +576,7 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
 
                           //  SizedBox(width: 33,),
                           FutureBuilder<String>(
-                            future: CustomerService(uid: order.customerID)
+                            future: CustomerServices(uid: order.customerID)
                                 .customerName,
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
@@ -651,7 +651,7 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                           //  SizedBox(width: 33,),
                           FutureBuilder<String>(
                               future:
-                                  DriverService(uid: order.driverID).driverName,
+                                  DriverServices(uid: order.driverID).driverName,
                               builder: (context, snapshot) {
                                 // print(snapshot.data);
                                 if (snapshot.hasData) {
@@ -702,12 +702,12 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                           ),
                           //  SizedBox(width: 33,),
                           FutureBuilder<String>(
-                              future: CustomerService(uid: order.customerID)
+                              future: CustomerServices(uid: order.customerID)
                                   .customerCity,
                               builder: (context, snapshot) {
                                 String cityID = snapshot.data;
                                 return StreamBuilder<City>(
-                                    stream: CityService(uid: cityID).cityByID,
+                                    stream: CityServices(uid: cityID).cityByID,
                                     builder: (context, snapshot) {
                                       if (snapshot.hasData) {
                                         City city = snapshot.data;
@@ -910,7 +910,7 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
 
                           //  SizedBox(width: 33,),
                           FutureBuilder<String>(
-                            future: CustomerService(uid: order.customerID)
+                            future: CustomerServices(uid: order.customerID)
                                 .customerName,
                             builder: (context, snapshot) {
                               // print(order.customerID);
@@ -973,7 +973,7 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
 
                           //  SizedBox(width: 33,),
                           FutureBuilder<String>(
-                              future: BusinessService(uid: order.businesID)
+                              future: BusinessServices(uid: order.businesID)
                                   .businessName,
                               builder: (context, snapshot) {
                                 // print(snapshot.data);
@@ -1011,7 +1011,7 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                             ),
                           ),
                           FutureBuilder<String>(
-                              future: CustomerService(uid: order.customerID)
+                              future: CustomerServices(uid: order.customerID)
                                   .customerCity,
                               builder: (context, snapshot) {
                                 return Text(
@@ -1024,7 +1024,7 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                                 );
                               }),
                           FutureBuilder<String>(
-                              future: CustomerService(uid: order.customerID)
+                              future: CustomerServices(uid: order.customerID)
                                   .customerAdress,
                               builder: (context, snapshot) {
                                 return Text(
@@ -1142,7 +1142,7 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
 
                           //  SizedBox(width: 33,),
                           FutureBuilder<String>(
-                            future: CustomerService(uid: order.customerID)
+                            future: CustomerServices(uid: order.customerID)
                                 .customerName,
                             builder: (context, snapshot) {
                               // print(order.customerID);

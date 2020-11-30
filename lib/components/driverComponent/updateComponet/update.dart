@@ -4,13 +4,11 @@ import 'package:sajeda_app/classes/city.dart';
 import 'package:sajeda_app/classes/driver.dart';
 import 'package:sajeda_app/classes/driverDeliveryCost.dart';
 import 'package:sajeda_app/classes/location.dart';
-import 'package:sajeda_app/classes/mainLine.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
 import 'package:sajeda_app/services/cityServices.dart';
 import 'package:sajeda_app/services/driverDeliveryCostServices.dart';
 import 'package:sajeda_app/services/driverServices.dart';
 import 'package:sajeda_app/services/locationServices.dart';
-import 'package:sajeda_app/services/mainLineServices.dart';
 import 'package:toast/toast.dart';
 
 class UpdateDriver extends StatefulWidget {
@@ -27,9 +25,10 @@ class _UpdateDriverState extends State<UpdateDriver> {
 
   List<Location> locations;
   String locationID, locationName = "", cityName = "";
-  int driverDeliveryCost = 0;
+  int driverDeliveryCost = 0, load = 0;
   String dropdownValue = 'One';
   TextEditingController deliveryPriceController = TextEditingController();
+
   String driverName, driverDeliveryCostId;
   bool type;
   String email;
@@ -51,7 +50,7 @@ class _UpdateDriverState extends State<UpdateDriver> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Driver>(
-        stream: DriverService(uid: widget.driverID).driverByID,
+        stream: DriverServices(uid: widget.driverID).driverByID,
         builder: (context, snapshot) {
           Driver driverData = snapshot.data;
 
@@ -231,14 +230,14 @@ class _UpdateDriverState extends State<UpdateDriver> {
 
                         FutureBuilder<String>(
                             future:
-                                CityService(uid: driverData.cityID).cityName,
+                                CityServices(uid: driverData.cityID).cityName,
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
                                 cityName = snapshot.data.toString();
                                 return Container(
                                   margin: EdgeInsets.all(10.0),
                                   child: StreamBuilder<List<City>>(
-                                    stream: CityService().citys,
+                                    stream: CityServices().citys,
                                     builder: (context, snapshot) {
                                       if (!snapshot.hasData) {
                                         return Text('Loading...');
@@ -335,8 +334,40 @@ class _UpdateDriverState extends State<UpdateDriver> {
                           ),
                         ),
 
+                        Container(
+                          margin: EdgeInsets.all(10.0),
+                          child: TextFormField(
+                            initialValue: driverData.load.toString(),
+                            // onChanged: (val) => setState(() => load= val),
+
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              labelText: 'سعة تحميل السيارة',
+                              labelStyle: TextStyle(
+                                  fontFamily: 'Amiri',
+                                  fontSize: 18.0,
+                                  color: Color(0xff316686)),
+                              contentPadding: EdgeInsets.only(right: 20.0),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                                borderSide: BorderSide(
+                                  width: 1.0,
+                                  color: Color(0xff636363),
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                                borderSide: BorderSide(
+                                  width: 2.0,
+                                  color: Color(0xff73a16a),
+                                ),
+                                //Change color to Color(0xff73a16a)
+                              ),
+                            ),
+                          ),
+                        ),
                         FutureBuilder<String>(
-                            future: LocationService(uid: driverData.locationID)
+                            future: LocationServices(uid: driverData.locationID)
                                 .cityName(driverData.locationID),
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
@@ -344,7 +375,7 @@ class _UpdateDriverState extends State<UpdateDriver> {
                                 return Container(
                                   margin: EdgeInsets.all(10.0),
                                   child: StreamBuilder<List<Location>>(
-                                    stream: LocationService().locations,
+                                    stream: LocationServices().locations,
                                     builder: (context, snapshot) {
                                       if (!snapshot.hasData) {
                                         return Text('Loading...');
@@ -477,19 +508,19 @@ class _UpdateDriverState extends State<UpdateDriver> {
                                 borderRadius: new BorderRadius.circular(30.0)),
                             onPressed: () async {
                               if (_formKey.currentState.validate()) {
-                                await DriverService(uid: widget.driverID)
+                                await DriverServices(uid: widget.driverID)
                                     .updateData(Driver(
-                                  name: driverName ?? snapshot.data.name,
-                                  type: type ?? snapshot.data.type,
-                                  email: email ?? snapshot.data.email,
-                                  phoneNumber:
-                                      phoneNumber ?? snapshot.data.phoneNumber,
-                                  passowrd: passowrd ?? snapshot.data.passowrd,
-                                  address: address ?? snapshot.data.address,
-                                  cityID: cityID ?? snapshot.data.cityID,
-                                  locationID:
-                                      locationID ?? snapshot.data.locationID,
-                                ));
+                                        name: driverName ?? snapshot.data.name,
+                                        type: type ?? snapshot.data.type,
+                                        email: email ?? snapshot.data.email,
+                                        phoneNumber: phoneNumber ??
+                                            snapshot.data.phoneNumber,
+                                        address:
+                                            address ?? snapshot.data.address,
+                                        cityID: cityID ?? snapshot.data.cityID,
+                                        locationID: locationID ??
+                                            snapshot.data.locationID,
+                                        load: load ?? snapshot.data.load));
                                 await DriverDeliveryCostServices(
                                         uid: driverDeliveryCostId)
                                     .updateData(DriverDeliveryCost(

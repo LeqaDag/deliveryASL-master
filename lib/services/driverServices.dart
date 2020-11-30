@@ -1,24 +1,25 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sajeda_app/classes/driver.dart';
 
-class DriverService {
+class DriverServices {
   final String uid;
   final String mainLineID;
-  DriverService({this.uid, this.mainLineID});
+  DriverServices({this.uid, this.mainLineID});
 
   final CollectionReference deiverCollection =
       FirebaseFirestore.instance.collection('drivers');
 
   Future<void> addDriverData(Driver driver) async {
-    return await deiverCollection.doc().set({
+    return await deiverCollection.doc(driver.uid).set({
       'name': driver.name,
       'type': driver.type,
       'email': driver.email,
       'phoneNumber': driver.phoneNumber,
       'locationID': driver.locationID,
       'cityID': driver.cityID,
-      'passowrd': driver.passowrd,
       'address': driver.address,
+      'bonus': driver.bonus,
+      'load': driver.load
     });
   }
 
@@ -30,8 +31,9 @@ class DriverService {
       'phoneNumber': driver.phoneNumber,
       'locationID': driver.locationID,
       'cityID': driver.cityID,
-      'passowrd': driver.passowrd,
       'address': driver.address,
+      'bonus': driver.bonus,
+      'load': driver.load
     });
   }
 
@@ -43,9 +45,10 @@ class DriverService {
       email: snapshot.data()['email'],
       locationID: snapshot.data()['locationID'],
       phoneNumber: snapshot.data()['phoneNumber'],
-      passowrd: snapshot.data()['passowrd'],
       cityID: snapshot.data()['cityID'],
       address: snapshot.data()['address'],
+      bonus: snapshot.data()['bonus'],
+      load: snapshot.data()['load'],
     );
   }
 
@@ -58,9 +61,10 @@ class DriverService {
         email: doc.data()['email'] ?? '',
         locationID: doc.data()['locationID'] ?? '',
         phoneNumber: doc.data()['phoneNumber'] ?? '',
-        passowrd: doc.data()['passowrd'] ?? '',
         cityID: doc.data()['cityID'] ?? '',
         address: doc.data()['address'] ?? '',
+        bonus: doc.data()['bonus'] ?? '',
+        load: doc.data()['load'] ?? '',
       );
     }).toList();
   }

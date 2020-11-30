@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:sajeda_app/classes/busines.dart';
+import 'package:sajeda_app/classes/business.dart';
 import 'package:sajeda_app/classes/customer.dart';
 import 'package:sajeda_app/classes/deliveriesCost.dart';
 import 'package:sajeda_app/classes/location.dart';
@@ -12,7 +12,7 @@ import 'package:sajeda_app/classes/order.dart';
 import 'package:sajeda_app/classes/subLine.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
 import 'package:sajeda_app/components/pages/loadingData.dart';
-import 'package:sajeda_app/services/DeliveriesCostsServices.dart';
+import 'package:sajeda_app/services/deliveriesCostsServices.dart';
 import 'package:sajeda_app/services/businessServices.dart';
 import 'package:sajeda_app/services/customerServices.dart';
 import 'package:sajeda_app/services/locationServices.dart';
@@ -113,7 +113,7 @@ class _AddNewOdersState extends State<AddNewOders> {
                   Container(
                     margin: EdgeInsets.all(10.0),
                     child: StreamBuilder<List<Location>>(
-                      stream: LocationService().locations,
+                      stream: LocationServices().locations,
                       builder: (context, snapshot) {
                         if (!snapshot.hasData) {
                           return Text('Loading...');
@@ -658,9 +658,9 @@ class _AddNewOdersState extends State<AddNewOders> {
                   businesID: businessID,
                   isArchived: false);
               String customerID =
-                  await CustomerService().addcustomerData(customer);
+                  await CustomerServices().addcustomerData(customer);
 
-              await OrderService().addOrderData(new Order(
+              await OrderServices().addOrderData(new Order(
                   price: int.parse(orderPrice.text),
                   totalPrice: orderTotalPrice,
                   type: false,
@@ -709,7 +709,7 @@ class _AddNewOdersState extends State<AddNewOders> {
       child: Container(
         margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
         child: StreamBuilder<List<Business>>(
-            stream: BusinessService().business,
+            stream: BusinessServices().business,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Text('يتم التحميل ...');

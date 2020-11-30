@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sajeda_app/classes/city.dart';
 
-class CityService {
+class CityServices {
   final String uid;
   final String name;
-  CityService({this.uid, this.name});
+  CityServices({this.uid, this.name});
 
   final CollectionReference cityCollection =
-      FirebaseFirestore.instance.collection('citys');
+      FirebaseFirestore.instance.collection('cities');
 
   Future<void> addCityData(City city) async {
     return await cityCollection.doc().set({

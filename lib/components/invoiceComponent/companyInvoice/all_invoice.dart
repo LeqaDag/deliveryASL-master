@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sajeda_app/classes/busines.dart';
+import 'package:sajeda_app/classes/business.dart';
 import 'package:sajeda_app/classes/invoice.dart';
 import 'package:sajeda_app/services/businessServices.dart';
 import 'package:sajeda_app/services/invoiceServices.dart';
@@ -29,7 +29,7 @@ class AllInvoice extends StatelessWidget {
     double height = MediaQuery.of(context).size.height;
 
     return StreamBuilder<Business>(
-        stream: BusinessService(uid: businessId).businessByID,
+        stream: BusinessServices(uid: businessId).businessByID,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             Business business = snapshot.data;
@@ -112,7 +112,7 @@ class AllInvoice extends StatelessWidget {
                                 ),
                               ),
                               FutureBuilder<int>(
-                                  future: InvoiceService(businessId: businessId)
+                                  future: InvoiceServices(businessId: businessId)
                                       .total(businessId),
                                   builder: (context, snapshot) {
                                     if (snapshot.data == null) {
@@ -195,7 +195,7 @@ class AllInvoice extends StatelessWidget {
                           color: KBadgeColorAndContainerBorderColorReadyOrders,
                         ),
                         FutureBuilder<int>(
-                            future: OrderService(businesID: businessId)
+                            future: OrderServices(businesID: businessId)
                                 .countBusinessOrderByStateOrder("isDone"),
                             builder: (context, snapshot) {
                               print(snapshot.data);
@@ -211,7 +211,7 @@ class AllInvoice extends StatelessWidget {
                           color: KBadgeColorAndContainerBorderColorReturnOrders,
                         ),
                         FutureBuilder<int>(
-                            future: OrderService(businesID: businessId)
+                            future: OrderServices(businesID: businessId)
                                 .countBusinessOrderByStateOrder("isReturn"),
                             builder: (context, snapshot) {
                               print(snapshot.data);
@@ -228,7 +228,7 @@ class AllInvoice extends StatelessWidget {
                               KBadgeColorAndContainerBorderColorCancelledOrders,
                         ),
                         FutureBuilder<int>(
-                            future: OrderService(businesID: businessId)
+                            future: OrderServices(businesID: businessId)
                                 .countBusinessOrderByStateOrder("isCancelld"),
                             builder: (context, snapshot) {
                               print(snapshot.data);
@@ -244,7 +244,7 @@ class AllInvoice extends StatelessWidget {
                           color: KAllOrdersListTileColor,
                         ),
                         FutureBuilder<int>(
-                            future: OrderService(businesID: businessId)
+                            future: OrderServices(businesID: businessId)
                                 .countBusinessOrderByStateOrder("isDelivery"),
                             builder: (context, snapshot) {
                               print(snapshot.data);
@@ -260,7 +260,7 @@ class AllInvoice extends StatelessWidget {
                           color: KBadgeColorAndContainerBorderColorLoadingOrder,
                         ),
                         FutureBuilder<int>(
-                            future: OrderService(businesID: businessId)
+                            future: OrderServices(businesID: businessId)
                                 .countBusinessOrderByStateOrder("isLoading"),
                             builder: (context, snapshot) {
                               print(snapshot.data);
@@ -277,7 +277,7 @@ class AllInvoice extends StatelessWidget {
                               KBadgeColorAndContainerBorderColorRecipientOrder,
                         ),
                         FutureBuilder<int>(
-                            future: OrderService(businesID: businessId)
+                            future: OrderServices(businesID: businessId)
                                 .countBusinessOrderByStateOrder("isReceived"),
                             builder: (context, snapshot) {
                               print(snapshot.data);
@@ -318,7 +318,7 @@ class TotalPrice extends StatelessWidget {
     print(invoice[0].totalPrice);
 
     return StreamProvider<List<Invoice>>.value(
-      value: InvoiceService(businessId: businessId).totalPrice,
+      value: InvoiceServices(businessId: businessId).totalPrice,
       child: InvoicePrice(),
     );
   }

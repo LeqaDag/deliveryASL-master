@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sajeda_app/classes/location.dart';
 
-class LocationService {
+class LocationServices {
   final String uid;
   final String name;
-  LocationService({this.uid, this.name});
+  LocationServices({this.uid, this.name});
 
   final CollectionReference locationCollection =
       FirebaseFirestore.instance.collection('locations');

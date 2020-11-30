@@ -1,19 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sajeda_app/classes/busines.dart';
+import 'package:sajeda_app/classes/business.dart';
 
-class BusinessService {
+class BusinessServices {
   final String uid;
-  BusinessService({this.uid});
+  BusinessServices({this.uid});
 
   final CollectionReference businessCollection =
-      FirebaseFirestore.instance.collection('businesss');
+      FirebaseFirestore.instance.collection('business');
 
   Future<void> addBusinessData(Business business) async {
     return await businessCollection.doc().set({
       'name': business.name,
       'email': business.email,
       'phoneNumber': business.phoneNumber,
-      'password': business.password,
       'userID': business.userID,
     });
   }
@@ -23,7 +22,6 @@ class BusinessService {
       'name': business.name,
       'email': business.email,
       'phoneNumber': business.phoneNumber,
-      'password': business.password,
       'userID': business.userID,
     });
   }
@@ -34,7 +32,6 @@ class BusinessService {
       name: snapshot.data()['name'],
       email: snapshot.data()['email'],
       phoneNumber: snapshot.data()['phoneNumber'],
-      password: snapshot.data()['password'],
       userID: snapshot.data()['userID'],
     );
   }
@@ -46,7 +43,6 @@ class BusinessService {
         name: doc.data()['name'] ?? '',
         email: doc.data()['email'] ?? '',
         phoneNumber: doc.data()['phoneNumber'] ?? '',
-        password: doc.data()['password'] ?? '',
         userID: doc.data()['userID'] ?? '',
       );
     }).toList();

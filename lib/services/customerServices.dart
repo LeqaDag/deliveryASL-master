@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sajeda_app/classes/customer.dart';
 
-class CustomerService {
+class CustomerServices {
   final String uid;
   String cityId;
 
-  CustomerService({this.uid, this.cityId});
+  CustomerServices({this.uid, this.cityId});
   final CollectionReference customerCollection =
       FirebaseFirestore.instance.collection('customers');
 

@@ -66,7 +66,7 @@ class _AddInvoiceDriverState extends State<AddInvoiceDriver> {
                           ),
                         ),
                         FutureBuilder<int>(
-                            future: OrderService(driverID: widget.driverId)
+                            future: OrderServices(driverID: widget.driverId)
                                 .countDriverOrders(widget.driverId),
                             builder: (context, snapshot) {
                               print(snapshot.data);
@@ -86,7 +86,7 @@ class _AddInvoiceDriverState extends State<AddInvoiceDriver> {
                           ),
                         ),
                         FutureBuilder<int>(
-                            future: OrderService(driverID: widget.driverId)
+                            future: OrderServices(driverID: widget.driverId)
                                 .countDriverOrderByStateOrder("isDone"),
                             builder: (context, snapshot) {
                               print(snapshot.data);
@@ -111,7 +111,7 @@ class _AddInvoiceDriverState extends State<AddInvoiceDriver> {
                         ),
                         StreamBuilder<List<Order>>(
                             stream:
-                                OrderService().driverAllOrders(widget.driverId),
+                                OrderServices().driverAllOrders(widget.driverId),
                             builder: (context, snapshot) {
                               if (!snapshot.hasData) {
                                 return Text('0');

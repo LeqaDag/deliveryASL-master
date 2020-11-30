@@ -24,7 +24,7 @@ class AllOrders extends StatelessWidget {
         body: Directionality(
           textDirection: TextDirection.rtl,
           child: StreamProvider<List<Order>>.value(
-            value: OrderService().ordersByState('isDelivery'),
+            value: OrderServices().ordersByState('isDelivery'),
             child: OrderList(
               orderState: 'isDelivery',
               name: name,

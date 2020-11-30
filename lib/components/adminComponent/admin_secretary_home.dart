@@ -42,7 +42,7 @@ class AdminSecretaryHome extends StatelessWidget {
         ),
         drawer: AdminDrawer(name: name),
         body: StreamProvider<List<Admin>>.value(
-          value: AdminService().admins,
+          value: AdminServices().admins,
           child: SecretaryList(name: name),
         ),
       ),

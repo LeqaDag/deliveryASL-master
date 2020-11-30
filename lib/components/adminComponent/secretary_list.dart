@@ -26,7 +26,7 @@ class _SecretaryListState extends State<SecretaryList> {
         itemCount: admins.length,
         itemBuilder: (context, index) {
           return StreamBuilder<Admin>(
-              stream: AdminService(uid: admins[index].uid).adminByID,
+              stream: AdminServices(uid: admins[index].uid).adminByID,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   Admin admin = snapshot.data;
@@ -53,7 +53,7 @@ class _SecretaryListState extends State<SecretaryList> {
                                         name: admin.name,
                                         buttonText: "تأكيد",
                                         onPressed: () {
-                                          AdminService().deleteAdminData(
+                                          AdminServices().deleteAdminData(
                                               admins[index].uid);
                                           Navigator.of(context).pop();
                                         },

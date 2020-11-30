@@ -23,13 +23,13 @@ class AdminOrders extends StatelessWidget {
     double height = MediaQuery.of(context).size.height;
     return FutureBuilder<List<int>>(
         future: Future.wait([
-          OrderService().orderLoading,
-          OrderService().orderReceived,
-          OrderService().orderUrgent,
-          OrderService().orderCancelld,
-          OrderService().orderDone,
-          OrderService().orderDelivery,
-          OrderService().orderReturn,
+          OrderServices().orderLoading,
+          OrderServices().orderReceived,
+          OrderServices().orderUrgent,
+          OrderServices().orderCancelld,
+          OrderServices().orderDone,
+          OrderServices().orderDelivery,
+          OrderServices().orderReturn,
         ]),
         builder: (context, snapshot) {
           if (snapshot.data != null) {

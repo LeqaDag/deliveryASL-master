@@ -10,7 +10,7 @@ class AllSecretaries extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Admin>(
-        stream: AdminService(uid: adminID).adminByID,
+        stream: AdminServices(uid: adminID).adminByID,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             Admin admin = snapshot.data;
@@ -35,7 +35,7 @@ class AllSecretaries extends StatelessWidget {
                                   name: admin.name,
                                   buttonText: "تأكيد",
                                   onPressed: () {
-                                    AdminService().deleteAdminData(adminID);
+                                    AdminServices().deleteAdminData(adminID);
                                     Navigator.of(context).pop();
                                   },
                                   cancelButton: "الغاء",

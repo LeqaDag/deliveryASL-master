@@ -34,7 +34,7 @@ class BusinessOrders extends StatelessWidget {
         ),
         drawer: BusinessDrawer(name: name, uid: uid),
         body: StreamProvider<List<Order>>.value(
-          value: OrderService(businesID: uid, orderState: "all")
+          value: OrderServices(businesID: uid, orderState: "all")
               .ordersBusinessByState,
           child: BusinessOrderList(name: name, uid: uid),
         ),

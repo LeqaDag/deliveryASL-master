@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:sajeda_app/classes/admin.dart';
 import 'package:sajeda_app/classes/city.dart';
-import 'package:sajeda_app/components/adminComponent/add_secretary.dart';
-import 'package:sajeda_app/components/adminComponent/secretary_list.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
 import 'package:provider/provider.dart';
-import 'package:sajeda_app/services/adminServices.dart';
 import 'package:sajeda_app/services/cityServices.dart';
 import 'package:toast/toast.dart';
 
@@ -89,7 +85,7 @@ class _AdminCitiesHomeState extends State<AdminCitiesHome> {
                             ),
                           ),
                           onPressed: () async {
-                            await CityService()
+                            await CityServices()
                                 .addCityData(new City(
                                     name: cityNameController.text,
                                     isArchived: false
@@ -111,7 +107,7 @@ class _AdminCitiesHomeState extends State<AdminCitiesHome> {
         ),
         drawer: AdminDrawer(name: widget.name),
         body: StreamProvider<List<City>>.value(
-          value: CityService().citys,
+          value: CityServices().citys,
           child: CityList(name: widget.name),
         ),
       ),

@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sajeda_app/classes/user.dart';
 
-class UserService {
+class UserServices {
   final String uid;
-  UserService({this.uid});
+  UserServices({this.uid});
 
   final CollectionReference userCollection =
       FirebaseFirestore.instance.collection('users');

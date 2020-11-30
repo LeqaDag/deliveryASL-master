@@ -89,7 +89,7 @@ class Item extends StatelessWidget {
                                   name: driver.name,
                                   buttonText: "تأكيد",
                                   onPressed: () {
-                                    DriverService()
+                                    DriverServices()
                                         .deleteDriverData(driver.uid);
                                     Navigator.of(context).pop();
                                   },

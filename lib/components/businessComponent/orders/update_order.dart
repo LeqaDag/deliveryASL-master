@@ -49,7 +49,7 @@ class _UpdateOrderState extends State<UpdateOrder> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Customer>(
-        stream: CustomerService(uid: widget.customerID).customerByID,
+        stream: CustomerServices(uid: widget.customerID).customerByID,
         builder: (context, snapshot) {
           Customer customerData = snapshot.data;
           city = customerData.cityID;
@@ -575,7 +575,7 @@ class _UpdateOrderState extends State<UpdateOrder> {
       width: double.maxFinite,
       height: double.maxFinite,
       child: StreamProvider<List<City>>.value(
-          value: CityService().citys, child: CityList()),
+          value: CityServices().citys, child: CityList()),
     ));
   }
 }

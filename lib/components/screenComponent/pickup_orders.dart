@@ -28,7 +28,7 @@ class PickupOrders extends StatelessWidget {
         body: Directionality(
           textDirection: TextDirection.rtl,
           child: StreamProvider<List<Order>>.value(
-            value: OrderService().ordersByState('isReceived'),
+            value: OrderServices().ordersByState('isReceived'),
             child: OrderList(orderState: 'isReceived', name: name),
           ),
         ));

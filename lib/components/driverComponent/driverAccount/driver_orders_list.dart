@@ -385,7 +385,7 @@ class _PendingDriverOrdersState extends State<PendingDriverOrders> {
                                   ),
                                 ),
                                 FutureBuilder<String>(
-                                    future: CustomerService(
+                                    future: CustomerServices(
                                             uid: widget.order.customerID)
                                         .customerName,
                                     builder: (context, snapshot) {
@@ -447,7 +447,7 @@ class _PendingDriverOrdersState extends State<PendingDriverOrders> {
                                   ),
                                 ),
                                 FutureBuilder<String>(
-                                    future: CustomerService(
+                                    future: CustomerServices(
                                             uid: widget.order.customerID)
                                         .customerCity,
                                     builder: (context, snapshot) {
@@ -461,7 +461,7 @@ class _PendingDriverOrdersState extends State<PendingDriverOrders> {
                                       );
                                     }),
                                 FutureBuilder<String>(
-                                    future: CustomerService(
+                                    future: CustomerServices(
                                             uid: widget.order.customerID)
                                         .customerAdress,
                                     builder: (context, snapshot) {
@@ -589,7 +589,7 @@ class _DoneDriverOrdersState extends State<DoneDriverOrders> {
                                   ),
                                 ),
                                 FutureBuilder<String>(
-                                    future: CustomerService(
+                                    future: CustomerServices(
                                             uid: widget.order.customerID)
                                         .customerName,
                                     builder: (context, snapshot) {
@@ -651,7 +651,7 @@ class _DoneDriverOrdersState extends State<DoneDriverOrders> {
                                   ),
                                 ),
                                 FutureBuilder<String>(
-                                    future: CustomerService(
+                                    future: CustomerServices(
                                             uid: widget.order.customerID)
                                         .customerCity,
                                     builder: (context, snapshot) {
@@ -665,7 +665,7 @@ class _DoneDriverOrdersState extends State<DoneDriverOrders> {
                                       );
                                     }),
                                 FutureBuilder<String>(
-                                    future: CustomerService(
+                                    future: CustomerServices(
                                             uid: widget.order.customerID)
                                         .customerAdress,
                                     builder: (context, snapshot) {
@@ -793,7 +793,7 @@ class _StuckDriverOrdersState extends State<StuckDriverOrders> {
                                   ),
                                 ),
                                 FutureBuilder<String>(
-                                    future: CustomerService(
+                                    future: CustomerServices(
                                             uid: widget.order.customerID)
                                         .customerName,
                                     builder: (context, snapshot) {
@@ -855,7 +855,7 @@ class _StuckDriverOrdersState extends State<StuckDriverOrders> {
                                   ),
                                 ),
                                 FutureBuilder<String>(
-                                    future: CustomerService(
+                                    future: CustomerServices(
                                             uid: widget.order.customerID)
                                         .customerCity,
                                     builder: (context, snapshot) {
@@ -869,7 +869,7 @@ class _StuckDriverOrdersState extends State<StuckDriverOrders> {
                                       );
                                     }),
                                 FutureBuilder<String>(
-                                    future: CustomerService(
+                                    future: CustomerServices(
                                             uid: widget.order.customerID)
                                         .customerAdress,
                                     builder: (context, snapshot) {

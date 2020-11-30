@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sajeda_app/classes/busines.dart';
+import 'package:sajeda_app/classes/business.dart';
 import 'package:sajeda_app/classes/city.dart';
 import 'package:sajeda_app/classes/customer.dart';
 import 'package:sajeda_app/classes/deliveryStatus.dart';
@@ -28,7 +28,7 @@ class CancelldInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Order>(
-        stream: OrderService(uid: uid).orderData,
+        stream: OrderServices(uid: uid).orderData,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             Order order = snapshot.data;
@@ -40,13 +40,13 @@ class CancelldInfo extends StatelessWidget {
             }
             print(order.customerID);
             return StreamBuilder<Customer>(
-                stream: CustomerService(uid: order.customerID).customerData,
+                stream: CustomerServices(uid: order.customerID).customerData,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     Customer customer = snapshot.data;
                     return StreamBuilder<Business>(
                         stream:
-                            BusinessService(uid: order.businesID).businessByID,
+                            BusinessServices(uid: order.businesID).businessByID,
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             Business business = snapshot.data;
@@ -154,7 +154,7 @@ class CancelldInfo extends StatelessWidget {
 
                                       StreamBuilder<Driver>(
                                         stream:
-                                            DriverService(uid: order.driverID)
+                                            DriverServices(uid: order.driverID)
                                                 .driverByID,
                                         builder: (context, snapshot) {
                                           if (snapshot.hasData) {
@@ -330,7 +330,7 @@ class CancelldInfo extends StatelessWidget {
       width: double.infinity,
       height: 35,
       child: StreamBuilder<City>(
-        stream: CityService(uid: text).cityByID,
+        stream: CityServices(uid: text).cityByID,
         builder: (context, snapshot) {
           City city = snapshot.data;
           return TextField(

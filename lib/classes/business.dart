@@ -1,28 +1,26 @@
 import 'package:flutter/cupertino.dart';
 
-class Driv {
+class Business {
   String uid;
-  bool type;
-  String address;
-  String line;
-  String city;
+  String name;
+  String email;
+  String phoneNumber;
   String userID;
+
   bool isArchived;
   DateTime deleteDate;
   String deleteUser;
 
   String searchKey;
 
-  Driv({
+  Business({
     this.uid,
-    @required this.type,
-    @required this.address,
-    @required this.city,
-    @required this.line,
+    @required this.name,
+    @required this.phoneNumber,
+    @required this.email,
     @required this.userID,
     this.isArchived = false,
     this.deleteDate,
     this.deleteUser,
-    this.searchKey,
   });
 }

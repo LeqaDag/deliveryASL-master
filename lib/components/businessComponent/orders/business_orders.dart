@@ -113,7 +113,7 @@ class _CustomCompanyOrdersStatusState extends State<CustomCompanyOrdersStatus> {
                           ),
                           FutureBuilder<String>(
                               future:
-                                  CustomerService(uid: widget.order.customerID)
+                                  CustomerServices(uid: widget.order.customerID)
                                       .customerName,
                               builder: (context, snapshot) {
                                 customerName = snapshot.data;
@@ -144,7 +144,7 @@ class _CustomCompanyOrdersStatusState extends State<CustomCompanyOrdersStatus> {
                           ),
                           FutureBuilder<String>(
                               future:
-                                  CustomerService(uid: widget.order.customerID)
+                                  CustomerServices(uid: widget.order.customerID)
                                       .customerCity,
                               builder: (context, snapshot) {
                                 return Text(
@@ -158,7 +158,7 @@ class _CustomCompanyOrdersStatusState extends State<CustomCompanyOrdersStatus> {
                               }),
                           FutureBuilder<String>(
                               future:
-                                  CustomerService(uid: widget.order.customerID)
+                                  CustomerServices(uid: widget.order.customerID)
                                       .customerAdress,
                               builder: (context, snapshot) {
                                 return Text(
@@ -207,7 +207,7 @@ class _CustomCompanyOrdersStatusState extends State<CustomCompanyOrdersStatus> {
                                   final FirebaseAuth auth =
                                       FirebaseAuth.instance;
                                   final User user = auth.currentUser;
-                                  OrderService().deleteOrderData(
+                                  OrderServices().deleteOrderData(
                                       widget.order.uid, user.uid);
                                   Navigator.of(context).pop();
                                 },

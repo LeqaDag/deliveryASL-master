@@ -3,11 +3,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:sajeda_app/classes/city.dart';
 import 'package:flutter/material.dart';
+import 'package:sajeda_app/classes/driver.dart';
 import 'package:sajeda_app/classes/driverDeliveryCost.dart';
 import 'package:sajeda_app/classes/location.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
 import 'package:sajeda_app/services/cityServices.dart';
 import 'package:sajeda_app/services/driverDeliveryCostServices.dart';
+import 'package:sajeda_app/services/driverServices.dart';
 import 'package:sajeda_app/services/locationServices.dart';
 import 'package:toast/toast.dart';
 
@@ -237,7 +239,7 @@ class _AddDriverState extends State<AddDriver> {
                     Container(
                       margin: EdgeInsets.all(10.0),
                       child: StreamBuilder<List<City>>(
-                        stream: CityService().citys,
+                        stream: CityServices().citys,
                         builder: (context, snapshot) {
                           if (!snapshot.hasData) {
                             return Text('Loading...');
@@ -363,7 +365,7 @@ class _AddDriverState extends State<AddDriver> {
                     Container(
                       margin: EdgeInsets.all(10.0),
                       child: StreamBuilder<List<Location>>(
-                        stream: LocationService().locations,
+                        stream: LocationServices().locations,
                         builder: (context, snapshot) {
                           if (!snapshot.hasData) {
                             return Text('Loading...');
@@ -547,33 +549,28 @@ class _AddDriverState extends State<AddDriver> {
           "phoneNumber": phoneController.text,
           "name": driverNameController.text,
           "userType": "2"
-        }).then((value) {
+        }).then((value) async {
           if (type == 'سائق خاص')
             typeResult = false;
           else
             typeResult = true;
+         await DriverServices().addDriverData(Driver(
+              uid: result.user.uid,
+              name: driverNameController.text,
+              type: typeResult,
+              email: emailController.text,
+              phoneNumber: phoneController.text,
+              address: addressController.text,
+              cityID: cityID,
+              load: int.parse(loadController.text),
+              locationID: locationID,
+              userID:result.user.uid,));
 
-          driverCollection.doc(result.user.uid).set({
-            "email": emailController.text,
-            "name": driverNameController.text,
-            "address": addressController.text,
-            "cityID": cityID,
-            "locationID": locationID,
-            "type": typeResult,
-            "userID": result.user.uid,
-            "isArchived": false,
-            "phoneNumber": phoneController.text,
-            "load": int.parse(loadController.text),
-            "bouns": 0,
-          }).then((value) async {
-            isLoading = false;
-// loadController
             await DriverDeliveryCostServices().addDriverDeliveryCostData(
                 new DriverDeliveryCost(
                     cost: int.parse(deliveryPriceController.text),
                     locationID: locationID,
                     driverID: result.user.uid));
-          });
         });
         isLoading = false;
         Toast.show("تم اضافة سائق بنجاح", context,

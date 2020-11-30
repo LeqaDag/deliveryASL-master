@@ -28,7 +28,7 @@ class UrgentOrders extends StatelessWidget {
         body: Directionality(
           textDirection: TextDirection.rtl,
           child: StreamProvider<List<Order>>.value(
-            value: OrderService().ordersByState('isUrgent'),
+            value: OrderServices().ordersByState('isUrgent'),
             child: OrderList(orderState: 'isUrgent', name: name,),
           ),
         ));

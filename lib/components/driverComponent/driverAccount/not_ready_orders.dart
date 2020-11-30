@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sajeda_app/classes/busines.dart';
+import 'package:sajeda_app/classes/business.dart';
 import 'package:sajeda_app/classes/city.dart';
 import 'package:sajeda_app/classes/customer.dart';
 import 'package:sajeda_app/classes/deliveryStatus.dart';
@@ -40,19 +40,19 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
     double height = MediaQuery.of(context).size.height;
 
     return StreamBuilder<Order>(
-        stream: OrderService(uid: widget.uid).orderData,
+        stream: OrderServices(uid: widget.uid).orderData,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             Order order = snapshot.data;
 
             return StreamBuilder<Customer>(
-                stream: CustomerService(uid: order.customerID).customerData,
+                stream: CustomerServices(uid: order.customerID).customerData,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     Customer customer = snapshot.data;
                     return StreamBuilder<Business>(
                         stream:
-                            BusinessService(uid: order.businesID).businessByID,
+                            BusinessServices(uid: order.businesID).businessByID,
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             Business business = snapshot.data;
@@ -106,7 +106,7 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                       ),
                                                     ),
                                                     FutureBuilder<String>(
-                                                        future: BusinessService(
+                                                        future: BusinessServices(
                                                                 uid: order
                                                                     .businesID)
                                                             .businessName,
@@ -154,7 +154,7 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                       ),
                                                     ),
                                                     FutureBuilder<String>(
-                                                        future: BusinessService(
+                                                        future: BusinessServices(
                                                                 uid: order
                                                                     .businesID)
                                                             .businessPhoneNumber,
@@ -217,7 +217,7 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                       ),
                                                     ),
                                                     FutureBuilder<String>(
-                                                        future: CustomerService(
+                                                        future: CustomerServices(
                                                                 uid: order
                                                                     .customerID)
                                                             .customerName,
@@ -298,7 +298,7 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                           ),
                                                         ),
                                                         FutureBuilder<int>(
-                                                            future: CustomerService(
+                                                            future: CustomerServices(
                                                                     uid: order
                                                                         .customerID)
                                                                 .customerPhoneNumber,
@@ -386,7 +386,7 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                           ),
                                                         ),
                                                         FutureBuilder<int>(
-                                                            future: CustomerService(
+                                                            future: CustomerServices(
                                                                     uid: order
                                                                         .customerID)
                                                                 .customerAdditionalPhoneNumber,
@@ -456,7 +456,7 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                               width: width - 50,
                                               height: 80,
                                               child: FutureBuilder<String>(
-                                                  future: CustomerService(
+                                                  future: CustomerServices(
                                                           uid: order.customerID)
                                                       .customerCity,
                                                   builder: (context, snapshot) {
@@ -515,7 +515,7 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                               ),
                                                               FutureBuilder<
                                                                       String>(
-                                                                  future: CustomerService(
+                                                                  future: CustomerServices(
                                                                           uid: order
                                                                               .customerID)
                                                                       .customerAdress,
@@ -598,7 +598,7 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                                           0),
                                                         ),
                                                         FutureBuilder<String>(
-                                                            future: OrderService(
+                                                            future: OrderServices(
                                                                     uid: order
                                                                         .uid)
                                                                 .orderDescription,
@@ -865,7 +865,7 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                       type ==
                                                           'راجعة لاسباب أخرى' ||
                                                       type == 'تم التوصيل') {
-                                                    await OrderService(
+                                                    await OrderServices(
                                                             uid: order.uid)
                                                         .updateOrderStatus(Order(
                                                             isCancelld:

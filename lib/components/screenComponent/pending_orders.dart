@@ -33,7 +33,7 @@ class _PendingOrdersState extends State<PendingOrders> {
         body: Directionality(
           textDirection: TextDirection.rtl,
           child: StreamProvider<List<Order>>.value(
-            value: OrderService().ordersByState('isLoading'),
+            value: OrderServices().ordersByState('isLoading'),
             child: OrderList(orderState: 'isLoading', name: widget.name),
           ),
         ));

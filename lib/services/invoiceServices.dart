@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sajeda_app/classes/invoice.dart';
 
-class InvoiceService {
+class InvoiceServices {
   final String uid, businessId, driverId;
-  InvoiceService({this.uid, this.businessId, this.driverId});
+  InvoiceServices({this.uid, this.businessId, this.driverId});
 
   final CollectionReference invoiceCollection =
-      FirebaseFirestore.instance.collection('invoice');
+      FirebaseFirestore.instance.collection('invoices');
 
   Future<void> addInvoiceData(Invoice invoice) async {
     return await invoiceCollection.doc().set({

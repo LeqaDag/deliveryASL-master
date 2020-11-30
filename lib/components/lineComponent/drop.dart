@@ -17,7 +17,7 @@ class _Test55State extends State<Test55> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<City>>(
-      stream: CityService().citys,
+      stream: CityServices().citys,
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Text('Loading...');

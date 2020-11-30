@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sajeda_app/classes/busines.dart';
+import 'package:sajeda_app/classes/business.dart';
 import 'package:sajeda_app/components/businessComponent/addComponent/add_company.dart';
 import 'package:sajeda_app/components/businessComponent/businesssComponent/business_list.dart';
 import 'package:sajeda_app/components/businessComponent/searchComponent/companiesAdminSearch.dart';
@@ -53,7 +53,7 @@ class BusinessAdmin extends StatelessWidget {
         ),
         drawer: AdminDrawer(name: name),
         body: StreamProvider<List<Business>>.value(
-          value: BusinessService().business,
+          value: BusinessServices().business,
           child: BusinessList(name: name),
         ),
       ),

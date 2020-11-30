@@ -2,10 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:sajeda_app/classes/city.dart';
 import 'package:sajeda_app/classes/order.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
-import 'package:sajeda_app/services/cityServices.dart';
 import 'package:sajeda_app/services/orderServices.dart';
 import 'package:toast/toast.dart';
 
@@ -68,7 +66,7 @@ class _AddInvoiceState extends State<AddInvoice> {
                           ),
                         ),
                         FutureBuilder<int>(
-                            future: OrderService(businesID: widget.businessId)
+                            future: OrderServices(businesID: widget.businessId)
                                 .countBusinessOrders(widget.businessId),
                             builder: (context, snapshot) {
                               print(snapshot.data);
@@ -92,7 +90,7 @@ class _AddInvoiceState extends State<AddInvoice> {
                           ),
                         ),
                         StreamBuilder<List<Order>>(
-                            stream: OrderService()
+                            stream: OrderServices()
                                 .businessAllOrders(widget.businessId),
                             builder: (context, snapshot) {
                               int totalPrice = 0;

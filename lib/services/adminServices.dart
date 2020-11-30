@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sajeda_app/classes/admin.dart';
 
-class AdminService {
+class AdminServices {
   final String uid;
-  AdminService({this.uid});
+  AdminServices({this.uid});
 
   final CollectionReference adminCollection =
       FirebaseFirestore.instance.collection('admin');

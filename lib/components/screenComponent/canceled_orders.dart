@@ -27,7 +27,7 @@ class CanceledOrders extends StatelessWidget {
         body: Directionality(
           textDirection: TextDirection.rtl,
           child: StreamProvider<List<Order>>.value(
-            value: OrderService().ordersByState('isCancelld'),
+            value: OrderServices().ordersByState('isCancelld'),
             child: OrderList(
               orderState: 'isCancelld',
               name: name,

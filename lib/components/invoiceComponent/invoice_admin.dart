@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sajeda_app/classes/busines.dart';
+import 'package:sajeda_app/classes/business.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
 import 'package:provider/provider.dart';
 import 'package:sajeda_app/services/businessServices.dart';

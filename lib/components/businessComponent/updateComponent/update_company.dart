@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:sajeda_app/classes/busines.dart';
+import 'package:sajeda_app/classes/business.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
 import 'package:sajeda_app/services/businessServices.dart';
 
@@ -26,7 +26,7 @@ class _UpdateCompanyState extends State<UpdateCompany> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Business>(
-        stream: BusinessService(uid: widget.businessID).businessByID,
+        stream: BusinessServices(uid: widget.businessID).businessByID,
         builder: (context, snapshot) {
           Business businessData = snapshot.data;
           return Scaffold(
@@ -147,38 +147,7 @@ class _UpdateCompanyState extends State<UpdateCompany> {
                             ),
                           ),
                         ),
-                        Container(
-                          margin: EdgeInsets.all(10.0),
-                          child: TextFormField(
-                            initialValue: businessData.password,
-                            onChanged: (val) => setState(() => passowrd = val),
-                            obscureText: true,
-                            decoration: InputDecoration(
-                              labelText: 'كلمة المرور',
-                              labelStyle: TextStyle(
-                                fontFamily: 'Amiri',
-                                fontSize: 18.0,
-                                color: Color(0xff316686),
-                              ),
-                              contentPadding: EdgeInsets.only(right: 20.0),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                                borderSide: BorderSide(
-                                  width: 1.0,
-                                  color: Color(0xff636363),
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                                borderSide: BorderSide(
-                                  width: 2.0,
-                                  color: Color(0xff73a16a),
-                                ),
-                                //Change color to Color(0xff73a16a)
-                              ),
-                            ),
-                          ),
-                        ),
+
                         Container(
                           margin: EdgeInsets.all(40.0),
                           child: RaisedButton(
@@ -187,13 +156,12 @@ class _UpdateCompanyState extends State<UpdateCompany> {
                                 borderRadius: new BorderRadius.circular(30.0)),
                             onPressed: () async {
                               if (_formKey.currentState.validate()) {
-                                await BusinessService(uid: widget.businessID)
+                                await BusinessServices(uid: widget.businessID)
                                     .updateData(Business(
                                   name: companyName ?? snapshot.data.name,
                                   email: email ?? snapshot.data.email,
                                   phoneNumber:
                                       phoneNumber ?? snapshot.data.phoneNumber,
-                                  password: passowrd ?? snapshot.data.password,
                                   userID: snapshot.data.userID,
                                 ));
                                 Navigator.pop(context);

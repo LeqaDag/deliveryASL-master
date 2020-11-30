@@ -35,7 +35,7 @@ class DriverInvoiceAdmin extends StatelessWidget {
         ),
         drawer: AdminDrawer(name: name),
         body: StreamProvider<List<Driver>>.value(
-          value: DriverService().drivers,
+          value: DriverServices().drivers,
           child: InvoiceListDrivers(name: name),
         ),
       ),

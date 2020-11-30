@@ -124,7 +124,7 @@ class _CustomCardCityState extends State<CustomCardCity> {
                           ),
                           onPressed: () async {
                             widget.city.name = _cityNameController.text;
-                            await CityService(uid: widget.city.uid)
+                            await CityServices(uid: widget.city.uid)
                                 .updateData(widget.city);
                             Toast.show("تم تعديل المدينة بنجاح", context,
                                 duration: Toast.LENGTH_LONG,
@@ -151,7 +151,7 @@ class _CustomCardCityState extends State<CustomCardCity> {
                             onPressed: () {
                               // final FirebaseAuth auth = FirebaseAuth.instance;
                               // final User user = auth.currentUser;
-                              CityService().deletecityData(widget.city.uid);
+                              CityServices().deletecityData(widget.city.uid);
                               Navigator.of(context).pop();
                             },
                             cancelButton: "الغاء",

@@ -28,7 +28,7 @@ class ReturnOrders extends StatelessWidget {
         body: Directionality(
           textDirection: TextDirection.rtl,
           child: StreamProvider<List<Order>>.value(
-            value: OrderService().ordersByState('isReturn'),
+            value: OrderServices().ordersByState('isReturn'),
             child: OrderList(orderState: 'isReturn', name: name),
           ),
         ));

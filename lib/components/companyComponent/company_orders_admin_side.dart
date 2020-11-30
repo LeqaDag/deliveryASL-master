@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sajeda_app/classes/busines.dart';
+import 'package:sajeda_app/classes/business.dart';
 import 'package:sajeda_app/classes/order.dart';
 import 'package:sajeda_app/components/companyComponent/orders_business_List.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
@@ -23,7 +23,7 @@ class _CompanyOrdersAdminSideState extends State<CompanyOrdersAdminSide> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Business>(
-        stream: BusinessService(uid: widget.uid).businessByID,
+        stream: BusinessServices(uid: widget.uid).businessByID,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             Business businessData = snapshot.data;
@@ -47,7 +47,7 @@ class _CompanyOrdersAdminSideState extends State<CompanyOrdersAdminSide> {
                 body: Directionality(
                   textDirection: TextDirection.rtl,
                   child: StreamProvider<List<Order>>.value(
-                    value: OrderService(
+                    value: OrderServices(
                             businesID: businessData.uid,
                             orderState: widget.orderState)
                         .ordersBusinessByState,

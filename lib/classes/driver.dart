@@ -6,11 +6,10 @@ class Driver {
   bool type;
   String email;
   String phoneNumber;
-  String passowrd;
   String address;
 
   int load;
-  int bouns;
+  int bonus;
 
   String userID;
   String locationID;
@@ -29,11 +28,10 @@ class Driver {
     @required this.type,
     @required this.email,
     @required this.phoneNumber,
-    @required this.passowrd,
     @required this.address,
     @required this.cityID,
     @required this.load,
-    this.bouns = 0,
+    this.bonus = 0,
     this.userID,
     @required this.locationID,
     this.isArchived = false,

@@ -28,7 +28,7 @@ class ReadyOrders extends StatelessWidget {
         body: Directionality(
           textDirection: TextDirection.rtl,
           child: StreamProvider<List<Order>>.value(
-            value: OrderService().ordersByState('isDone'),
+            value: OrderServices().ordersByState('isDone'),
             child: OrderList(orderState: 'isDone', name: name),
           ),
         ));

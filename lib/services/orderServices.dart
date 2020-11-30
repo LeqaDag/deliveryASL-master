@@ -1,14 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sajeda_app/classes/order.dart';
 
-class OrderService {
+class OrderServices {
   final String uid;
   final String businesID;
   final String orderState;
   final String driverID;
   final int driverPrice;
 
-  OrderService(
+  OrderServices(
       {this.uid,
       this.businesID,
       this.orderState,

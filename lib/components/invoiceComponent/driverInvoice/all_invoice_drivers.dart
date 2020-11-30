@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sajeda_app/classes/busines.dart';
+import 'package:sajeda_app/classes/business.dart';
 import 'package:sajeda_app/classes/driver.dart';
 import 'package:sajeda_app/classes/invoice.dart';
 import 'package:sajeda_app/classes/order.dart';
@@ -33,7 +33,7 @@ class AllInvoiceDrivers extends StatelessWidget {
     double height = MediaQuery.of(context).size.height;
 
     return StreamBuilder<Driver>(
-        stream: DriverService(uid: driverId).driverByID,
+        stream: DriverServices(uid: driverId).driverByID,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             Driver driver = snapshot.data;
@@ -117,7 +117,7 @@ class AllInvoiceDrivers extends StatelessWidget {
                               ),
                               StreamBuilder<List<Order>>(
                                   stream:
-                                      OrderService().driversAllOrders(driverId),
+                                      OrderServices().driversAllOrders(driverId),
                                   builder: (context, snapshot) {
                                     int totalPrice = 0;
 
@@ -210,7 +210,7 @@ class AllInvoiceDrivers extends StatelessWidget {
                           color: KBadgeColorAndContainerBorderColorReadyOrders,
                         ),
                         FutureBuilder<int>(
-                            future: OrderService(driverID: driverId)
+                            future: OrderServices(driverID: driverId)
                                 .countDriverOrderByStateOrder("isDone"),
                             builder: (context, snapshot) {
                               print(snapshot.data);
@@ -226,7 +226,7 @@ class AllInvoiceDrivers extends StatelessWidget {
                           color: KBadgeColorAndContainerBorderColorReturnOrders,
                         ),
                         FutureBuilder<int>(
-                            future: OrderService(driverID: driverId)
+                            future: OrderServices(driverID: driverId)
                                 .countDriverOrderByStateOrder("isReturn"),
                             builder: (context, snapshot) {
                               print(snapshot.data);
@@ -243,7 +243,7 @@ class AllInvoiceDrivers extends StatelessWidget {
                               KBadgeColorAndContainerBorderColorCancelledOrders,
                         ),
                         FutureBuilder<int>(
-                            future: OrderService(driverID: driverId)
+                            future: OrderServices(driverID: driverId)
                                 .countDriverOrderByStateOrder("isCancelld"),
                             builder: (context, snapshot) {
                               print(snapshot.data);
@@ -259,7 +259,7 @@ class AllInvoiceDrivers extends StatelessWidget {
                           color: KAllOrdersListTileColor,
                         ),
                         FutureBuilder<int>(
-                            future: OrderService(driverID: driverId)
+                            future: OrderServices(driverID: driverId)
                                 .countDriverOrderByStateOrder("isDelivery"),
                             builder: (context, snapshot) {
                               print(snapshot.data);
@@ -275,7 +275,7 @@ class AllInvoiceDrivers extends StatelessWidget {
                           color: KBadgeColorAndContainerBorderColorLoadingOrder,
                         ),
                         FutureBuilder<int>(
-                            future: OrderService(driverID: driverId)
+                            future: OrderServices(driverID: driverId)
                                 .countDriverOrderByStateOrder("isLoading"),
                             builder: (context, snapshot) {
                               print(snapshot.data);
@@ -292,7 +292,7 @@ class AllInvoiceDrivers extends StatelessWidget {
                               KBadgeColorAndContainerBorderColorRecipientOrder,
                         ),
                         FutureBuilder<int>(
-                            future: OrderService(driverID: driverId)
+                            future: OrderServices(driverID: driverId)
                                 .countDriverOrderByStateOrder("isReceived"),
                             builder: (context, snapshot) {
                               print(snapshot.data);
@@ -333,7 +333,7 @@ class TotalPrice extends StatelessWidget {
     print(invoice[0].totalPrice);
 
     return StreamProvider<List<Invoice>>.value(
-      value: InvoiceService(businessId: businessId).totalPrice,
+      value: InvoiceServices(businessId: businessId).totalPrice,
       child: InvoicePrice(),
     );
   }

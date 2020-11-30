@@ -68,7 +68,7 @@ class _UpdateSubLineState extends State<UpdateSubLine> {
                           Container(
                             margin: EdgeInsets.all(10.0),
                             child: StreamBuilder<List<City>>(
-                              stream: CityService().citys,
+                              stream: CityServices().citys,
                               builder: (context, snapshot) {
                                 if (!snapshot.hasData) {
                                   return Text('Loading...');

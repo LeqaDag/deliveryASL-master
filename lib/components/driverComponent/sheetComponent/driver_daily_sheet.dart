@@ -28,7 +28,7 @@ class _DriverDailySheetState extends State<DriverDailySheet> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Driver>(
-        stream: DriverService(uid: widget.driverID).driverByID,
+        stream: DriverServices(uid: widget.driverID).driverByID,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             Driver driverData = snapshot.data;
@@ -77,7 +77,7 @@ class _DriverDailySheetState extends State<DriverDailySheet> {
                                 left: 10,
                               ),
                               child: FutureBuilder<int>(
-                                  future: OrderService(driverID: driverData.uid)
+                                  future: OrderServices(driverID: driverData.uid)
                                       .countIsDoneInDailySheet,
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
@@ -138,7 +138,7 @@ class _DriverDailySheetState extends State<DriverDailySheet> {
                             child: Padding(
                               padding: const EdgeInsets.only(top: 8.0, left: 8),
                               child: FutureBuilder<int>(
-                                  future: OrderService(driverID: driverData.uid)
+                                  future: OrderServices(driverID: driverData.uid)
                                       .countIsReturnInDailySheet,
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
@@ -203,7 +203,7 @@ class _DriverDailySheetState extends State<DriverDailySheet> {
                             child: Padding(
                               padding: const EdgeInsets.only(top: 8.0, left: 8),
                               child: StreamBuilder<List<Order>>(
-                                  stream: OrderService()
+                                  stream: OrderServices()
                                       .driversAllOrders(driverData.uid),
                                   builder: (context, snapshot) {
                                     int totalPrice = 0;
@@ -270,7 +270,7 @@ class _DriverDailySheetState extends State<DriverDailySheet> {
                             child: Padding(
                               padding: const EdgeInsets.only(top: 8.0, left: 8),
                               child: StreamBuilder<List<Order>>(
-                                  stream: OrderService()
+                                  stream: OrderServices()
                                       .driversAllOrders(driverData.uid),
                                   builder: (context, snapshot) {
                                     int totalPrice = 0;
@@ -323,7 +323,7 @@ class _DriverDailySheetState extends State<DriverDailySheet> {
                       ),
                       Container(
                         child: StreamProvider<List<Order>>.value(
-                          value: OrderService(driverID: widget.driverID)
+                          value: OrderServices(driverID: widget.driverID)
                               .sheetListDriver,
                           child: SheetListDriver(
                               name: widget.name, driverID: widget.driverID),
@@ -482,7 +482,7 @@ class _AllDriverOrdersState extends State<AllDriverOrders> {
                           //  SizedBox(width: 33,),
                           FutureBuilder<String>(
                             future:
-                                CustomerService(uid: widget.order.customerID)
+                                CustomerServices(uid: widget.order.customerID)
                                     .customerName,
                             builder: (context, snapshot) {
                               // print(order.customerID);
@@ -547,7 +547,7 @@ class _AllDriverOrdersState extends State<AllDriverOrders> {
                           //  SizedBox(width: 33,),
                           FutureBuilder<String>(
                               future:
-                                  BusinessService(uid: widget.order.businesID)
+                                  BusinessServices(uid: widget.order.businesID)
                                       .businessName,
                               builder: (context, snapshot) {
                                 // print(snapshot.data);
@@ -586,7 +586,7 @@ class _AllDriverOrdersState extends State<AllDriverOrders> {
                           ),
                           FutureBuilder<String>(
                               future:
-                                  CustomerService(uid: widget.order.customerID)
+                                  CustomerServices(uid: widget.order.customerID)
                                       .customerCity,
                               builder: (context, snapshot) {
                                 return Text(
@@ -600,7 +600,7 @@ class _AllDriverOrdersState extends State<AllDriverOrders> {
                               }),
                           FutureBuilder<String>(
                               future:
-                                  CustomerService(uid: widget.order.customerID)
+                                  CustomerServices(uid: widget.order.customerID)
                                       .customerAdress,
                               builder: (context, snapshot) {
                                 return Text(

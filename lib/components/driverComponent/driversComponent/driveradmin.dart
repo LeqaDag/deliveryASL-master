@@ -19,7 +19,7 @@ class DriverAdmin extends StatelessWidget {
         child: DefaultTabController(
           length: 2,
           child: StreamProvider<List<Driver>>.value(
-            value: DriverService().drivers,
+            value: DriverServices().drivers,
             child: Scaffold(
                 appBar: AppBar(
                   bottom: TabBar(

@@ -18,7 +18,7 @@ class DriverMain extends StatelessWidget {
         child: DefaultTabController(
           length: 3,
           child: StreamProvider<List<Order>>.value(
-            value: OrderService(driverID: uid, orderState: "driverOrders")
+            value: OrderServices(driverID: uid, orderState: "driverOrders")
                 .ordersBusinessByState,
             child: Scaffold(
                 appBar: AppBar(

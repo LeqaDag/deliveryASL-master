@@ -23,7 +23,7 @@ class _DriverProfileState extends State<DriverProfile> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<Driver>>(
-      stream: DriverService(uid: widget.uid).driverByuserID,
+      stream: DriverServices(uid: widget.uid).driverByuserID,
       builder: (context, snapshot) {
         Driver driverData = snapshot.data[0];
         return Scaffold(

@@ -21,7 +21,7 @@ class _DivideState extends State<Divide> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<City>>(
-        stream: CityService(name: widget.id).cityIDByName,
+        stream: CityServices(name: widget.id).cityIDByName,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             City city = snapshot.data[0];
@@ -93,7 +93,7 @@ class _DivideState extends State<Divide> {
       width: double.maxFinite,
       height: double.maxFinite,
       child: StreamProvider<List<Driver>>.value(
-          value: DriverService(mainLineID: mainLineID).driversBymainLineID,
+          value: DriverServices(mainLineID: mainLineID).driversBymainLineID,
           child: DriverListDialog()),
     ));
   }

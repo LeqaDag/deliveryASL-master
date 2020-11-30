@@ -16,7 +16,7 @@ class SubLine {
     @required this.name,
     @required this.indexLine,
     @required this.mainLineID,
-    this.cityID,
+    @required this.cityID,
     this.isArchived = false,
     this.deleteDate,
     this.deleteUser,

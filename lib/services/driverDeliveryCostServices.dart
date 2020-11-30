@@ -6,7 +6,7 @@ class DriverDeliveryCostServices {
   DriverDeliveryCostServices({this.uid, this.driverId});
 
   final CollectionReference driverDeliveryCostCollection =
-      FirebaseFirestore.instance.collection('driver_delivery_cost');
+      FirebaseFirestore.instance.collection('driver_delivery_costs');
 
   Future<void> addDriverDeliveryCostData(
       DriverDeliveryCost driverDeliveryCost) async {
