@@ -19,6 +19,8 @@ import 'package:sajeda_app/services/orderServices.dart';
 import 'package:sajeda_app/services/subLineServices.dart';
 import 'package:toast/toast.dart';
 
+import '../business_main.dart';
+
 class AddNewOdersByBusiness extends StatefulWidget {
   final String name, uid;
   AddNewOdersByBusiness({this.name, this.uid});
@@ -41,8 +43,9 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
       businessID = "",
       bus,
       cityName = "",
-      sublineName="";
+      sublineName="",
 
+      typeOrder = "عادي";
   List<int> orderTotalPrice = [0];
   static String deliveryPrice = "0";
   bool locationSelected = false, mainlineSelected = false;
@@ -249,6 +252,12 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
                           ),
                         ),
                       ),
+                    ],
+                  ),
+
+                  Row(
+                    children: <Widget>[
+                      _deliveryType(),
                     ],
                   ),
                   _notes(orderNote),
@@ -638,7 +647,7 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
         child: DropdownButtonFormField(
           onChanged: (String newValue) {
             setState(() {
-              //  typeOrder = newValue;
+              typeOrder = newValue;
             });
           },
           items: <String>['عادي', 'مستعجل']
@@ -672,7 +681,7 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
                 //Change color to Color(0xff73a16a)
               ),
               contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
-              labelText: "نوع التوصيل",
+              labelText: typeOrder,
               labelStyle: TextStyle(
                   fontFamily: 'Amiri',
                   fontSize: 18.0,
@@ -716,20 +725,39 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
           ),
           onPressed: () async {
             if (_formKey.currentState.validate()) {
-              Customer customer = new Customer(
-                  name: customerName.text,
-                  phoneNumber: int.parse(customerPhoneNumber.text),
-                  phoneNumberAdditional:
-                      int.parse(customerPhoneNumberAdditional.text),
-                  cityID: cityID,
-                  cityName: cityName,
-                  address: customerAddress.text,
-                  businesID: widget.uid,
-                  sublineName: sublineName,
-                  isArchived: false);
+              Customer customer;
+              if (customerPhoneNumberAdditional.text == '') {
+                customer = new Customer(
+                    name: customerName.text,
+                    phoneNumber: int.parse(customerPhoneNumber.text),
+                    cityID: cityID,
+                    cityName: cityName,
+                    address: customerAddress.text,
+                    businesID: widget.uid,
+                    sublineName: sublineName,
+                    isArchived: false);
+              } else {
+                customer = new Customer(
+                    name: customerName.text,
+                    phoneNumber: int.parse(customerPhoneNumber.text),
+                    phoneNumberAdditional:
+                        int.parse(customerPhoneNumberAdditional.text),
+                    cityID: cityID,
+                    cityName: cityName,
+                    address: customerAddress.text,
+                    businesID: widget.uid,
+                    sublineName: sublineName,
+                    isArchived: false);
+              }
+
+              bool isUrgent = false;
               String customerID =
                   await CustomerServices().addcustomerData(customer);
-
+              if (typeOrder == "عادي") {
+                isUrgent = false;
+              } else {
+                isUrgent = true;
+              }
               await OrderServices().addOrderData(new Order(
                   price: int.parse(orderPrice.text),
                   totalPrice: orderTotalPrice,
@@ -741,11 +769,17 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
                   businesID: widget.uid,
                   sublineID: subline,
                   indexLine: indexLine,
+                  isUrgent: isUrgent,
                   driverID: ""));
               Toast.show("تم اضافة الطلبية بنجاح", context,
                   duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
               await Future.delayed(Duration(milliseconds: 1000));
-              Navigator.of(context).pop();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        BusinessMain(name: widget.name, uid: widget.uid)),
+              );
             }
           },
           child: Text('اضافة',

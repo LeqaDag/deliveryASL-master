@@ -33,7 +33,7 @@ class CancelldInfo extends StatelessWidget {
           if (snapshot.hasData) {
             Order order = snapshot.data;
             String orderType = '';
-            if (!order.type) {
+            if (order.isUrgent == false) {
               orderType = "عادي";
             } else {
               orderType = "مستعجل";
