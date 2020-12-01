@@ -40,7 +40,9 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
       mainLineId = "",
       businessID = "",
       bus,
-      cityName = "";
+      cityName = "",
+      sublineName="";
+
   List<int> orderTotalPrice = [0];
   static String deliveryPrice = "0";
   bool locationSelected = false, mainlineSelected = false;
@@ -53,6 +55,7 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
     businessID = "";
     mainLineId = "";
     indexLine = 0;
+    sublineName = "";
     super.initState();
   }
 
@@ -127,12 +130,19 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
                       builder: (context, snapshot) {
                         print(snapshot.data.toString());
                         indexLine = snapshot.data;
-                        print(indexLine);
                         return Text(
                           " ",
                         );
                       }),
-
+                  FutureBuilder<String>(
+                      future: SubLineServices(uid: subline).sublineName,
+                      builder: (context, snapshot) {
+                        print(snapshot.data.toString());
+                        sublineName = snapshot.data;
+                        return Text(
+                          " ",
+                        );
+                      }),
                   Row(
                     children: <Widget>[
                       _customerAddress(customerAddress),
@@ -144,7 +154,6 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
                       builder: (context, snapshot) {
                         print(snapshot.data.toString());
                         cityName = snapshot.data.toString();
-                        print(cityName);
                         return Text(
                           " ",
                         );
@@ -716,6 +725,7 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
                   cityName: cityName,
                   address: customerAddress.text,
                   businesID: widget.uid,
+                  sublineName: sublineName,
                   isArchived: false);
               String customerID =
                   await CustomerServices().addcustomerData(customer);

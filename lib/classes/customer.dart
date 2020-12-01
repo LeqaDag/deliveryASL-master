@@ -7,7 +7,7 @@ class Customer {
   String address;
   String businesID;
   String cityName;
-
+  String sublineName;
   bool isArchived;
   DateTime deleteDate;
   String deleteUser;
@@ -23,7 +23,8 @@ class Customer {
       this.isArchived,
       this.deleteDate,
       this.deleteUser,
-      this.cityName});
+      this.cityName,
+      this.sublineName});
 
   Map<String, dynamic> toJson() => {
         'name': name,

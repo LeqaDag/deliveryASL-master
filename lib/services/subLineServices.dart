@@ -106,5 +106,12 @@ class SubLineServices {
         .get()
         .then((value) => value.data()['indexLine']);
   }
+
+  Future<String> get sublineName {
+    return subLineCollection
+        .doc(uid)
+        .get()
+        .then((value) => value.data()['name']);
+  }
 }
 // value.data()['indexLine'].reduce(max);

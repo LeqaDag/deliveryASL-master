@@ -23,6 +23,7 @@ class CustomerServices {
       'businesID': customer.businesID,
       'cityName': customer.cityName,
       'isArchived': customer.isArchived,
+      'sublineName': customer.sublineName
     });
     return docReference.id;
   }
@@ -37,6 +38,7 @@ class CustomerServices {
         address: snapshot.data()['address'],
         businesID: snapshot.data()['businesID'],
         isArchived: snapshot.data()['isArchived'],
+        sublineName: snapshot.data()['sublineName'],
         cityName: snapshot.data()['cityName']);
   }
 
@@ -52,6 +54,7 @@ class CustomerServices {
           address: doc.data()['address'] ?? '',
           businesID: doc.data()['businesID'] ?? '',
           isArchived: doc.data()['isArchived'] ?? '',
+          sublineName: doc.data()['sublineName'] ?? '',
           cityName: doc.data()['cityName'] ?? '');
     }).toList();
   }
@@ -96,6 +99,13 @@ class CustomerServices {
         .doc(uid)
         .get()
         .then((value) => value.data()['cityName']);
+  }
+
+  Future<String> get customerSublineName {
+    return customerCollection
+        .doc(uid)
+        .get()
+        .then((value) => value.data()['sublineName']);
   }
 
   Stream<List<Customer>> get customers {
