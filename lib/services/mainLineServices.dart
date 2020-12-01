@@ -6,7 +6,7 @@ class MainLineServices {
   final String uid;
   final String cityID;
   final String locationID;
-  MainLineServices({this.uid, this.cityID,this.locationID});
+  MainLineServices({this.uid, this.cityID, this.locationID});
 
   final CollectionReference mainLineCollection =
       FirebaseFirestore.instance.collection('mainLines');
@@ -18,6 +18,7 @@ class MainLineServices {
       'name': mainLine.name,
       'locationID': mainLine.locationID,
       'isArchived': mainLine.isArchived,
+      'cityName': mainLine.cityName
     });
 
     return docReference.id;
@@ -27,6 +28,7 @@ class MainLineServices {
     return await mainLineCollection.doc(uid).update({
       'name': mainLine.name,
       'locationID': mainLine.locationID,
+      'cityName': mainLine.cityName
     });
   }
 
@@ -36,6 +38,7 @@ class MainLineServices {
       name: snapshot.data()['name'],
       locationID: snapshot.data()['locationID'],
       isArchived: snapshot.data()['isArchived'],
+      cityName: snapshot.data()['cityName'],
     );
   }
 
@@ -46,6 +49,7 @@ class MainLineServices {
         name: doc.data()['name'] ?? '',
         locationID: doc.data()['locationID'] ?? '',
         isArchived: doc.data()['isArchived'] ?? '',
+        cityName: doc.data()['cityName'] ?? '',
       );
     }).toList();
   }
@@ -64,7 +68,6 @@ class MainLineServices {
         .map(_mainLineListFromSnapshot);
   }
 
-  
   Stream<List<MainLine>> get mainLineByLocationID {
     return mainLineCollection
         .where('locationID', isEqualTo: cityID)
@@ -81,5 +84,12 @@ class MainLineServices {
 
   Future<void> deleteMainLineData(String uid) async {
     return await mainLineCollection.doc(uid).update({'isArchived': true});
+  }
+
+  Future<String> get cityNameByMainLine {
+    return mainLineCollection
+        .doc(uid)
+        .get()
+        .then((value) => value.data()['cityName']);
   }
 }

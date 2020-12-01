@@ -1,11 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sajeda_app/classes/city.dart';
 import 'package:sajeda_app/classes/location.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
+import 'package:sajeda_app/components/widgetsComponent/AddLineCustomwidgets.dart';
 import 'package:sajeda_app/services/cityServices.dart';
 import 'package:sajeda_app/services/locationServices.dart';
 import 'package:sajeda_app/services/mainLineServices.dart';
 import 'package:sajeda_app/services/subLineServices.dart';
+import 'package:toast/toast.dart';
 
 import '../../classes/mainLine.dart';
 import '../../classes/subLine.dart';
@@ -22,18 +25,16 @@ class AddLine extends StatefulWidget {
 class _AddLineState extends State<AddLine> {
   final _formKey = GlobalKey<FormState>();
   static Map<int, TextEditingController> subLineListController = {};
-  static Map<int, TextEditingController> citiesListController = {};
   TextEditingController _mainLineController = new TextEditingController();
   static List<String> subLineList = [null];
-  static List<String> citiesList = [null];
   String cityID, locationID;
-  String region = '  المنطقة';
+  String region = '  المنطقة', cityName = "";
   List<Location> locations;
+  List<City> cities;
 
   @override
   void initState() {
     subLineList = [null];
-    citiesList = [null];
     super.initState();
   }
 
@@ -173,55 +174,76 @@ class _AddLineState extends State<AddLine> {
                         },
                       ),
                     ),
-                    // Container(
-                    //   margin: EdgeInsets.only(
-                    //       top: 10, bottom: 10, left: 10, right: 10),
-                    //   child: DropdownButtonFormField(
-                    //     onChanged: (String newValue) {
-                    //       setState(() {
-                    //         region = newValue;
-                    //       });
-                    //     },
-                    //     items: <String>['الوسط', 'الشمال', 'الجنوب']
-                    //         .map<DropdownMenuItem<String>>((String value) {
-                    //       return DropdownMenuItem<String>(
-                    //         value: value,
-                    //         child: Align(
-                    //           alignment: Alignment.centerRight,
-                    //           child: Text(
-                    //             value,
-                    //             textAlign: TextAlign.right,
-                    //             style: TextStyle(
-                    //                 fontFamily: 'Amiri', fontSize: 16.0),
-                    //           ),
-                    //         ),
-                    //       );
-                    //     }).toList(),
-                    //     decoration: InputDecoration(
-                    //         enabledBorder: OutlineInputBorder(
-                    //           borderRadius: BorderRadius.circular(10.0),
-                    //           borderSide: BorderSide(
-                    //             width: 1.0,
-                    //             color: Color(0xff636363),
-                    //           ),
-                    //         ),
-                    //         focusedBorder: OutlineInputBorder(
-                    //           borderRadius: BorderRadius.circular(10.0),
-                    //           borderSide: BorderSide(
-                    //             width: 2.0,
-                    //             color: Color(0xff73a16a),
-                    //           ),
-                    //           //Change color to Color(0xff73a16a)
-                    //         ),
-                    //         contentPadding:
-                    //             EdgeInsets.only(right: 20.0, left: 10.0),
-                    //         labelText: "المنطقة",
-                    //         labelStyle: TextStyle(
-                    //             fontFamily: 'Amiri',
-                    //             fontSize: 18.0,
-                    //             color: Color(0xff316686))),
-                    //   ),
-                    // ),
+                    Container(
+                      margin: EdgeInsets.all(10.0),
+                      child: StreamBuilder<List<City>>(
+                        stream: CityServices().citys,
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return Text('Loading...');
+                          } else {
+                            cities = snapshot.data;
+                            return DropdownButtonFormField<String>(
+                              value: cityID,
+                              decoration: InputDecoration(
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderSide: BorderSide(
+                                      width: 1.0,
+                                      color: Color(0xff636363),
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderSide: BorderSide(
+                                      width: 2.0,
+                                      color: Color(0xff73a16a),
+                                    ),
+                                  ),
+                                  contentPadding:
+                                      EdgeInsets.only(right: 20.0, left: 10.0),
+                                  labelText: "المدينة",
+                                  labelStyle: TextStyle(
+                                      fontFamily: 'Amiri',
+                                      fontSize: 18.0,
+                                      color: Color(0xff316686))),
+                              items: cities.map(
+                                (city) {
+                                  return DropdownMenuItem<String>(
+                                    value: city.uid.toString(),
+                                    child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Text(
+                                        city.name,
+                                        style: TextStyle(
+                                          fontFamily: 'Amiri',
+                                          fontSize: 16.0,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ).toList(),
+                              onChanged: (val) {
+                                setState(() {
+                                  cityID = val;
+                                  // print(cityID);
+                                });
+                              },
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                    FutureBuilder<String>(
+                        future: CityServices(uid: cityID).cityName,
+                        builder: (context, snapshot) {
+                          print(snapshot.data.toString());
+                          cityName = snapshot.data.toString();
+                          return Text(
+                            " ",
+                          );
+                        }),
                     SizedBox(
                       height: 20,
                     ),
@@ -234,27 +256,29 @@ class _AddLineState extends State<AddLine> {
                       child: RaisedButton(
                         onPressed: () async {
                           if (_formKey.currentState.validate()) {
-                            print(_mainLineController);
-
                             String mainLineID = await MainLineServices()
                                 .addMainLineData(new MainLine(
+                                    cityName: cityName,
                                     name: _mainLineController.text,
                                     locationID: locationID,
                                     isArchived: false));
 
                             subLineListController
                                 .forEach((index, subline) async {
-                              print(subLineListController.length);
-                              print(citiesList);
                               await SubLineServices().addSubLineData(
                                   new SubLine(
                                       mainLineID: mainLineID,
                                       indexLine: index,
-                                      cityID: citiesList[index],
+                                      cityID: cityID,
                                       name: subline.text));
                             });
-
-                            Navigator.pop(context);
+                            await CityServices(uid: cityID)
+                                .updateMainLine(mainLineID);
+                            Toast.show("تم اضافة خط توصيل بنجاح", context,
+                                duration: Toast.LENGTH_LONG,
+                                gravity: Toast.BOTTOM);
+                            await Future.delayed(Duration(milliseconds: 1000));
+                            Navigator.of(context).pop();
                           }
                         },
                         padding: EdgeInsets.all(10.0),
@@ -323,15 +347,8 @@ class _AddLineState extends State<AddLine> {
         if (add) {
           // add new text-fields at the top of all friends textfields
           subLineList.insert(index, null);
-          citiesList.insert(index, null);
-
-          // subLineListController[index] = new TextEditingController();
-          // citiesListController[index] = new TextEditingController();
         } else {
           subLineList.removeAt(index);
-          citiesList.removeAt(index);
-          subLineListController.remove(index);
-          citiesListController.remove(index);
         }
         setState(() {});
       },
@@ -359,10 +376,6 @@ class FriendTextFields extends StatefulWidget {
 }
 
 class _FriendTextFieldsState extends State<FriendTextFields> {
-  List<City> cities;
-
-  String cityID;
-
   @override
   void initState() {
     super.initState();
@@ -374,70 +387,6 @@ class _FriendTextFieldsState extends State<FriendTextFields> {
   Widget build(BuildContext context) {
     return Row(
       children: <Widget>[
-        Expanded(
-          child: Container(
-            margin: EdgeInsets.all(10.0),
-            child: StreamBuilder<List<City>>(
-              stream: CityServices().citys,
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Text('Loading...');
-                } else {
-                  cities = snapshot.data;
-                  return DropdownButtonFormField<String>(
-                    value: _AddLineState.citiesList[widget.index],
-                    decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                          borderSide: BorderSide(
-                            width: 1.0,
-                            color: Color(0xff636363),
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                          borderSide: BorderSide(
-                            width: 2.0,
-                            color: Color(0xff73a16a),
-                          ),
-                        ),
-                        contentPadding:
-                            EdgeInsets.only(right: 20.0, left: 10.0),
-                        labelText: "المدينة",
-                        labelStyle: TextStyle(
-                            fontFamily: 'Amiri',
-                            fontSize: 18.0,
-                            color: Color(0xff316686))),
-                    items: cities.map(
-                      (city) {
-                        return DropdownMenuItem<String>(
-                          value: city.uid.toString(),
-                          child: Align(
-                            alignment: Alignment.centerRight,
-                            child: Text(
-                              city.name,
-                              style: TextStyle(
-                                fontFamily: 'Amiri',
-                                fontSize: 16.0,
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ).toList(),
-                    onChanged: (val) {
-                      setState(() {
-                        // cityID = val;
-                        _AddLineState.citiesList[widget.index] = val;
-                        // print(cityID);
-                      });
-                    },
-                  );
-                }
-              },
-            ),
-          ),
-        ),
         Expanded(
           child: TextFormField(
             controller: _AddLineState.subLineListController[widget.index],

@@ -146,7 +146,7 @@ class _ReceivedInfoState extends State<ReceivedInfo> {
                                             ),
                                           )),
                                       _labelTextFieldCity(Icons.location_on,
-                                          Colors.blue, customer.cityID),
+                                          Colors.blue, customer.cityName),
 
                                       _customTitle("معلومات الطلبية"),
 
@@ -523,39 +523,18 @@ class _ReceivedInfoState extends State<ReceivedInfo> {
     return Container(
       width: double.infinity,
       height: 35,
-      child: StreamBuilder<City>(
-          stream: CityServices(uid: text).cityByID,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              
-            City city = snapshot.data;
-            return TextField(
-              enabled: false,
-              decoration: InputDecoration(
-                contentPadding: EdgeInsets.only(top: 7, bottom: 7, right: 8),
-                prefixIcon: Icon(
-                  icon,
-                  color: color,
-                  size: 20,
-                ),
-                hintText: city.name, //String Data form DB.
-              ),
-            );
-            } else {
-            return TextField(
-              enabled: false,
-              decoration: InputDecoration(
-                contentPadding: EdgeInsets.only(top: 7, bottom: 7, right: 8),
-                prefixIcon: Icon(
-                  icon,
-                  color: color,
-                  size: 20,
-                ),
-                hintText: "", //String Data form DB.
-              ),
-            );
-            }
-          }),
+      child: TextField(
+        enabled: false,
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.only(top: 7, bottom: 7, right: 8),
+          prefixIcon: Icon(
+            icon,
+            color: color,
+            size: 20,
+          ),
+          hintText: text, //String Data form DB.
+        ),
+      ),
     );
   }
 }
