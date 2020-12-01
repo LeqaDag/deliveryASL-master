@@ -91,6 +91,13 @@ class CustomerServices {
         .then((value) => value.data()['address']);
   }
 
+  Future<String> get customerCity {
+    return customerCollection
+        .doc(uid)
+        .get()
+        .then((value) => value.data()['cityName']);
+  }
+
   Stream<List<Customer>> get customers {
     return customerCollection
         .where('isArchived', isEqualTo: false)
@@ -102,17 +109,17 @@ class CustomerServices {
     return await customerCollection.doc(uid).update({'isArchived': true});
   }
 
-  Future<String> get customerCity {
-    return customerCollection
-        .doc(uid)
-        .get()
-        .then((value) => cityId = value.data()['cityName']);
-    // print(cityId);
-    // return cityCollection
-    //     .doc(cityId)
-    //     .get()
-    //     .then((value) => value.data()['name']);
-  }
+  // Future<String> get customerCity {
+  //   return customerCollection
+  //       .doc(uid)
+  //       .get()
+  //       .then((value) => cityId = value.data()['cityName']);
+  //   // print(cityId);
+  //   // return cityCollection
+  //   //     .doc(cityId)
+  //   //     .get()
+  //   //     .then((value) => value.data()['name']);
+  // }
 
   Stream<Customer> get customerByID {
     return customerCollection

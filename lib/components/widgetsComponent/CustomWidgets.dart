@@ -10,6 +10,7 @@ import 'package:sajeda_app/services/businessServices.dart';
 import 'package:sajeda_app/services/cityServices.dart';
 import 'package:sajeda_app/services/customerServices.dart';
 import 'package:sajeda_app/services/driverServices.dart';
+import 'package:sajeda_app/services/locationServices.dart';
 import 'package:sajeda_app/services/mainLineServices.dart';
 import 'package:sajeda_app/services/orderServices.dart';
 import 'package:intl/intl.dart' as intl;
@@ -78,11 +79,33 @@ class CustomCardAndListTileAddLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String locationName = "";
+    FutureBuilder<String>(
+        future: LocationServices(uid: mainLine.locationID)
+            .cityName(mainLine.locationID),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            locationName = snapshot.data;
+          } else {
+            return Text("");
+          }
+        });
+
     return Card(
       color: color,
       child: ListTile(
         onTap: onTapBox,
-        title: Text(mainLine.name),
+        title: FutureBuilder<String>(
+            future: LocationServices(uid: mainLine.locationID)
+                .cityName(mainLine.locationID),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                locationName = snapshot.data;
+                return Text(" ${mainLine.name} - ${mainLine.cityName} ");
+              } else {
+                return Text("");
+              }
+            }),
         leading: Image.asset("assets/LineIcon.png"),
         trailing: Wrap(
           spacing: -15,
@@ -581,24 +604,23 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
                                 return Text(
-                                snapshot.data ?? "",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: "Amiri",
-                                ),
-                              );
+                                  snapshot.data ?? "",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "Amiri",
+                                  ),
+                                );
                               } else {
                                 return Text(
-                                 "",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: "Amiri",
-                                ),
-                              );
+                                  "",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "Amiri",
+                                  ),
+                                );
                               }
-                              
                             },
                           ),
                         ],
@@ -650,30 +672,29 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
 
                           //  SizedBox(width: 33,),
                           FutureBuilder<String>(
-                              future:
-                                  DriverServices(uid: order.driverID).driverName,
+                              future: DriverServices(uid: order.driverID)
+                                  .driverName,
                               builder: (context, snapshot) {
                                 // print(snapshot.data);
                                 if (snapshot.hasData) {
                                   return Text(
-                                  snapshot.data ?? "",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: "Amiri",
-                                  ),
-                                );
+                                    snapshot.data ?? "",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Amiri",
+                                    ),
+                                  );
                                 } else {
                                   return Text(
-                                   "",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: "Amiri",
-                                  ),
-                                );
+                                    "",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Amiri",
+                                    ),
+                                  );
                                 }
-                                
                               }),
                         ],
                       ),
@@ -1211,13 +1232,20 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                           ),
 
                           //  SizedBox(width: 33,),
-                          Text(
-                            "الموقع",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: "Amiri",
-                            ),
+                          FutureBuilder<String>(
+                            future: CustomerServices(uid: order.customerID)
+                                .customerCity,
+                            builder: (context, snapshot) {
+                              // print(order.customerID);
+                              return Text(
+                                snapshot.data ?? "",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: "Amiri",
+                                ),
+                              );
+                            },
                           ),
                         ],
                       ),
