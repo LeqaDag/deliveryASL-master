@@ -112,7 +112,7 @@ class _AddNewOdersState extends State<AddNewOders> {
                     children: <Widget>[
                       _customerPhoneNumber(
                           "رقم الزبون", 10, customerPhoneNumber),
-                      _customerPhoneNumber(
+                      _customerAdditionPhoneNumber(
                           "رقم احتياطي", 0, customerPhoneNumberAdditional),
                     ],
                   ),
@@ -313,6 +313,38 @@ class _AddNewOdersState extends State<AddNewOders> {
       child: Container(
         margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: right),
         child: TextFormField(
+          controller: fieldController,
+          keyboardType: TextInputType.numberWithOptions(decimal: true),
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.only(right: 20),
+            labelText: labletext,
+            labelStyle: TextStyle(
+              fontFamily: 'Amiri',
+              fontSize: 18.0,
+              color: Color(0xff316686),
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _customerAdditionPhoneNumber(
+      String labletext, double right, TextEditingController fieldController) {
+    return Expanded(
+      flex: 2,
+      child: Container(
+        margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: right),
+        child: TextFormField(
+          // validator: (value) {
+          //   if (value.length != 10 || value.length > 10) {
+          //     return 'الرجاء ادخال رقم جوال صحيح';
+          //   }
+          //   return null;
+          // },
           controller: fieldController,
           keyboardType: TextInputType.numberWithOptions(decimal: true),
           decoration: InputDecoration(

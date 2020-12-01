@@ -105,7 +105,7 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
                     children: <Widget>[
                       _customerPhoneNumber(
                           "رقم الزبون", 10, customerPhoneNumber),
-                      _customerPhoneNumber(
+                      _customerAdditionPhoneNumber(
                           "رقم احتياطي", 0, customerPhoneNumberAdditional),
                     ],
                   ),
@@ -282,6 +282,12 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
     return Container(
       margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
       child: TextFormField(
+        validator: (value) {
+          if (value.isEmpty) {
+            return 'ادخل اسم الزبون  ';
+          }
+          return null;
+        },
         controller: fieldController,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
@@ -306,6 +312,46 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
       child: Container(
         margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: right),
         child: TextFormField(
+          validator: (value) {
+            if (value.isEmpty) {
+              return 'ادخل رقم جوال';
+            } else if (value.length != 10 || value.length > 10) {
+              return 'الرجاء ادخال رقم جوال صحيح';
+            }
+            return null;
+          },
+          controller: fieldController,
+          keyboardType: TextInputType.numberWithOptions(decimal: true),
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.only(right: 20),
+            labelText: labletext,
+            labelStyle: TextStyle(
+              fontFamily: 'Amiri',
+              fontSize: 18.0,
+              color: Color(0xff316686),
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _customerAdditionPhoneNumber(
+      String labletext, double right, TextEditingController fieldController) {
+    return Expanded(
+      flex: 2,
+      child: Container(
+        margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: right),
+        child: TextFormField(
+          // validator: (value) {
+          //   if (value.length != 10 || value.length > 10) {
+          //     return 'الرجاء ادخال رقم جوال صحيح';
+          //   }
+          //   return null;
+          // },
           controller: fieldController,
           keyboardType: TextInputType.numberWithOptions(decimal: true),
           decoration: InputDecoration(
@@ -661,9 +707,6 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
           ),
           onPressed: () async {
             if (_formKey.currentState.validate()) {
-              // print(int.parse(orderPrice.text) +
-              //     int.parse(deliveryPrice));
-
               Customer customer = new Customer(
                   name: customerName.text,
                   phoneNumber: int.parse(customerPhoneNumber.text),
