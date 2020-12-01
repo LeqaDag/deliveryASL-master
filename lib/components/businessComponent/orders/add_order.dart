@@ -43,8 +43,7 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
       businessID = "",
       bus,
       cityName = "",
-      sublineName="",
-
+      sublineName = "",
       typeOrder = "عادي";
   List<int> orderTotalPrice = [0];
   static String deliveryPrice = "0";
@@ -133,8 +132,9 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
                       builder: (context, snapshot) {
                         print(snapshot.data.toString());
                         indexLine = snapshot.data;
-                        return Text(
-                          " ",
+                        return Visibility(
+                          child: Text("Gone"),
+                          visible: false,
                         );
                       }),
                   FutureBuilder<String>(
@@ -142,8 +142,9 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
                       builder: (context, snapshot) {
                         print(snapshot.data.toString());
                         sublineName = snapshot.data;
-                        return Text(
-                          " ",
+                        return Visibility(
+                          child: Text("Gone"),
+                          visible: false,
                         );
                       }),
                   Row(
@@ -157,8 +158,9 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
                       builder: (context, snapshot) {
                         print(snapshot.data.toString());
                         cityName = snapshot.data.toString();
-                        return Text(
-                          " ",
+                        return Visibility(
+                          child: Text("Gone"),
+                          visible: false,
                         );
                       }),
                   _infoLabel(

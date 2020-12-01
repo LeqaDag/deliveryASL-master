@@ -42,7 +42,9 @@ class _AddNewOdersState extends State<AddNewOders> {
       mainLineId = "",
       businessID = "",
       bus,
-      cityName = "";
+      cityName = "",
+      sublineName = "",
+      typeOrder = "عادي";
   List<int> orderTotalPrice = [0];
   static String deliveryPrice = "0";
   bool locationSelected = false, mainlineSelected = false;
@@ -55,6 +57,7 @@ class _AddNewOdersState extends State<AddNewOders> {
     businessID = "";
     mainLineId = "";
     indexLine = 0;
+    sublineName = "";
     super.initState();
   }
 
@@ -135,11 +138,21 @@ class _AddNewOdersState extends State<AddNewOders> {
                         print(snapshot.data.toString());
                         indexLine = snapshot.data;
                         print(indexLine);
-                        return Text(
-                          " ",
+                        return Visibility(
+                          child: Text("Gone"),
+                          visible: false,
                         );
                       }),
-
+                  FutureBuilder<String>(
+                      future: SubLineServices(uid: subline).sublineName,
+                      builder: (context, snapshot) {
+                        print(snapshot.data.toString());
+                        sublineName = snapshot.data;
+                        return Visibility(
+                          child: Text("Gone"),
+                          visible: false,
+                        );
+                      }),
                   Row(
                     children: <Widget>[
                       _customerAddress(customerAddress),
@@ -152,8 +165,9 @@ class _AddNewOdersState extends State<AddNewOders> {
                         print(snapshot.data.toString());
                         cityName = snapshot.data.toString();
                         print(cityName);
-                        return Text(
-                          " ",
+                        return Visibility(
+                          child: Text("Gone"),
+                          visible: false,
                         );
                       }),
                   _infoLabel(
@@ -703,19 +717,39 @@ class _AddNewOdersState extends State<AddNewOders> {
               // print(int.parse(orderPrice.text) +
               //     int.parse(deliveryPrice));
 
-              Customer customer = new Customer(
-                  name: customerName.text,
-                  phoneNumber: int.parse(customerPhoneNumber.text),
-                  phoneNumberAdditional:
-                      int.parse(customerPhoneNumberAdditional.text),
-                  cityID: cityID,
-                  cityName: cityName,
-                  address: customerAddress.text,
-                  businesID: businessID,
-                  isArchived: false);
+              Customer customer;
+              if (customerPhoneNumberAdditional.text == '') {
+                customer = new Customer(
+                    name: customerName.text,
+                    phoneNumber: int.parse(customerPhoneNumber.text),
+                    cityID: cityID,
+                    cityName: cityName,
+                    address: customerAddress.text,
+                    businesID: businessID,
+                    sublineName: sublineName,
+                    isArchived: false);
+              } else {
+                customer = new Customer(
+                    name: customerName.text,
+                    phoneNumber: int.parse(customerPhoneNumber.text),
+                    phoneNumberAdditional:
+                        int.parse(customerPhoneNumberAdditional.text),
+                    cityID: cityID,
+                    cityName: cityName,
+                    address: customerAddress.text,
+                    businesID: businessID,
+                    sublineName: sublineName,
+                    isArchived: false);
+              }
+              bool isUrgent = false;
               String customerID =
                   await CustomerServices().addcustomerData(customer);
 
+              if (typeOrder == "عادي") {
+                isUrgent = false;
+              } else {
+                isUrgent = true;
+              }
               await OrderServices().addOrderData(new Order(
                   price: int.parse(orderPrice.text),
                   totalPrice: orderTotalPrice,
@@ -727,6 +761,7 @@ class _AddNewOdersState extends State<AddNewOders> {
                   businesID: businessID,
                   sublineID: subline,
                   indexLine: indexLine,
+                  isUrgent: isUrgent,
                   driverID: ""));
               Toast.show("تم اضافة الطلبية بنجاح", context,
                   duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
