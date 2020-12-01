@@ -33,7 +33,7 @@ class ReturnInfo extends StatelessWidget {
           if (snapshot.hasData) {
             Order order = snapshot.data;
             String orderType = '';
-            if (!order.type) {
+            if (order.isUrgent == false) {
               orderType = "عادي";
             } else {
               orderType = "مستعجل";
@@ -131,7 +131,7 @@ class ReturnInfo extends StatelessWidget {
                                               ),
                                             ),
                                           )),
-                                      
+
                                       _labelTextFieldCity(Icons.location_on,
                                           Colors.blue, customer.cityName),
 
@@ -324,7 +324,8 @@ class ReturnInfo extends StatelessWidget {
       ),
     );
   }
- Widget _labelTextFieldCity(IconData icon, Color color, String text) {
+
+  Widget _labelTextFieldCity(IconData icon, Color color, String text) {
     return Container(
       width: double.infinity,
       height: 35,
