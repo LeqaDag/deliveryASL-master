@@ -88,7 +88,6 @@ class OrderServices {
         driverPrice: snapshot.data()['driverPrice']);
   }
 
-// isPaid
   List<Order> _orderListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) {
       return Order(
@@ -245,6 +244,17 @@ class OrderServices {
         {
           return orderCollection
               .where('isDone', isEqualTo: true)
+              .where('isPaid', isEqualTo: false)
+              .where('isArchived', isEqualTo: false)
+              .snapshots()
+              .map(_orderListFromSnapshot);
+        }
+        break;
+      case 'isPaid':
+        {
+          return orderCollection
+              .where('isDone', isEqualTo: true)
+              .where('isPaid', isEqualTo: true)
               .where('isArchived', isEqualTo: false)
               .snapshots()
               .map(_orderListFromSnapshot);
@@ -324,6 +334,18 @@ class OrderServices {
         {
           return orderCollection
               .where('isDone', isEqualTo: true)
+              .where('isPaid', isEqualTo: false)
+              .where('businesID', isEqualTo: businesID)
+              .where('isArchived', isEqualTo: false)
+              .get()
+              .then((value) => value.size);
+        }
+        break;
+        case 'isPaid':
+        {
+          return orderCollection
+              .where('isDone', isEqualTo: true)
+              .where('isPaid', isEqualTo: true)
               .where('businesID', isEqualTo: businesID)
               .where('isArchived', isEqualTo: false)
               .get()
@@ -422,6 +444,18 @@ class OrderServices {
         {
           return orderCollection
               .where('isDone', isEqualTo: true)
+              .where('isPaid', isEqualTo: false)
+              .where('businesID', isEqualTo: businesID)
+              .where('isArchived', isEqualTo: false)
+              .snapshots()
+              .map(_orderListFromSnapshot);
+        }
+        break;
+        case 'isPaid':
+        {
+          return orderCollection
+              .where('isDone', isEqualTo: true)
+              .where('isPaid', isEqualTo: true)
               .where('businesID', isEqualTo: businesID)
               .where('isArchived', isEqualTo: false)
               .snapshots()

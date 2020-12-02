@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:sajeda_app/classes/business.dart';
-import 'package:sajeda_app/classes/city.dart';
 import 'package:sajeda_app/classes/customer.dart';
 import 'package:sajeda_app/classes/deliveryStatus.dart';
 import 'package:sajeda_app/classes/driver.dart';
@@ -9,7 +8,6 @@ import 'package:sajeda_app/classes/order.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
 import 'package:sajeda_app/components/pages/loadingData.dart';
 import 'package:sajeda_app/services/businessServices.dart';
-import 'package:sajeda_app/services/cityServices.dart';
 import 'package:sajeda_app/services/customerServices.dart';
 import 'package:sajeda_app/services/deliveryStatusServices.dart';
 import 'package:sajeda_app/services/driverServices.dart';
@@ -18,7 +16,11 @@ import 'package:sajeda_app/services/orderServices.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../classes/city.dart';
+import '../../../classes/location.dart';
 import '../../../constants.dart';
+import '../../../services/cityServices.dart';
+import '../../../services/locationServices.dart';
 
 class DoneInfo extends StatelessWidget {
   final String uid, name;
@@ -132,7 +134,7 @@ class DoneInfo extends StatelessWidget {
                                               ),
                                             ),
                                           )),
-                                      _labelTextFieldCity(Icons.location_on,
+                                      _labelTextField(Icons.location_on,
                                           Colors.blue, customer.cityName),
 
                                       _customTitle("معلومات الطلبية"),
@@ -164,21 +166,21 @@ class DoneInfo extends StatelessWidget {
                                           }
                                         },
                                       ),
-                                      StreamBuilder<List<DeliveryStatus>>(
-                                        stream: DeliveriesStatusServices(
-                                                orderID: order.uid)
-                                            .deliveryStatusData,
-                                        builder: (context, snapshot) {
-                                          if (snapshot.hasData) {
-                                            return Column(
-                                              children: _deliveryStatus(
-                                                  snapshot.data[0]),
-                                            );
-                                          } else {
-                                            return Container();
-                                          }
-                                        },
-                                      ),
+                                      // StreamBuilder<List<DeliveryStatus>>(
+                                      //   stream: DeliveriesStatusServices(
+                                      //           orderID: order.uid)
+                                      //       .deliveryStatusData,
+                                      //   builder: (context, snapshot) {
+                                      //     if (snapshot.hasData) {
+                                      //       return Column(
+                                      //         children: _deliveryStatus(
+                                      //             snapshot.data[0]),
+                                      //       );
+                                      //     } else {
+                                      //       return Container();
+                                      //     }
+                                      //   },
+                                      // ),
                                     ],
                                   ),
                                 ));
@@ -340,29 +342,11 @@ class DoneInfo extends StatelessWidget {
     return Container(
       width: double.infinity,
       height: 35,
-      child: TextField(
-        enabled: false,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.only(top: 7, bottom: 7, right: 8),
-          prefixIcon: Icon(
-            icon,
-            color: color,
-            size: 20,
-          ),
-          hintText: text, //String Data form DB.
-        ),
-      ),
-    );
-  }
-
-  Widget _labelTextFieldMainLine(IconData icon, Color color, String text) {
-    return Container(
-      width: double.infinity,
-      height: 35,
-      child: StreamBuilder<MainLine>(
-        stream: MainLineServices(uid: text).mainLineByID,
+      child: StreamBuilder<City>(
+        stream: CityServices(uid: text).cityByID,
         builder: (context, snapshot) {
-          MainLine mainLine = snapshot.data;
+          if (snapshot.hasData) {
+            
           return TextField(
             enabled: false,
             decoration: InputDecoration(
@@ -372,9 +356,65 @@ class DoneInfo extends StatelessWidget {
                 color: color,
                 size: 20,
               ),
-              hintText: mainLine.name, //String Data form DB.
+              hintText: snapshot.data.name, //String Data form DB.
             ),
           );
+          } else {
+            return TextField(
+            enabled: false,
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.only(top: 7, bottom: 7, right: 8),
+              prefixIcon: Icon(
+                icon,
+                color: color,
+                size: 20,
+              ),
+              hintText: "", //String Data form DB.
+            ),
+          );
+          }
+        }
+      ),
+    );
+  }
+
+  Widget _labelTextFieldMainLine(IconData icon, Color color, String text) {
+    return Container(
+      width: double.infinity,
+      height: 35,
+      child: StreamBuilder<Location>(
+        stream: LocationServices(uid: text).locationByID,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            Location location = snapshot.data;
+          return TextField(
+            enabled: false,
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.only(top: 7, bottom: 7, right: 8),
+              prefixIcon: Icon(
+                icon,
+                color: color,
+                size: 20,
+              ),
+              hintText: location.name ?? "", //String Data form DB.
+            ),
+          );
+          } else {
+          return TextField(
+            enabled: false,
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.only(top: 7, bottom: 7, right: 8),
+              prefixIcon: Icon(
+                icon,
+                color: color,
+                size: 20,
+              ),
+              hintText:  "loading ...", //String Data form DB.
+            ),
+          );
+          }
+          
+          
         },
       ),
     );

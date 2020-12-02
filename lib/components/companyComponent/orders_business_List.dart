@@ -16,6 +16,7 @@ class _OrdersBusinessListState extends State<OrdersBusinessList> {
   @override
   Widget build(BuildContext context) {
     final orders = Provider.of<List<Order>>(context) ?? [];
+    print(widget.orderState);
     return ListView.builder(
         itemCount: orders.length,
         itemBuilder: (context, index) {

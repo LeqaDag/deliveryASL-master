@@ -7,10 +7,9 @@ import 'package:sajeda_app/components/businessComponent/business_main.dart';
 import 'package:sajeda_app/components/driverComponent/driverAccount/driver_main.dart';
 import 'package:sajeda_app/components/pages/loadingData.dart';
 import '../../constants.dart';
-import 'package:toast/toast.dart';
+import '../../services/auth/authentication_service.dart';
 import 'admin_home.dart';
-// import 'package:buy_it/widgets/custom_textfield.dart';
-// widgets/admin_login_custom_text_field
+import 'package:provider/provider.dart';
 
 class LoginAdmin extends StatefulWidget {
   static String id = "LoginScreen";
@@ -139,7 +138,11 @@ class _LoginAdminState extends State<LoginAdmin> {
                   child: FlatButton(
                     onPressed: () {
                       //signIn(emailController.text,  passwordController.text);
-                      _signInWithEmailAndPassword();
+                      // _signInWithEmailAndPassword();
+                      context.read<AuthenticationService>().signIn(
+                            email: emailController.text.trim(),
+                            password: passwordController.text.trim(),
+                          );
                     },
                     color: kAdminLoginBackGroundButtonColor,
                     shape: RoundedRectangleBorder(

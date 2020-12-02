@@ -1,12 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sajeda_app/classes/business.dart';
 import 'package:sajeda_app/classes/driver.dart';
 import 'package:sajeda_app/classes/invoice.dart';
 import 'package:sajeda_app/classes/order.dart';
-import 'package:sajeda_app/services/businessServices.dart';
 import 'package:sajeda_app/services/driverServices.dart';
 import 'package:sajeda_app/services/invoiceServices.dart';
 import 'package:sajeda_app/services/orderServices.dart';
@@ -24,7 +21,7 @@ class AllInvoiceDrivers extends StatelessWidget {
     @required this.color,
     @required this.onTapBox,
     @required this.driverId,
-    this.name,
+     this.name,
   });
 
   @override

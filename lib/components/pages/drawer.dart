@@ -10,8 +10,10 @@ import 'package:sajeda_app/components/businessComponent/businesssComponent/busin
 import 'package:sajeda_app/components/driverComponent/driversComponent/driveradmin.dart';
 import 'package:sajeda_app/components/orderComponent/store_profile.dart';
 import 'package:sajeda_app/services/auth/auth.dart';
+import 'package:provider/provider.dart';
 
 import '../../constants.dart';
+import '../../services/auth/authentication_service.dart';
 
 class AdminDrawer extends StatelessWidget {
   final String uid, name;
@@ -293,6 +295,7 @@ class AdminDrawer extends StatelessWidget {
                   onTap: () {
                     AuthService _authService = AuthService();
                     _authService.signOut();
+                    context.read<AuthenticationService>().signOut();
                     Navigator.pop(context);
                     Navigator.push(
                       context,

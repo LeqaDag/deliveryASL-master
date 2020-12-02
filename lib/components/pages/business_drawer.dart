@@ -5,8 +5,10 @@ import 'package:sajeda_app/components/businessComponent/orders/add_order.dart';
 import 'package:sajeda_app/components/businessComponent/orders/all_orders.dart';
 import 'package:sajeda_app/components/screenComponent/admin_login.dart';
 import 'package:sajeda_app/services/auth/auth.dart';
+import 'package:provider/provider.dart';
 
 import '../../constants.dart';
+import '../../services/auth/authentication_service.dart';
 
 class BusinessDrawer extends StatelessWidget {
   final String name, uid;
@@ -185,6 +187,7 @@ class BusinessDrawer extends StatelessWidget {
                   onTap: () {
                     AuthService _authService = AuthService();
                     _authService.signOut();
+                    context.read<AuthenticationService>().signOut();
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => LoginAdmin()),
