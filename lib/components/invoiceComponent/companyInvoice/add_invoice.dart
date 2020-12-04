@@ -23,6 +23,7 @@ class _AddInvoiceState extends State<AddInvoice> {
 
   List<Order> orders;
   int total;
+  List<String> orderIds = [];
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
   final CollectionReference invoiceCollection =
@@ -236,6 +237,23 @@ class _AddInvoiceState extends State<AddInvoice> {
                             color: Colors.white,
                             size: 32.0,
                           ),
+                          StreamBuilder<List<Order>>(
+                              stream:
+                                  OrderServices(businesID: widget.businessId)
+                                      .businessIsDoneOrders(widget.businessId),
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData) {
+                                  return Text("");
+                                } else {
+                                  orders = snapshot.data;
+                                  int index = 0;
+                                  orders.forEach((element) {
+                                    orderIds.insert(index, element.uid);
+                                    index++;
+                                  });
+                                  return Text("");
+                                }
+                              }),
                         ],
                       ),
                     ),
@@ -248,15 +266,19 @@ class _AddInvoiceState extends State<AddInvoice> {
   }
 
   void _addInvoice() async {
-    final FirebaseAuth auth = FirebaseAuth.instance;
-    final User user = auth.currentUser;
-
     FirebaseFirestore.instance
         .collection('business')
         .doc(widget.businessId)
         .update({
       "paidDate": new DateTime.now(),
       "paidSalary": int.parse(priceController.text)
+    });
+
+    orderIds.forEach((element) async {
+      FirebaseFirestore.instance
+          .collection('orders')
+          .doc(element)
+          .update({"isPaid": true});
     });
 
     Toast.show("تم اضافة الفاتورة بنجاح", context,
