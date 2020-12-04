@@ -501,6 +501,15 @@ class OrderServices {
         .map(_orderListFromSnapshot);
   }
 
+  Stream<List<Order>> businessIsDoneOrders(String businessID) {
+    return orderCollection
+        .where('businesID', isEqualTo: businessID)
+        .where('isArchived', isEqualTo: false)
+        .where('isDone', isEqualTo: true)
+        .snapshots()
+        .map(_orderListFromSnapshot);
+  }
+
   Stream<List<Order>> driversAllOrders(String driverID) {
     return orderCollection
         .where('driverID', isEqualTo: driverID)
