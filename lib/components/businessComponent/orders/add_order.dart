@@ -732,6 +732,7 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
                 customer = new Customer(
                     name: customerName.text,
                     phoneNumber: int.parse(customerPhoneNumber.text),
+                    phoneNumberAdditional: int.parse(""),
                     cityID: cityID,
                     cityName: cityName,
                     address: customerAddress.text,

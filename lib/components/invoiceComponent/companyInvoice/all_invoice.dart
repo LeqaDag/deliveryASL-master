@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sajeda_app/classes/business.dart';
 import 'package:sajeda_app/classes/invoice.dart';
+import 'package:sajeda_app/classes/order.dart';
 import 'package:sajeda_app/services/businessServices.dart';
 import 'package:sajeda_app/services/invoiceServices.dart';
 import 'package:sajeda_app/services/orderServices.dart';
@@ -11,7 +12,7 @@ import 'package:sajeda_app/services/orderServices.dart';
 import '../../../constants.dart';
 import 'add_invoice.dart';
 
-class AllInvoice extends StatelessWidget {
+class AllInvoice extends StatefulWidget {
   final Color color;
   final Function onTapBox;
   final String businessId, name;
@@ -24,16 +25,26 @@ class AllInvoice extends StatelessWidget {
   });
 
   @override
+  _AllInvoiceState createState() => _AllInvoiceState();
+}
+
+class _AllInvoiceState extends State<AllInvoice> {
+  List<Order> orders;
+
+  int total;
+
+  @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
 
     return StreamBuilder<Business>(
-        stream: BusinessServices(uid: businessId).businessByID,
+        stream: BusinessServices(uid: widget.businessId).businessByID,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             Business business = snapshot.data;
-            return Card(
+            return Flexible(
+                child: Card(
               elevation: 5,
               margin: EdgeInsets.fromLTRB(1.0, 5.0, 1.0, 16.0),
               shape: RoundedRectangleBorder(
@@ -43,7 +54,8 @@ class AllInvoice extends StatelessWidget {
                   Column(mainAxisAlignment: MainAxisAlignment.start, children: <
                       Widget>[
                 Row(children: <Widget>[
-                  Container(
+                  Expanded(
+                      child:Container(
                     width: width / 2,
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -75,9 +87,10 @@ class AllInvoice extends StatelessWidget {
                             ],
                           ),
                         ]),
-                  ),
-                  Container(
-                    child: Column(
+                )),
+                  Expanded(
+                    child: Container(
+                      child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
@@ -111,41 +124,31 @@ class AllInvoice extends StatelessWidget {
                                   scale: 1.5,
                                 ),
                               ),
-                              FutureBuilder<int>(
-                                  future: InvoiceServices(businessId: businessId)
-                                      .total(businessId),
+                              StreamBuilder<List<Order>>(
+                                  stream: OrderServices()
+                                      .businessAllOrders(widget.businessId),
                                   builder: (context, snapshot) {
-                                    if (snapshot.data == null) {
-                                      return Text(
-                                        "0",
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: "Amiri",
-                                        ),
-                                      );
+                                    int totalPrice = 0;
+                                    if (!snapshot.hasData) {
+                                      return Text('جاري التحميل ... ');
                                     } else {
-                                      return Text(
-                                        snapshot.data.toString() ?? "",
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: "Amiri",
-                                        ),
-                                      );
+                                      orders = snapshot.data;
+                                      orders.forEach((element) {
+                                        totalPrice += element.price;
+                                        total = totalPrice;
+                                      });
+                                      return Text(totalPrice.toString());
                                     }
                                   }),
-                              SizedBox(
-                                width: 40,
-                              ),
+                              
                               IconButton(
                                 onPressed: () {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => AddInvoice(
-                                            businessId: businessId,
-                                            name: name)),
+                                            businessId: widget.businessId,
+                                            name: widget.name)),
                                   );
                                 },
                                 icon: Icon(
@@ -156,12 +159,13 @@ class AllInvoice extends StatelessWidget {
                             ],
                           ),
                         ]),
-                  ),
+                  )),
                 ]),
                 Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      Container(
+                      Expanded(
+                          child: Container(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
@@ -170,7 +174,7 @@ class AllInvoice extends StatelessWidget {
                                 width: width - 2,
                                 height: 9,
                                 child: Card(
-                                  color: color,
+                                  color: widget.color,
 
                                   ///case color
                                 ),
@@ -178,112 +182,123 @@ class AllInvoice extends StatelessWidget {
                             ),
                           ],
                         ),
-                      ),
+                      )),
                     ]),
-                Row(mainAxisAlignment: MainAxisAlignment.start, children: <
-                    Widget>[
+                Row(children: <Widget>[
                   Container(
                     width: width - 2,
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: <Widget>[
-                        SizedBox(
-                          width: 20,
-                        ),
                         Icon(
                           Icons.done,
                           color: KBadgeColorAndContainerBorderColorReadyOrders,
                         ),
                         FutureBuilder<int>(
-                            future: OrderServices(businesID: businessId)
+                            future: OrderServices(businesID: widget.businessId)
                                 .countBusinessOrderByStateOrder("isDone"),
                             builder: (context, snapshot) {
-                              print(snapshot.data);
-                              return Text(
-                                ":${snapshot.data.toString()} " ?? "0",
-                              );
+                              if (snapshot.hasData) {
+                                return Text(
+                                  ":${snapshot.data.toString()} " ?? "0",
+                                );
+                              } else {
+                                return Text(
+                                  "0",
+                                );
+                              }
                             }),
-                        SizedBox(
-                          width: 20,
-                        ),
                         Icon(
                           Icons.restore,
                           color: KBadgeColorAndContainerBorderColorReturnOrders,
                         ),
                         FutureBuilder<int>(
-                            future: OrderServices(businesID: businessId)
+                            future: OrderServices(businesID: widget.businessId)
                                 .countBusinessOrderByStateOrder("isReturn"),
                             builder: (context, snapshot) {
-                              print(snapshot.data);
-                              return Text(
-                                ":${snapshot.data.toString()} " ?? "0",
-                              );
+                              if (snapshot.hasData) {
+                                return Text(
+                                  ":${snapshot.data.toString()} " ?? "0",
+                                );
+                              } else {
+                                return Text(
+                                  "0",
+                                );
+                              }
                             }),
-                        SizedBox(
-                          width: 20,
-                        ),
                         Icon(
                           Icons.cancel,
                           color:
                               KBadgeColorAndContainerBorderColorCancelledOrders,
                         ),
                         FutureBuilder<int>(
-                            future: OrderServices(businesID: businessId)
+                            future: OrderServices(businesID: widget.businessId)
                                 .countBusinessOrderByStateOrder("isCancelld"),
                             builder: (context, snapshot) {
-                              print(snapshot.data);
-                              return Text(
-                                ":${snapshot.data.toString()} " ?? "0",
-                              );
+                              if (snapshot.hasData) {
+                                return Text(
+                                  ":${snapshot.data.toString()} " ?? "0",
+                                );
+                              } else {
+                                return Text(
+                                  "0",
+                                );
+                              }
                             }),
-                        SizedBox(
-                          width: 20,
-                        ),
                         Icon(
                           Icons.business_center_outlined,
                           color: KAllOrdersListTileColor,
                         ),
                         FutureBuilder<int>(
-                            future: OrderServices(businesID: businessId)
+                            future: OrderServices(businesID: widget.businessId)
                                 .countBusinessOrderByStateOrder("isDelivery"),
                             builder: (context, snapshot) {
-                              print(snapshot.data);
-                              return Text(
-                                ":${snapshot.data.toString()} " ?? "0",
-                              );
+                              if (snapshot.hasData) {
+                                return Text(
+                                  ":${snapshot.data.toString()} " ?? "0",
+                                );
+                              } else {
+                                return Text(
+                                  "0",
+                                );
+                              }
                             }),
-                        SizedBox(
-                          width: 20,
-                        ),
                         Icon(
                           Icons.arrow_circle_up_rounded,
                           color: KBadgeColorAndContainerBorderColorLoadingOrder,
                         ),
                         FutureBuilder<int>(
-                            future: OrderServices(businesID: businessId)
+                            future: OrderServices(businesID: widget.businessId)
                                 .countBusinessOrderByStateOrder("isLoading"),
                             builder: (context, snapshot) {
-                              print(snapshot.data);
-                              return Text(
-                                ":${snapshot.data.toString()} " ?? "0",
-                              );
+                              if (snapshot.hasData) {
+                                return Text(
+                                  ":${snapshot.data.toString()} " ?? "0",
+                                );
+                              } else {
+                                return Text(
+                                  "0",
+                                );
+                              }
                             }),
-                        SizedBox(
-                          width: 20,
-                        ),
                         Icon(
                           Icons.assignment_turned_in_outlined,
                           color:
                               KBadgeColorAndContainerBorderColorRecipientOrder,
                         ),
                         FutureBuilder<int>(
-                            future: OrderServices(businesID: businessId)
+                            future: OrderServices(businesID: widget.businessId)
                                 .countBusinessOrderByStateOrder("isReceived"),
                             builder: (context, snapshot) {
-                              print(snapshot.data);
-                              return Text(
-                                ":${snapshot.data.toString()} " ?? "0",
-                              );
+                              if (snapshot.hasData) {
+                                return Text(
+                                  ":${snapshot.data.toString()} " ?? "0",
+                                );
+                              } else {
+                                return Text(
+                                  "0",
+                                );
+                              }
                             }),
                       ],
                     ),
@@ -293,7 +308,7 @@ class AllInvoice extends StatelessWidget {
                   height: 10,
                 ),
               ]),
-            );
+            ));
           } else {
             return Center(child: CircularProgressIndicator());
           }
@@ -352,14 +367,14 @@ class _InvoicePriceState extends State<InvoicePrice> {
                 SizedBox(
                   width: 33,
                 ),
-                Text(
-                  invoice[index].totalPrice.toString(),
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: "Amiri",
-                  ),
-                ),
+                // Text(
+                //   invoice[index].totalPrice.toString(),
+                //   style: TextStyle(
+                //     fontSize: 16,
+                //     fontWeight: FontWeight.bold,
+                //     fontFamily: "Amiri",
+                //   ),
+                // ),
               ]);
         });
   }

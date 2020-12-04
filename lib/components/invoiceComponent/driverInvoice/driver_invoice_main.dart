@@ -14,7 +14,8 @@ class DriverInvoiceAdmin extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
+    return Expanded(
+        child: Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: AppBar(
@@ -39,6 +40,6 @@ class DriverInvoiceAdmin extends StatelessWidget {
           child: InvoiceListDrivers(name: name),
         ),
       ),
-    );
+    ));
   }
 }

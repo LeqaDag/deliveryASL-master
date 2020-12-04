@@ -5,11 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sajeda_app/classes/business.dart';
 import 'package:sajeda_app/classes/order.dart';
-import 'package:sajeda_app/components/businessComponent/addComponent/addDeliveryCost.dart';
+import 'package:sajeda_app/components/businessComponent/updateComponent/update_company.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
 import 'package:sajeda_app/components/widgetsComponent/CustomWidgets.dart';
 import 'package:sajeda_app/services/businessServices.dart';
-import 'package:sajeda_app/services/cityServices.dart';
 import 'package:sajeda_app/services/customerServices.dart';
 import 'package:sajeda_app/services/orderServices.dart';
 
@@ -34,131 +33,142 @@ class AllBuisness extends StatelessWidget {
     return StreamBuilder<Business>(
         stream: BusinessServices(uid: businessID).businessByID,
         builder: (context, snapshot) {
-          print(businessID);
           if (snapshot.hasData) {
             Business business = snapshot.data;
             return Card(
-              color: color,
-              child: ListTile(
-                title: Text(
-                    "${business.name}"), // String Variable Take Name From DataBase
-                leading: CircleAvatar(
-                    // Account Image Form DataBase
-                    ),
-                trailing: Wrap(
-                  spacing: -15, // space between two icons
+              child: Directionality(
+                textDirection: TextDirection.rtl,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    FutureBuilder<int>(
-                        future: OrderServices(businesID: businessID)
-                            .countBusinessOrders(businessID),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return Badge(
-                              position: BadgePosition.topStart(
-                                  start: width * 0.04, top: height * -0.004),
-                              elevation: 5,
-                              animationType: BadgeAnimationType.slide,
-                              badgeContent: Text(
-                                snapshot.data.toString() ?? "-1",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                ),
-                              ),
-                              shape: BadgeShape.circle,
-                              badgeColor: KEditIconColor,
-                              child: IconButton(
-                                  icon: Image.asset("assets/BoxIcon.png"),
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                BusinessOrders(
-                                                    name: name,
-                                                    uid: businessID)));
-                                  }),
-                            );
-                          } else {
-                            return Badge(
-                              position: BadgePosition.topStart(
-                                  start: width * 0.04, top: height * -0.004),
-                              elevation: 5,
-                              animationType: BadgeAnimationType.slide,
-                              badgeContent: Text(
-                                "",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                ),
-                              ),
-                              shape: BadgeShape.circle,
-                              badgeColor: KEditIconColor,
-                              child: IconButton(
-                                  icon: Image.asset("assets/BoxIcon.png"),
-                                  onPressed: () {
-                                    // Navigator.push(
-                                    //   context,
-                                    //   MaterialPageRoute(
-                                    //       builder: (context) => CustomCompanyOrdersItemsStatus(name: name)),
-                                    // );
-                                  }),
-                            );
-                          }
-                        }),
-                    // IconButton(
-                    //     icon: Icon(Icons.edit, color: KEditIconColor),
-                    //     onPressed: () {
-                    //       Navigator.push(
-                    //         context,
-                    //         MaterialPageRoute(
-                    //             builder: (context) => UpdateCompany(
-                    //                 businessID: businessID, name: name)),
-                    //       );
-                    //     }),
-
-                    IconButton(
-                      onPressed: () {
-                        return showDialog<void>(
-                            context: context,
-                            barrierDismissible: false, // user must tap button!
-                            builder: (BuildContext context) => CustomDialog(
-                                  title: "حذف شركة",
-                                  description: ' هل ترغب بحذف الشركة',
-                                  name: business.name,
-                                  buttonText: "تأكيد",
-                                  onPressed: () {
-                                    final FirebaseAuth auth =
-                                        FirebaseAuth.instance;
-                                    final User user = auth.currentUser;
-                                    BusinessServices().deleteBusinessData(
-                                        businessID, user.uid);
-                                    Navigator.of(context).pop();
-                                  },
-                                  cancelButton: "الغاء",
-                                  cancelPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                ));
-                      },
-                      icon: Icon(
-                        Icons.delete,
-                        color: Colors.red,
+                    Container(
+                      width: 150.0,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Expanded(
+                            child: Icon(
+                              Icons.circle,
+                              color: Color(0xff316686),
+                              size: 23.0,
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              '${business.name}',
+                              style: TextStyle(
+                                  fontFamily: 'Amiri', fontSize: 14.0),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    IconButton(
-                      icon: Icon(Icons.add, color: KAllOrdersListTileColor),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AddDeliveryCost(
-                                  businessID: businessID,
-                                  businessName: business.name,
-                                  name: name,
-                                  busID: busID)),
-                        );
-                      },
+                    Container(
+                      width: 150.0,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          FutureBuilder<int>(
+                              future: OrderServices(businesID: businessID)
+                                  .countBusinessOrders(businessID),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return Badge(
+                                    position: BadgePosition.topStart(
+                                        start: width * 0.04,
+                                        top: height * -0.004),
+                                    elevation: 5,
+                                    animationType: BadgeAnimationType.slide,
+                                    badgeContent: Text(
+                                      snapshot.data.toString() ?? "-1",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                    shape: BadgeShape.circle,
+                                    badgeColor: KEditIconColor,
+                                    child: IconButton(
+                                        icon: Image.asset("assets/BoxIcon.png"),
+                                        onPressed: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      BusinessOrders(
+                                                          name: name,
+                                                          uid: businessID)));
+                                        }),
+                                  );
+                                } else {
+                                  return Badge(
+                                    position: BadgePosition.topStart(
+                                        start: width * 0.04,
+                                        top: height * -0.004),
+                                    elevation: 5,
+                                    animationType: BadgeAnimationType.slide,
+                                    badgeContent: Text(
+                                      "",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                    shape: BadgeShape.circle,
+                                    badgeColor: KEditIconColor,
+                                    child: IconButton(
+                                        icon: Image.asset("assets/BoxIcon.png"),
+                                        onPressed: () {}),
+                                  );
+                                }
+                              }),
+                          // IconButton(
+                          //   onPressed: () {
+                          //     Navigator.push(
+                          //       context,
+                          //       MaterialPageRoute(
+                          //           builder: (context) => UpdateCompany(
+                          //               businessID: businessID, name: name)),
+                          //     );
+                          //   },
+                          //   icon: Icon(
+                          //     Icons.create,
+                          //     color: Colors.green,
+                          //   ),
+                          // ),
+                          IconButton(
+                            onPressed: () {
+                              return showDialog<void>(
+                                  context: context,
+                                  barrierDismissible:
+                                      false, // user must tap button!
+                                  builder: (BuildContext context) =>
+                                      CustomDialog(
+                                        title: "حذف شركة",
+                                        description: ' هل ترغب بحذف الشركة',
+                                        name: business.name,
+                                        buttonText: "تأكيد",
+                                        onPressed: () {
+                                          final FirebaseAuth auth =
+                                              FirebaseAuth.instance;
+                                          final User user = auth.currentUser;
+                                          BusinessServices().deleteBusinessData(
+                                              businessID, user.uid);
+                                          Navigator.of(context).pop();
+                                        },
+                                        cancelButton: "الغاء",
+                                        cancelPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ));
+                            },
+                            icon: Icon(
+                              Icons.delete,
+                              color: Colors.red,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -213,7 +223,7 @@ class BusinessOrderListAdmin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final orders = Provider.of<List<Order>>(context) ?? [];
-   
+
     print(orders.length);
 
     return ListView.builder(
@@ -344,26 +354,7 @@ class _CustomCompanyOrdersStatusState extends State<CustomCompanyOrdersStatus> {
                                   CustomerServices(uid: widget.order.customerID)
                                       .customerCity,
                               builder: (context, snapshot) {
-                                cityID = snapshot.data.toString();
-                                print(cityID);
-                                return Text(
-                                  "",
-                                );
-                              }),
-                          FutureBuilder<String>(
-                              future: CityServices(uid: cityID).cityName,
-                              builder: (context, snapshot) {
-                                print(cityID);
-                                if (snapshot.data == null) {
-                                  return Text(
-                                    "",
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: "Amiri",
-                                    ),
-                                  );
-                                } else {
+                                if (snapshot.hasData) {
                                   return Text(
                                     "${snapshot.data.toString()}-" ?? "",
                                     style: TextStyle(
@@ -372,6 +363,30 @@ class _CustomCompanyOrdersStatusState extends State<CustomCompanyOrdersStatus> {
                                       fontFamily: "Amiri",
                                     ),
                                   );
+                                } else {
+                                  return Text(
+                                    "",
+                                  );
+                                }
+                              }),
+                          FutureBuilder<String>(
+                              future:
+                                  CustomerServices(uid: widget.order.customerID)
+                                      .customerSublineName,
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return Text(
+                                    "${snapshot.data.toString()}-" ?? "",
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Amiri",
+                                    ),
+                                  );
+                                } else {
+                                  return Text(
+                                    "",
+                                  );
                                 }
                               }),
                           FutureBuilder<String>(
@@ -379,14 +394,20 @@ class _CustomCompanyOrdersStatusState extends State<CustomCompanyOrdersStatus> {
                                   CustomerServices(uid: widget.order.customerID)
                                       .customerAdress,
                               builder: (context, snapshot) {
-                                return Text(
-                                  snapshot.data ?? "",
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: "Amiri",
-                                  ),
-                                );
+                                if (snapshot.hasData) {
+                                  return Text(
+                                    snapshot.data ?? "",
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Amiri",
+                                    ),
+                                  );
+                                } else {
+                                  return Text(
+                                    "",
+                                  );
+                                }
                               }),
                         ],
                       ),

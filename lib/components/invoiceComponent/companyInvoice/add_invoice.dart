@@ -74,9 +74,30 @@ class _AddInvoiceState extends State<AddInvoice> {
                                 "  ${snapshot.data.toString()} " ?? "0",
                               );
                             }),
+                        SizedBox(
+                          width: 30,
+                        ),
+                        Text(
+                          " عدد الطرود الموزعة :",
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: "Amiri",
+                          ),
+                        ),
+                        FutureBuilder<int>(
+                            future: OrderServices(businesID: widget.businessId)
+                                .countBusinessOrderByStateOrder("isDone"),
+                            builder: (context, snapshot) {
+                              print(snapshot.data);
+                              return Text(
+                                "  ${snapshot.data.toString()} " ?? "0",
+                              );
+                            }),
                       ],
                     ),
                   ),
+
                   Container(
                     margin: EdgeInsets.all(20.0),
                     child: Row(
@@ -229,20 +250,18 @@ class _AddInvoiceState extends State<AddInvoice> {
   void _addInvoice() async {
     final FirebaseAuth auth = FirebaseAuth.instance;
     final User user = auth.currentUser;
-    invoiceCollection.doc().set({
-      "note": noteController.text,
-      "adminID": user.uid,
-      "businessID": widget.businessId,
-      "paidPrice": int.parse(priceController.text),
-      "totalPrice": total,
-      "isArchived": false,
-    }).then((value) async {
-      isLoading = false;
 
-      Toast.show("تم اضافة فاتورة بنجاح", context,
-          duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
-      await Future.delayed(Duration(milliseconds: 1000));
-      Navigator.of(context).pop();
-    }).catchError((err) {});
+    FirebaseFirestore.instance
+        .collection('business')
+        .doc(widget.businessId)
+        .update({
+      "paidDate": new DateTime.now(),
+      "paidSalary": int.parse(priceController.text)
+    });
+
+    Toast.show("تم اضافة الفاتورة بنجاح", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    await Future.delayed(Duration(milliseconds: 1000));
+    Navigator.of(context).pop();
   }
 }

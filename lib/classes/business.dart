@@ -13,6 +13,8 @@ class Business {
   String deleteUser;
 
   String searchKey;
+  int paidSalary;
+  DateTime paidDate;
 
   Business({
     this.uid,
@@ -22,6 +24,8 @@ class Business {
     @required this.userID,
     this.cityID,
     this.isArchived = false,
+    this.paidSalary = 0,
+    this.paidDate,
     this.deleteDate,
     this.deleteUser,
   });

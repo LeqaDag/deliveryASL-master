@@ -2,8 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:sajeda_app/classes/driver.dart';
 import 'package:sajeda_app/classes/order.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
+import 'package:sajeda_app/services/driverDeliveryCostServices.dart';
+import 'package:sajeda_app/services/driverServices.dart';
 import 'package:sajeda_app/services/orderServices.dart';
 import 'package:toast/toast.dart';
 
@@ -21,7 +24,7 @@ class AddInvoiceDriver extends StatefulWidget {
 class _AddInvoiceDriverState extends State<AddInvoiceDriver> {
   final _formKey = GlobalKey<FormState>();
   bool isLoading = false;
-
+  int isDoneOrders = 0, totalSalary = 0;
   List<Order> orders;
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
@@ -109,16 +112,46 @@ class _AddInvoiceDriverState extends State<AddInvoiceDriver> {
                             fontFamily: "Amiri",
                           ),
                         ),
-                        StreamBuilder<List<Order>>(
-                            stream:
-                                OrderServices().driverAllOrders(widget.driverId),
+
+                        FutureBuilder<int>(
+                            future: OrderServices(driverID: widget.driverId)
+                                .countDriverOrderByStateOrder("isDone"),
                             builder: (context, snapshot) {
-                              if (!snapshot.hasData) {
-                                return Text('0');
+                              if (snapshot.hasData) {
+                                isDoneOrders = snapshot.data;
+
+                                return FutureBuilder<int>(
+                                    future: DriverDeliveryCostServices(
+                                            driverId: widget.driverId)
+                                        .driverPriceData(widget.driverId),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.hasData) {
+                                        totalSalary =
+                                            snapshot.data * isDoneOrders;
+                                        print(snapshot.data);
+                                        //  isDoneOrders = snapshot.data;
+                                        return Text(
+                                          "  ${totalSalary.toString()} " ?? "0",
+                                        );
+                                      } else {
+                                        return Text("");
+                                      }
+                                    });
                               } else {
-                                return Text(widget.total.toString());
+                                return Text("");
                               }
                             }),
+
+                        // StreamBuilder<List<Order>>(
+                        //     stream: OrderServices()
+                        //         .driverAllOrders(widget.driverId),
+                        //     builder: (context, snapshot) {
+                        //       if (!snapshot.hasData) {
+                        //         return Text('0');
+                        //       } else {
+                        //         return Text(widget.total.toString());
+                        //       }
+                        //     }),
                       ],
                     ),
                   ),
@@ -243,20 +276,33 @@ class _AddInvoiceDriverState extends State<AddInvoiceDriver> {
   void _addInvoice() async {
     final FirebaseAuth auth = FirebaseAuth.instance;
     final User user = auth.currentUser;
-    invoiceCollection.doc().set({
-      "note": noteController.text,
-      "adminID": user.uid,
-      "driverID": widget.driverId,
-      "paidPriceDriver": int.parse(priceController.text),
-      "totalPriceDriver": widget.total,
-      "isArchived": false,
-    }).then((value) async {
-      isLoading = false;
 
-      Toast.show("تم اضافة فاتورة بنجاح", context,
-          duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
-      await Future.delayed(Duration(milliseconds: 1000));
-      Navigator.of(context).pop();
-    }).catchError((err) {});
+    FirebaseFirestore.instance
+        .collection('drivers')
+        .doc(widget.driverId)
+        .update({
+      "paidDate": new DateTime.now(),
+      "paidSalary": int.parse(priceController.text)
+    });
+
+    Toast.show("تم اضافة الفاتورة بنجاح", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    await Future.delayed(Duration(milliseconds: 1000));
+    Navigator.of(context).pop();
+    // invoiceCollection.doc().set({
+    //   "note": noteController.text,
+    //   "adminID": user.uid,
+    //   "driverID": widget.driverId,
+    //   "paidPriceDriver": int.parse(priceController.text),
+    //   "totalPriceDriver": widget.total,
+    //   "isArchived": false,
+    // }).then((value) async {
+    //   isLoading = false;
+
+    //   Toast.show("تم اضافة الفاتورة بنجاح", context,
+    //       duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    //   await Future.delayed(Duration(milliseconds: 1000));
+    //   Navigator.of(context).pop();
+    // }).catchError((err) {});
   }
 }
