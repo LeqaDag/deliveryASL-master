@@ -16,6 +16,7 @@ class BusinessServices {
       'userID': business.userID,
       'cityID': business.cityID,
       'isArchived': business.isArchived,
+      'paidSalary' :  business.paidSalary,
     });
   }
 
@@ -25,7 +26,7 @@ class BusinessServices {
       'email': business.email,
       'phoneNumber': business.phoneNumber,
       'userID': business.userID,
-      'cityID': business.cityID
+      'cityID': business.cityID,
     });
   }
 
@@ -36,7 +37,9 @@ class BusinessServices {
         email: snapshot.data()['email'],
         phoneNumber: snapshot.data()['phoneNumber'],
         userID: snapshot.data()['userID'],
-        cityID: snapshot.data()['cityID']);
+        cityID: snapshot.data()['cityID'],
+        //paidSalary: snapshot.data()['paidSalary']
+        );
   }
 
   List<Business> _businessListFromSnapshot(QuerySnapshot snapshot) {
@@ -47,6 +50,7 @@ class BusinessServices {
           email: doc.data()['email'] ?? '',
           phoneNumber: doc.data()['phoneNumber'] ?? '',
           userID: doc.data()['userID'] ?? '',
+         // paidSalary: doc.data()['paidSalary'] ?? '',
           cityID: doc.data()['cityID'] ?? '');
     }).toList();
   }

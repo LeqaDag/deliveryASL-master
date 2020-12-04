@@ -79,4 +79,11 @@ Future<String> driverDeliveryCostId(String driverId) {
       'cost': driverDeliveryCost.cost,
     });
   }
+
+  Future<int> get driverDeliveryCost {
+    return driverDeliveryCostCollection
+        .doc(uid)
+        .get()
+        .then((value) => value.data()['cost']);
+  }
 }

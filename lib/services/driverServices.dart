@@ -113,4 +113,11 @@ class DriverServices {
   Future<void> deleteDriverData(String uid) async {
     return await deiverCollection.doc(uid).update({'isArchived': true});
   }
+
+   Future<void> updateDataPaidSalary(Driver driver) async {
+    return await deiverCollection.doc(uid).update({
+      'paidDate': driver.paidDate,
+      'paidSalary': driver.paidSalary,
+    });
+  }
 }

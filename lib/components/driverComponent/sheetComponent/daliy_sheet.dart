@@ -4,6 +4,7 @@ import 'package:sajeda_app/classes/driver.dart';
 import 'package:sajeda_app/classes/order.dart';
 import 'package:sajeda_app/components/driverComponent/sheetComponent/sheetList.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
+import 'package:sajeda_app/services/driverDeliveryCostServices.dart';
 import 'package:sajeda_app/services/driverServices.dart';
 import 'package:sajeda_app/services/orderServices.dart';
 
@@ -23,6 +24,7 @@ class _DailySheetState extends State<DailySheet> {
   TextEditingController driverPriceController = new TextEditingController();
   String doneOrders;
   List<Order> orders;
+  int isDoneOrders = 0, totalSalary = 0;
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Driver>(
@@ -75,8 +77,9 @@ class _DailySheetState extends State<DailySheet> {
                                 left: 10,
                               ),
                               child: FutureBuilder<int>(
-                                  future: OrderServices(driverID: driverData.uid)
-                                      .countIsDoneInDailySheet,
+                                  future:
+                                      OrderServices(driverID: driverData.uid)
+                                          .countIsDoneInDailySheet,
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
                                       doneController.text =
@@ -136,8 +139,9 @@ class _DailySheetState extends State<DailySheet> {
                             child: Padding(
                               padding: const EdgeInsets.only(top: 8.0, left: 8),
                               child: FutureBuilder<int>(
-                                  future: OrderServices(driverID: driverData.uid)
-                                      .countIsReturnInDailySheet,
+                                  future:
+                                      OrderServices(driverID: driverData.uid)
+                                          .countIsReturnInDailySheet,
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
                                       returnController.text =
@@ -207,8 +211,9 @@ class _DailySheetState extends State<DailySheet> {
                                     int totalPrice = 0;
 
                                     if (!snapshot.hasData) {
+                                      totalController.text = "0";
                                       return TextFormField(
-                                        initialValue: "0",
+                                        controller: totalController,
                                         decoration: InputDecoration(
                                           enabled: false,
                                           contentPadding: EdgeInsets.only(
@@ -267,52 +272,70 @@ class _DailySheetState extends State<DailySheet> {
                             flex: 4,
                             child: Padding(
                               padding: const EdgeInsets.only(top: 8.0, left: 8),
-                              child: StreamBuilder<List<Order>>(
-                                  stream: OrderServices()
-                                      .driversAllOrders(driverData.uid),
+                              child: FutureBuilder<int>(
+                                  future: OrderServices(
+                                          driverID: driverData.uid)
+                                      .countDriverOrderByStateOrder("isDone"),
                                   builder: (context, snapshot) {
-                                    int totalPrice = 0;
+                                    if (snapshot.hasData) {
+                                      isDoneOrders = snapshot.data;
 
-                                    if (!snapshot.hasData) {
-                                      return TextFormField(
-                                        initialValue: "0",
-                                        decoration: InputDecoration(
-                                          enabled: false,
-                                          contentPadding: EdgeInsets.only(
-                                              right: 10.0, left: 10.0),
-                                          border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            borderSide: BorderSide(
-                                              color: Colors.black,
-                                              width: 4,
-                                            ),
-                                          ),
-                                        ),
-                                      );
+                                      return FutureBuilder<int>(
+                                          future: DriverDeliveryCostServices(
+                                                  driverId: driverData.uid)
+                                              .driverPriceData(driverData.uid),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.hasData) {
+                                              totalSalary =
+                                                  snapshot.data * isDoneOrders;
+                                              driverPriceController.text =
+                                                  totalSalary.toString();
+                                              print(snapshot.data);
+                                              //  isDoneOrders = snapshot.data;
+                                              return TextFormField(
+                                                controller:
+                                                    driverPriceController,
+                                                decoration: InputDecoration(
+                                                  enabled: false,
+                                                  contentPadding:
+                                                      EdgeInsets.only(
+                                                          right: 10.0,
+                                                          left: 10.0),
+                                                  border: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    borderSide: BorderSide(
+                                                      color: Colors.black,
+                                                      width: 4,
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            } else {
+                                              return TextFormField(
+                                                initialValue: "0",
+                                                decoration: InputDecoration(
+                                                  enabled: false,
+                                                  contentPadding:
+                                                      EdgeInsets.only(
+                                                          right: 10.0,
+                                                          left: 10.0),
+                                                  border: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    borderSide: BorderSide(
+                                                      color: Colors.black,
+                                                      width: 4,
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            }
+                                          });
                                     } else {
-                                      orders = snapshot.data;
-                                      orders.forEach((element) {
-                                        totalPrice += element.driverPrice;
-                                        driverPriceController.text =
-                                            totalPrice.toString();
-                                      });
-                                      return TextFormField(
-                                        controller: driverPriceController,
-                                        decoration: InputDecoration(
-                                          enabled: false,
-                                          contentPadding: EdgeInsets.only(
-                                              right: 10.0, left: 10.0),
-                                          border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            borderSide: BorderSide(
-                                              color: Colors.black,
-                                              width: 4,
-                                            ),
-                                          ),
-                                        ),
-                                      );
+                                      return Text("");
                                     }
                                   }),
                             ),
@@ -321,8 +344,8 @@ class _DailySheetState extends State<DailySheet> {
                       ),
                       Container(
                         child: StreamProvider<List<Order>>.value(
-                          value:
-                              OrderServices(driverID: widget.driverID).sheetList,
+                          value: OrderServices(driverID: widget.driverID)
+                              .sheetList,
                           child: SheetList(
                             name: widget.name,
                           ),

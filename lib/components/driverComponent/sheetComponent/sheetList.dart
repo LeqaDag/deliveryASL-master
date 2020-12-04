@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sajeda_app/classes/order.dart';
-import 'package:sajeda_app/components/companyComponent/company_orders_admin_side.dart';
 import 'package:sajeda_app/components/widgetsComponent/CustomWidgets.dart';
 
 import '../../../constants.dart';

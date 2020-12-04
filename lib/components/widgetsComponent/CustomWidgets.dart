@@ -907,7 +907,8 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                Container(
+                Expanded(
+                    child: Container(
                   width: width / 2,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -938,7 +939,7 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                               return Text(
                                 snapshot.data ?? "",
                                 style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 14,
                                   fontWeight: FontWeight.bold,
                                   fontFamily: "Amiri",
                                 ),
@@ -948,9 +949,61 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                         ],
                       ),
                       Row(
-                        //3
                         mainAxisAlignment: MainAxisAlignment.start,
-
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(
+                                right: height * 0.025,
+                                top: height * 0,
+                                bottom: height * 0),
+                            child: Icon(
+                              Icons.location_on,
+                              color: Colors.blue[800],
+                            ),
+                          ),
+                          FutureBuilder<String>(
+                              future: CustomerServices(uid: order.customerID)
+                                  .customerCity,
+                              builder: (context, snapshot) {
+                                return Text(
+                                  snapshot.data ?? "",
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "Amiri",
+                                  ),
+                                );
+                              }),
+                          FutureBuilder<String>(
+                              future: CustomerServices(uid: order.customerID)
+                                  .customerSublineName,
+                              builder: (context, snapshot) {
+                                return Text(
+                                  ' - ${snapshot.data}' ?? "",
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "Amiri",
+                                  ),
+                                );
+                              }),
+                          FutureBuilder<String>(
+                              future: CustomerServices(uid: order.customerID)
+                                  .customerAdress,
+                              builder: (context, snapshot) {
+                                return Text(
+                                  ' - ${snapshot.data}' ?? "",
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "Amiri",
+                                  ),
+                                );
+                              }),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
                           Padding(
                             padding: EdgeInsets.only(
@@ -961,6 +1014,7 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                             child: Icon(
                               Icons.date_range,
                               color: Colors.blueGrey,
+                              // size: 17,
                             ),
                           ),
 
@@ -968,7 +1022,7 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                           Text(
                             intl.DateFormat('yyyy-MM-dd').format(order.date),
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 13,
                               fontWeight: FontWeight.bold,
                               fontFamily: "Amiri",
                             ),
@@ -1001,7 +1055,7 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                                 return Text(
                                   snapshot.data ?? "",
                                   style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 13,
                                     fontWeight: FontWeight.bold,
                                     fontFamily: "Amiri",
                                   ),
@@ -1011,102 +1065,62 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                       ),
                     ],
                   ),
-                ),
+                )),
                 Container(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.only(
-                                left: height * 0.025,
-                                right: height * 0.025,
-                                top: height * 0,
-                                bottom: height * 0),
-                            child: Icon(
-                              Icons.location_on,
-                              color: Colors.blue[800],
-                            ),
-                          ),
-                          FutureBuilder<String>(
-                              future: CustomerServices(uid: order.customerID)
-                                  .customerCity,
-                              builder: (context, snapshot) {
-                                return Text(
-                                  snapshot.data ?? "",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: "Amiri",
-                                  ),
-                                );
-                              }),
-                          FutureBuilder<String>(
-                              future: CustomerServices(uid: order.customerID)
-                                  .customerAdress,
-                              builder: (context, snapshot) {
-                                return Text(
-                                  ' - ${snapshot.data}' ?? "",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: "Amiri",
-                                  ),
-                                );
-                              }),
-                        ],
-                      ),
-                      Row(
                         //3
-                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
+                          Image.asset('assets/price.png'),
                           Padding(
                             padding: EdgeInsets.only(
-                                left: height * 0.025,
+                                left: height * 0.015,
                                 right: height * 0.025,
                                 top: height * 0,
                                 bottom: height * 0),
-                            child: Image.asset('assets/price.png'),
+                            child: Text(
+                              order.price.toString(),
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: "Amiri",
+                              ),
+                            ),
                           ),
 
                           //  SizedBox(width: 33,),
-                          Text(
-                            order.price.toString(),
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: "Amiri",
-                            ),
-                          ),
                         ],
                       ),
                       Row(
                         //3
-                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
+                          Icon(
+                            icon,
+                            color: color,
+                          ),
                           Padding(
                             padding: EdgeInsets.only(
                                 left: height * 0.025,
                                 right: height * 0.025,
                                 top: height * 0,
                                 bottom: height * 0),
-                            child: Icon(
-                              icon,
-                              color: color,
+                            child: Text(
+                              stateOrder,
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: "Amiri",
+                              ),
                             ),
                           ),
                           //  SizedBox(width: 33,),
-                          Text(
-                            stateOrder,
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: "Amiri",
-                            ),
-                          ),
+
+                          //  SizedBox(width: 33,),
                         ],
                       ),
                     ],
