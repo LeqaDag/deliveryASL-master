@@ -13,6 +13,7 @@ const KBadgeColorAndContainerBorderColorUrgentOrders = Color(0xffF57C00);
 const KBadgeColorAndContainerBorderColorReadyOrders = Color(0xff73A16A);
 const KBadgeColorAndContainerBorderColorReturnOrders = Color(0xffF1C40F);
 const KBadgeColorAndContainerBorderColorCancelledOrders = Color(0xffB82D25);
+const KBadgeColorAndContainerBorderColorWithDriverOrders = Color(0xff33BEF0);
 const KPickupListTileColor = Color(0xfF618B9E);
 const KTrashIconColor = Color(0xffA8312D);
 const KEditIconColor = Color(0xff689A5E);

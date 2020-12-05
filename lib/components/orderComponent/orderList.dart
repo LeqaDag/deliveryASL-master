@@ -22,6 +22,8 @@ class _OrderListState extends State<OrderList> {
       final ids = orders.map((e) => e.businesID).toSet();
       orders.retainWhere((x) => ids.remove(x.businesID));
       return ListView.builder(
+        physics: ScrollPhysics(),
+        shrinkWrap: true,
         itemCount: orders.length,
         itemBuilder: (context, index) {
           return CustomCardAndListTile(

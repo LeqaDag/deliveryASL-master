@@ -13,6 +13,7 @@ import 'package:sajeda_app/components/widgetsComponent/CustomWidgets.dart';
 import '../../constants.dart';
 import 'delivery_orders.dart';
 import 'canceled_orders.dart';
+import 'inStock_orders.dart';
 
 class AdminOrders extends StatelessWidget {
   final String name;
@@ -30,6 +31,7 @@ class AdminOrders extends StatelessWidget {
           OrderServices().orderDone,
           OrderServices().orderDelivery,
           OrderServices().orderReturn,
+          OrderServices().orderInStock,
         ]),
         builder: (context, snapshot) {
           if (snapshot.data != null) {
@@ -40,6 +42,7 @@ class AdminOrders extends StatelessWidget {
             int orderDone = snapshot.data[4] ?? -1;
             int orderDelivery = snapshot.data[5] ?? -1;
             int orderReturn = snapshot.data[6] ?? -1;
+            int orderInStock = snapshot.data[7] ?? -1;
             return Directionality(
               textDirection: TextDirection.rtl,
               child: Scaffold(
@@ -115,6 +118,23 @@ class AdminOrders extends StatelessWidget {
                         CustomContainerOrders(
                             width: 0.37,
                             height: 0.17,
+                            imagepath: AssetImage("assets/orderStore.png"),
+                            text: "في المخزن",
+                            badgeColorAndContainerBorderColor:
+                                KBadgeColorAndContainerBorderColorWithDriverOrders,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      InStockOrders(name: name),
+                                ),
+                              );
+                            },
+                            count: orderInStock.toString()),
+                        CustomContainerOrders(
+                            width: 0.37,
+                            height: 0.17,
                             imagepath: AssetImage("assets/AllOrders.png"),
                             text: "الطرود الموزعة",
                             badgeColorAndContainerBorderColor:
@@ -128,22 +148,6 @@ class AdminOrders extends StatelessWidget {
                               );
                             },
                             count: orderDelivery.toString()),
-                        CustomContainerOrders(
-                            width: 0.37,
-                            height: 0.17,
-                            imagepath: AssetImage("assets/UrgentOrders.png"),
-                            text: "الطرود المستعجلة",
-                            badgeColorAndContainerBorderColor:
-                                KBadgeColorAndContainerBorderColorUrgentOrders,
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        UrgentOrders(name: name)),
-                              );
-                            },
-                            count: orderUrgent.toString()),
                       ],
                     ),
                     CustomBoxSize(height: 0.05),
@@ -169,6 +173,28 @@ class AdminOrders extends StatelessWidget {
                         CustomContainerOrders(
                             width: 0.37,
                             height: 0.17,
+                            imagepath: AssetImage("assets/UrgentOrders.png"),
+                            text: "الطرود المستعجلة",
+                            badgeColorAndContainerBorderColor:
+                                KBadgeColorAndContainerBorderColorUrgentOrders,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        UrgentOrders(name: name)),
+                              );
+                            },
+                            count: orderUrgent.toString()),
+                      ],
+                    ),
+                    CustomBoxSize(height: 0.05),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        CustomContainerOrders(
+                            width: 0.37,
+                            height: 0.17,
                             imagepath: AssetImage("assets/ReturnOrders.png"),
                             text: "الطرود الراجعة",
                             badgeColorAndContainerBorderColor:
@@ -182,12 +208,6 @@ class AdminOrders extends StatelessWidget {
                               );
                             },
                             count: orderReturn.toString()),
-                      ],
-                    ),
-                    CustomBoxSize(height: 0.05),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
                         Padding(
                           padding: const EdgeInsets.only(right: 25),
                           child: CustomContainerOrders(
