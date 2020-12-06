@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sajeda_app/classes/deliveryStatus.dart';
+import 'package:AsyadLogistic/classes/deliveryStatus.dart';
 
 class DeliveriesStatusServices {
   final String uid, orderID, driverID;

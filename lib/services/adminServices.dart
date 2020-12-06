@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sajeda_app/classes/admin.dart';
+import 'package:AsyadLogistic/classes/admin.dart';
 
 class AdminServices {
   final String uid;

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sajeda_app/classes/city.dart';
+import 'package:AsyadLogistic/classes/city.dart';
 
 class CityItem extends StatelessWidget {
   final City city;

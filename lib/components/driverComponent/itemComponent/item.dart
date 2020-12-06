@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:sajeda_app/classes/driver.dart';
-import 'package:sajeda_app/components/driverComponent/sheetComponent/daliy_sheet.dart';
-import 'package:sajeda_app/components/driverComponent/updateComponet/update.dart';
-import 'package:sajeda_app/components/widgetsComponent/CustomWidgets.dart';
-import 'package:sajeda_app/services/driverServices.dart';
+import 'package:AsyadLogistic/classes/driver.dart';
+import 'package:AsyadLogistic/components/driverComponent/sheetComponent/daliy_sheet.dart';
+import 'package:AsyadLogistic/components/driverComponent/updateComponet/update.dart';
+import 'package:AsyadLogistic/components/widgetsComponent/CustomWidgets.dart';
+import 'package:AsyadLogistic/services/driverServices.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Item extends StatelessWidget {

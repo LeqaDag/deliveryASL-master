@@ -1,10 +1,8 @@
-import 'package:sajeda_app/classes/admin.dart';
+import 'package:AsyadLogistic/classes/admin.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sajeda_app/components/adminComponent/secretaries_list.dart';
-import 'package:sajeda_app/components/businessComponent/itemComponent/business_item.dart';
-import 'package:sajeda_app/components/widgetsComponent/CustomWidgets.dart';
-import 'package:sajeda_app/services/adminServices.dart';
+import 'package:AsyadLogistic/components/widgetsComponent/CustomWidgets.dart';
+import 'package:AsyadLogistic/services/adminServices.dart';
 
 class SecretaryList extends StatefulWidget {
   final String name;

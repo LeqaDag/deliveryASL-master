@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:sajeda_app/classes/business.dart';
-import 'package:sajeda_app/components/businessComponent/addComponent/add_company.dart';
-import 'package:sajeda_app/components/businessComponent/businesssComponent/business_list.dart';
-import 'package:sajeda_app/components/businessComponent/searchComponent/companiesAdminSearch.dart';
-import 'package:sajeda_app/components/pages/drawer.dart';
+import 'package:AsyadLogistic/classes/business.dart';
+import 'package:AsyadLogistic/components/businessComponent/addComponent/add_company.dart';
+import 'package:AsyadLogistic/components/businessComponent/businesssComponent/business_list.dart';
+import 'package:AsyadLogistic/components/businessComponent/searchComponent/companiesAdminSearch.dart';
+import 'package:AsyadLogistic/components/pages/drawer.dart';
 import 'package:provider/provider.dart';
-import 'package:sajeda_app/services/businessServices.dart';
+import 'package:AsyadLogistic/services/businessServices.dart';
 
 import '../../../constants.dart';
 

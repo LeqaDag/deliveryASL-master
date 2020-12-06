@@ -33,10 +33,7 @@ class OrganizeOrderInfo extends StatelessWidget {
         break;
       case 'isCancelld':
         {
-          return CancelldInfo(
-            uid: uid,
-            name: name,
-          );
+          return CancelldInfo(uid: uid, name: name);
         }
         break;
 

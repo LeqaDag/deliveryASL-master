@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sajeda_app/classes/city.dart';
-import 'package:sajeda_app/components/widgetsComponent/CustomWidgets.dart';
-import 'package:sajeda_app/services/cityServices.dart';
+import 'package:AsyadLogistic/classes/city.dart';
+import 'package:AsyadLogistic/components/widgetsComponent/CustomWidgets.dart';
+import 'package:AsyadLogistic/services/cityServices.dart';
 import 'package:toast/toast.dart';
 
 import '../../constants.dart';

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sajeda_app/classes/subLine.dart';
-import 'package:sajeda_app/components/lineComponent/subLineComponent/updateSubLine.dart';
-import 'package:sajeda_app/components/widgetsComponent/CustomWidgets.dart';
-import 'package:sajeda_app/services/subLineServices.dart';
+import 'package:AsyadLogistic/classes/subLine.dart';
+import 'package:AsyadLogistic/components/lineComponent/subLineComponent/updateSubLine.dart';
+import 'package:AsyadLogistic/components/widgetsComponent/CustomWidgets.dart';
+import 'package:AsyadLogistic/services/subLineServices.dart';
 
 class SubLineList extends StatefulWidget {
   final String name, mainLineID;

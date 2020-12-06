@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sajeda_app/classes/location.dart';
+import 'package:AsyadLogistic/classes/location.dart';
 
 class LocationServices {
   final String uid;

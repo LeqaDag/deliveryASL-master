@@ -1,11 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sajeda_app/classes/order.dart';
-import 'package:sajeda_app/components/businessComponent/orders/update_order.dart';
-import 'package:sajeda_app/components/widgetsComponent/CustomWidgets.dart';
-import 'package:sajeda_app/services/customerServices.dart';
-import 'package:sajeda_app/services/orderServices.dart';
+import 'package:AsyadLogistic/classes/order.dart';
+import 'package:AsyadLogistic/components/businessComponent/orders/update_order.dart';
+import 'package:AsyadLogistic/components/widgetsComponent/CustomWidgets.dart';
+import 'package:AsyadLogistic/services/customerServices.dart';
+import 'package:AsyadLogistic/services/orderServices.dart';
 
 import 'order_status.dart';
 

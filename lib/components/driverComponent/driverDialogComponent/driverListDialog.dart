@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sajeda_app/classes/driver.dart';
-import 'package:sajeda_app/components/driverComponent/driverDialogComponent/driverItemDialog.dart';
+import 'package:AsyadLogistic/classes/driver.dart';
+import 'package:AsyadLogistic/components/driverComponent/driverDialogComponent/driverItemDialog.dart';
 
 class DriverListDialog extends StatefulWidget {
   @override

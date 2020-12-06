@@ -10,6 +10,7 @@ class Driver {
 
   int load;
   int bonus;
+  int pLoad;
 
   String userID;
   String locationID;
@@ -33,6 +34,7 @@ class Driver {
     @required this.address,
     @required this.cityID,
     @required this.load,
+    this.pLoad = 0,
     this.bonus = 0,
     this.userID,
     this.paidSalary = 0,

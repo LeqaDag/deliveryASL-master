@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:sajeda_app/classes/driver.dart';
-import 'package:sajeda_app/components/driverComponent/addComponent/add.dart';
-import 'package:sajeda_app/components/driverComponent/driversComponent/driverlist.dart';
-import 'package:sajeda_app/components/pages/drawer.dart';
+import 'package:AsyadLogistic/classes/driver.dart';
+import 'package:AsyadLogistic/components/driverComponent/addComponent/add.dart';
+import 'package:AsyadLogistic/components/driverComponent/driversComponent/driverlist.dart';
+import 'package:AsyadLogistic/components/pages/drawer.dart';
 import 'package:provider/provider.dart';
-import 'package:sajeda_app/services/driverServices.dart';
+import 'package:AsyadLogistic/services/driverServices.dart';
 
 import '../../../constants.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'admin_password_change2.dart';
 
-import 'package:sajeda_app/components/widgetsComponent/CustomWidgets.dart';
+import 'package:AsyadLogistic/components/widgetsComponent/CustomWidgets.dart';
 import '../../constants.dart';
 
 class AdminPasswordChange extends StatelessWidget {

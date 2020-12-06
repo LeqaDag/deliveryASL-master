@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:sajeda_app/components/screenComponent/admin_login.dart';
+import 'package:AsyadLogistic/components/screenComponent/admin_login.dart';
 
 class LoadingPage extends StatelessWidget {
   @override

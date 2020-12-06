@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:sajeda_app/classes/driver.dart';
-import 'package:sajeda_app/components/pages/driver_drawer.dart';
-import 'package:sajeda_app/services/driverServices.dart';
+import 'package:AsyadLogistic/classes/driver.dart';
+import 'package:AsyadLogistic/components/pages/driver_drawer.dart';
+import 'package:AsyadLogistic/services/driverServices.dart';
 
 class DriverProfile extends StatefulWidget {
   final String name, uid;

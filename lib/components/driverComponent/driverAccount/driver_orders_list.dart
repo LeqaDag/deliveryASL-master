@@ -1,5 +1,5 @@
-import 'package:sajeda_app/classes/order.dart';
-import 'package:sajeda_app/services/customerServices.dart';
+import 'package:AsyadLogistic/classes/order.dart';
+import 'package:AsyadLogistic/services/customerServices.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'orders_details.dart';

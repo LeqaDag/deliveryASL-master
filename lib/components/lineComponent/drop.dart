@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sajeda_app/classes/city.dart';
-import 'package:sajeda_app/services/cityServices.dart';
+import 'package:AsyadLogistic/classes/city.dart';
+import 'package:AsyadLogistic/services/cityServices.dart';
 
 import '../../constants.dart';
 

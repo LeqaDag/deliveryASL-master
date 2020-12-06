@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sajeda_app/classes/driverDeliveryCost.dart';
+import 'package:AsyadLogistic/classes/driverDeliveryCost.dart';
 
 class DriverDeliveryCostServices {
   final String uid, driverId;

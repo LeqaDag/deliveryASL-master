@@ -1,10 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sajeda_app/classes/driver.dart';
+import 'package:AsyadLogistic/classes/driver.dart';
 
 class DriverServices {
   final String uid;
   final String mainLineID;
-  DriverServices({this.uid, this.mainLineID});
+  final String locationID;
+  DriverServices({
+    this.uid,
+    this.mainLineID,
+    this.locationID,
+  });
 
   final CollectionReference deiverCollection =
       FirebaseFirestore.instance.collection('drivers');
@@ -20,6 +25,7 @@ class DriverServices {
       'address': driver.address,
       'bonus': driver.bonus,
       'load': driver.load,
+      'pLoad': driver.pLoad,
       'isArchived': driver.isArchived
     });
   }
@@ -34,7 +40,8 @@ class DriverServices {
       'cityID': driver.cityID,
       'address': driver.address,
       'bonus': driver.bonus,
-      'load': driver.load
+      'load': driver.load,
+      'pLoad': driver.pLoad,
     });
   }
 
@@ -50,6 +57,7 @@ class DriverServices {
       address: snapshot.data()['address'],
       bonus: snapshot.data()['bonus'],
       load: snapshot.data()['load'],
+      pLoad: snapshot.data()['pLoad'],
     );
   }
 
@@ -66,6 +74,7 @@ class DriverServices {
         address: doc.data()['address'] ?? '',
         bonus: doc.data()['bonus'] ?? '',
         load: doc.data()['load'] ?? '',
+        pLoad: doc.data()['pLoad'] ?? '',
       );
     }).toList();
   }
@@ -103,6 +112,13 @@ class DriverServices {
         .map(_driverListFromSnapshot);
   }
 
+  Stream<List<Driver>> get driversBylocationID {
+    return deiverCollection
+        .where('locationID', isEqualTo: locationID)
+        .where('isArchived', isEqualTo: false)
+        .snapshots()
+        .map(_driverListFromSnapshot);
+  }
   Stream<List<Driver>> get driverByuserID {
     return deiverCollection
         .where('userID', isEqualTo: uid)

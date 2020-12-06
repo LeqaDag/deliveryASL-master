@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sajeda_app/components/lineComponent/mainLineComponent/listMainLine.dart';
-import 'package:sajeda_app/components/pages/drawer.dart';
-import 'package:sajeda_app/services/mainLineServices.dart';
+import 'package:AsyadLogistic/components/lineComponent/mainLineComponent/listMainLine.dart';
+import 'package:AsyadLogistic/components/pages/drawer.dart';
+import 'package:AsyadLogistic/services/mainLineServices.dart';
 
 import '../../classes/mainLine.dart';
 import '../../constants.dart';

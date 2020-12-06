@@ -1,19 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sajeda_app/classes/order.dart';
+import 'package:AsyadLogistic/classes/order.dart';
 
 class OrderServices {
   final String uid;
   final String businesID;
   final String orderState;
   final String driverID;
+  final String locationID;
   final int driverPrice;
-
-  OrderServices(
-      {this.uid,
-      this.businesID,
-      this.orderState,
-      this.driverID,
-      this.driverPrice});
+// locationID
+  OrderServices({
+    this.uid,
+    this.businesID,
+    this.orderState,
+    this.driverID,
+    this.locationID,
+    this.driverPrice,
+  });
   final CollectionReference orderCollection =
       FirebaseFirestore.instance.collection('orders');
 
@@ -27,6 +30,7 @@ class OrderServices {
       'date': order.date,
       'note': order.note,
       'isLoading': order.isLoading,
+      'isLoadingDate': DateTime.now(),
       'isReceived': order.isReceived,
       'isDelivery': order.isDelivery,
       'isUrgent': order.isUrgent,
@@ -34,16 +38,18 @@ class OrderServices {
       'isReturn': order.isReturn,
       'isDone': order.isDone,
       'isPaid': order.isPaid,
+      'inStock': order.inStock,
       'customerID': order.customerID,
       'businesID': order.businesID,
       'driverID': order.driverID,
       'isArchived': order.isArchived,
       'driverPrice': order.driverPrice,
       'sublineID': order.sublineID,
+      'locationID': order.locationID,
       'indexLine': order.indexLine
     });
   }
-
+// inStockDate
   Future<void> updateOrderStatus(Order order) async {
     return await orderCollection.doc(uid).update({
       'isCancelld': order.isCancelld,
@@ -79,16 +85,18 @@ class OrderServices {
         isReturn: snapshot.data()['isReturn'],
         isDone: snapshot.data()['isDone'],
         isPaid: snapshot.data()['isPaid'],
+        inStock: snapshot.data()['inStock'],
         customerID: snapshot.data()['customerID'],
         businesID: snapshot.data()['businesID'],
         driverID: snapshot.data()['driverID'],
         isArchived: snapshot.data()['isArchived'],
         sublineID: snapshot.data()['sublineID'],
+        locationID: snapshot.data()['locationID'],
         indexLine: snapshot.data()['indexLine'],
         driverPrice: snapshot.data()['driverPrice']);
   }
+// locationID
 
-// isPaid
   List<Order> _orderListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) {
       return Order(
@@ -107,12 +115,14 @@ class OrderServices {
           isReturn: doc.data()['isReturn'] ?? '',
           isDone: doc.data()['isDone'] ?? '',
           isPaid: doc.data()['isPaid'] ?? '',
+          inStock: doc.data()['inStock'] ?? '',
           customerID: doc.data()['customerID'] ?? '',
           businesID: doc.data()['businesID'] ?? '',
           driverID: doc.data()['driverID'] ?? '',
           isArchived: doc.data()['isArchived'] ?? '',
           driverPrice: doc.data()['driverPrice'] ?? '',
           indexLine: doc.data()['indexLine'] ?? '',
+          locationID: doc.data()['locationID'] ?? '',
           sublineID: doc.data()['sublineID'] ?? '');
     }).toList();
   }
@@ -157,6 +167,14 @@ class OrderServices {
     return orderCollection
         .where('isDone', isEqualTo: true)
         .where('isPaid', isEqualTo: false)
+        .where('isArchived', isEqualTo: false)
+        .get()
+        .then((value) => value.size);
+  }
+
+  Future<int> get orderInStock {
+    return orderCollection
+        .where('inStock', isEqualTo: true)
         .where('isArchived', isEqualTo: false)
         .get()
         .then((value) => value.size);
@@ -245,6 +263,27 @@ class OrderServices {
         {
           return orderCollection
               .where('isDone', isEqualTo: true)
+              .where('isPaid', isEqualTo: false)
+              .where('isArchived', isEqualTo: false)
+              .snapshots()
+              .map(_orderListFromSnapshot);
+        }
+        break;
+
+      case 'inStock':
+        {
+          return orderCollection
+              .where('inStock', isEqualTo: true)
+              .where('isArchived', isEqualTo: false)
+              .snapshots()
+              .map(_orderListFromSnapshot);
+        }
+        break;
+      case 'isPaid':
+        {
+          return orderCollection
+              .where('isDone', isEqualTo: true)
+              .where('isPaid', isEqualTo: true)
               .where('isArchived', isEqualTo: false)
               .snapshots()
               .map(_orderListFromSnapshot);
@@ -320,10 +359,32 @@ class OrderServices {
               .then((value) => value.size);
         }
         break;
+      case 'inStock':
+        {
+          return orderCollection
+              .where('inStock', isEqualTo: true)
+              .where('businesID', isEqualTo: businesID)
+              .where('isArchived', isEqualTo: false)
+              .get()
+              .then((value) => value.size);
+        }
+        break;
       case 'isDone':
         {
           return orderCollection
               .where('isDone', isEqualTo: true)
+              .where('isPaid', isEqualTo: false)
+              .where('businesID', isEqualTo: businesID)
+              .where('isArchived', isEqualTo: false)
+              .get()
+              .then((value) => value.size);
+        }
+        break;
+      case 'isPaid':
+        {
+          return orderCollection
+              .where('isDone', isEqualTo: true)
+              .where('isPaid', isEqualTo: true)
               .where('businesID', isEqualTo: businesID)
               .where('isArchived', isEqualTo: false)
               .get()
@@ -418,10 +479,32 @@ class OrderServices {
               .map(_orderListFromSnapshot);
         }
         break;
+      case 'inStock':
+        {
+          return orderCollection
+              .where('inStock', isEqualTo: true)
+              .where('businesID', isEqualTo: businesID)
+              .where('isArchived', isEqualTo: false)
+              .snapshots()
+              .map(_orderListFromSnapshot);
+        }
+        break;
       case 'isDone':
         {
           return orderCollection
               .where('isDone', isEqualTo: true)
+              .where('isPaid', isEqualTo: false)
+              .where('businesID', isEqualTo: businesID)
+              .where('isArchived', isEqualTo: false)
+              .snapshots()
+              .map(_orderListFromSnapshot);
+        }
+        break;
+      case 'isPaid':
+        {
+          return orderCollection
+              .where('isDone', isEqualTo: true)
+              .where('isPaid', isEqualTo: true)
               .where('businesID', isEqualTo: businesID)
               .where('isArchived', isEqualTo: false)
               .snapshots()
@@ -454,17 +537,23 @@ class OrderServices {
   }
 
   //Update Order State
-  //To is Received
+  //To is Received  isReceivedDate
   Future<void> get updateOrderToisReceived {
-    return orderCollection
-        .doc(uid)
-        .update({'isReceived': true, 'isLoading': false});
+    return orderCollection.doc(uid).update({
+      'isReceived': true,
+      'isLoading': false,
+      'isReceivedDate': DateTime.now(),
+    });
   }
 
   //To is Delivery
   Future<void> get updateOrderToisDelivery {
-    return orderCollection.doc(uid).update(
-        {'isDelivery': true, 'isReceived': false, 'driverID': driverID});
+    return orderCollection.doc(uid).update({
+      'isDelivery': true,
+      'isReceived': false,
+      'driverID': driverID,
+      'isDeliveryDate': DateTime.now(),
+    });
   }
 
   //To is Urgent
@@ -473,7 +562,8 @@ class OrderServices {
       'isDelivery': true,
       'isReceived': false,
       'isUrgent': true,
-      'driverID': driverID
+      'driverID': driverID,
+      'isUrgentDate': DateTime.now(),
     });
   }
 
@@ -657,6 +747,16 @@ class OrderServices {
               .then((value) => value.size);
         }
         break;
+      case 'inStock':
+        {
+          return orderCollection
+              .where('inStock', isEqualTo: true)
+              .where('driverID', isEqualTo: driverID)
+              .where('isArchived', isEqualTo: false)
+              .get()
+              .then((value) => value.size);
+        }
+        break;
       case 'isDone':
         {
           return orderCollection
@@ -688,6 +788,16 @@ class OrderServices {
   Stream<List<Order>> driverAllOrders(String driverId) {
     return orderCollection
         .where('driverID', isEqualTo: driverId)
+        .where('isArchived', isEqualTo: false)
+        .snapshots()
+        .map(_orderListFromSnapshot);
+  }
+
+  // use in ato division order
+  Stream<List<Order>> get ordersByLocationAndIsReceived {
+    return orderCollection
+        .where('isReceived', isEqualTo: true)
+        .where('locationID', isEqualTo: locationID)
         .where('isArchived', isEqualTo: false)
         .snapshots()
         .map(_orderListFromSnapshot);

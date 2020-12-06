@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sajeda_app/classes/driver.dart';
+import 'package:AsyadLogistic/classes/driver.dart';
 
 class DriverItemDialog extends StatelessWidget {
   final Driver driver;

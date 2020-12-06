@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:sajeda_app/classes/admin.dart';
-import 'package:sajeda_app/components/widgetsComponent/CustomWidgets.dart';
-import 'package:sajeda_app/services/adminServices.dart';
+import 'package:AsyadLogistic/classes/admin.dart';
+import 'package:AsyadLogistic/components/widgetsComponent/CustomWidgets.dart';
+import 'package:AsyadLogistic/services/adminServices.dart';
 
 class AllSecretaries extends StatelessWidget {
   final String adminID, name;

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sajeda_app/classes/city.dart';
-import 'package:sajeda_app/classes/driver.dart';
-import 'package:sajeda_app/classes/mainLine.dart';
-import 'package:sajeda_app/components/driverComponent/driverDialogComponent/driverListDialog.dart';
-import 'package:sajeda_app/services/cityServices.dart';
-import 'package:sajeda_app/services/driverServices.dart';
-import 'package:sajeda_app/services/mainLineServices.dart';
+import 'package:AsyadLogistic/classes/city.dart';
+import 'package:AsyadLogistic/classes/driver.dart';
+import 'package:AsyadLogistic/classes/mainLine.dart';
+import 'package:AsyadLogistic/components/driverComponent/driverDialogComponent/driverListDialog.dart';
+import 'package:AsyadLogistic/services/cityServices.dart';
+import 'package:AsyadLogistic/services/driverServices.dart';
+import 'package:AsyadLogistic/services/mainLineServices.dart';
 
 class Divide extends StatefulWidget {
   final String id;

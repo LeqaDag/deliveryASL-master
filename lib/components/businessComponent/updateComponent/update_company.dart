@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:sajeda_app/classes/business.dart';
-import 'package:sajeda_app/components/pages/drawer.dart';
-import 'package:sajeda_app/services/businessServices.dart';
+import 'package:AsyadLogistic/classes/business.dart';
+import 'package:AsyadLogistic/components/pages/drawer.dart';
+import 'package:AsyadLogistic/services/businessServices.dart';
 
 class UpdateCompany extends StatefulWidget {
   final String businessID, name;

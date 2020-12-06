@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:sajeda_app/components/driverComponent/driverAccount/driver_main.dart';
-import 'package:sajeda_app/components/driverComponent/driverAccount/driver_profile.dart';
-import 'package:sajeda_app/components/driverComponent/sheetComponent/driver_daily_sheet.dart';
-import 'package:sajeda_app/components/screenComponent/admin_login.dart';
-import 'package:sajeda_app/services/auth/auth.dart';
+import 'package:AsyadLogistic/components/driverComponent/driverAccount/driver_main.dart';
+import 'package:AsyadLogistic/components/driverComponent/driverAccount/driver_profile.dart';
+import 'package:AsyadLogistic/components/driverComponent/sheetComponent/driver_daily_sheet.dart';
+import 'package:AsyadLogistic/components/screenComponent/admin_login.dart';
+import 'package:AsyadLogistic/services/auth/auth.dart';
+import 'package:provider/provider.dart';
 
 import '../../constants.dart';
+import '../../services/auth/authentication_service.dart';
 
 class DriverDrawer extends StatelessWidget {
   final String name, uid;
@@ -159,7 +161,7 @@ class DriverDrawer extends StatelessWidget {
                   onTap: () {
                     AuthService _authService = AuthService();
                     _authService.signOut();
-
+context.read<AuthenticationService>().signOut();
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => LoginAdmin()),

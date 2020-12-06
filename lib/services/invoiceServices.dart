@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sajeda_app/classes/invoice.dart';
+import 'package:AsyadLogistic/classes/invoice.dart';
 
 class InvoiceServices {
   final String uid, businessId, driverId;

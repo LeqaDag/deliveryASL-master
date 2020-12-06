@@ -1,9 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:sajeda_app/classes/order.dart';
-import 'package:sajeda_app/components/pages/business_drawer.dart';
-import 'package:sajeda_app/components/widgetsComponent/CustomWidgets.dart';
-import 'package:sajeda_app/services/deliveryStatusServices.dart';
+import 'package:AsyadLogistic/classes/order.dart';
+import 'package:AsyadLogistic/components/pages/business_drawer.dart';
+import 'package:AsyadLogistic/components/widgetsComponent/CustomWidgets.dart';
 
 import '../../../constants.dart';
 

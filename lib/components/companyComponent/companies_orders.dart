@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:sajeda_app/components/orderComponent/custome_order_information.dart';
-import 'package:sajeda_app/components/pages/drawer.dart';
-import 'package:sajeda_app/components/widgetsComponent/Compannies_orders_customWigets.dart';
+import 'package:AsyadLogistic/components/orderComponent/custome_order_information.dart';
+import 'package:AsyadLogistic/components/pages/drawer.dart';
+import 'package:AsyadLogistic/components/widgetsComponent/Compannies_orders_customWigets.dart';
 
 import '../../constants.dart';
 

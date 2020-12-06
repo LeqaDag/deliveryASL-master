@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:sajeda_app/components/adminComponent/admin_secretary_home.dart';
-import 'package:sajeda_app/components/cityComponent/city_admin.dart';
-import 'package:sajeda_app/components/invoiceComponent/invoice_admin.dart';
-import 'package:sajeda_app/components/lineComponent/all_lines.dart';
-import 'package:sajeda_app/components/screenComponent/admin_home.dart';
-import 'package:sajeda_app/components/screenComponent/admin_login.dart';
-import 'package:sajeda_app/components/screenComponent/admin_orders.dart';
-import 'package:sajeda_app/components/businessComponent/businesssComponent/business_admin.dart';
-import 'package:sajeda_app/components/driverComponent/driversComponent/driveradmin.dart';
-import 'package:sajeda_app/components/orderComponent/store_profile.dart';
-import 'package:sajeda_app/services/auth/auth.dart';
+import 'package:AsyadLogistic/components/adminComponent/admin_secretary_home.dart';
+import 'package:AsyadLogistic/components/cityComponent/city_admin.dart';
+import 'package:AsyadLogistic/components/invoiceComponent/invoice_admin.dart';
+import 'package:AsyadLogistic/components/lineComponent/all_lines.dart';
+import 'package:AsyadLogistic/components/screenComponent/admin_home.dart';
+import 'package:AsyadLogistic/components/screenComponent/admin_login.dart';
+import 'package:AsyadLogistic/components/screenComponent/admin_orders.dart';
+import 'package:AsyadLogistic/components/businessComponent/businesssComponent/business_admin.dart';
+import 'package:AsyadLogistic/components/driverComponent/driversComponent/driveradmin.dart';
+import 'package:AsyadLogistic/components/orderComponent/store_profile.dart';
+import 'package:AsyadLogistic/services/auth/auth.dart';
+import 'package:provider/provider.dart';
 
 import '../../constants.dart';
+import '../../services/auth/authentication_service.dart';
 
 class AdminDrawer extends StatelessWidget {
   final String uid, name;
@@ -293,6 +295,7 @@ class AdminDrawer extends StatelessWidget {
                   onTap: () {
                     AuthService _authService = AuthService();
                     _authService.signOut();
+                    context.read<AuthenticationService>().signOut();
                     Navigator.pop(context);
                     Navigator.push(
                       context,

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:sajeda_app/classes/admin.dart';
-import 'package:sajeda_app/components/adminComponent/secretary_list.dart';
-import 'package:sajeda_app/components/pages/drawer.dart';
+import 'package:AsyadLogistic/classes/admin.dart';
+import 'package:AsyadLogistic/components/adminComponent/secretary_list.dart';
+import 'package:AsyadLogistic/components/pages/drawer.dart';
 import 'package:provider/provider.dart';
-import 'package:sajeda_app/services/adminServices.dart';
+import 'package:AsyadLogistic/services/adminServices.dart';
 
 import '../../constants.dart';
 import 'add_secretary.dart';

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sajeda_app/classes/order.dart';
-import 'package:sajeda_app/components/companyComponent/company_orders_admin_side.dart';
-import 'package:sajeda_app/components/widgetsComponent/CustomWidgets.dart';
+import 'package:AsyadLogistic/classes/order.dart';
+import 'package:AsyadLogistic/components/companyComponent/company_orders_admin_side.dart';
+import 'package:AsyadLogistic/components/widgetsComponent/CustomWidgets.dart';
 
 import '../../constants.dart';
 
@@ -22,6 +22,8 @@ class _OrderListState extends State<OrderList> {
       final ids = orders.map((e) => e.businesID).toSet();
       orders.retainWhere((x) => ids.remove(x.businesID));
       return ListView.builder(
+        physics: ScrollPhysics(),
+        shrinkWrap: true,
         itemCount: orders.length,
         itemBuilder: (context, index) {
           return CustomCardAndListTile(

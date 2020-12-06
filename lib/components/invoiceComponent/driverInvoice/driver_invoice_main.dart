@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:sajeda_app/classes/driver.dart';
-import 'package:sajeda_app/components/invoiceComponent/companyInvoice/invoice_list.dart';
-import 'package:sajeda_app/components/pages/drawer.dart';
+import 'package:AsyadLogistic/classes/driver.dart';
+import 'package:AsyadLogistic/components/pages/drawer.dart';
 import 'package:provider/provider.dart';
-import 'package:sajeda_app/services/driverServices.dart';
+import 'package:AsyadLogistic/services/driverServices.dart';
 
 import '../../../constants.dart';
 import 'invoice_list_drivers.dart';
