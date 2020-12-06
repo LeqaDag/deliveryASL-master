@@ -33,6 +33,7 @@ class _AddLineState extends State<AddLine> {
   @override
   void initState() {
     subLineList = [null];
+    subLineListController = {};
     super.initState();
   }
 
