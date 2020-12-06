@@ -22,86 +22,206 @@ class AutoDivisiovServices {
 
   final CollectionReference subLineCollection =
       FirebaseFirestore.instance.collection('subLines');
-  int countOrder() {
-    int orderCount;
-    orderCollection
+  int orderCount = 0;
+  int countOrderByLocation = 0;
+  Future<void> countOrder() async {
+    await orderCollection
         .where('isReceived', isEqualTo: true)
         .where('isArchived', isEqualTo: false)
         .get()
         .then((value) {
       orderCount = value.size;
     });
-    return orderCount;
   }
 
-  int countByLocation(String locationID) {
-    int countOrder;
-    orderCollection
+  Future<void> countByLocation(String locationID) async {
+    await orderCollection
         .where('locationID', isEqualTo: locationID)
         .where('isReceived', isEqualTo: true)
         .where('isArchived', isEqualTo: false)
         .get()
         .then((value) {
-      countOrder = value.size;
+      countOrderByLocation = value.size;
     });
-    return countOrder;
   }
 
-  void autoDivision() {
-    int orderReceivedCount = countOrder();
+  List<Location> _locationListFromSnapshot(QuerySnapshot snapshot) {
+    return snapshot.docs.map((doc) {
+      return Location(
+        uid: doc.reference.id,
+        name: doc.data()['name'] ?? '',
+        isArchived: doc.data()['isArchived'] ?? '',
+      );
+    }).toList();
+  }
 
-    StreamBuilder<List<Location>>(
-        stream: LocationServices().locations,
-        builder: (context, snapshot) {
-          // all Locations
-          if (snapshot.hasData) {
-            List<Location> locations = snapshot.data;
-            locations.asMap().forEach((locationIndex, location) {
-              int countOrderByLocation = countByLocation(location.uid);
-              if (orderReceivedCount != 0 && countOrderByLocation != 0) {
-                return StreamBuilder<List<Driver>>(
-                    stream: DriverServices(locationID: location.uid)
-                        .driversBylocationID,
-                    builder: (context, snapshot) {
-                      // all Drivers By Location
-                      if (snapshot.hasData) {
-                        List<Driver> drivers = snapshot.data;
-                        drivers.asMap().forEach((driverIndex, driver) {
-                          if (countOrderByLocation != 0 &&
-                              driver.pLoad <= driver.load) {
-                            int availableLoad = driver.load - driver.pLoad;
-                            if (countOrderByLocation >= availableLoad) {
-                              for (var i = 0; i < availableLoad; i++) {
-                                return StreamBuilder<List<Order>>(
-                                    stream:
-                                        OrderServices(locationID: location.uid)
-                                            .ordersByLocationAndIsReceived,
-                                    builder: (context, snapshot) {
-                                      if (snapshot.hasData) {
-                                        List<Order> orders = snapshot.data;
-                                        orders
-                                            .asMap()
-                                            .forEach((orderIndex, order) {
-                                          orderCollection
-                                              .doc(order.uid)
-                                              .update({
-                                            'inStock': true,
-                                            'isReceived': false,
-                                            'driverID': driver.uid,
-                                            'inStockDate': DateTime.now(),
-                                          });
-                                        });
-                                      } else {}
-                                    });
-                              }
-                            } else {}
-                          } else {}
+  List<Driver> _driverListFromSnapshot(QuerySnapshot snapshot) {
+    return snapshot.docs.map((doc) {
+      return Driver(
+        uid: doc.reference.id,
+        name: doc.data()['name'] ?? '',
+        type: doc.data()['type'] ?? '',
+        email: doc.data()['email'] ?? '',
+        locationID: doc.data()['locationID'] ?? '',
+        phoneNumber: doc.data()['phoneNumber'] ?? '',
+        cityID: doc.data()['cityID'] ?? '',
+        address: doc.data()['address'] ?? '',
+        bonus: doc.data()['bonus'] ?? '',
+        load: doc.data()['load'] ?? '',
+        pLoad: doc.data()['pLoad'] ?? '',
+      );
+    }).toList();
+  }
+
+  List<Order> _orderListFromSnapshot(QuerySnapshot snapshot) {
+    return snapshot.docs.map((doc) {
+      return Order(
+          uid: doc.reference.id,
+          price: doc.data()['price'] ?? '',
+          totalPrice: doc.data()['totalPrice'].cast<int>() ?? '',
+          type: doc.data()['type'] ?? '',
+          description: doc.data()['description'] ?? '',
+          date: doc.data()['date'].toDate() ?? '',
+          note: doc.data()['note'] ?? '',
+          isLoading: doc.data()['isLoading'] ?? '',
+          isReceived: doc.data()['isReceived'] ?? '',
+          isDelivery: doc.data()['isDelivery'] ?? '',
+          isUrgent: doc.data()['isUrgent'] ?? '',
+          isCancelld: doc.data()['isCancelld'] ?? '',
+          isReturn: doc.data()['isReturn'] ?? '',
+          isDone: doc.data()['isDone'] ?? '',
+          isPaid: doc.data()['isPaid'] ?? '',
+          inStock: doc.data()['inStock'] ?? '',
+          customerID: doc.data()['customerID'] ?? '',
+          businesID: doc.data()['businesID'] ?? '',
+          driverID: doc.data()['driverID'] ?? '',
+          isArchived: doc.data()['isArchived'] ?? '',
+          driverPrice: doc.data()['driverPrice'] ?? '',
+          indexLine: doc.data()['indexLine'] ?? '',
+          locationID: doc.data()['locationID'] ?? '',
+          sublineID: doc.data()['sublineID'] ?? '');
+    }).toList();
+  }
+
+  void autoDivision() async {
+    await countOrder();
+    print('locationwwww');
+
+    int orderReceivedCount = orderCount;
+
+    locationCollection
+        .where('isArchived', isEqualTo: false)
+        .get()
+        .then((value) {
+      print('locationrrDDDDrr ');
+      List<Location> locations = _locationListFromSnapshot(value);
+      print(locations);
+      locations.asMap().forEach((locationIndex, location) async {
+        await countByLocation(location.uid);
+        if (orderReceivedCount != 0 && countOrderByLocation != 0) {
+          deiverCollection
+              .where('locationID', isEqualTo: location.uid)
+              .where('isArchived', isEqualTo: false)
+              .get()
+              .then((value) {
+      print(countOrderByLocation);
+
+            List<Driver> drivers = _driverListFromSnapshot(value);
+            drivers.asMap().forEach((driverIndex, driver) {
+              if (countOrderByLocation != 0 && driver.pLoad <= driver.load) {
+                int availableLoad = driver.load - driver.pLoad;
+                if (countOrderByLocation >= availableLoad) {
+                  for (var i = 0; i < availableLoad; i++) {
+      print('locationrrDDDDrسسسسrييي ');
+
+                    orderCollection
+                        .where('isReceived', isEqualTo: true)
+                        .where('locationID', isEqualTo: location.uid)
+                        .where('isArchived', isEqualTo: false)
+                        .get()
+                        .then((value) {
+                      List<Order> orders = _orderListFromSnapshot(value);
+                      orders.asMap().forEach((orderIndex, order) async {
+                        await orderCollection.doc(order.uid).update({
+                          'inStock': true,
+                          'isReceived': false,
+                          'driverID': driver.uid,
+                          'inStockDate': DateTime.now(),
                         });
-                      } else {}
+                        await deiverCollection.doc(driver.uid).update({
+                          'pLoad': driver.pLoad + 1,
+                        });
+                      });
                     });
+                  }
+                } else {}
               } else {}
             });
-          } else {}
-        });
+          });
+        } else {}
+      });
+    });
+    // StreamBuilder<List<Location>>(
+    //     stream: LocationServices().locations,
+    //     builder: (context, snapshot) {
+    //       // all Locations
+    //       if (snapshot.hasData) {
+    //         List<Location> locations = snapshot.data;
+    //         print(locations);
+    //         ///////////
+    //         locations.asMap().forEach((locationIndex, location) async {
+    //           await countByLocation(location.uid);
+    //           print('locationrrrr ');
+
+    //           if (orderReceivedCount != 0 && countOrderByLocation != 0) {
+    //             return StreamBuilder<List<Driver>>(
+    //                 stream: DriverServices(locationID: location.uid)
+    //                     .driversBylocationID,
+    //                 builder: (context, snapshot) {
+    //                   // all Drivers By Location
+    //                   if (snapshot.hasData) {
+    //                     List<Driver> drivers = snapshot.data;
+    //                     drivers.asMap().forEach((driverIndex, driver) {
+    //                       if (countOrderByLocation != 0 &&
+    //                           driver.pLoad <= driver.load) {
+    //                         int availableLoad = driver.load - driver.pLoad;
+    //                         if (countOrderByLocation >= availableLoad) {
+    //                           for (var i = 0; i < availableLoad; i++) {
+    //                             return StreamBuilder<List<Order>>(
+    //                                 stream:
+    //                                     OrderServices(locationID: location.uid)
+    //                                         .ordersByLocationAndIsReceived,
+    //                                 builder: (context, snapshot) {
+    //                                   if (snapshot.hasData) {
+    //                                     List<Order> orders = snapshot.data;
+    //                                     orders
+    //                                         .asMap()
+    //                                         .forEach((orderIndex, order) async {
+    //                                       await orderCollection
+    //                                           .doc(order.uid)
+    //                                           .update({
+    //                                         'inStock': true,
+    //                                         'isReceived': false,
+    //                                         'driverID': driver.uid,
+    //                                         'inStockDate': DateTime.now(),
+    //                                       });
+    //                                       await deiverCollection
+    //                                           .doc(driver.uid)
+    //                                           .update({
+    //                                         'pLoad': driver.pLoad + 1,
+    //                                       });
+    //                                     });
+    //                                   } else {}
+    //                                 });
+    //                           }
+    //                         } else {}
+    //                       } else {}
+    //                     });
+    //                   } else {}
+    //                 });
+    //           } else {}
+    //         });
+    //       } else {}
+    //     });
   }
 }
