@@ -7,6 +7,7 @@ import 'package:sajeda_app/classes/driver.dart';
 import 'package:sajeda_app/classes/invoice.dart';
 import 'package:sajeda_app/classes/order.dart';
 import 'package:sajeda_app/services/businessServices.dart';
+import 'package:sajeda_app/services/driverDeliveryCostServices.dart';
 import 'package:sajeda_app/services/driverServices.dart';
 import 'package:sajeda_app/services/invoiceServices.dart';
 import 'package:sajeda_app/services/orderServices.dart';
@@ -14,12 +15,11 @@ import 'package:sajeda_app/services/orderServices.dart';
 import '../../../constants.dart';
 import 'add_invoice_driver.dart';
 
-class AllInvoiceDrivers extends StatelessWidget {
+class AllInvoiceDrivers extends StatefulWidget {
   final Color color;
   final Function onTapBox;
   final String driverId, name;
-  List<Order> orders;
-  int total = 0;
+
   AllInvoiceDrivers({
     @required this.color,
     @required this.onTapBox,
@@ -28,16 +28,26 @@ class AllInvoiceDrivers extends StatelessWidget {
   });
 
   @override
+  _AllInvoiceDriversState createState() => _AllInvoiceDriversState();
+}
+
+class _AllInvoiceDriversState extends State<AllInvoiceDrivers> {
+  List<Order> orders;
+
+  int total = 0;
+  int isDoneOrders = 0, totalSalary = 0;
+  @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
 
     return StreamBuilder<Driver>(
-        stream: DriverServices(uid: driverId).driverByID,
+        stream: DriverServices(uid: widget.driverId).driverByID,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             Driver driver = snapshot.data;
-            return Card(
+            return Flexible(
+                child: Card(
               elevation: 5,
               margin: EdgeInsets.fromLTRB(1.0, 5.0, 1.0, 16.0),
               shape: RoundedRectangleBorder(
@@ -47,7 +57,8 @@ class AllInvoiceDrivers extends StatelessWidget {
                   Column(mainAxisAlignment: MainAxisAlignment.start, children: <
                       Widget>[
                 Row(children: <Widget>[
-                  Container(
+                  Expanded(
+                      child: Container(
                     width: width / 2,
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -79,8 +90,9 @@ class AllInvoiceDrivers extends StatelessWidget {
                             ],
                           ),
                         ]),
-                  ),
-                  Container(
+                  )),
+                  Expanded(
+                      child: Container(
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -115,38 +127,68 @@ class AllInvoiceDrivers extends StatelessWidget {
                                   scale: 1.5,
                                 ),
                               ),
-                              StreamBuilder<List<Order>>(
-                                  stream:
-                                      OrderServices().driversAllOrders(driverId),
+                              FutureBuilder<int>(
+                                  future: OrderServices(
+                                          driverID: widget.driverId)
+                                      .countDriverOrderByStateOrder("isDone"),
                                   builder: (context, snapshot) {
-                                    int totalPrice = 0;
+                                    if (snapshot.hasData) {
+                                      isDoneOrders = snapshot.data;
 
-                                    if (!snapshot.hasData) {
-                                      return Text(
-                                        "0",
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: "Amiri",
-                                        ),
-                                      );
+                                      return FutureBuilder<int>(
+                                          future: DriverDeliveryCostServices(
+                                                  driverId: widget.driverId)
+                                              .driverPriceData(widget.driverId),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.hasData) {
+                                              totalSalary =
+                                                  snapshot.data * isDoneOrders;
+                                              print(snapshot.data);
+                                              //  isDoneOrders = snapshot.data;
+                                              return Text(
+                                                "  ${totalSalary.toString()} " ??
+                                                    "0",
+                                              );
+                                            } else {
+                                              return Text("");
+                                            }
+                                          });
                                     } else {
-                                      orders = snapshot.data;
-                                      orders.forEach((element) {
-                                        totalPrice += element.driverPrice;
-                                        print(totalPrice);
-                                        total = totalPrice;
-                                      });
-                                      return Text(
-                                        total.toString() ?? "",
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: "Amiri",
-                                        ),
-                                      );
+                                      return Text("");
                                     }
                                   }),
+                              // StreamBuilder<List<Order>>(
+                              //     stream:
+                              //         OrderServices().driversAllOrders(widget.driverId),
+                              //     builder: (context, snapshot) {
+                              //       int totalPrice = 0;
+
+                              //       if (!snapshot.hasData) {
+                              //         return Text(
+                              //           "0",
+                              //           style: TextStyle(
+                              //             fontSize: 15,
+                              //             fontWeight: FontWeight.bold,
+                              //             fontFamily: "Amiri",
+                              //           ),
+                              //         );
+                              //       } else {
+                              //         orders = snapshot.data;
+                              //         orders.forEach((element) {
+                              //           totalPrice += element.driverPrice;
+                              //           print(totalPrice);
+                              //           total = totalPrice;
+                              //         });
+                              //         return Text(
+                              //           total.toString() ?? "",
+                              //           style: TextStyle(
+                              //             fontSize: 15,
+                              //             fontWeight: FontWeight.bold,
+                              //             fontFamily: "Amiri",
+                              //           ),
+                              //         );
+                              //       }
+                              //     }),
                               SizedBox(
                                 width: 40,
                               ),
@@ -156,11 +198,10 @@ class AllInvoiceDrivers extends StatelessWidget {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => AddInvoiceDriver(
-                                              driverId: driverId,
-                                              name: name,
-                                              driverName: driver.name,
-                                              total: total
-                                            )),
+                                            driverId: widget.driverId,
+                                            name: widget.name,
+                                            driverName: driver.name,
+                                            total: total)),
                                   );
                                 },
                                 icon: Icon(
@@ -171,7 +212,7 @@ class AllInvoiceDrivers extends StatelessWidget {
                             ],
                           ),
                         ]),
-                  ),
+                  )),
                 ]),
                 Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -185,7 +226,7 @@ class AllInvoiceDrivers extends StatelessWidget {
                                 width: width - 2,
                                 height: 9,
                                 child: Card(
-                                  color: color,
+                                  color: widget.color,
 
                                   ///case color
                                 ),
@@ -195,110 +236,121 @@ class AllInvoiceDrivers extends StatelessWidget {
                         ),
                       ),
                     ]),
-                Row(mainAxisAlignment: MainAxisAlignment.start, children: <
-                    Widget>[
+                Row(children: <Widget>[
                   Container(
                     width: width - 2,
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: <Widget>[
-                        SizedBox(
-                          width: 20,
-                        ),
                         Icon(
                           Icons.done,
                           color: KBadgeColorAndContainerBorderColorReadyOrders,
                         ),
                         FutureBuilder<int>(
-                            future: OrderServices(driverID: driverId)
+                            future: OrderServices(driverID: widget.driverId)
                                 .countDriverOrderByStateOrder("isDone"),
                             builder: (context, snapshot) {
-                              print(snapshot.data);
-                              return Text(
-                                ":${snapshot.data.toString()} " ?? "0",
-                              );
+                              if (snapshot.hasData) {
+                                return Text(
+                                  ":${snapshot.data.toString()} " ?? "0",
+                                );
+                              } else {
+                                return Text(
+                                  "0",
+                                );
+                              }
                             }),
-                        SizedBox(
-                          width: 20,
-                        ),
                         Icon(
                           Icons.restore,
                           color: KBadgeColorAndContainerBorderColorReturnOrders,
                         ),
                         FutureBuilder<int>(
-                            future: OrderServices(driverID: driverId)
+                            future: OrderServices(driverID: widget.driverId)
                                 .countDriverOrderByStateOrder("isReturn"),
                             builder: (context, snapshot) {
-                              print(snapshot.data);
-                              return Text(
-                                ":${snapshot.data.toString()} " ?? "0",
-                              );
+                              if (snapshot.hasData) {
+                                return Text(
+                                  ":${snapshot.data.toString()} " ?? "0",
+                                );
+                              } else {
+                                return Text(
+                                  "0",
+                                );
+                              }
                             }),
-                        SizedBox(
-                          width: 20,
-                        ),
                         Icon(
                           Icons.cancel,
                           color:
                               KBadgeColorAndContainerBorderColorCancelledOrders,
                         ),
                         FutureBuilder<int>(
-                            future: OrderServices(driverID: driverId)
+                            future: OrderServices(driverID: widget.driverId)
                                 .countDriverOrderByStateOrder("isCancelld"),
                             builder: (context, snapshot) {
-                              print(snapshot.data);
-                              return Text(
-                                ":${snapshot.data.toString()} " ?? "0",
-                              );
+                              if (snapshot.hasData) {
+                                return Text(
+                                  ":${snapshot.data.toString()} " ?? "0",
+                                );
+                              } else {
+                                return Text(
+                                  "0",
+                                );
+                              }
                             }),
-                        SizedBox(
-                          width: 20,
-                        ),
                         Icon(
                           Icons.business_center_outlined,
                           color: KAllOrdersListTileColor,
                         ),
                         FutureBuilder<int>(
-                            future: OrderServices(driverID: driverId)
+                            future: OrderServices(driverID: widget.driverId)
                                 .countDriverOrderByStateOrder("isDelivery"),
                             builder: (context, snapshot) {
-                              print(snapshot.data);
-                              return Text(
-                                ":${snapshot.data.toString()} " ?? "0",
-                              );
+                              if (snapshot.hasData) {
+                                return Text(
+                                  ":${snapshot.data.toString()} " ?? "0",
+                                );
+                              } else {
+                                return Text(
+                                  "0",
+                                );
+                              }
                             }),
-                        SizedBox(
-                          width: 20,
-                        ),
                         Icon(
                           Icons.arrow_circle_up_rounded,
                           color: KBadgeColorAndContainerBorderColorLoadingOrder,
                         ),
                         FutureBuilder<int>(
-                            future: OrderServices(driverID: driverId)
+                            future: OrderServices(driverID: widget.driverId)
                                 .countDriverOrderByStateOrder("isLoading"),
                             builder: (context, snapshot) {
-                              print(snapshot.data);
-                              return Text(
-                                ":${snapshot.data.toString()} " ?? "0",
-                              );
+                              if (snapshot.hasData) {
+                                return Text(
+                                  ":${snapshot.data.toString()} " ?? "0",
+                                );
+                              } else {
+                                return Text(
+                                  "0",
+                                );
+                              }
                             }),
-                        SizedBox(
-                          width: 20,
-                        ),
                         Icon(
                           Icons.assignment_turned_in_outlined,
                           color:
                               KBadgeColorAndContainerBorderColorRecipientOrder,
                         ),
                         FutureBuilder<int>(
-                            future: OrderServices(driverID: driverId)
+                            future: OrderServices(driverID: widget.driverId)
                                 .countDriverOrderByStateOrder("isReceived"),
                             builder: (context, snapshot) {
-                              print(snapshot.data);
-                              return Text(
-                                ":${snapshot.data.toString()} " ?? "0",
-                              );
+                              if (snapshot.hasData) {
+                                return Text(
+                                  ":${snapshot.data.toString()} " ?? "0",
+                                );
+                              } else {
+                                return Text(
+                                  "0",
+                                );
+                              }
                             }),
                       ],
                     ),
@@ -308,7 +360,7 @@ class AllInvoiceDrivers extends StatelessWidget {
                   height: 10,
                 ),
               ]),
-            );
+            ));
           } else {
             return Center(child: CircularProgressIndicator());
           }

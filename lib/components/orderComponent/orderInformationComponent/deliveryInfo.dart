@@ -30,7 +30,7 @@ class DeliveryInfo extends StatelessWidget {
           if (snapshot.hasData) {
             Order order = snapshot.data;
             String orderType = '';
-            if (!order.type) {
+           if (order.isUrgent == false) {
               orderType = "عادي";
             } else {
               orderType = "مستعجل";
@@ -130,7 +130,7 @@ class DeliveryInfo extends StatelessWidget {
                                             ),
                                           )),
                                       _labelTextFieldCity(Icons.location_on,
-                                          Colors.blue, customer.cityID),
+                                          Colors.blue, customer.cityName),
                                       _customTitle("معلومات الطلبية"),
                                       _labelTextField(Icons.short_text,
                                           Colors.green[700], order.description),
@@ -296,23 +296,18 @@ class DeliveryInfo extends StatelessWidget {
     return Container(
       width: double.infinity,
       height: 35,
-      child: StreamBuilder<City>(
-          stream: CityServices(uid: text).cityByID,
-          builder: (context, snapshot) {
-            City city = snapshot.data;
-            return TextField(
-              enabled: false,
-              decoration: InputDecoration(
-                contentPadding: EdgeInsets.only(top: 7, bottom: 7, right: 8),
-                prefixIcon: Icon(
-                  icon,
-                  color: color,
-                  size: 20,
-                ),
-                hintText: city.name, //String Data form DB.
-              ),
-            );
-          }),
+      child: TextField(
+        enabled: false,
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.only(top: 7, bottom: 7, right: 8),
+          prefixIcon: Icon(
+            icon,
+            color: color,
+            size: 20,
+          ),
+          hintText: text, //String Data form DB.
+        ),
+      ),
     );
   }
 

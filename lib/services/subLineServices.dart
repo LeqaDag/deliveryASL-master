@@ -91,5 +91,27 @@ class SubLineServices {
       return value.docs.map<int>((e) => e['indexLine']).reduce(max);
     });
   }
+
+  Stream<List<SubLine>> get subLinesByMainLineID {
+    return subLineCollection
+        .where('isArchived', isEqualTo: false)
+        .where('mainLineID', isEqualTo: mainLineID)
+        .snapshots()
+        .map(_subLineListFromSnapshot);
+  }
+
+  Future<int> get sublineIndex {
+    return subLineCollection
+        .doc(uid)
+        .get()
+        .then((value) => value.data()['indexLine']);
+  }
+
+  Future<String> get sublineName {
+    return subLineCollection
+        .doc(uid)
+        .get()
+        .then((value) => value.data()['name']);
+  }
 }
 // value.data()['indexLine'].reduce(max);

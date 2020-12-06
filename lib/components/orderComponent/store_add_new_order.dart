@@ -11,11 +11,9 @@ import 'package:sajeda_app/classes/location.dart';
 import 'package:sajeda_app/classes/order.dart';
 import 'package:sajeda_app/classes/subLine.dart';
 import 'package:sajeda_app/components/pages/drawer.dart';
-import 'package:sajeda_app/components/pages/loadingData.dart';
 import 'package:sajeda_app/services/deliveriesCostsServices.dart';
 import 'package:sajeda_app/services/businessServices.dart';
 import 'package:sajeda_app/services/customerServices.dart';
-import 'package:sajeda_app/services/locationServices.dart';
 import 'package:sajeda_app/services/orderServices.dart';
 import 'package:sajeda_app/services/subLineServices.dart';
 import 'package:toast/toast.dart';
@@ -33,26 +31,33 @@ class AddNewOders extends StatefulWidget {
 
 class _AddNewOdersState extends State<AddNewOders> {
   final _formKey = GlobalKey<FormState>();
-  String customerCityID = 'One';
-  String datehh = "";
   List<DeliveriesCosts> cities;
   List<SubLine> sublines;
+  List<MainLine> mainlines;
   List<Business> business;
+
   String cityID,
+      mainline,
       subline,
+      mainLineId = "",
       businessID = "",
       bus,
       cityName = "",
-      cityId = "",
-      cityIDAddress;
+      sublineName = "",
+      typeOrder = "عادي";
   List<int> orderTotalPrice = [0];
   static String deliveryPrice = "0";
+  bool locationSelected = false, mainlineSelected = false;
+  int indexLine;
 
   @override
   void initState() {
     deliveryPrice = "0";
     orderTotalPrice = [0];
     businessID = "";
+    mainLineId = "";
+    indexLine = 0;
+    sublineName = "";
     super.initState();
   }
 
@@ -74,10 +79,8 @@ class _AddNewOdersState extends State<AddNewOders> {
   List<Location> locations;
   String locationID;
 
-  List<MainLine> mainLines;
   String mainLineID;
 
-  bool selected = false, driverSelected = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,161 +115,61 @@ class _AddNewOdersState extends State<AddNewOders> {
                     children: <Widget>[
                       _customerPhoneNumber(
                           "رقم الزبون", 10, customerPhoneNumber),
-                      _customerPhoneNumber(
+                      _customerAdditionPhoneNumber(
                           "رقم احتياطي", 0, customerPhoneNumberAdditional),
                     ],
-                  ),
-                  Container(
-                    margin: EdgeInsets.all(10.0),
-                    child: StreamBuilder<List<Location>>(
-                      stream: LocationServices().locations,
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData) {
-                          return Text('Loading...');
-                        } else {
-                          locations = snapshot.data;
-                          if (locations == []) {
-                            return LoadingData();
-                          } else {
-                            return DropdownButtonFormField<String>(
-                              value: locationID,
-                              decoration: InputDecoration(
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    borderSide: BorderSide(
-                                      width: 1.0,
-                                      color: Color(0xff636363),
-                                    ),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    borderSide: BorderSide(
-                                      width: 2.0,
-                                      color: Color(0xff73a16a),
-                                    ),
-                                  ),
-                                  contentPadding:
-                                      EdgeInsets.only(right: 20.0, left: 10.0),
-                                  labelText: "المنطقة",
-                                  labelStyle: TextStyle(
-                                      fontFamily: 'Amiri',
-                                      fontSize: 18.0,
-                                      color: Color(0xff316686))),
-                              items: locations.map(
-                                (location) {
-                                  return DropdownMenuItem<String>(
-                                    value: location.uid.toString(),
-                                    child: Align(
-                                      alignment: Alignment.centerRight,
-                                      child: Text(
-                                        location.name,
-                                        style: TextStyle(
-                                          fontFamily: 'Amiri',
-                                          fontSize: 16.0,
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ).toList(),
-                              onChanged: (val) {
-                                setState(() {
-                                  locationID = val;
-                                  selected = true;
-                                });
-                              },
-                            );
-                          }
-                        }
-                      },
-                    ),
-                  ),
-                  Container(
-                    child: selected
-                        ? Container(
-                            margin: EdgeInsets.all(10.0),
-                            child: StreamBuilder<List<MainLine>>(
-                              stream: MainLineServices(locationID: locationID)
-                                  .mainLineByCityID,
-                              builder: (context, snapshot) {
-                                if (!snapshot.hasData) {
-                                  return Text('Loading...');
-                                } else {
-                                  mainLines = snapshot.data;
-                                  if (mainLines == []) {
-                                    return LoadingData();
-                                  } else {
-                                    return DropdownButtonFormField<String>(
-                                      value: mainLineID,
-                                      decoration: InputDecoration(
-                                          enabledBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10.0),
-                                            borderSide: BorderSide(
-                                              width: 1.0,
-                                              color: Color(0xff636363),
-                                            ),
-                                          ),
-                                          focusedBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10.0),
-                                            borderSide: BorderSide(
-                                              width: 2.0,
-                                              color: Color(0xff73a16a),
-                                            ),
-                                          ),
-                                          contentPadding: EdgeInsets.only(
-                                              right: 20.0, left: 10.0),
-                                          labelText: "خط التوصيل",
-                                          labelStyle: TextStyle(
-                                              fontFamily: 'Amiri',
-                                              fontSize: 18.0,
-                                              color: Color(0xff316686))),
-                                      items: mainLines.map(
-                                        (mainLine) {
-                                          return DropdownMenuItem<String>(
-                                            value: mainLine.uid.toString(),
-                                            child: Align(
-                                              alignment: Alignment.centerRight,
-                                              child: Text(
-                                                mainLine.name,
-                                                style: TextStyle(
-                                                  fontFamily: 'Amiri',
-                                                  fontSize: 16.0,
-                                                ),
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      ).toList(),
-                                      onChanged: (val) {
-                                        setState(() {
-                                          mainLineID = val;
-                                          selected = true;
-                                        });
-                                      },
-                                    );
-                                  }
-                                }
-                              },
-                            ),
-                          )
-                        : Container(
-                            child: Text(""),
-                          ),
                   ),
 
                   Row(
                     children: <Widget>[
-                      _cityChoice(),
+                      _locationChoice(),
+                    ],
+                  ),
+
+                  Row(
+                    children: <Widget>[
+                      _mainLineChoice(),
                       _subLineChoice(),
                     ],
                   ),
+                  FutureBuilder<int>(
+                      future: SubLineServices(uid: subline).sublineIndex,
+                      builder: (context, snapshot) {
+                        print(snapshot.data.toString());
+                        indexLine = snapshot.data;
+                        print(indexLine);
+                        return Visibility(
+                          child: Text("Gone"),
+                          visible: false,
+                        );
+                      }),
+                  FutureBuilder<String>(
+                      future: SubLineServices(uid: subline).sublineName,
+                      builder: (context, snapshot) {
+                        print(snapshot.data.toString());
+                        sublineName = snapshot.data;
+                        return Visibility(
+                          child: Text("Gone"),
+                          visible: false,
+                        );
+                      }),
                   Row(
                     children: <Widget>[
                       _customerAddress(customerAddress),
                     ],
                   ),
+                  FutureBuilder<String>(
+                      future:
+                          MainLineServices(uid: mainline).cityNameByMainLine,
+                      builder: (context, snapshot) {
+                        print(snapshot.data.toString());
+                        cityName = snapshot.data.toString();
+                        print(cityName);
+                        return Visibility(
+                          child: Text("Gone"),
+                          visible: false,
+                        );
+                      }),
                   _infoLabel(
                     "معلومات الطلبية",
                     Icon(Icons.info, color: Colors.white, size: 30),
@@ -361,6 +264,7 @@ class _AddNewOdersState extends State<AddNewOders> {
                     ],
                   ),
                   _notes(orderNote),
+
                   _addNewOrderButton(),
                 ],
               ),
@@ -442,7 +346,39 @@ class _AddNewOdersState extends State<AddNewOders> {
     );
   }
 
-  Widget _cityChoice() {
+  Widget _customerAdditionPhoneNumber(
+      String labletext, double right, TextEditingController fieldController) {
+    return Expanded(
+      flex: 2,
+      child: Container(
+        margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: right),
+        child: TextFormField(
+          // validator: (value) {
+          //   if (value.length != 10 || value.length > 10) {
+          //     return 'الرجاء ادخال رقم جوال صحيح';
+          //   }
+          //   return null;
+          // },
+          controller: fieldController,
+          keyboardType: TextInputType.numberWithOptions(decimal: true),
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.only(right: 20),
+            labelText: labletext,
+            labelStyle: TextStyle(
+              fontFamily: 'Amiri',
+              fontSize: 18.0,
+              color: Color(0xff316686),
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _locationChoice() {
     return Expanded(
       flex: 2,
       child: Container(
@@ -456,7 +392,7 @@ class _AddNewOdersState extends State<AddNewOders> {
               } else {
                 cities = snapshot.data;
                 return DropdownButtonFormField<String>(
-                  value: cityID,
+                  value: locationID,
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
@@ -473,7 +409,7 @@ class _AddNewOdersState extends State<AddNewOders> {
                       ),
                     ),
                     contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
-                    labelText: "المدينة",
+                    labelText: "المنطقة",
                     labelStyle: TextStyle(
                       fontFamily: 'Amiri',
                       fontSize: 18.0,
@@ -481,13 +417,13 @@ class _AddNewOdersState extends State<AddNewOders> {
                     ),
                   ),
                   items: cities.map(
-                    (city) {
+                    (location) {
                       return DropdownMenuItem<String>(
-                        value: city.locationID.toString(),
+                        value: location.locationID.toString(),
                         child: Align(
                             alignment: Alignment.centerRight,
                             child: Text(
-                              city.locationName,
+                              location.locationName,
                               style: TextStyle(
                                 fontFamily: 'Amiri',
                                 fontSize: 16.0,
@@ -498,17 +434,16 @@ class _AddNewOdersState extends State<AddNewOders> {
                   ).toList(),
                   onChanged: (val) {
                     setState(() {
-                      cityID = val;
-                      cityIDAddress = val;
+                      locationID = val;
                       FirebaseFirestore.instance
-                          .collection('deliveries_costs')
-                          .where('locationID', isEqualTo: cityID)
+                          .collection('delivery_costs')
+                          .where('locationID', isEqualTo: locationID)
                           .get()
                           .then((value) => {
                                 setState(() {
                                   deliveryPrice =
                                       value.docs[0]["deliveryPrice"];
-                                  cityName = value.docs[0]["locationName"];
+                                  //cityName = value.docs[0]["locationName"];
                                 })
                               });
                     });
@@ -526,7 +461,7 @@ class _AddNewOdersState extends State<AddNewOders> {
       child: Container(
         margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
         child: StreamBuilder<List<SubLine>>(
-            stream: SubLineServices(cityID: cityIDAddress).subLinesCustomers,
+            stream: SubLineServices(mainLineID: mainline).subLinesByMainLineID,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Text('Loading...');
@@ -550,7 +485,7 @@ class _AddNewOdersState extends State<AddNewOders> {
                       ),
                     ),
                     contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
-                    labelText: "العنوان الفرعي",
+                    labelText: " العنوان",
                     labelStyle: TextStyle(
                       fontFamily: 'Amiri',
                       fontSize: 18.0,
@@ -576,18 +511,72 @@ class _AddNewOdersState extends State<AddNewOders> {
                   onChanged: (val) {
                     setState(() {
                       subline = val;
-                      print(subline);
-                      // FirebaseFirestore.instance
-                      //     .collection('deliveries_costs')
-                      //     .where('city', isEqualTo: cityID)
-                      //     .get()
-                      //     .then((value) => {
-                      //           setState(() {
-                      //             deliveryPrice =
-                      //                 value.docs[0]["deliveryPrice"];
-                      //             cityName = value.docs[0]["name"];
-                      //           })
-                      //         });
+                    });
+                  },
+                );
+              }
+            }),
+      ),
+    );
+  }
+
+  Widget _mainLineChoice() {
+    return Expanded(
+      flex: 2,
+      child: Container(
+        margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
+        child: StreamBuilder<List<MainLine>>(
+            stream:
+                MainLineServices(locationID: locationID).mainLineByLocationID,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Text('Loading...');
+              } else {
+                mainlines = snapshot.data;
+                return DropdownButtonFormField<String>(
+                  value: mainline,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide(
+                        width: 1.0,
+                        color: Color(0xff636363),
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide(
+                        width: 2.0,
+                        color: Color(0xff73a16a),
+                      ),
+                    ),
+                    contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
+                    labelText: " المدينة",
+                    labelStyle: TextStyle(
+                      fontFamily: 'Amiri',
+                      fontSize: 18.0,
+                      color: Color(0xff316686),
+                    ),
+                  ),
+                  items: mainlines.map(
+                    (mainline) {
+                      return DropdownMenuItem<String>(
+                        value: mainline.uid.toString(),
+                        child: Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              mainline.cityName,
+                              style: TextStyle(
+                                fontFamily: 'Amiri',
+                                fontSize: 16.0,
+                              ),
+                            )),
+                      );
+                    },
+                  ).toList(),
+                  onChanged: (val) {
+                    setState(() {
+                      mainline = val;
                     });
                   },
                 );
@@ -639,57 +628,57 @@ class _AddNewOdersState extends State<AddNewOders> {
     );
   }
 
-  // Widget _deliveryType() {
-  //   return Expanded(
-  //     flex: 2,
-  //     child: Container(
-  //       margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
-  //       child: DropdownButtonFormField(
-  //         onChanged: (String newValue) {
-  //           setState(() {
-  //             typeOrder = newValue;
-  //           });
-  //         },
-  //         items: <String>['عادي', 'مستعجل']
-  //             .map<DropdownMenuItem<String>>((String value) {
-  //           return DropdownMenuItem<String>(
-  //             value: value,
-  //             child: Align(
-  //               alignment: Alignment.centerRight,
-  //               child: Text(
-  //                 value,
-  //                 textAlign: TextAlign.right,
-  //                 style: TextStyle(fontFamily: 'Amiri', fontSize: 16.0),
-  //               ),
-  //             ),
-  //           );
-  //         }).toList(),
-  //         decoration: InputDecoration(
-  //             enabledBorder: OutlineInputBorder(
-  //               borderRadius: BorderRadius.circular(10.0),
-  //               borderSide: BorderSide(
-  //                 width: 1.0,
-  //                 color: Color(0xff636363),
-  //               ),
-  //             ),
-  //             focusedBorder: OutlineInputBorder(
-  //               borderRadius: BorderRadius.circular(10.0),
-  //               borderSide: BorderSide(
-  //                 width: 2.0,
-  //                 color: Color(0xff73a16a),
-  //               ),
-  //               //Change color to Color(0xff73a16a)
-  //             ),
-  //             contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
-  //             labelText: "نوع التوصيل",
-  //             labelStyle: TextStyle(
-  //                 fontFamily: 'Amiri',
-  //                 fontSize: 18.0,
-  //                 color: Color(0xff316686))),
-  //       ),
-  //     ),
-  //   );
-  // }
+  Widget _deliveryType() {
+    return Expanded(
+      flex: 2,
+      child: Container(
+        margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
+        child: DropdownButtonFormField(
+          onChanged: (String newValue) {
+            setState(() {
+              //  typeOrder = newValue;
+            });
+          },
+          items: <String>['عادي', 'مستعجل']
+              .map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Text(
+                  value,
+                  textAlign: TextAlign.right,
+                  style: TextStyle(fontFamily: 'Amiri', fontSize: 16.0),
+                ),
+              ),
+            );
+          }).toList(),
+          decoration: InputDecoration(
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: BorderSide(
+                  width: 1.0,
+                  color: Color(0xff636363),
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: BorderSide(
+                  width: 2.0,
+                  color: Color(0xff73a16a),
+                ),
+                //Change color to Color(0xff73a16a)
+              ),
+              contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
+              labelText: "نوع التوصيل",
+              labelStyle: TextStyle(
+                  fontFamily: 'Amiri',
+                  fontSize: 18.0,
+                  color: Color(0xff316686))),
+        ),
+      ),
+    );
+  }
 
   Widget _notes(TextEditingController fieldController) {
     return Container(
@@ -728,19 +717,39 @@ class _AddNewOdersState extends State<AddNewOders> {
               // print(int.parse(orderPrice.text) +
               //     int.parse(deliveryPrice));
 
-              Customer customer = new Customer(
-                  name: customerName.text,
-                  phoneNumber: int.parse(customerPhoneNumber.text),
-                  phoneNumberAdditional:
-                      int.parse(customerPhoneNumberAdditional.text),
-                  cityID: cityID,
-                  cityName: cityName,
-                  address: customerAddress.text,
-                  businesID: businessID,
-                  isArchived: false);
+              Customer customer;
+              if (customerPhoneNumberAdditional.text == '') {
+                customer = new Customer(
+                    name: customerName.text,
+                    phoneNumber: int.parse(customerPhoneNumber.text),
+                    cityID: cityID,
+                    cityName: cityName,
+                    address: customerAddress.text,
+                    businesID: businessID,
+                    sublineName: sublineName,
+                    isArchived: false);
+              } else {
+                customer = new Customer(
+                    name: customerName.text,
+                    phoneNumber: int.parse(customerPhoneNumber.text),
+                    phoneNumberAdditional:
+                        int.parse(customerPhoneNumberAdditional.text),
+                    cityID: cityID,
+                    cityName: cityName,
+                    address: customerAddress.text,
+                    businesID: businessID,
+                    sublineName: sublineName,
+                    isArchived: false);
+              }
+              bool isUrgent = false;
               String customerID =
                   await CustomerServices().addcustomerData(customer);
 
+              if (typeOrder == "عادي") {
+                isUrgent = false;
+              } else {
+                isUrgent = true;
+              }
               await OrderServices().addOrderData(new Order(
                   price: int.parse(orderPrice.text),
                   totalPrice: orderTotalPrice,
@@ -751,6 +760,8 @@ class _AddNewOdersState extends State<AddNewOders> {
                   customerID: customerID,
                   businesID: businessID,
                   sublineID: subline,
+                  indexLine: indexLine,
+                  isUrgent: isUrgent,
                   driverID: ""));
               Toast.show("تم اضافة الطلبية بنجاح", context,
                   duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);

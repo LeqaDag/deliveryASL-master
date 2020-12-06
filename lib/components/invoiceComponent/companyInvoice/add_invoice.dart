@@ -23,6 +23,7 @@ class _AddInvoiceState extends State<AddInvoice> {
 
   List<Order> orders;
   int total;
+  List<String> orderIds = [];
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
   final CollectionReference invoiceCollection =
@@ -74,9 +75,30 @@ class _AddInvoiceState extends State<AddInvoice> {
                                 "  ${snapshot.data.toString()} " ?? "0",
                               );
                             }),
+                        SizedBox(
+                          width: 30,
+                        ),
+                        Text(
+                          " عدد الطرود الموزعة :",
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: "Amiri",
+                          ),
+                        ),
+                        FutureBuilder<int>(
+                            future: OrderServices(businesID: widget.businessId)
+                                .countBusinessOrderByStateOrder("isDone"),
+                            builder: (context, snapshot) {
+                              print(snapshot.data);
+                              return Text(
+                                "  ${snapshot.data.toString()} " ?? "0",
+                              );
+                            }),
                       ],
                     ),
                   ),
+
                   Container(
                     margin: EdgeInsets.all(20.0),
                     child: Row(
@@ -215,6 +237,23 @@ class _AddInvoiceState extends State<AddInvoice> {
                             color: Colors.white,
                             size: 32.0,
                           ),
+                          StreamBuilder<List<Order>>(
+                              stream:
+                                  OrderServices(businesID: widget.businessId)
+                                      .businessIsDoneOrders(widget.businessId),
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData) {
+                                  return Text("");
+                                } else {
+                                  orders = snapshot.data;
+                                  int index = 0;
+                                  orders.forEach((element) {
+                                    orderIds.insert(index, element.uid);
+                                    index++;
+                                  });
+                                  return Text("");
+                                }
+                              }),
                         ],
                       ),
                     ),
@@ -227,22 +266,24 @@ class _AddInvoiceState extends State<AddInvoice> {
   }
 
   void _addInvoice() async {
-    final FirebaseAuth auth = FirebaseAuth.instance;
-    final User user = auth.currentUser;
-    invoiceCollection.doc().set({
-      "note": noteController.text,
-      "adminID": user.uid,
-      "businessID": widget.businessId,
-      "paidPrice": int.parse(priceController.text),
-      "totalPrice": total,
-      "isArchived": false,
-    }).then((value) async {
-      isLoading = false;
+    FirebaseFirestore.instance
+        .collection('business')
+        .doc(widget.businessId)
+        .update({
+      "paidDate": new DateTime.now(),
+      "paidSalary": int.parse(priceController.text)
+    });
 
-      Toast.show("تم اضافة فاتورة بنجاح", context,
-          duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
-      await Future.delayed(Duration(milliseconds: 1000));
-      Navigator.of(context).pop();
-    }).catchError((err) {});
+    orderIds.forEach((element) async {
+      FirebaseFirestore.instance
+          .collection('orders')
+          .doc(element)
+          .update({"isPaid": true});
+    });
+
+    Toast.show("تم اضافة الفاتورة بنجاح", context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    await Future.delayed(Duration(milliseconds: 1000));
+    Navigator.of(context).pop();
   }
 }

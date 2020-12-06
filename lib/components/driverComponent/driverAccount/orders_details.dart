@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'done_orders.dart';
 import 'not_ready_orders.dart';
+import 'stuck_orders.dart';
 
 class OrderDetails extends StatelessWidget {
   final String orderState, name, uid;
@@ -14,14 +16,17 @@ class OrderDetails extends StatelessWidget {
         uid: uid,
         orderState: orderState,
       );
+    } else if (orderState == "done") {
+      return DoneOrderDetails(
+        name: name,
+        uid: uid,
+        orderState: orderState,
+      );
     } else {
-      return Text(
-        orderState,
-        style: TextStyle(
-          fontSize: 18,
-          fontFamily: "Amiri",
-          fontWeight: FontWeight.bold,
-        ),
+      return StuckOrderDetails(
+        name: name,
+        uid: uid,
+        orderState: orderState,
       );
     }
   }

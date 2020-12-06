@@ -13,9 +13,10 @@ class CompanyInvoiceAdmin extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
+    return Expanded(
+        child: Directionality(
       textDirection: TextDirection.rtl,
-      child:  Scaffold(
+      child: Scaffold(
         appBar: AppBar(
           title: Text("فواتير الشركات",
               style: TextStyle(
@@ -36,8 +37,9 @@ class CompanyInvoiceAdmin extends StatelessWidget {
         body: StreamProvider<List<Business>>.value(
           value: BusinessServices().business,
           child: InvoiceList(name: name),
+          catchError: (_, __) => null,
         ),
       ),
-    );
+    ));
   }
 }

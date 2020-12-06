@@ -9,13 +9,14 @@ class BusinessServices {
       FirebaseFirestore.instance.collection('business');
 
   Future<void> addBusinessData(Business business) async {
-    return await businessCollection.doc().set({
+    return await businessCollection.doc(business.uid).set({
       'name': business.name,
       'email': business.email,
       'phoneNumber': business.phoneNumber,
       'userID': business.userID,
       'cityID': business.cityID,
       'isArchived': business.isArchived,
+      'paidSalary' :  business.paidSalary,
     });
   }
 
@@ -25,31 +26,32 @@ class BusinessServices {
       'email': business.email,
       'phoneNumber': business.phoneNumber,
       'userID': business.userID,
-      'cityID': business.cityID
+      'cityID': business.cityID,
     });
   }
 
   Business _businessDataFromSnapshot(DocumentSnapshot snapshot) {
     return Business(
-      uid: snapshot.id,
-      name: snapshot.data()['name'],
-      email: snapshot.data()['email'],
-      phoneNumber: snapshot.data()['phoneNumber'],
-      userID: snapshot.data()['userID'],
-      cityID: snapshot.data()['cityID']
-    );
+        uid: snapshot.id,
+        name: snapshot.data()['name'],
+        email: snapshot.data()['email'],
+        phoneNumber: snapshot.data()['phoneNumber'],
+        userID: snapshot.data()['userID'],
+        cityID: snapshot.data()['cityID'],
+        //paidSalary: snapshot.data()['paidSalary']
+        );
   }
 
   List<Business> _businessListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) {
       return Business(
-        uid: doc.reference.id,
-        name: doc.data()['name'] ?? '',
-        email: doc.data()['email'] ?? '',
-        phoneNumber: doc.data()['phoneNumber'] ?? '',
-        userID: doc.data()['userID'] ?? '',
-        cityID: doc.data()['cityID'] ??''
-      );
+          uid: doc.reference.id,
+          name: doc.data()['name'] ?? '',
+          email: doc.data()['email'] ?? '',
+          phoneNumber: doc.data()['phoneNumber'] ?? '',
+          userID: doc.data()['userID'] ?? '',
+         // paidSalary: doc.data()['paidSalary'] ?? '',
+          cityID: doc.data()['cityID'] ?? '');
     }).toList();
   }
 

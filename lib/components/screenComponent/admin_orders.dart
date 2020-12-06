@@ -154,7 +154,7 @@ class AdminOrders extends StatelessWidget {
                             width: 0.37,
                             height: 0.17,
                             imagepath: AssetImage("assets/ReadyOrders.png"),
-                            text: "طرود تم توصيل",
+                            text: "طرود تم توصيلها",
                             badgeColorAndContainerBorderColor:
                                 KBadgeColorAndContainerBorderColorReadyOrders,
                             onTap: () {

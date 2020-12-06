@@ -17,16 +17,16 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../constants.dart';
 
-class NotReadyOrderDetails extends StatefulWidget {
+class StuckOrderDetails extends StatefulWidget {
   final String orderState, name, uid;
-  NotReadyOrderDetails({Key key, this.orderState, this.name, this.uid})
+  StuckOrderDetails({Key key, this.orderState, this.name, this.uid})
       : super(key: key);
 
   @override
-  _NotReadyOrderDetailsState createState() => _NotReadyOrderDetailsState();
+  _StuckOrderDetailsState createState() => _StuckOrderDetailsState();
 }
 
-class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
+class _StuckOrderDetailsState extends State<StuckOrderDetails> {
   TextEditingController noteController = TextEditingController();
   String type, status;
   bool isCancelld, isReturn, isDone, isDelivery;
@@ -58,7 +58,7 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                             Business business = snapshot.data;
                             return Scaffold(
                                 appBar: AppBar(
-                                  title: Text(" طرد ${customer.name}",
+                                  title: Text(" تعديل حالة توصيل طرد ${customer.name}",
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontFamily: 'Amiri',
@@ -535,7 +535,6 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                                       ),
                                                                     );
                                                                   }),
-
                                                               FutureBuilder<
                                                                       String>(
                                                                   future: CustomerServices(
@@ -884,39 +883,35 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                               isArchived:
                                                                   false));
 
-                                                 
-                                                    await OrderServices(
-                                                            uid: order.uid)
-                                                        .updateOrderStatus(Order(
-                                                            isCancelld:
-                                                                isCancelld,
-                                                            isReturn: isReturn,
-                                                            isDone: isDone,
-                                                            isDelivery:
-                                                                isDelivery,
-                                                            price: order.price,
-                                                            totalPrice: order
-                                                                .totalPrice,
-                                                            type: order.type,
-                                                            description: order
-                                                                .description,
-                                                            date: order.date,
-                                                            note: order.note,
-                                                            customerID: order
-                                                                .customerID));
-                                                    // Notification here for the admin
-                                                    Toast.show(
-                                                        "تم تعديل حالة الطرد",
-                                                        context,
-                                                        duration:
-                                                            Toast.LENGTH_LONG,
-                                                        gravity: Toast.BOTTOM);
-                                                    await Future.delayed(
-                                                        Duration(
-                                                            milliseconds:
-                                                                1000));
-                                                    Navigator.of(context).pop();
-                                                 
+                                                  await OrderServices(
+                                                          uid: order.uid)
+                                                      .updateOrderStatus(Order(
+                                                          isCancelld:
+                                                              isCancelld,
+                                                          isReturn: isReturn,
+                                                          isDone: isDone,
+                                                          isDelivery:
+                                                              isDelivery,
+                                                          price: order.price,
+                                                          totalPrice:
+                                                              order.totalPrice,
+                                                          type: order.type,
+                                                          description:
+                                                              order.description,
+                                                          date: order.date,
+                                                          note: order.note,
+                                                          customerID: order
+                                                              .customerID));
+                                                  // Notification here for the admin
+                                                  Toast.show(
+                                                      "تم تعديل حالة الطرد",
+                                                      context,
+                                                      duration:
+                                                          Toast.LENGTH_LONG,
+                                                      gravity: Toast.BOTTOM);
+                                                  await Future.delayed(Duration(
+                                                      milliseconds: 1000));
+                                                  Navigator.of(context).pop();
                                                 },
                                                 color: Color(0xff73a16a),
                                                 child: Text(

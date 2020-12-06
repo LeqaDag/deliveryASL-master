@@ -20,7 +20,9 @@ class Driver {
   DateTime deleteDate;
   String deleteUser;
 
+  int paidSalary;
   String searchKey;
+  DateTime paidDate;
 
   Driver({
     this.uid,
@@ -33,8 +35,10 @@ class Driver {
     @required this.load,
     this.bonus = 0,
     this.userID,
+    this.paidSalary = 0,
     @required this.locationID,
     this.isArchived = false,
+    this.paidDate,
     this.deleteDate,
     this.deleteUser,
     this.searchKey,
