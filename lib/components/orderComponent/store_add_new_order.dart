@@ -758,6 +758,7 @@ class _AddNewOdersState extends State<AddNewOders> {
                   date: orderDate,
                   note: orderNote.text,
                   customerID: customerID,
+                  locationID: locationID,
                   businesID: businessID,
                   sublineID: subline,
                   indexLine: indexLine,

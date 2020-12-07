@@ -1,3 +1,4 @@
+import 'package:AsyadLogistic/services/autoDivisionServices.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -41,12 +42,8 @@ class PickupOrders extends StatelessWidget {
               ),
               child: RaisedButton(
                 elevation: 3,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => AutoDivision(name: name)),
-                  );
+                onPressed: () async {
+                   AutoDivisiovServices().autoDivision();
                 },
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18.0),

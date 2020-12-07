@@ -22,42 +22,48 @@ class AutoDivisiovServices {
 
   final CollectionReference subLineCollection =
       FirebaseFirestore.instance.collection('subLines');
-  int countOrder() {
-    int orderCount;
-    orderCollection
+  int orderCount = 0;
+  int countOrderByLocation = 0;
+  Future<void> countOrder() async {
+    await orderCollection
         .where('isReceived', isEqualTo: true)
         .where('isArchived', isEqualTo: false)
         .get()
         .then((value) {
       orderCount = value.size;
     });
-    return orderCount;
   }
 
-  int countByLocation(String locationID) {
-    int countOrder;
-    orderCollection
+  Future<void> countByLocation(String locationID) async {
+    await orderCollection
         .where('locationID', isEqualTo: locationID)
         .where('isReceived', isEqualTo: true)
         .where('isArchived', isEqualTo: false)
         .get()
         .then((value) {
-      countOrder = value.size;
+      countOrderByLocation = value.size;
     });
-    return countOrder;
   }
 
-  void autoDivision() {
-    int orderReceivedCount = countOrder();
+  void autoDivision() async {
+    await countOrder();
+              print('locationwwww');
 
+    int orderReceivedCount = orderCount;
     StreamBuilder<List<Location>>(
         stream: LocationServices().locations,
         builder: (context, snapshot) {
+              print('locationrrDDDDrr ');
+
           // all Locations
           if (snapshot.hasData) {
             List<Location> locations = snapshot.data;
-            locations.asMap().forEach((locationIndex, location) {
-              int countOrderByLocation = countByLocation(location.uid);
+              print(locations);
+
+            locations.asMap().forEach((locationIndex, location) async {
+              await countByLocation(location.uid);
+              print('locationrrrr ');
+
               if (orderReceivedCount != 0 && countOrderByLocation != 0) {
                 return StreamBuilder<List<Driver>>(
                     stream: DriverServices(locationID: location.uid)
@@ -81,14 +87,19 @@ class AutoDivisiovServices {
                                         List<Order> orders = snapshot.data;
                                         orders
                                             .asMap()
-                                            .forEach((orderIndex, order) {
-                                          orderCollection
+                                            .forEach((orderIndex, order) async {
+                                          await orderCollection
                                               .doc(order.uid)
                                               .update({
                                             'inStock': true,
                                             'isReceived': false,
                                             'driverID': driver.uid,
                                             'inStockDate': DateTime.now(),
+                                          });
+                                          await deiverCollection
+                                              .doc(driver.uid)
+                                              .update({
+                                            'pLoad': driver.pLoad + 1,
                                           });
                                         });
                                       } else {}

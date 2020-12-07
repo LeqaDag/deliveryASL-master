@@ -64,7 +64,11 @@ class OrderServices {
       'date': order.date,
       'note': order.note,
       'customerID': order.customerID,
-      'driverPrice': order.driverPrice
+      'driverPrice': order.driverPrice,
+      'isCancelldDate': order.isCancelldDate,
+      'isReturnDate': order.isReturnDate,
+      'isDoneDate': order.isDoneDate,
+      'isDeliveryDate': order.isDeliveryDate,
     });
   }
 
