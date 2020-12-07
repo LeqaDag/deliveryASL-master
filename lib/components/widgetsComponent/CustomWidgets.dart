@@ -958,7 +958,7 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
     } else {
       return InkWell(
         onTap: () {
-          Navigator.pushReplacement(
+          Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => OrganizeOrderInfo(

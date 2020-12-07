@@ -6,7 +6,6 @@ import 'package:AsyadLogistic/components/orderComponent/orderList.dart';
 import 'package:AsyadLogistic/components/pages/drawer.dart';
 import 'package:AsyadLogistic/components/screenComponent/auto_division.dart';
 import 'package:AsyadLogistic/services/orderServices.dart';
-import 'package:AsyadLogistic/services/autoDivisionServices.dart';
 
 import '../../constants.dart';
 
@@ -43,7 +42,11 @@ class PickupOrders extends StatelessWidget {
               child: RaisedButton(
                 elevation: 3,
                 onPressed: () {
-                  AutoDivisiovServices().autoDivision();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AutoDivision(name: name)),
+                  );
                 },
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18.0),
