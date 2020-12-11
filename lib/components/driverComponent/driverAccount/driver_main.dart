@@ -16,7 +16,7 @@ class DriverMain extends StatelessWidget {
     return Directionality(
         textDirection: TextDirection.rtl,
         child: DefaultTabController(
-          length: 3,
+          length: 4,
           child: StreamProvider<List<Order>>.value(
             value: OrderServices(driverID: uid, orderState: "driverOrders")
                 .ordersBusinessByState,
@@ -36,9 +36,19 @@ class DriverMain extends StatelessWidget {
                           child: Align(
                             alignment: Alignment.center,
                             child: Text(
+                              "طرود في المخزن",
+                              style: TextStyle(
+                                  fontSize: 11.0, fontFamily: 'Amiri'),
+                            ),
+                          ),
+                        ),
+                        Tab(
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Text(
                               "طرود غير جاهزة",
                               style: TextStyle(
-                                  fontSize: 15.0, fontFamily: 'Amiri'),
+                                  fontSize: 11.0, fontFamily: 'Amiri'),
                             ),
                           ),
                         ),
@@ -48,7 +58,7 @@ class DriverMain extends StatelessWidget {
                             child: Text(
                               "طرود جاهزة ",
                               style: TextStyle(
-                                  fontSize: 15.0, fontFamily: 'Amiri'),
+                                  fontSize: 11.0, fontFamily: 'Amiri'),
                             ),
                           ),
                         ),
@@ -58,7 +68,7 @@ class DriverMain extends StatelessWidget {
                             child: Text(
                               "طرود عالقة ",
                               style: TextStyle(
-                                  fontSize: 15.0, fontFamily: 'Amiri'),
+                                  fontSize: 11.0, fontFamily: 'Amiri'),
                             ),
                           ),
                         ),

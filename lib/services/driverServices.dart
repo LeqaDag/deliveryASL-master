@@ -5,10 +5,12 @@ class DriverServices {
   final String uid;
   final String mainLineID;
   final String locationID;
+  final int driverBonus;
   DriverServices({
     this.uid,
     this.mainLineID,
     this.locationID,
+    this.driverBonus,
   });
 
   final CollectionReference deiverCollection =
@@ -119,6 +121,7 @@ class DriverServices {
         .snapshots()
         .map(_driverListFromSnapshot);
   }
+
   Stream<List<Driver>> get driverByuserID {
     return deiverCollection
         .where('userID', isEqualTo: uid)
@@ -130,10 +133,17 @@ class DriverServices {
     return await deiverCollection.doc(uid).update({'isArchived': true});
   }
 
-   Future<void> updateDataPaidSalary(Driver driver) async {
+  Future<void> updateDataPaidSalary(Driver driver) async {
     return await deiverCollection.doc(uid).update({
       'paidDate': driver.paidDate,
       'paidSalary': driver.paidSalary,
     });
+  }
+
+  Future<int> get driverBonusData {
+    return deiverCollection
+        .doc(uid)
+        .get()
+        .then((value) => value.data()['bonus']);
   }
 }

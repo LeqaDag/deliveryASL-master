@@ -43,7 +43,7 @@ class PickupOrders extends StatelessWidget {
               child: RaisedButton(
                 elevation: 3,
                 onPressed: () async {
-                   AutoDivisiovServices().autoDivision();
+                  AutoDivisiovServices().autoDivision();
                 },
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18.0),
@@ -64,6 +64,37 @@ class PickupOrders extends StatelessWidget {
                 textColor: Color(0xff73A16A),
               ),
             ),
+            // Container(
+            //   width: 150,
+            //   height: 50,
+            //   padding: EdgeInsets.only(
+            //     top: 5,
+            //     bottom: 5,
+            //   ),
+            //   child: RaisedButton(
+            //     elevation: 3,
+            //     onPressed: () {
+            //       AutoDivisiovServices().returnOrder();
+            //     },
+            //     shape: RoundedRectangleBorder(
+            //       borderRadius: BorderRadius.circular(18.0),
+            //       side: BorderSide(
+            //         color: Color(0xff73A16A),
+            //         width: 3,
+            //       ),
+            //     ),
+            //     child: Text(
+            //       "ارجاع الطرود".toUpperCase(),
+            //       style: TextStyle(
+            //         fontSize: 18,
+            //         fontWeight: FontWeight.bold,
+            //         fontFamily: 'Amiri',
+            //       ),
+            //     ),
+            //     color: Colors.white,
+            //     textColor: Color(0xff73A16A),
+            //   ),
+            // ),
             StreamProvider<List<Order>>.value(
               value: OrderServices().ordersByState('isReceived'),
               child: OrderList(orderState: 'isReceived', name: name),

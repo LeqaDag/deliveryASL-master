@@ -1,17 +1,21 @@
+import 'package:AsyadLogistic/classes/location.dart';
+import 'package:AsyadLogistic/services/locationServices.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:AsyadLogistic/classes/business.dart';
 import 'package:AsyadLogistic/classes/customer.dart';
 import 'package:AsyadLogistic/classes/driver.dart';
-import 'package:AsyadLogistic/classes/mainLine.dart';
 import 'package:AsyadLogistic/classes/order.dart';
 import 'package:AsyadLogistic/components/pages/drawer.dart';
 import 'package:AsyadLogistic/components/pages/loadingData.dart';
 import 'package:AsyadLogistic/services/businessServices.dart';
 import 'package:AsyadLogistic/services/customerServices.dart';
 import 'package:AsyadLogistic/services/driverServices.dart';
-import 'package:AsyadLogistic/services/mainLineServices.dart';
 import 'package:AsyadLogistic/services/orderServices.dart';
+import 'package:AsyadLogistic/components/orderComponent/orderInformationComponent/shared_information.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:toast/toast.dart';
+
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../constants.dart';
@@ -26,15 +30,17 @@ class ReceivedInfo extends StatefulWidget {
 
 class _ReceivedInfoState extends State<ReceivedInfo> {
   String driverName = 'اسم السائق';
+  final CollectionReference driverCollection =
+      FirebaseFirestore.instance.collection('drivers');
   Driver driver;
   final _formKey = GlobalKey<FormState>();
-  List<MainLine> mainLines;
-  String mainLineID;
+  List<Location> locations;
+  String locationID;
 
   List<Driver> driverList;
   String driverID;
-  bool selected = false, driverSelected = false;
-  TextEditingController driverPrice = new TextEditingController();
+  bool selected = false;
+  int bonus = 0;
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Order>(
@@ -76,13 +82,11 @@ class _ReceivedInfoState extends State<ReceivedInfo> {
                                   textDirection: TextDirection.rtl,
                                   child: ListView(
                                     children: <Widget>[
-                                      _customTitle(
+                                      CustomTitle(
                                           "معلومات الاتصال بـ ${business.name}"),
 
                                       GestureDetector(
                                           onTap: () {
-                                            print(customer.phoneNumber
-                                                .toString());
                                             launch("tel:" +
                                                 Uri.encodeComponent(
                                                     "${business.phoneNumber.toString()}"));
@@ -107,17 +111,15 @@ class _ReceivedInfoState extends State<ReceivedInfo> {
                                               ),
                                             ),
                                           )),
-                                      _labelTextField(Icons.email,
+                                      LabelTextField(Icons.email,
                                           Colors.red[600], business.email),
 
-                                      _customTitle("معلومات الزبون"),
+                                      CustomTitle("معلومات الزبون"),
 
-                                      _labelTextField(Icons.person,
+                                      LabelTextField(Icons.person,
                                           Colors.purple, customer.name),
                                       GestureDetector(
                                           onTap: () {
-                                            print(customer.phoneNumber
-                                                .toString());
                                             launch("tel:" +
                                                 Uri.encodeComponent(
                                                     "0${customer.phoneNumber.toString()}"));
@@ -142,41 +144,39 @@ class _ReceivedInfoState extends State<ReceivedInfo> {
                                               ),
                                             ),
                                           )),
-                                      _labelTextFieldCity(Icons.location_on,
+                                      LabelTextFieldCityName(Icons.location_on,
                                           Colors.blue, customer.cityName),
 
-                                      _customTitle("معلومات الطلبية"),
+                                      CustomTitle("معلومات الطلبية"),
 
-                                      _labelTextField(Icons.short_text,
+                                      LabelTextField(Icons.short_text,
                                           Colors.green[700], order.description),
-                                      _labelTextFieldPrice(order.price
+                                      LabelTextFieldPrice(order.price
                                           .toString()), // تغير الايكونات بعد اضافتها على الاجهزة بشكل رسمي
-                                      _labelTextField(
+                                      LabelTextField(
                                           Icons.date_range,
                                           Colors.deepPurpleAccent[200],
                                           intl.DateFormat('yyyy-MM-dd')
                                               .format(order.date)),
-                                      _labelTextField(Icons.scatter_plot,
+                                      LabelTextField(Icons.scatter_plot,
                                           Colors.grey, orderType),
 
-                                      _customTitle("طرد غير موزع"),
+                                      CustomTitle("طرد غير موزع"),
                                       Container(
                                         margin: EdgeInsets.all(10.0),
-                                        child: StreamBuilder<List<MainLine>>(
-                                          stream: MainLineServices(
-                                                  cityID: customer.cityID)
-                                              .mainLineByCityID,
+                                        child: StreamBuilder<List<Location>>(
+                                          stream: LocationServices().locations,
                                           builder: (context, snapshot) {
                                             if (!snapshot.hasData) {
                                               return Text('Loading...');
                                             } else {
-                                              mainLines = snapshot.data;
-                                              if (mainLines == []) {
+                                              locations = snapshot.data;
+                                              if (locations == []) {
                                                 return LoadingData();
                                               } else {
                                                 return DropdownButtonFormField<
                                                     String>(
-                                                  value: mainLineID,
+                                                  value: locationID,
                                                   decoration: InputDecoration(
                                                       enabledBorder:
                                                           OutlineInputBorder(
@@ -210,17 +210,17 @@ class _ReceivedInfoState extends State<ReceivedInfo> {
                                                           fontSize: 18.0,
                                                           color: Color(
                                                               0xff316686))),
-                                                  items: mainLines.map(
-                                                    (mainLine) {
+                                                  items: locations.map(
+                                                    (location) {
                                                       return DropdownMenuItem<
                                                           String>(
-                                                        value: mainLine.uid
+                                                        value: location.uid
                                                             .toString(),
                                                         child: Align(
                                                           alignment: Alignment
                                                               .centerRight,
                                                           child: Text(
-                                                            mainLine.name,
+                                                            location.name,
                                                             style: TextStyle(
                                                               fontFamily:
                                                                   'Amiri',
@@ -233,7 +233,7 @@ class _ReceivedInfoState extends State<ReceivedInfo> {
                                                   ).toList(),
                                                   onChanged: (val) {
                                                     setState(() {
-                                                      mainLineID = val;
+                                                      locationID = val;
                                                       selected = true;
                                                     });
                                                   },
@@ -251,13 +251,24 @@ class _ReceivedInfoState extends State<ReceivedInfo> {
                                                 child: Text(""),
                                               ),
                                       ),
-                                      Container(
-                                        child: driverSelected
-                                            ? _driverPriceLine()
-                                            : Container(
-                                                child: Text(""),
-                                              ),
-                                      ),
+                                      FutureBuilder<int>(
+                                          future: DriverServices(uid: driverID)
+                                              .driverBonusData,
+                                          builder: (context, snapshot) {
+                                            if (snapshot.hasData) {
+                                              bonus = (snapshot.data) + 1;
+                                              return Text(" ");
+                                            } else {
+                                              return Text("");
+                                            }
+                                          }),
+                                      // Container(
+                                      //   child: driverSelected
+                                      //       ? _driverPriceLine()
+                                      //       : Container(
+                                      //           child: Text(""),
+                                      //         ),
+                                      // ),
                                       Container(
                                         margin: EdgeInsets.all(40.0),
                                         child: RaisedButton(
@@ -266,30 +277,34 @@ class _ReceivedInfoState extends State<ReceivedInfo> {
                                               borderRadius:
                                                   new BorderRadius.circular(
                                                       30.0)),
-                                          onPressed: () {
-                                            if (_formKey.currentState
-                                                .validate()) {
-                                              if (driverID == "" &&
-                                                  driverID == null) {
-                                              } else {
-                                                if (order.type) {
-                                                  OrderServices(
-                                                          uid: widget.uid,
-                                                          driverID: driverID)
-                                                      .updateOrderToisUrgent;
-                                                } else {
-                                                  OrderServices(
-                                                          uid: widget.uid,
-                                                          driverID: driverID)
-                                                      .updateOrderToisDelivery;
-                                                }
+                                          onPressed: () async {
+                                            if (driverID == "" &&
+                                                driverID == null) {
+                                            } else {
+                                              print(bonus);
+                                              if (order.type) {
                                                 OrderServices(
                                                         uid: widget.uid,
-                                                        driverPrice: int.parse(
-                                                            driverPrice.text))
-                                                    .updateDriverPrice;
-                                                Navigator.pop(context);
+                                                        driverID: driverID)
+                                                    .updateOrderToisUrgent;
+                                              } else {
+                                                OrderServices(
+                                                        uid: widget.uid,
+                                                        driverID: driverID)
+                                                    .updateOrderToisDelivery;
                                               }
+                                              await driverCollection
+                                                  .doc(driverID)
+                                                  .update({
+                                                'bonus': (bonus),
+                                              });
+                                              Toast.show("تم توزيع الطرد بنجاح",
+                                                  context,
+                                                  duration: Toast.LENGTH_LONG,
+                                                  gravity: Toast.BOTTOM);
+                                              await Future.delayed(
+                                                  Duration(milliseconds: 1000));
+                                              Navigator.of(context).pop();
                                             }
                                           },
                                           color: Color(0xff73a16a),
@@ -336,17 +351,17 @@ class _ReceivedInfoState extends State<ReceivedInfo> {
   }
 
   Widget _driverDrop() {
-    if (mainLineID != null) {
+    if (locationID != null) {
       return Container(
         margin: EdgeInsets.all(10.0),
         child: StreamBuilder<List<Driver>>(
-          stream: DriverServices(mainLineID: mainLineID).driversBymainLineID,
+          stream: DriverServices(locationID: locationID).driversBylocationID,
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return Text('Loading...');
             } else {
               driverList = snapshot.data;
-              print(driverList);
+
               if (driverList == []) {
                 return LoadingData();
               } else {
@@ -393,7 +408,7 @@ class _ReceivedInfoState extends State<ReceivedInfo> {
                   onChanged: (val) {
                     setState(() {
                       driverID = val;
-                      driverSelected = true;
+                      // driverSelected = true;
                     });
                   },
                 );
@@ -409,129 +424,39 @@ class _ReceivedInfoState extends State<ReceivedInfo> {
     }
   }
 
-  Widget _driverPriceLine() {
-    return Form(
-        key: _formKey,
-        child: Container(
-          margin: EdgeInsets.all(10.0),
-          child: TextFormField(
-            validator: (value) {
-              if (value.isEmpty) {
-                return 'ادخل سعر التوصيل للسائق ';
-              }
-              return null;
-            },
-            controller: driverPrice,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-              labelText: " سعر التوصيل للسائق",
-              labelStyle: TextStyle(
-                  fontFamily: 'Amiri',
-                  fontSize: 16.0,
-                  color: Color(0xff316686)),
-              contentPadding: EdgeInsets.only(right: 20.0),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-        ));
-    // OrderService(
-    //         uid: order.uid,
-    //         driverPrice: int.parse(
-    //             driverPrice.text))
-    //     .updateDriverPrice;
-    // Navigator.pop(context);
-  }
+  // Widget _driverPriceLine() {
+  //   return Form(
+  //       key: _formKey,
+  //       child: Container(
+  //         margin: EdgeInsets.all(10.0),
+  //         child: TextFormField(
+  //           validator: (value) {
+  //             if (value.isEmpty) {
+  //               return 'ادخل سعر التوصيل للسائق ';
+  //             }
+  //             return null;
+  //           },
+  //           controller: driverPrice,
+  //           keyboardType: TextInputType.number,
+  //           decoration: InputDecoration(
+  //             labelText: " سعر التوصيل للسائق",
+  //             labelStyle: TextStyle(
+  //                 fontFamily: 'Amiri',
+  //                 fontSize: 16.0,
+  //                 color: Color(0xff316686)),
+  //             contentPadding: EdgeInsets.only(right: 20.0),
+  //             border: OutlineInputBorder(
+  //               borderRadius: BorderRadius.circular(10),
+  //             ),
+  //           ),
+  //         ),
+  //       ));
+  //   // OrderService(
+  //   //         uid: order.uid,
+  //   //         driverPrice: int.parse(
+  //   //             driverPrice.text))
+  //   //     .updateDriverPrice;
+  //   // Navigator.pop(context);
+  // }
 
-  Widget _customTitle(String title) {
-    return Container(
-      width: double.infinity,
-      height: 40,
-      color: KCustomCompanyOrdersStatus,
-      child: Center(
-        child: Text(
-          title,
-          style: TextStyle(
-            fontSize: 18,
-            fontFamily: "Amiri",
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _labelTextFieldPhone(IconData icon, Color color, String text) {
-    return Container(
-      width: double.infinity,
-      height: 35,
-      child: TextField(
-        onTap: () => launch("tel:0595114481"),
-        enabled: false,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.only(top: 7, bottom: 7, right: 8),
-          prefixIcon: Icon(
-            icon,
-            color: color,
-            size: 20,
-          ),
-          hintText: text, //String Data form DB.
-        ),
-      ),
-    );
-  }
-
-  Widget _labelTextFieldPrice(String text) {
-    return Container(
-      width: double.infinity,
-      height: 35,
-      child: TextField(
-        enabled: false,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.only(top: 7, bottom: 7, right: 8),
-          prefixIcon: Image.asset('assets/price.png'),
-          hintText: text, //String Data form DB.
-        ),
-      ),
-    );
-  }
-
-  Widget _labelTextField(IconData icon, Color color, String text) {
-    return Container(
-      width: double.infinity,
-      height: 35,
-      child: TextField(
-        enabled: false,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.only(top: 7, bottom: 7, right: 8),
-          prefixIcon: Icon(
-            icon,
-            color: color,
-            size: 20,
-          ),
-          hintText: text, //String Data form DB.
-        ),
-      ),
-    );
-  }
-
-  Widget _labelTextFieldCity(IconData icon, Color color, String text) {
-    return Container(
-      width: double.infinity,
-      height: 35,
-      child: TextField(
-        enabled: false,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.only(top: 7, bottom: 7, right: 8),
-          prefixIcon: Icon(
-            icon,
-            color: color,
-            size: 20,
-          ),
-          hintText: text, //String Data form DB.
-        ),
-      ),
-    );
-  }
 }

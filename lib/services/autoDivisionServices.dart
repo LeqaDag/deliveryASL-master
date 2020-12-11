@@ -105,46 +105,41 @@ class AutoDivisiovServices {
 
   void autoDivision() async {
     await countOrder();
-    print('locationwwww');
 
     int orderReceivedCount = orderCount;
-    print(orderReceivedCount);
 
     locationCollection
         .where('isArchived', isEqualTo: false)
         .get()
-        .then((value) {
-      print('locationrrDDDDrr ');
+        .then((value) async {
       List<Location> locations = _locationListFromSnapshot(value);
-      print(locations);
-      locations.asMap().forEach((locationIndex, location) async {
+      for (Location location in locations) {
         await countByLocation(location.uid);
-        print(location.uid);
         if (orderReceivedCount != 0) {
           deiverCollection
               .where('locationID', isEqualTo: location.uid)
               .where('isArchived', isEqualTo: false)
               .get()
-              .then((value) {
-            List<Driver> drivers = _driverListFromSnapshot(value);
-            // print(drivers);
+              .then((value) async {
+            List<Driver> drivers = _driverListFromSnapshot(value).toList();
+            for (Driver driver in drivers) {
+              int availableLoad = driver.load - driver.pLoad;
 
-            drivers.asMap().forEach((driverIndex, driver) async {
-              if ( driver.pLoad <= driver.load) {
-                int availableLoad = driver.load - driver.pLoad;
-                print(driver.load - driver.pLoad);
-
-                if (availableLoad != 0) {
-                  for (var i = 0; i < orderCount; i++) {
-                  print('locationrrDDDDrسسسسrييي ');
-                    orderCollection
-                        .where('isReceived', isEqualTo: true)
-                        .where('locationID', isEqualTo: location.uid)
-                        .where('isArchived', isEqualTo: false)
-                        .get()
-                        .then((value) {
-                      List<Order> orders = _orderListFromSnapshot(value);
-                      orders.asMap().forEach((orderIndex, order) async {
+              if (driver.pLoad < driver.load) {
+                for (var i = 0; i < availableLoad; i++) {
+                  print(availableLoad);
+                  await orderCollection
+                      .where('isReceived', isEqualTo: true)
+                      .where('locationID', isEqualTo: location.uid)
+                      .where('isArchived', isEqualTo: false)
+                      // .limit(availableLoad)
+                      .get()
+                      .then((value) async {
+                    List<Order> orders = _orderListFromSnapshot(value);
+                    orders = orders.take(availableLoad).toList();
+                    print(orders);
+                    for (Order order in orders) {
+                      if (driver.pLoad < driver.load) {
                         await orderCollection.doc(order.uid).update({
                           'inStock': true,
                           'isReceived': false,
@@ -152,17 +147,49 @@ class AutoDivisiovServices {
                           'inStockDate': DateTime.now(),
                         });
                         await deiverCollection.doc(driver.uid).update({
-                          'pLoad': driver.pLoad + 1,
+                          'pLoad': (driver.pLoad++),
                         });
-                      });
+                      }
+                      // else if (driver.pLoad < driver.load) {
+                      //   await deiverCollection.doc(driver.uid).update({
+                      //     'pLoad': (driver.pLoad++),
+                      //   });
+                      // }
+                      //  else if (driver.pLoad == driver.load) {
+                      //   await deiverCollection.doc(driver.uid).update({
+                      //     'pLoad': (driver.pLoad++),
+                      //   });
+                      // } else {}
+                    }
+                  });
+                  if (driver.pLoad < driver.load) {
+                    await deiverCollection.doc(driver.uid).update({
+                      'pLoad': driver.pLoad +1,
                     });
-                    await countOrder();
+                  } else if (driver.pLoad <= driver.load) {
+                    await deiverCollection.doc(driver.uid).update({
+                      'pLoad': ((driver.pLoad + 1) - 1),
+                    });
                   }
-                } else {}
-              } else {}
-            });
+                  await countOrder();
+                }
+              }
+            }
           });
         } else {}
+      }
+    });
+  }
+
+  void returnOrder() async {
+    orderCollection.get().then((value) {
+      List<Order> orders = _orderListFromSnapshot(value);
+      orders.asMap().forEach((orderIndex, order) async {
+        await orderCollection.doc(order.uid).update({
+          'inStock': false,
+          'isReceived': true,
+          'driverID': "",
+        });
       });
     });
   }

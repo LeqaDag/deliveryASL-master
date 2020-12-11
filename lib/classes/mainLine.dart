@@ -5,7 +5,7 @@ class MainLine {
   String name;
   String locationID;
   String cityName;
-
+  String cityID;
   bool isArchived;
   DateTime deleteDate;
   String deleteUser;
@@ -15,6 +15,7 @@ class MainLine {
     @required this.name,
     @required this.locationID,
     @required this.cityName,
+    @required this.cityID,
     this.isArchived = false,
     this.deleteDate,
     this.deleteUser,

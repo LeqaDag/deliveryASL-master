@@ -26,10 +26,11 @@ class MainApp extends StatelessWidget {
           create: (_) => AuthenticationService(FirebaseAuth.instance),
         ),
         StreamProvider(
-          create: (context) => context.read<AuthenticationService>().authStateChanges,
+          create: (context) =>
+              context.read<AuthenticationService>().authStateChanges,
         )
       ],
-          child: MaterialApp(
+      child: MaterialApp(
         theme: ThemeData(
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -39,6 +40,7 @@ class MainApp extends StatelessWidget {
     );
   }
 }
+
 class AuthenticationWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -46,42 +48,43 @@ class AuthenticationWrapper extends StatelessWidget {
 
     if (firebaseUser != null && firebaseUser.uid != null) {
       FirebaseFirestore.instance
-            .collection('users')
-            .where('userID', isEqualTo: firebaseUser.uid)
-            .get()
-            .then((value) {
-          print(FirebaseAuth.instance.currentUser.uid);
-          if (value.docs[0]["userType"] == '0') {
-            LoadingData();
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => AdminHome(
-                        name: value.docs[0]["name"],
-                      )),
-            );
-          } else if (value.docs[0]["userType"] == '1') {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => BusinessMain(
+          .collection('users')
+          .where('userID', isEqualTo: firebaseUser.uid)
+          .get()
+          .then((value) {
+        print(FirebaseAuth.instance.currentUser.uid);
+        if (value.docs[0]["userType"] == '0') {
+          LoadingData();
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => AdminHome(
                       name: value.docs[0]["name"],
-                      uid: FirebaseAuth.instance.currentUser.uid)),
-            );
-          } else if (value.docs[0]["userType"] == '2') {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => DriverMain(
-                      name: value.docs[0]["name"],
-                      uid: FirebaseAuth.instance.currentUser.uid)),
-            );
-          } else {
-            return LoadingData();
-          }
-        });
+                    )),
+          );
+        } else if (value.docs[0]["userType"] == '1') {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => BusinessMain(
+                    name: value.docs[0]["name"],
+                    uid: FirebaseAuth.instance.currentUser.uid)),
+          );
+        } else if (value.docs[0]["userType"] == '2') {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => DriverMain(
+                    name: value.docs[0]["name"],
+                    uid: FirebaseAuth.instance.currentUser.uid)),
+          );
+        } else {
+          return LoadingData();
+        }
+      });
     }
     return LoginAdmin();
   }
 }
+
 ///store-and-business

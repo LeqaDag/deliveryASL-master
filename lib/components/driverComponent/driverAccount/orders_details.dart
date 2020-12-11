@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'done_orders.dart';
+import 'instoke_orders.dart';
 import 'not_ready_orders.dart';
 import 'stuck_orders.dart';
 
@@ -10,6 +11,13 @@ class OrderDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (orderState == "inStoke") {
+      return InStokeOrderDetails(
+        name: name,
+        uid: uid,
+        orderState: orderState,
+      );
+    }
     if (orderState == "pending") {
       return NotReadyOrderDetails(
         name: name,

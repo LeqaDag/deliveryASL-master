@@ -8,6 +8,7 @@ import 'package:AsyadLogistic/components/screenComponent/admin_orders.dart';
 import 'package:AsyadLogistic/services/businessServices.dart';
 import 'package:AsyadLogistic/services/customerServices.dart';
 import 'package:AsyadLogistic/services/orderServices.dart';
+import 'package:AsyadLogistic/components/orderComponent/orderInformationComponent/shared_information.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:url_launcher/url_launcher.dart';
 
@@ -61,7 +62,7 @@ class LoadingInfo extends StatelessWidget {
                                   textDirection: TextDirection.rtl,
                                   child: ListView(
                                     children: <Widget>[
-                                      _customTitle(
+                                      CustomTitle(
                                           "معلومات الاتصال بـ ${business.name}"),
                                       GestureDetector(
                                           onTap: () {
@@ -92,12 +93,12 @@ class LoadingInfo extends StatelessWidget {
                                             ),
                                           )),
 
-                                      _labelTextField(Icons.email,
+                                      LabelTextField(Icons.email,
                                           Colors.red[600], business.email),
 
-                                      _customTitle("معلومات الزبون"),
+                                      CustomTitle("معلومات الزبون"),
 
-                                      _labelTextField(Icons.person,
+                                      LabelTextField(Icons.person,
                                           Colors.purple, customer.name),
                                       GestureDetector(
                                           onTap: () {
@@ -128,21 +129,21 @@ class LoadingInfo extends StatelessWidget {
                                             ),
                                           )),
 
-                                      _labelTextFieldCity(Icons.location_on,
+                                      LabelTextFieldCityName(Icons.location_on,
                                           Colors.blue, customer.cityName),
 
-                                      _customTitle("معلومات الطلبية"),
+                                      CustomTitle("معلومات الطلبية"),
 
-                                      _labelTextField(Icons.short_text,
+                                      LabelTextField(Icons.short_text,
                                           Colors.green[700], order.description),
-                                      _labelTextFieldPrice(order.price
+                                      LabelTextFieldPrice(order.price
                                           .toString()), // تغير الايكونات بعد اضافتها على الاجهزة بشكل رسمي
-                                      _labelTextField(
+                                      LabelTextField(
                                           Icons.date_range,
                                           Colors.deepPurpleAccent[200],
                                           intl.DateFormat('yyyy-MM-dd')
                                               .format(order.date)),
-                                      _labelTextField(Icons.scatter_plot,
+                                      LabelTextField(Icons.scatter_plot,
                                           Colors.grey, orderType),
                                       Container(
                                         margin: EdgeInsets.all(40.0),
@@ -203,108 +204,5 @@ class LoadingInfo extends StatelessWidget {
             return LoadingData();
           }
         });
-  }
-
-  Widget _customTitle(String title) {
-    return Container(
-      width: double.infinity,
-      height: 40,
-      color: KCustomCompanyOrdersStatus,
-      child: Center(
-        child: Text(
-          title,
-          style: TextStyle(
-            fontSize: 18,
-            fontFamily: "Amiri",
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _labelTextFieldPhone(IconData icon, Color color, String text) {
-    return Container(
-      width: double.infinity,
-      height: 35,
-      // margin: EdgeInsets.only(right:width*0.04 ,left:width*0.04 ),
-      // color: KCustomCompanyOrdersStatus,
-
-      child: TextField(
-        onTap: () {
-          print(text);
-          //launch("tel:" + Uri.encodeComponent(text));
-        },
-        enabled: false,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.only(top: 7, bottom: 7, right: 8),
-          prefixIcon: Icon(
-            icon,
-            color: color,
-            size: 20,
-          ),
-          hintText: text, //String Data form DB.
-        ),
-      ),
-    );
-  }
-
-  Widget _labelTextFieldPrice(String text) {
-    return Container(
-      width: double.infinity,
-      height: 35,
-      // margin: EdgeInsets.only(right:width*0.04 ,left:width*0.04 ),
-      // color: KCustomCompanyOrdersStatus,
-
-      child: TextField(
-        enabled: false,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.only(top: 7, bottom: 7, right: 8),
-          prefixIcon: Image.asset('assets/price.png'),
-          hintText: text, //String Data form DB.
-        ),
-      ),
-    );
-  }
-
-  Widget _labelTextField(IconData icon, Color color, String text) {
-    return Container(
-      width: double.infinity,
-      height: 35,
-      // margin: EdgeInsets.only(right:width*0.04 ,left:width*0.04 ),
-      // color: KCustomCompanyOrdersStatus,
-
-      child: TextField(
-        enabled: false,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.only(top: 7, bottom: 7, right: 8),
-          prefixIcon: Icon(
-            icon,
-            color: color,
-            size: 20,
-          ),
-          hintText: text, //String Data form DB.
-        ),
-      ),
-    );
-  }
-
-  Widget _labelTextFieldCity(IconData icon, Color color, String text) {
-    return Container(
-      width: double.infinity,
-      height: 35,
-      child: TextField(
-        enabled: false,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.only(top: 7, bottom: 7, right: 8),
-          prefixIcon: Icon(
-            icon,
-            color: color,
-            size: 20,
-          ),
-          hintText: text, //String Data form DB.
-        ),
-      ),
-    );
   }
 }

@@ -11,7 +11,6 @@ class DeliveriesCostsServices {
   Future<void> addDeliveryCostData(DeliveriesCosts deliveryCost) async {
     return await deliveryCostCollection.doc().set({
       'deliveryPrice': deliveryCost.deliveryPrice,
-      'note': deliveryCost.note,
       'adminID': deliveryCost.adminID,
       'locationID': deliveryCost.locationID,
       'businesID': deliveryCost.businesID,

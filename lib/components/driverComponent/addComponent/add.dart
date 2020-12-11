@@ -562,6 +562,7 @@ class _AddDriverState extends State<AddDriver> {
               phoneNumber: phoneController.text,
               address: addressController.text,
               cityID: cityID,
+              pLoad: 0,
               load: int.parse(loadController.text),
               locationID: locationID,
               userID: result.user.uid,

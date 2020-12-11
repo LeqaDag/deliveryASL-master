@@ -26,10 +26,20 @@ class NotReadyOrderDetails extends StatefulWidget {
 class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
   TextEditingController noteController = TextEditingController();
   String type, status;
-  bool isCancelld, isReturn, isDone, isDelivery;
+  bool isCancelld, isReturn, isDone, isDelivery, isReceived;
   final _formKey = GlobalKey<FormState>();
   String cityId;
-  DateTime deliveryDate = new DateTime.now();
+  DateTime deliveryDate, doneDate, cancelledDate, returnDate, receivedDate;
+
+  @override
+  void initState() {
+    deliveryDate = new DateTime.now();
+    doneDate = new DateTime.now();
+    cancelledDate = new DateTime.now();
+    returnDate = new DateTime.now();
+    receivedDate = new DateTime.now();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -532,7 +542,6 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                                       ),
                                                                     );
                                                                   }),
-
                                                               FutureBuilder<
                                                                       String>(
                                                                   future: CustomerServices(
@@ -675,6 +684,7 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                   'راجعة لاسباب أخرى',
                                                   'مؤجلة',
                                                   'تم فقدان الطرد',
+                                                  'ارجاع الى المخزن'
                                                 ].map<DropdownMenuItem<String>>(
                                                     (String value) {
                                                   return DropdownMenuItem<
@@ -786,6 +796,9 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                     isCancelld = false;
                                                     isReturn = false;
                                                     isDelivery = false;
+                                                    isReceived = false;
+                                                    doneDate =
+                                                        new DateTime.now();
                                                   } else if (type ==
                                                       'لم يتم الرد على الهاتف') {
                                                     status = "2";
@@ -793,6 +806,7 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                     isCancelld = false;
                                                     isReturn = false;
                                                     isDelivery = true;
+                                                    isReceived = false;
                                                   } else if (type ==
                                                       'تم التوصيل مع تغيير السعر') {
                                                     status = "3";
@@ -800,6 +814,9 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                     isCancelld = false;
                                                     isReturn = false;
                                                     isDelivery = false;
+                                                    isReceived = false;
+                                                    doneDate =
+                                                        new DateTime.now();
                                                   } else if (type ==
                                                       'ملغية بسبب خطأ في المنتج') {
                                                     status = "4";
@@ -807,6 +824,9 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                     isCancelld = true;
                                                     isReturn = false;
                                                     isDelivery = false;
+                                                    isReceived = false;
+                                                    cancelledDate =
+                                                        new DateTime.now();
                                                   } else if (type ==
                                                       'ملغية لاسباب شخصية') {
                                                     status = "5";
@@ -814,6 +834,9 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                     isCancelld = true;
                                                     isReturn = false;
                                                     isDelivery = false;
+                                                    isReceived = false;
+                                                    cancelledDate =
+                                                        new DateTime.now();
                                                   } else if (type ==
                                                       'ملغية لاسباب أخرى') {
                                                     status = "6";
@@ -821,6 +844,9 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                     isCancelld = true;
                                                     isReturn = false;
                                                     isDelivery = false;
+                                                    isReceived = false;
+                                                    cancelledDate =
+                                                        new DateTime.now();
                                                   } else if (type ==
                                                       'راجعة بسبب خطأ في المنتج') {
                                                     status = "7";
@@ -828,6 +854,9 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                     isCancelld = false;
                                                     isReturn = true;
                                                     isDelivery = false;
+                                                    isReceived = false;
+                                                    returnDate =
+                                                        new DateTime.now();
                                                   } else if (type ==
                                                       'راجعة لاسباب شخصية') {
                                                     status = "8";
@@ -835,6 +864,9 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                     isCancelld = false;
                                                     isReturn = true;
                                                     isDelivery = false;
+                                                    isReceived = false;
+                                                    returnDate =
+                                                        new DateTime.now();
                                                   } else if (type ==
                                                       'راجعة لاسباب أخرى') {
                                                     status = "9";
@@ -842,12 +874,18 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                     isCancelld = false;
                                                     isReturn = true;
                                                     isDelivery = false;
+                                                    isReceived = false;
+                                                    returnDate =
+                                                        new DateTime.now();
                                                   } else if (type == 'مؤجلة') {
                                                     status = "10";
                                                     isDone = false;
                                                     isCancelld = true;
                                                     isReturn = false;
                                                     isDelivery = false;
+                                                    isReceived = false;
+                                                    cancelledDate =
+                                                        new DateTime.now();
                                                   } else if (type ==
                                                       'تم فقدان الطرد') {
                                                     status = "11";
@@ -855,12 +893,24 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                     isCancelld = false;
                                                     isReturn = false;
                                                     isDelivery = true;
+                                                    isReceived = false;
+                                                  } else if (type ==
+                                                      'ارجاع الى المخزن') {
+                                                    status = "12";
+                                                    isDone = false;
+                                                    isCancelld = false;
+                                                    isReturn = false;
+                                                    isDelivery = false;
+                                                    isReceived = true;
+                                                    cancelledDate =
+                                                        new DateTime.now();
                                                   } else {
                                                     status = "0";
                                                     isDone = false;
                                                     isCancelld = false;
                                                     isReturn = false;
                                                     isDelivery = true;
+                                                    isReceived = false;
                                                   }
 
                                                   await DeliveriesStatusServices()
@@ -881,39 +931,46 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                               isArchived:
                                                                   false));
 
-                                                 
-                                                    await OrderServices(
-                                                            uid: order.uid)
-                                                        .updateOrderStatus(Order(
-                                                            isCancelld:
-                                                                isCancelld,
-                                                            isReturn: isReturn,
-                                                            isDone: isDone,
-                                                            isDelivery:
-                                                                isDelivery,
-                                                            price: order.price,
-                                                            totalPrice: order
-                                                                .totalPrice,
-                                                            type: order.type,
-                                                            description: order
-                                                                .description,
-                                                            date: order.date,
-                                                            note: order.note,
-                                                            customerID: order
-                                                                .customerID));
-                                                    // Notification here for the admin
-                                                    Toast.show(
-                                                        "تم تعديل حالة الطرد",
-                                                        context,
-                                                        duration:
-                                                            Toast.LENGTH_LONG,
-                                                        gravity: Toast.BOTTOM);
-                                                    await Future.delayed(
-                                                        Duration(
-                                                            milliseconds:
-                                                                1000));
-                                                    Navigator.of(context).pop();
-                                                 
+                                                  await OrderServices(
+                                                          uid: order.uid)
+                                                      .updateOrderStatus(Order(
+                                                          isCancelld:
+                                                              isCancelld,
+                                                          isReturn: isReturn,
+                                                          isDone: isDone,
+                                                          isDelivery:
+                                                              isDelivery,
+                                                          price: order.price,
+                                                          totalPrice:
+                                                              order.totalPrice,
+                                                          type: order.type,
+                                                          description:
+                                                              order.description,
+                                                          date: order.date,
+                                                          note: order.note,
+                                                          customerID:
+                                                              order.customerID,
+                                                          isCancelldDate:
+                                                              cancelledDate,
+                                                          isDoneDate: doneDate,
+                                                          isReturnDate:
+                                                              returnDate,
+                                                          isDeliveryDate:
+                                                              deliveryDate,
+                                                          isReceived:
+                                                              isReceived,
+                                                          isReceivedDate:
+                                                              receivedDate));
+                                                  // Notification here for the admin
+                                                  Toast.show(
+                                                      "تم تعديل حالة الطرد",
+                                                      context,
+                                                      duration:
+                                                          Toast.LENGTH_LONG,
+                                                      gravity: Toast.BOTTOM);
+                                                  await Future.delayed(Duration(
+                                                      milliseconds: 1000));
+                                                  Navigator.of(context).pop();
                                                 },
                                                 color: Color(0xff73a16a),
                                                 child: Text(

@@ -1,29 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:AsyadLogistic/classes/business.dart';
 import 'package:AsyadLogistic/classes/customer.dart';
-import 'package:AsyadLogistic/classes/deliveryStatus.dart';
 import 'package:AsyadLogistic/classes/order.dart';
 import 'package:AsyadLogistic/components/pages/driver_drawer.dart';
 import 'package:AsyadLogistic/components/pages/loadingData.dart';
 import 'package:AsyadLogistic/services/businessServices.dart';
 import 'package:AsyadLogistic/services/customerServices.dart';
-import 'package:AsyadLogistic/services/deliveryStatusServices.dart';
 import 'package:AsyadLogistic/services/orderServices.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../constants.dart';
 
-class DoneOrderDetails extends StatefulWidget {
+class InStokeOrderDetails extends StatefulWidget {
   final String orderState, name, uid;
-  DoneOrderDetails({Key key, this.orderState, this.name, this.uid})
+  InStokeOrderDetails({Key key, this.orderState, this.name, this.uid})
       : super(key: key);
 
   @override
-  _DoneOrderDetailsState createState() => _DoneOrderDetailsState();
+  _InStokeOrderDetailsState createState() => _InStokeOrderDetailsState();
 }
 
-class _DoneOrderDetailsState extends State<DoneOrderDetails> {
+class _InStokeOrderDetailsState extends State<InStokeOrderDetails> {
   TextEditingController noteController = TextEditingController();
   String type, status;
   bool isCancelld, isReturn, isDone, isDelivery, isReceived;
@@ -65,8 +63,7 @@ class _DoneOrderDetailsState extends State<DoneOrderDetails> {
                             Business business = snapshot.data;
                             return Scaffold(
                                 appBar: AppBar(
-                                  title: Text(
-                                      " تعديل حالة توصيل طرد ${customer.name}",
+                                  title: Text(" طرد ${customer.name}",
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontFamily: 'Amiri',
@@ -312,28 +309,34 @@ class _DoneOrderDetailsState extends State<DoneOrderDetails> {
                                                                 .customerPhoneNumber,
                                                             builder: (context,
                                                                 snapshot) {
-                                                              return InkWell(
-                                                                child: Text(
-                                                                  " 0${snapshot.data.toString()} ",
-                                                                  style:
-                                                                      TextStyle(
-                                                                    fontSize:
-                                                                        14,
-                                                                    color: Colors
-                                                                        .green,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    fontFamily:
-                                                                        "Amiri",
+                                                              if (snapshot
+                                                                  .hasData) {
+                                                                return InkWell(
+                                                                  child: Text(
+                                                                    " 0${snapshot.data.toString()} " ??
+                                                                        "",
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          14,
+                                                                      color: Colors
+                                                                          .green,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      fontFamily:
+                                                                          "Amiri",
+                                                                    ),
                                                                   ),
-                                                                ),
-                                                                onTap: () {
-                                                                  launch("tel:" +
-                                                                      Uri.encodeComponent(
-                                                                          '0${snapshot.data.toString()}'));
-                                                                },
-                                                              );
+                                                                  onTap: () {
+                                                                    launch("tel:" +
+                                                                        Uri.encodeComponent(
+                                                                            '0${snapshot.data.toString()}'));
+                                                                  },
+                                                                );
+                                                              } else {
+                                                                return Text("");
+                                                              }
                                                             }),
                                                       ],
                                                     )
@@ -424,7 +427,7 @@ class _DoneOrderDetailsState extends State<DoneOrderDetails> {
                                                               );
                                                             }),
                                                       ],
-                                                    )
+                                                    ),
                                                   ],
                                                 ),
                                               )),
@@ -663,325 +666,52 @@ class _DoneOrderDetailsState extends State<DoneOrderDetails> {
                                               )),
                                         ],
                                       ),
-                                      Form(
-                                          key: _formKey,
-                                          child: Column(children: <Widget>[
-                                            Container(
-                                              margin: EdgeInsets.all(25.0),
-                                              child: DropdownButtonFormField(
-                                                onChanged: (String value) =>
-                                                    setState(
-                                                        () => type = value),
-                                                value: type,
-                                                items: <String>[
-                                                  'تم التوصيل',
-                                                  'لم يتم الرد على الهاتف',
-                                                  'تم التوصيل مع تغيير السعر',
-                                                  'ملغية بسبب خطأ في المنتج',
-                                                  'ملغية لاسباب شخصية',
-                                                  'ملغية لاسباب أخرى',
-                                                  'راجعة بسبب خطأ في المنتج',
-                                                  'راجعة لاسباب شخصية',
-                                                  'راجعة لاسباب أخرى',
-                                                  'مؤجلة',
-                                                  'تم فقدان الطرد',
-                                                ].map<DropdownMenuItem<String>>(
-                                                    (String value) {
-                                                  return DropdownMenuItem<
-                                                      String>(
-                                                    value: value,
-                                                    child: Align(
-                                                      alignment:
-                                                          Alignment.centerRight,
-                                                      child: Text(
-                                                        value,
-                                                        textAlign:
-                                                            TextAlign.right,
-                                                        style: TextStyle(
-                                                            fontFamily: 'Amiri',
-                                                            fontSize: 16.0),
-                                                      ),
-                                                    ),
-                                                  );
-                                                }).toList(),
-                                                decoration: InputDecoration(
-                                                    enabledBorder:
-                                                        OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10.0),
-                                                      borderSide: BorderSide(
-                                                        width: 1.0,
-                                                        color:
-                                                            Color(0xff636363),
-                                                      ),
-                                                    ),
-                                                    focusedBorder:
-                                                        OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10.0),
-                                                      borderSide: BorderSide(
-                                                        width: 2.0,
-                                                        color:
-                                                            Color(0xff73a16a),
-                                                      ),
-                                                      //Change color to Color(0xff73a16a)
-                                                    ),
-                                                    contentPadding:
-                                                        EdgeInsets.only(
-                                                            right: 20.0,
-                                                            left: 10.0),
-                                                    labelText: "حالة التوصيل",
-                                                    labelStyle: TextStyle(
-                                                        fontFamily: 'Amiri',
-                                                        fontSize: 16.0,
-                                                        color:
-                                                            Color(0xff316686))),
-                                              ),
-                                            ),
-                                            Container(
-                                              margin: EdgeInsets.only(
-                                                  right: 25.0, left: 25.0),
-                                              child: TextFormField(
-                                                controller: noteController,
-                                                keyboardType:
-                                                    TextInputType.text,
-                                                decoration: InputDecoration(
-                                                  labelText: 'ملاحظات',
-                                                  labelStyle: TextStyle(
-                                                      fontFamily: 'Amiri',
-                                                      fontSize: 18.0,
-                                                      color: Color(0xff316686)),
-                                                  contentPadding:
-                                                      EdgeInsets.only(
-                                                          right: 20.0),
-                                                  enabledBorder:
-                                                      OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10.0),
-                                                    borderSide: BorderSide(
-                                                      width: 1.0,
-                                                      color: Color(0xff636363),
-                                                    ),
-                                                  ),
-                                                  focusedBorder:
-                                                      OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10.0),
-                                                    borderSide: BorderSide(
-                                                      width: 2.0,
-                                                      color: Color(0xff73a16a),
-                                                    ),
-                                                    //Change color to Color(0xff73a16a)
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            Container(
-                                              margin: EdgeInsets.fromLTRB(
-                                                  90, 30, 90, 0),
-                                              child: RaisedButton(
-                                                padding: EdgeInsets.all(10.0),
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        new BorderRadius
-                                                            .circular(30.0)),
-                                                onPressed: () async {
-                                                  if (type == 'تم التوصيل') {
-                                                    status = "1";
-                                                    isDone = true;
-                                                    isCancelld = false;
-                                                    isReturn = false;
-                                                    isDelivery = false;
-                                                    isReceived = false;
-                                                    doneDate =
-                                                        new DateTime.now();
-                                                  } else if (type ==
-                                                      'لم يتم الرد على الهاتف') {
-                                                    status = "2";
-                                                    isDone = false;
-                                                    isCancelld = false;
-                                                    isReturn = false;
-                                                    isDelivery = true;
-                                                    isReceived = false;
-                                                  } else if (type ==
-                                                      'تم التوصيل مع تغيير السعر') {
-                                                    status = "3";
-                                                    isDone = true;
-                                                    isCancelld = false;
-                                                    isReturn = false;
-                                                    isDelivery = false;
-                                                    isReceived = false;
-                                                    doneDate =
-                                                        new DateTime.now();
-                                                  } else if (type ==
-                                                      'ملغية بسبب خطأ في المنتج') {
-                                                    status = "4";
-                                                    isDone = false;
-                                                    isCancelld = true;
-                                                    isReturn = false;
-                                                    isDelivery = false;
-                                                    isReceived = false;
-                                                    cancelledDate =
-                                                        new DateTime.now();
-                                                  } else if (type ==
-                                                      'ملغية لاسباب شخصية') {
-                                                    status = "5";
-                                                    isDone = false;
-                                                    isCancelld = true;
-                                                    isReturn = false;
-                                                    isDelivery = false;
-                                                    isReceived = false;
-                                                    cancelledDate =
-                                                        new DateTime.now();
-                                                  } else if (type ==
-                                                      'ملغية لاسباب أخرى') {
-                                                    status = "6";
-                                                    isDone = false;
-                                                    isCancelld = true;
-                                                    isReturn = false;
-                                                    isDelivery = false;
-                                                    isReceived = false;
-                                                    cancelledDate =
-                                                        new DateTime.now();
-                                                  } else if (type ==
-                                                      'راجعة بسبب خطأ في المنتج') {
-                                                    status = "7";
-                                                    isDone = false;
-                                                    isCancelld = false;
-                                                    isReturn = true;
-                                                    isDelivery = false;
-                                                    isReceived = false;
-                                                    returnDate =
-                                                        new DateTime.now();
-                                                  } else if (type ==
-                                                      'راجعة لاسباب شخصية') {
-                                                    status = "8";
-                                                    isDone = false;
-                                                    isCancelld = false;
-                                                    isReturn = true;
-                                                    isDelivery = false;
-                                                    isReceived = false;
-                                                    returnDate =
-                                                        new DateTime.now();
-                                                  } else if (type ==
-                                                      'راجعة لاسباب أخرى') {
-                                                    status = "9";
-                                                    isDone = false;
-                                                    isCancelld = false;
-                                                    isReturn = true;
-                                                    isDelivery = false;
-                                                    isReceived = false;
-                                                    returnDate =
-                                                        new DateTime.now();
-                                                  } else if (type == 'مؤجلة') {
-                                                    status = "10";
-                                                    isDone = false;
-                                                    isCancelld = true;
-                                                    isReturn = false;
-                                                    isDelivery = false;
-                                                    isReceived = false;
-                                                    cancelledDate =
-                                                        new DateTime.now();
-                                                  } else if (type ==
-                                                      'تم فقدان الطرد') {
-                                                    status = "11";
-                                                    isDone = false;
-                                                    isCancelld = false;
-                                                    isReturn = false;
-                                                    isDelivery = true;
-                                                    isReceived = false;
-                                                  } else if (type ==
-                                                      'ارجاع الى المخزن') {
-                                                    status = "12";
-                                                    isDone = false;
-                                                    isCancelld = false;
-                                                    isReturn = false;
-                                                    isDelivery = false;
-                                                    isReceived = true;
-                                                    cancelledDate =
-                                                        new DateTime.now();
-                                                  } else {
-                                                    status = "0";
-                                                    isDone = false;
-                                                    isCancelld = false;
-                                                    isReturn = false;
-                                                    isDelivery = true;
-                                                    isReceived = false;
-                                                  }
+                                      Container(
+                                        margin: EdgeInsets.all(40.0),
+                                        child: RaisedButton(
+                                          padding: EdgeInsets.all(10.0),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  new BorderRadius.circular(
+                                                      30.0)),
+                                          onPressed: () async {
+                                            OrderServices(
+                                              uid: order.uid,
+                                            ).updateOrderFromInStokeToisDelivery;
 
-                                                  await DeliveriesStatusServices()
-                                                      .addDeliveryStatusData(
-                                                          DeliveryStatus(
-                                                              orderID:
-                                                                  order.uid,
-                                                              driverID: order
-                                                                  .driverID,
-                                                              businessID: order
-                                                                  .businesID,
-                                                              status: status,
-                                                              date: DateTime
-                                                                  .now(),
-                                                              note:
-                                                                  noteController
-                                                                      .text,
-                                                              isArchived:
-                                                                  false));
-                                                  await OrderServices(
-                                                          uid: order.uid)
-                                                      .updateOrderStatus(Order(
-                                                          isCancelld:
-                                                              isCancelld,
-                                                          isReturn: isReturn,
-                                                          isDone: isDone,
-                                                          isDelivery:
-                                                              isDelivery,
-                                                          price: order.price,
-                                                          totalPrice:
-                                                              order.totalPrice,
-                                                          type: order.type,
-                                                          description:
-                                                              order.description,
-                                                          date: order.date,
-                                                          note: order.note,
-                                                          customerID:
-                                                              order.customerID,
-                                                          isCancelldDate:
-                                                              cancelledDate,
-                                                          isDoneDate: doneDate,
-                                                          isReturnDate:
-                                                              returnDate,
-                                                          isDeliveryDate:
-                                                              deliveryDate,
-                                                          isReceived:
-                                                              isReceived,
-                                                          isReceivedDate:
-                                                              receivedDate));
-                                                  // Notification here for the admin
-                                                  Toast.show(
-                                                      "تم تعديل حالة الطرد",
-                                                      context,
-                                                      duration:
-                                                          Toast.LENGTH_LONG,
-                                                      gravity: Toast.BOTTOM);
-                                                  await Future.delayed(Duration(
-                                                      milliseconds: 1000));
-                                                  Navigator.of(context).pop();
-                                                },
-                                                color: Color(0xff73a16a),
-                                                child: Text(
-                                                  'ارسال ',
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontFamily: 'Amiri',
-                                                      fontSize: 20.0),
-                                                ),
+                                            Toast.show("تم الاستلام", context,
+                                                duration: Toast.LENGTH_LONG,
+                                                gravity: Toast.BOTTOM);
+                                            await Future.delayed(
+                                                Duration(milliseconds: 1000));
+                                            Navigator.of(context).pop();
+                                          },
+                                          color: Color(0xff73a16a),
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              Text(
+                                                'تم الاستلام من المخزن',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontFamily: 'Amiri',
+                                                    fontSize: 24.0),
                                               ),
-                                            )
-                                          ])),
+                                              SizedBox(
+                                                width: 40.0,
+                                              ),
+                                              Icon(
+                                                Icons.check_circle,
+                                                color: Colors.white,
+                                                size: 32.0,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      )
                                     ],
                                   ),
                                 ));

@@ -1,3 +1,4 @@
+import 'package:AsyadLogistic/components/cityComponent/add_city.dart';
 import 'package:flutter/material.dart';
 import 'package:AsyadLogistic/classes/city.dart';
 import 'package:AsyadLogistic/components/pages/drawer.dart';
@@ -34,71 +35,76 @@ class _AdminCitiesHomeState extends State<AdminCitiesHome> {
           actions: <Widget>[
             IconButton(
               onPressed: () {
-                return showDialog<String>(
-                  context: context,
-                  child: new AlertDialog(
-                    contentPadding: const EdgeInsets.all(16.0),
-                    content: new Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Directionality(
-                            textDirection: TextDirection.rtl,
-                            child: TextField(
-                              controller: cityNameController,
-                              keyboardType: TextInputType.text,
-                              decoration: InputDecoration(
-                                labelText:"المدينة",
-                                labelStyle: TextStyle(
-                                  fontFamily: 'Amiri',
-                                  fontSize: 18.0,
-                                  color: Color(0xff316686),
-                                ),
-                                contentPadding: EdgeInsets.only(right: 20.0),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: BorderSide(
-                                    width: 1.0,
-                                    color: Color(0xff636363),
-                                  ),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: BorderSide(
-                                    width: 2.0,
-                                    color: Color(0xff73a16a),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    actions: <Widget>[
-                      new FlatButton(
-                          child: Text(
-                            'اضافة',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: "Amiri",
-                            ),
-                          ),
-                          onPressed: () async {
-                            await CityServices()
-                                .addCityData(new City(
-                                    name: cityNameController.text,
-                                    isArchived: false
-                                    ));
-                            Toast.show("تم اضافة المدينة بنجاح", context,
-                                duration: Toast.LENGTH_LONG,
-                                gravity: Toast.BOTTOM);
-                            Future.delayed(Duration(milliseconds: 1000));
-                            Navigator.of(context).pop();
-                          })
-                    ],
-                  ),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => AddCity(name: widget.name)),
                 );
+                // return showDialog<String>(
+                //   context: context,
+                //   child: new AlertDialog(
+                //     contentPadding: const EdgeInsets.all(16.0),
+                //     content: new Row(
+                //       children: <Widget>[
+                //         Expanded(
+                //           child: Directionality(
+                //             textDirection: TextDirection.rtl,
+                //             child: TextField(
+                //               controller: cityNameController,
+                //               keyboardType: TextInputType.text,
+                //               decoration: InputDecoration(
+                //                 labelText:"المدينة",
+                //                 labelStyle: TextStyle(
+                //                   fontFamily: 'Amiri',
+                //                   fontSize: 18.0,
+                //                   color: Color(0xff316686),
+                //                 ),
+                //                 contentPadding: EdgeInsets.only(right: 20.0),
+                //                 enabledBorder: OutlineInputBorder(
+                //                   borderRadius: BorderRadius.circular(10.0),
+                //                   borderSide: BorderSide(
+                //                     width: 1.0,
+                //                     color: Color(0xff636363),
+                //                   ),
+                //                 ),
+                //                 focusedBorder: OutlineInputBorder(
+                //                   borderRadius: BorderRadius.circular(10.0),
+                //                   borderSide: BorderSide(
+                //                     width: 2.0,
+                //                     color: Color(0xff73a16a),
+                //                   ),
+                //                 ),
+                //               ),
+                //             ),
+                //           ),
+                //         ),
+                //       ],
+                //     ),
+                //     actions: <Widget>[
+                //       new FlatButton(
+                //           child: Text(
+                //             'اضافة',
+                //             style: TextStyle(
+                //               fontSize: 16,
+                //               fontWeight: FontWeight.bold,
+                //               fontFamily: "Amiri",
+                //             ),
+                //           ),
+                //           onPressed: () async {
+                //             await CityServices()
+                //                 .addCityData(new City(
+                //                     name: cityNameController.text,
+                //                     isArchived: false
+                //                     ));
+                //             Toast.show("تم اضافة المدينة بنجاح", context,
+                //                 duration: Toast.LENGTH_LONG,
+                //                 gravity: Toast.BOTTOM);
+                //             Future.delayed(Duration(milliseconds: 1000));
+                //             Navigator.of(context).pop();
+                //           })
+                //     ],
+                //   ),
+                // );
               },
               icon: Icon(Icons.add),
               color: Colors.white,

@@ -16,7 +16,6 @@ class BusinessServices {
       'userID': business.userID,
       'cityID': business.cityID,
       'isArchived': business.isArchived,
-      'paidSalary' :  business.paidSalary,
     });
   }
 
@@ -32,14 +31,16 @@ class BusinessServices {
 
   Business _businessDataFromSnapshot(DocumentSnapshot snapshot) {
     return Business(
-        uid: snapshot.id,
-        name: snapshot.data()['name'],
-        email: snapshot.data()['email'],
-        phoneNumber: snapshot.data()['phoneNumber'],
-        userID: snapshot.data()['userID'],
-        cityID: snapshot.data()['cityID'],
-        //paidSalary: snapshot.data()['paidSalary']
-        );
+      uid: snapshot.id,
+      name: snapshot.data()['name'],
+      email: snapshot.data()['email'],
+      phoneNumber: snapshot.data()['phoneNumber'],
+      userID: snapshot.data()['userID'],
+      cityID: snapshot.data()['cityID'],
+      //paidSalary: snapshot.data()['paidSalary'],
+      //paidDate: snapshot.data()['paidDate'],
+      isArchived: snapshot.data()['isArchived'],
+    );
   }
 
   List<Business> _businessListFromSnapshot(QuerySnapshot snapshot) {
@@ -50,7 +51,9 @@ class BusinessServices {
           email: doc.data()['email'] ?? '',
           phoneNumber: doc.data()['phoneNumber'] ?? '',
           userID: doc.data()['userID'] ?? '',
-         // paidSalary: doc.data()['paidSalary'] ?? '',
+          //paidSalary: doc.data()['paidSalary'] ?? '',
+          isArchived: doc.data()['isArchived'] ?? '',
+          // paidDate: doc.data()['paidDate'] ?? '',
           cityID: doc.data()['cityID'] ?? '');
     }).toList();
   }

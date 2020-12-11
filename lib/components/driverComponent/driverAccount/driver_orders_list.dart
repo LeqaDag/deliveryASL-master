@@ -15,10 +15,22 @@ class DriverOrderList extends StatefulWidget {
 class _DriverOrderListState extends State<DriverOrderList> {
   @override
   Widget build(BuildContext context) {
+    final inStockOrders = Provider.of<List<Order>>(context) ?? [];
     final pendingOrders = Provider.of<List<Order>>(context) ?? [];
     final doneOrders = Provider.of<List<Order>>(context) ?? [];
     final stuckOrders = Provider.of<List<Order>>(context) ?? [];
+
     return TabBarView(children: [
+      ListView.builder(
+        itemCount: stuckOrders.length,
+        itemBuilder: (context, index) {
+          return InStockDriverOrders(
+              order: inStockOrders[index],
+              orderState: "inStoke",
+              name: widget.name,
+              uid: widget.uid);
+        },
+      ),
       ListView.builder(
         itemCount: pendingOrders.length,
         itemBuilder: (context, index) {
@@ -50,6 +62,241 @@ class _DriverOrderListState extends State<DriverOrderList> {
         },
       ),
     ]);
+  }
+}
+
+Widget driverOrders(Order order, Color color, double height, double width,
+    String name, String uid, String orderState) {
+  return Container(
+      width: width - 50,
+      height: 100,
+      child: Card(
+        color: color,
+        elevation: 4,
+        margin: EdgeInsets.fromLTRB(0.0, 1.0, 0.0, 11.0),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(0.0),
+        ),
+        //color: KCustomCompanyOrdersStatus,
+        child:
+            Row(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
+          Container(
+            width: width / 1.4,
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  Row(
+                    //3
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: height * 0.025,
+                          right: height * 0.025,
+                          top: height * 0,
+                        ),
+                        child: Icon(
+                          Icons.person,
+                          color: Colors.blueGrey,
+                        ),
+                      ),
+                      FutureBuilder<String>(
+                          future: CustomerServices(uid: order.customerID)
+                              .customerName,
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return Text(
+                                snapshot.data ?? "",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: "Amiri",
+                                ),
+                              );
+                            } else {
+                              return Text("");
+                            }
+                          }),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: height * 0.025,
+                          right: height * 0.025,
+                          top: height * 0,
+                        ),
+                        child: Icon(
+                          Icons.location_on,
+                          color: Colors.blueGrey,
+                        ),
+                      ),
+                      FutureBuilder<String>(
+                          future: CustomerServices(uid: order.customerID)
+                              .customerCity,
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return Text(
+                                snapshot.data ?? "",
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: "Amiri",
+                                ),
+                              );
+                            } else {
+                              return Text("");
+                            }
+                          }),
+                      FutureBuilder<String>(
+                          future: CustomerServices(uid: order.customerID)
+                              .customerSublineName,
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return Text(
+                                ' - ${snapshot.data}' ?? "",
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: "Amiri",
+                                ),
+                              );
+                            } else {
+                              return Text("");
+                            }
+                          }),
+                      FutureBuilder<String>(
+                          future: CustomerServices(uid: order.customerID)
+                              .customerAdress,
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return Text(
+                                ' - ${snapshot.data}' ?? "",
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: "Amiri",
+                                ),
+                              );
+                            } else {
+                              return Text("");
+                            }
+                          }),
+                    ],
+                  ),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.start,
+                  //   children: <Widget>[
+                  //     Padding(
+                  //       padding: EdgeInsets.only(
+                  //         left: height * 0.025,
+                  //         right: height * 0.025,
+                  //         top: height * 0,
+                  //       ),
+                  //       child: Icon(
+                  //         Icons.date_range,
+                  //         color: Colors.blueGrey,
+                  //       ),
+                  //     ),
+                  //     Text(
+                  //       intl.DateFormat('yyyy-MM-dd')
+                  //           .format(widget.order.date),
+                  //       style: TextStyle(
+                  //         fontSize: 12,
+                  //         fontWeight: FontWeight.bold,
+                  //         fontFamily: "Amiri",
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
+                ]),
+          ),
+          Container(
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: height * 0.025,
+                          right: height * 0.025,
+                          top: height * 0,
+                        ),
+                        child: Image.asset('assets/price.png'),
+                      ),
+                      Text(
+                        order.price.toString() ?? "0",
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: "Amiri",
+                        ),
+                      ),
+                    ],
+                  ),
+                ]),
+          ),
+          SizedBox(
+            width: 20,
+          ),
+        ]),
+      ));
+}
+
+class InStockDriverOrders extends StatefulWidget {
+  final Order order;
+  final String orderState, name, uid;
+
+  InStockDriverOrders({this.order, this.orderState, this.name, this.uid});
+
+  @override
+  _InStockDriverOrdersState createState() => _InStockDriverOrdersState();
+}
+
+class _InStockDriverOrdersState extends State<InStockDriverOrders> {
+  Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+    Color color;
+    if (widget.orderState == "done")
+      color = Colors.greenAccent;
+    else
+      color = Colors.white;
+    if (widget.order.inStock == false) {
+      return Visibility(
+        child: Text("Gone"),
+        visible: false,
+      );
+    } else if (widget.order.inStock == true &&
+        widget.order.driverID == widget.uid) {
+      return InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => OrderDetails(
+                    name: widget.name,
+                    orderState: widget.orderState,
+                    uid: widget.order.uid)),
+          );
+        },
+        child: driverOrders(widget.order, color, height, width, widget.name,
+            widget.uid, widget.orderState),
+      );
+    } else {
+      return Visibility(
+        child: Text("Gone"),
+        visible: false,
+      );
+    }
   }
 }
 
@@ -93,174 +340,8 @@ class _PendingDriverOrdersState extends State<PendingDriverOrders> {
                     uid: widget.order.uid)),
           );
         },
-        child: Container(
-            width: width - 50,
-            height: 100,
-            child: Card(
-              color: color,
-              elevation: 4,
-              margin: EdgeInsets.fromLTRB(0.0, 1.0, 0.0, 11.0),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(0.0),
-              ),
-              //color: KCustomCompanyOrdersStatus,
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Container(
-                      width: width / 1.4,
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: <Widget>[
-                            Row(
-                              //3
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    left: height * 0.025,
-                                    right: height * 0.025,
-                                    top: height * 0,
-                                  ),
-                                  child: Icon(
-                                    Icons.person,
-                                    color: Colors.blueGrey,
-                                  ),
-                                ),
-                                FutureBuilder<String>(
-                                    future: CustomerServices(
-                                            uid: widget.order.customerID)
-                                        .customerName,
-                                    builder: (context, snapshot) {
-                                      return Text(
-                                        snapshot.data ?? "",
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: "Amiri",
-                                        ),
-                                      );
-                                    }),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    left: height * 0.025,
-                                    right: height * 0.025,
-                                    top: height * 0,
-                                  ),
-                                  child: Icon(
-                                    Icons.location_on,
-                                    color: Colors.blueGrey,
-                                  ),
-                                ),
-                                FutureBuilder<String>(
-                                    future: CustomerServices(
-                                            uid: widget.order.customerID)
-                                        .customerCity,
-                                    builder: (context, snapshot) {
-                                      return Text(
-                                        snapshot.data ?? "",
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: "Amiri",
-                                        ),
-                                      );
-                                    }),
-                                FutureBuilder<String>(
-                                    future: CustomerServices(
-                                            uid: widget.order.customerID)
-                                        .customerSublineName,
-                                    builder: (context, snapshot) {
-                                      return Text(
-                                        ' - ${snapshot.data}' ?? "",
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: "Amiri",
-                                        ),
-                                      );
-                                    }),
-                                FutureBuilder<String>(
-                                    future: CustomerServices(
-                                            uid: widget.order.customerID)
-                                        .customerAdress,
-                                    builder: (context, snapshot) {
-                                      return Text(
-                                        ' - ${snapshot.data}' ?? "",
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: "Amiri",
-                                        ),
-                                      );
-                                    }),
-                              ],
-                            ),
-                            // Row(
-                            //   mainAxisAlignment: MainAxisAlignment.start,
-                            //   children: <Widget>[
-                            //     Padding(
-                            //       padding: EdgeInsets.only(
-                            //         left: height * 0.025,
-                            //         right: height * 0.025,
-                            //         top: height * 0,
-                            //       ),
-                            //       child: Icon(
-                            //         Icons.date_range,
-                            //         color: Colors.blueGrey,
-                            //       ),
-                            //     ),
-                            //     Text(
-                            //       intl.DateFormat('yyyy-MM-dd')
-                            //           .format(widget.order.date),
-                            //       style: TextStyle(
-                            //         fontSize: 12,
-                            //         fontWeight: FontWeight.bold,
-                            //         fontFamily: "Amiri",
-                            //       ),
-                            //     ),
-                            //   ],
-                            // ),
-                          ]),
-                    ),
-                    Container(
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    left: height * 0.025,
-                                    right: height * 0.025,
-                                    top: height * 0,
-                                  ),
-                                  child: Image.asset('assets/price.png'),
-                                ),
-                                Text(
-                                  widget.order.price.toString(),
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: "Amiri",
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ]),
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                  ]),
-            )),
+        child: driverOrders(widget.order, color, height, width, widget.name,
+            widget.uid, widget.orderState),
       );
     } else {
       return Visibility(
@@ -311,174 +392,8 @@ class _DoneDriverOrdersState extends State<DoneDriverOrders> {
                     uid: widget.order.uid)),
           );
         },
-        child: Container(
-            width: width - 50,
-            height: 100,
-            child: Card(
-              color: color,
-              elevation: 4,
-              margin: EdgeInsets.fromLTRB(0.0, 1.0, 0.0, 11.0),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(0.0),
-              ),
-              //color: KCustomCompanyOrdersStatus,
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Container(
-                      width: width / 1.4,
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: <Widget>[
-                            Row(
-                              //3
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    left: height * 0.025,
-                                    right: height * 0.025,
-                                    top: height * 0,
-                                  ),
-                                  child: Icon(
-                                    Icons.person,
-                                    color: Colors.blueGrey,
-                                  ),
-                                ),
-                                FutureBuilder<String>(
-                                    future: CustomerServices(
-                                            uid: widget.order.customerID)
-                                        .customerName,
-                                    builder: (context, snapshot) {
-                                      return Text(
-                                        snapshot.data ?? "",
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: "Amiri",
-                                        ),
-                                      );
-                                    }),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    left: height * 0.025,
-                                    right: height * 0.025,
-                                    top: height * 0,
-                                  ),
-                                  child: Icon(
-                                    Icons.location_on,
-                                    color: Colors.blueGrey,
-                                  ),
-                                ),
-                                FutureBuilder<String>(
-                                    future: CustomerServices(
-                                            uid: widget.order.customerID)
-                                        .customerCity,
-                                    builder: (context, snapshot) {
-                                      return Text(
-                                        snapshot.data ?? "",
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: "Amiri",
-                                        ),
-                                      );
-                                    }),
-                                FutureBuilder<String>(
-                                    future: CustomerServices(
-                                            uid: widget.order.customerID)
-                                        .customerSublineName,
-                                    builder: (context, snapshot) {
-                                      return Text(
-                                        ' - ${snapshot.data}' ?? "",
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: "Amiri",
-                                        ),
-                                      );
-                                    }),
-                                FutureBuilder<String>(
-                                    future: CustomerServices(
-                                            uid: widget.order.customerID)
-                                        .customerAdress,
-                                    builder: (context, snapshot) {
-                                      return Text(
-                                        ' - ${snapshot.data}' ?? "",
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: "Amiri",
-                                        ),
-                                      );
-                                    }),
-                              ],
-                            ),
-                            // Row(
-                            //   mainAxisAlignment: MainAxisAlignment.start,
-                            //   children: <Widget>[
-                            //     Padding(
-                            //       padding: EdgeInsets.only(
-                            //         left: height * 0.025,
-                            //         right: height * 0.025,
-                            //         top: height * 0,
-                            //       ),
-                            //       child: Icon(
-                            //         Icons.date_range,
-                            //         color: Colors.blueGrey,
-                            //       ),
-                            //     ),
-                            //     Text(
-                            //       intl.DateFormat('yyyy-MM-dd')
-                            //           .format(widget.order.date),
-                            //       style: TextStyle(
-                            //         fontSize: 12,
-                            //         fontWeight: FontWeight.bold,
-                            //         fontFamily: "Amiri",
-                            //       ),
-                            //     ),
-                            //   ],
-                            // ),
-                          ]),
-                    ),
-                    Container(
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    left: height * 0.025,
-                                    right: height * 0.025,
-                                    top: height * 0,
-                                  ),
-                                  child: Image.asset('assets/price.png'),
-                                ),
-                                Text(
-                                  widget.order.price.toString(),
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: "Amiri",
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ]),
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                  ]),
-            )),
+        child: driverOrders(widget.order, color, height, width, widget.name,
+            widget.uid, widget.orderState),
       );
     } else {
       return Visibility(
@@ -529,174 +444,8 @@ class _StuckDriverOrdersState extends State<StuckDriverOrders> {
                     uid: widget.order.uid)),
           );
         },
-        child: Container(
-            width: width - 50,
-            height: 100,
-            child: Card(
-              color: color,
-              elevation: 4,
-              margin: EdgeInsets.fromLTRB(0.0, 1.0, 0.0, 11.0),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(0.0),
-              ),
-              //color: KCustomCompanyOrdersStatus,
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Container(
-                      width: width / 1.4,
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: <Widget>[
-                            Row(
-                              //3
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    left: height * 0.025,
-                                    right: height * 0.025,
-                                    top: height * 0,
-                                  ),
-                                  child: Icon(
-                                    Icons.person,
-                                    color: Colors.blueGrey,
-                                  ),
-                                ),
-                                FutureBuilder<String>(
-                                    future: CustomerServices(
-                                            uid: widget.order.customerID)
-                                        .customerName,
-                                    builder: (context, snapshot) {
-                                      return Text(
-                                        snapshot.data ?? "",
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: "Amiri",
-                                        ),
-                                      );
-                                    }),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    left: height * 0.025,
-                                    right: height * 0.025,
-                                    top: height * 0,
-                                  ),
-                                  child: Icon(
-                                    Icons.location_on,
-                                    color: Colors.blueGrey,
-                                  ),
-                                ),
-                                FutureBuilder<String>(
-                                    future: CustomerServices(
-                                            uid: widget.order.customerID)
-                                        .customerCity,
-                                    builder: (context, snapshot) {
-                                      return Text(
-                                        snapshot.data ?? "",
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: "Amiri",
-                                        ),
-                                      );
-                                    }),
-                                FutureBuilder<String>(
-                                    future: CustomerServices(
-                                            uid: widget.order.customerID)
-                                        .customerSublineName,
-                                    builder: (context, snapshot) {
-                                      return Text(
-                                        ' - ${snapshot.data}' ?? "",
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: "Amiri",
-                                        ),
-                                      );
-                                    }),
-                                FutureBuilder<String>(
-                                    future: CustomerServices(
-                                            uid: widget.order.customerID)
-                                        .customerAdress,
-                                    builder: (context, snapshot) {
-                                      return Text(
-                                        ' - ${snapshot.data}' ?? "",
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: "Amiri",
-                                        ),
-                                      );
-                                    }),
-                              ],
-                            ),
-                            // Row(
-                            //   mainAxisAlignment: MainAxisAlignment.start,
-                            //   children: <Widget>[
-                            //     Padding(
-                            //       padding: EdgeInsets.only(
-                            //         left: height * 0.025,
-                            //         right: height * 0.025,
-                            //         top: height * 0,
-                            //       ),
-                            //       child: Icon(
-                            //         Icons.date_range,
-                            //         color: Colors.blueGrey,
-                            //       ),
-                            //     ),
-                            //     Text(
-                            //       intl.DateFormat('yyyy-MM-dd')
-                            //           .format(widget.order.date),
-                            //       style: TextStyle(
-                            //         fontSize: 12,
-                            //         fontWeight: FontWeight.bold,
-                            //         fontFamily: "Amiri",
-                            //       ),
-                            //     ),
-                            //   ],
-                            // ),
-                          ]),
-                    ),
-                    Container(
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    left: height * 0.025,
-                                    right: height * 0.025,
-                                    top: height * 0,
-                                  ),
-                                  child: Image.asset('assets/price.png'),
-                                ),
-                                Text(
-                                  widget.order.price.toString(),
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: "Amiri",
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ]),
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                  ]),
-            )),
+        child: driverOrders(widget.order, color, height, width, widget.name,
+            widget.uid, widget.orderState),
       );
     } else {
       return Visibility(
