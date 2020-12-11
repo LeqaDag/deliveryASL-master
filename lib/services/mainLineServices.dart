@@ -18,7 +18,8 @@ class MainLineServices {
       'name': mainLine.name,
       'locationID': mainLine.locationID,
       'isArchived': mainLine.isArchived,
-      'cityName': mainLine.cityName
+      'cityName': mainLine.cityName,
+      'cityID': mainLine.cityID
     });
 
     return docReference.id;
@@ -28,7 +29,8 @@ class MainLineServices {
     return await mainLineCollection.doc(uid).update({
       'name': mainLine.name,
       'locationID': mainLine.locationID,
-      'cityName': mainLine.cityName
+      'cityName': mainLine.cityName,
+      'cityID': mainLine.cityID
     });
   }
 
@@ -39,6 +41,7 @@ class MainLineServices {
       locationID: snapshot.data()['locationID'],
       isArchived: snapshot.data()['isArchived'],
       cityName: snapshot.data()['cityName'],
+      cityID: snapshot.data()['cityID'],
     );
   }
 
@@ -50,6 +53,7 @@ class MainLineServices {
         locationID: doc.data()['locationID'] ?? '',
         isArchived: doc.data()['isArchived'] ?? '',
         cityName: doc.data()['cityName'] ?? '',
+        cityID: doc.data()['cityID'] ?? '',
       );
     }).toList();
   }
@@ -68,8 +72,10 @@ class MainLineServices {
         .map(_mainLineListFromSnapshot);
   }
 
+
   Stream<List<MainLine>> get mainLineByLocationID {
     return mainLineCollection
+        .where('isArchived', isEqualTo: false)
         .where('locationID', isEqualTo: cityID)
         .snapshots()
         .map(_mainLineListFromSnapshot);

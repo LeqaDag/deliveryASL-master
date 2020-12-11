@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:AsyadLogistic/classes/business.dart';
 import 'package:AsyadLogistic/classes/customer.dart';
 import 'package:AsyadLogistic/classes/driver.dart';
-import 'package:AsyadLogistic/classes/mainLine.dart';
 import 'package:AsyadLogistic/classes/order.dart';
 import 'package:AsyadLogistic/components/pages/drawer.dart';
 import 'package:AsyadLogistic/components/pages/loadingData.dart';
 import 'package:AsyadLogistic/services/businessServices.dart';
 import 'package:AsyadLogistic/services/customerServices.dart';
 import 'package:AsyadLogistic/services/driverServices.dart';
-import 'package:AsyadLogistic/services/mainLineServices.dart';
 import 'package:AsyadLogistic/services/orderServices.dart';
+import 'package:AsyadLogistic/components/orderComponent/orderInformationComponent/shared_information.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:url_launcher/url_launcher.dart';
 
@@ -28,7 +27,7 @@ class DeliveryInfo extends StatelessWidget {
           if (snapshot.hasData) {
             Order order = snapshot.data;
             String orderType = '';
-           if (order.isUrgent == false) {
+            if (order.isUrgent == false) {
               orderType = "عادي";
             } else {
               orderType = "مستعجل";
@@ -64,7 +63,7 @@ class DeliveryInfo extends StatelessWidget {
                                   textDirection: TextDirection.rtl,
                                   child: ListView(
                                     children: <Widget>[
-                                      _customTitle(
+                                      CustomTitle(
                                           "معلومات الاتصال بـ ${business.name}"),
                                       GestureDetector(
                                           onTap: () {
@@ -94,10 +93,10 @@ class DeliveryInfo extends StatelessWidget {
                                               ),
                                             ),
                                           )),
-                                      _labelTextField(Icons.email,
+                                      LabelTextField(Icons.email,
                                           Colors.red[600], business.email),
-                                      _customTitle("معلومات الزبون"),
-                                      _labelTextField(Icons.person,
+                                      CustomTitle("معلومات الزبون"),
+                                      LabelTextField(Icons.person,
                                           Colors.purple, customer.name),
                                       GestureDetector(
                                           onTap: () {
@@ -127,19 +126,19 @@ class DeliveryInfo extends StatelessWidget {
                                               ),
                                             ),
                                           )),
-                                      _labelTextFieldCity(Icons.location_on,
+                                      LabelTextFieldCityName(Icons.location_on,
                                           Colors.blue, customer.cityName),
-                                      _customTitle("معلومات الطلبية"),
-                                      _labelTextField(Icons.short_text,
+                                      CustomTitle("معلومات الطلبية"),
+                                      LabelTextField(Icons.short_text,
                                           Colors.green[700], order.description),
-                                      _labelTextFieldPrice(
+                                      LabelTextFieldPrice(
                                           order.price.toString()),
-                                      _labelTextField(
+                                      LabelTextField(
                                           Icons.date_range,
                                           Colors.deepPurpleAccent[200],
                                           intl.DateFormat('yyyy-MM-dd')
                                               .format(order.date)),
-                                      _labelTextField(Icons.scatter_plot,
+                                      LabelTextField(Icons.scatter_plot,
                                           Colors.grey, orderType),
                                       StreamBuilder<Driver>(
                                         stream:
@@ -156,8 +155,8 @@ class DeliveryInfo extends StatelessWidget {
                                           }
                                         },
                                       ),
-                                      _customTitle("معلومات التوصيل"),
-                                      _labelTextField(
+                                      CustomTitle("معلومات التوصيل"),
+                                      LabelTextField(
                                           Icons.blur_on,
                                           Colors.black,
                                           "لا يوجد معلومات حالياً"),
@@ -178,28 +177,10 @@ class DeliveryInfo extends StatelessWidget {
         });
   }
 
-  Widget _customTitle(String title) {
-    return Container(
-      width: double.infinity,
-      height: 40,
-      color: KCustomCompanyOrdersStatus,
-      child: Center(
-        child: Text(
-          title,
-          style: TextStyle(
-            fontSize: 18,
-            fontFamily: "Amiri",
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
-  }
-
   List<Widget> _driverInfo(Driver driver) {
     return [
-      _customTitle("معلومات السائق"),
-      _labelTextField(Icons.person, Colors.amber[600], driver.name),
+      CustomTitle("معلومات السائق"),
+      LabelTextField(Icons.person, Colors.amber[600], driver.name),
       GestureDetector(
           onTap: () {
             launch("tel:" +
@@ -221,115 +202,8 @@ class DeliveryInfo extends StatelessWidget {
               ),
             ),
           )),
-      _labelTextFieldCity(Icons.person_pin, Colors.blue, driver.cityID),
-      _labelTextFieldMainLine(
-          Icons.location_on, Colors.grey, driver.locationID),
+      LabelTextFieldCity(Icons.person_pin, Colors.blue, driver.cityID),
+      LabelTextFieldMainLine(Icons.location_on, Colors.grey, driver.locationID),
     ];
-  }
-
-  Widget _labelTextFieldPhone(IconData icon, Color color, String text) {
-    return Container(
-      width: double.infinity,
-      height: 35,
-      // margin: EdgeInsets.only(right:width*0.04 ,left:width*0.04 ),
-      // color: KCustomCompanyOrdersStatus,
-
-      child: TextField(
-        onTap: () => launch("tel:0595114481"),
-        enabled: false,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.only(top: 7, bottom: 7, right: 8),
-          prefixIcon: Icon(
-            icon,
-            color: color,
-            size: 20,
-          ),
-          hintText: text, //String Data form DB.
-        ),
-      ),
-    );
-  }
-
-  Widget _labelTextFieldPrice(String text) {
-    return Container(
-      width: double.infinity,
-      height: 35,
-      // margin: EdgeInsets.only(right:width*0.04 ,left:width*0.04 ),
-      // color: KCustomCompanyOrdersStatus,
-
-      child: TextField(
-        enabled: false,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.only(top: 7, bottom: 7, right: 8),
-          prefixIcon: Image.asset('assets/price.png'),
-          hintText: text, //String Data form DB.
-        ),
-      ),
-    );
-  }
-
-  Widget _labelTextField(IconData icon, Color color, String text) {
-    return Container(
-      width: double.infinity,
-      height: 35,
-      // margin: EdgeInsets.only(right:width*0.04 ,left:width*0.04 ),
-      // color: KCustomCompanyOrdersStatus,
-
-      child: TextField(
-        enabled: false,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.only(top: 7, bottom: 7, right: 8),
-          prefixIcon: Icon(
-            icon,
-            color: color,
-            size: 20,
-          ),
-          hintText: text, //String Data form DB.
-        ),
-      ),
-    );
-  }
-
-  Widget _labelTextFieldCity(IconData icon, Color color, String text) {
-    return Container(
-      width: double.infinity,
-      height: 35,
-      child: TextField(
-        enabled: false,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.only(top: 7, bottom: 7, right: 8),
-          prefixIcon: Icon(
-            icon,
-            color: color,
-            size: 20,
-          ),
-          hintText: text, //String Data form DB.
-        ),
-      ),
-    );
-  }
-
-  Widget _labelTextFieldMainLine(IconData icon, Color color, String text) {
-    return Container(
-      width: double.infinity,
-      height: 35,
-      child: StreamBuilder<MainLine>(
-          stream: MainLineServices(uid: text).mainLineByID,
-          builder: (context, snapshot) {
-            MainLine mainLine = snapshot.data;
-            return TextField(
-              enabled: false,
-              decoration: InputDecoration(
-                contentPadding: EdgeInsets.only(top: 7, bottom: 7, right: 8),
-                prefixIcon: Icon(
-                  icon,
-                  color: color,
-                  size: 20,
-                ),
-                hintText: mainLine.name, //String Data form DB.
-              ),
-            );
-          }),
-    );
   }
 }

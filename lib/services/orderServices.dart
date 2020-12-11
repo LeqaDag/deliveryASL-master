@@ -49,6 +49,7 @@ class OrderServices {
       'indexLine': order.indexLine
     });
   }
+
 // inStockDate
   Future<void> updateOrderStatus(Order order) async {
     return await orderCollection.doc(uid).update({
@@ -57,6 +58,7 @@ class OrderServices {
       'isDone': order.isDone,
       'isPaid': order.isPaid,
       'isDelivery': order.isDelivery,
+      'isReceived': order.isReceived,
       'price': order.price,
       'totalPrice': order.totalPrice,
       'type': order.type,
@@ -64,7 +66,12 @@ class OrderServices {
       'date': order.date,
       'note': order.note,
       'customerID': order.customerID,
-      'driverPrice': order.driverPrice
+      'driverPrice': order.driverPrice,
+      'isReturnDate': order.isReturnDate,
+      'isDoneDate': order.isDoneDate,
+      'isCancelldDate': order.isCancelldDate,
+      'isDeliveryDate': order.isDeliveryDate,
+      'isReceivedDate': order.isReceivedDate,
     });
   }
 
@@ -549,9 +556,17 @@ class OrderServices {
   //To is Delivery
   Future<void> get updateOrderToisDelivery {
     return orderCollection.doc(uid).update({
-      'isDelivery': true,
+      'inStock': true,
       'isReceived': false,
       'driverID': driverID,
+      'inStockDate': DateTime.now(),
+    });
+  }
+
+  Future<void> get updateOrderFromInStokeToisDelivery {
+    return orderCollection.doc(uid).update({
+      'inStock': false,
+      'isDelivery': true,
       'isDeliveryDate': DateTime.now(),
     });
   }
@@ -559,7 +574,7 @@ class OrderServices {
   //To is Urgent
   Future<void> get updateOrderToisUrgent {
     return orderCollection.doc(uid).update({
-      'isDelivery': true,
+      'inStock': true,
       'isReceived': false,
       'isUrgent': true,
       'driverID': driverID,
@@ -814,5 +829,22 @@ class OrderServices {
 
   Future<void> get updateDriverPrice {
     return orderCollection.doc(uid).update({'driverPrice': driverPrice});
+  }
+
+  void loadingToReceivedBusinessOrders(String businesID) async {
+    orderCollection
+        .where('businesID', isEqualTo: businesID)
+        .where('isArchived', isEqualTo: false)
+        .where('isLoading', isEqualTo: true)
+        .get()
+        .then((value) async {
+      List<Order> orders = _orderListFromSnapshot(value);
+      for (Order order in orders) {
+        await orderCollection.doc(order.uid).update({
+          'isLoading': false,
+          'isReceived': true,
+        });
+      }
+    });
   }
 }

@@ -352,7 +352,7 @@ class _AddCompanyState extends State<AddCompany> {
   void _addCompany() async {
     final FirebaseAuth auth = FirebaseAuth.instance;
     final User user = auth.currentUser;
-    
+
     if (_formKey.currentState.validate()) {
       firebaseAuth
           .createUserWithEmailAndPassword(
@@ -373,6 +373,7 @@ class _AddCompanyState extends State<AddCompany> {
             phoneNumber: phoneController.text,
             name: companyNameController.text,
             cityID: cityID,
+            isArchived: false,
           ))
               .then((value) async {
             isLoading = false;

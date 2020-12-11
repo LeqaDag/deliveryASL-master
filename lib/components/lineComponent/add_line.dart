@@ -33,6 +33,7 @@ class _AddLineState extends State<AddLine> {
   @override
   void initState() {
     subLineList = [null];
+    subLineListController = {};
     super.initState();
   }
 
@@ -236,11 +237,15 @@ class _AddLineState extends State<AddLine> {
                     FutureBuilder<String>(
                         future: CityServices(uid: cityID).cityName,
                         builder: (context, snapshot) {
-                          print(snapshot.data.toString());
-                          cityName = snapshot.data.toString();
-                          return Text(
-                            " ",
-                          );
+                          if (snapshot.hasData) {
+                            print(snapshot.data.toString());
+                            cityName = snapshot.data.toString();
+                            return Text(
+                              " ",
+                            );
+                          } else {
+                            return Text("");
+                          }
                         }),
                     SizedBox(
                       height: 20,
@@ -259,6 +264,7 @@ class _AddLineState extends State<AddLine> {
                                     cityName: cityName,
                                     name: _mainLineController.text,
                                     locationID: locationID,
+                                    cityID: cityID,
                                     isArchived: false));
 
                             subLineListController

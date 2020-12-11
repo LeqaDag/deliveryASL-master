@@ -36,14 +36,15 @@ class _AddNewOdersState extends State<AddNewOders> {
   List<MainLine> mainlines;
   List<Business> business;
 
-  String cityID,
-      mainline,
-      subline,
-      mainLineId = "",
-      businessID = "",
-      bus,
-      cityName = "",
-      sublineName = "",
+  String cityID = "0",
+      mainline = "0",
+      subline = "0",
+      mainLineId = "0",
+      businessID = "0",
+      bus = "0",
+      cityName = "0",
+      sublineName = "0",
+      locationID = "0",
       typeOrder = "عادي";
   List<int> orderTotalPrice = [0];
   static String deliveryPrice = "0";
@@ -55,6 +56,7 @@ class _AddNewOdersState extends State<AddNewOders> {
     deliveryPrice = "0";
     orderTotalPrice = [0];
     businessID = "";
+    locationID = "";
     mainLineId = "";
     indexLine = 0;
     sublineName = "";
@@ -77,7 +79,6 @@ class _AddNewOdersState extends State<AddNewOders> {
   //
 
   List<Location> locations;
-  String locationID;
 
   String mainLineID;
 
@@ -132,26 +133,41 @@ class _AddNewOdersState extends State<AddNewOders> {
                       _subLineChoice(),
                     ],
                   ),
+
                   FutureBuilder<int>(
                       future: SubLineServices(uid: subline).sublineIndex,
                       builder: (context, snapshot) {
-                        print(snapshot.data.toString());
-                        indexLine = snapshot.data;
-                        print(indexLine);
-                        return Visibility(
-                          child: Text("Gone"),
-                          visible: false,
-                        );
+                        if (snapshot.hasData) {
+                          print(snapshot.data.toString());
+                          indexLine = snapshot.data ?? -1;
+                          print(indexLine);
+                          return Visibility(
+                            child: Text("Gone"),
+                            visible: false,
+                          );
+                        } else {
+                          return Visibility(
+                            child: Text("Gone"),
+                            visible: false,
+                          );
+                        }
                       }),
                   FutureBuilder<String>(
                       future: SubLineServices(uid: subline).sublineName,
                       builder: (context, snapshot) {
-                        print(snapshot.data.toString());
-                        sublineName = snapshot.data;
-                        return Visibility(
-                          child: Text("Gone"),
-                          visible: false,
-                        );
+                        if (snapshot.hasData) {
+                          print(snapshot.data.toString());
+                          sublineName = snapshot.data ?? -1;
+                          return Visibility(
+                            child: Text("Gone"),
+                            visible: false,
+                          );
+                        } else {
+                          return Visibility(
+                            child: Text("Gone"),
+                            visible: false,
+                          );
+                        }
                       }),
                   Row(
                     children: <Widget>[
@@ -162,13 +178,20 @@ class _AddNewOdersState extends State<AddNewOders> {
                       future:
                           MainLineServices(uid: mainline).cityNameByMainLine,
                       builder: (context, snapshot) {
-                        print(snapshot.data.toString());
-                        cityName = snapshot.data.toString();
-                        print(cityName);
-                        return Visibility(
-                          child: Text("Gone"),
-                          visible: false,
-                        );
+                        if (snapshot.hasData) {
+                          print(snapshot.data.toString());
+                          cityName = snapshot.data ?? "";
+                          print(cityName);
+                          return Visibility(
+                            child: Text("Gone"),
+                            visible: false,
+                          );
+                        } else {
+                          return Visibility(
+                            child: Text("Gone"),
+                            visible: false,
+                          );
+                        }
                       }),
                   _infoLabel(
                     "معلومات الطلبية",
@@ -392,7 +415,7 @@ class _AddNewOdersState extends State<AddNewOders> {
               } else {
                 cities = snapshot.data;
                 return DropdownButtonFormField<String>(
-                  value: locationID,
+                  //value: locationID,
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
@@ -468,7 +491,7 @@ class _AddNewOdersState extends State<AddNewOders> {
               } else {
                 sublines = snapshot.data;
                 return DropdownButtonFormField<String>(
-                  value: subline,
+                  //value: subline,
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
@@ -526,15 +549,14 @@ class _AddNewOdersState extends State<AddNewOders> {
       child: Container(
         margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
         child: StreamBuilder<List<MainLine>>(
-            stream:
-                MainLineServices(locationID: locationID).mainLineByLocationID,
+            stream: MainLineServices(cityID: locationID).mainLineByLocationID,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Text('Loading...');
               } else {
                 mainlines = snapshot.data;
                 return DropdownButtonFormField<String>(
-                  value: mainline,
+                  // value: mainline,
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
@@ -758,6 +780,7 @@ class _AddNewOdersState extends State<AddNewOders> {
                   date: orderDate,
                   note: orderNote.text,
                   customerID: customerID,
+                  locationID: locationID,
                   businesID: businessID,
                   sublineID: subline,
                   indexLine: indexLine,
@@ -803,12 +826,12 @@ class _AddNewOdersState extends State<AddNewOders> {
         child: StreamBuilder<List<Business>>(
             stream: BusinessServices().business,
             builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return Text('يتم التحميل ...');
-              } else {
+              if (snapshot.hasData) {
                 business = snapshot.data;
+                print(business.length);
+
                 return DropdownButtonFormField<String>(
-                  value: bus,
+                  // value: businessID,
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
@@ -833,13 +856,13 @@ class _AddNewOdersState extends State<AddNewOders> {
                     ),
                   ),
                   items: business.map(
-                    (bus) {
+                    (busines) {
                       return DropdownMenuItem<String>(
-                        value: bus.uid.toString(),
+                        value: busines.uid.toString(),
                         child: Align(
                             alignment: Alignment.centerRight,
                             child: Text(
-                              bus.name,
+                              busines.name,
                               style: TextStyle(
                                 fontFamily: 'Amiri',
                                 fontSize: 16.0,
@@ -850,6 +873,7 @@ class _AddNewOdersState extends State<AddNewOders> {
                   ).toList(),
                   onChanged: (val) {
                     setState(() {
+                      //bus = val;
                       businessID = val;
                       deliveryPrice = "0";
                       orderTotalPrice[0] = 0;
@@ -857,6 +881,8 @@ class _AddNewOdersState extends State<AddNewOders> {
                     });
                   },
                 );
+              } else {
+                return Text('يتم التحميل ...');
               }
             }),
       ),

@@ -256,6 +256,11 @@ class _CustomCompanyOrdersStatusState extends State<CustomCompanyOrdersStatus> {
     String cityID;
     IconData icon;
     String orderState;
+    if (widget.order.inStock == true) {
+      color = KBadgeColorAndContainerBorderColorWithDriverOrders;
+      icon = Icons.archive_sharp;
+      orderState = "في المخزن";
+    }
     if (widget.order.isCancelld == true) {
       color = KBadgeColorAndContainerBorderColorCancelledOrders;
       icon = Icons.cancel;

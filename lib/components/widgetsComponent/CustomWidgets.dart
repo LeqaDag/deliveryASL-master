@@ -86,6 +86,7 @@ class CustomCardAndListTileAddLine extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             locationName = snapshot.data;
+            return Text("");
           } else {
             return Text("");
           }
@@ -522,6 +523,11 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
     Color color;
     TextEditingController driverPrice = new TextEditingController();
     print(orderState);
+    if (order.inStock == true) {
+      color = KBadgeColorAndContainerBorderColorWithDriverOrders;
+      icon = Icons.archive_sharp;
+      stateOrder = "في المخزن";
+    }
     if (order.isCancelld == true) {
       color = KBadgeColorAndContainerBorderColorCancelledOrders;
       icon = Icons.cancel;
@@ -759,15 +765,19 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                             future: CustomerServices(uid: order.customerID)
                                 .customerName,
                             builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return Text(
+                                  snapshot.data ?? "",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "Amiri",
+                                  ),
+                                );
+                              } else {
+                                return Text("");
+                              }
                               // print(order.customerID);
-                              return Text(
-                                snapshot.data ?? "",
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: "Amiri",
-                                ),
-                              );
                             },
                           ),
                         ],
@@ -789,40 +799,52 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                               future: CustomerServices(uid: order.customerID)
                                   .customerCity,
                               builder: (context, snapshot) {
-                                return Text(
-                                  snapshot.data ?? "",
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: "Amiri",
-                                  ),
-                                );
+                                if (snapshot.hasData) {
+                                  return Text(
+                                    snapshot.data ?? "",
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Amiri",
+                                    ),
+                                  );
+                                } else {
+                                  return Text("");
+                                }
                               }),
                           FutureBuilder<String>(
                               future: CustomerServices(uid: order.customerID)
                                   .customerSublineName,
                               builder: (context, snapshot) {
-                                return Text(
-                                  ' - ${snapshot.data}' ?? "",
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: "Amiri",
-                                  ),
-                                );
+                                if (snapshot.hasData) {
+                                  return Text(
+                                    ' - ${snapshot.data}' ?? "",
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Amiri",
+                                    ),
+                                  );
+                                } else {
+                                  return Text("");
+                                }
                               }),
                           FutureBuilder<String>(
                               future: CustomerServices(uid: order.customerID)
                                   .customerAdress,
                               builder: (context, snapshot) {
-                                return Text(
-                                  ' - ${snapshot.data}' ?? "",
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: "Amiri",
-                                  ),
-                                );
+                                if (snapshot.hasData) {
+                                  return Text(
+                                    ' - ${snapshot.data}' ?? "",
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Amiri",
+                                    ),
+                                  );
+                                } else {
+                                  return Text("");
+                                }
                               }),
                         ],
                       ),
@@ -844,7 +866,8 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
 
                           //  SizedBox(width: 33,),
                           Text(
-                            intl.DateFormat('yyyy-MM-dd').format(order.date),
+                            intl.DateFormat('yyyy-MM-dd').format(order.date) ??
+                                "",
                             style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.bold,
@@ -876,14 +899,18 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                                   .businessName,
                               builder: (context, snapshot) {
                                 // print(snapshot.data);
-                                return Text(
-                                  snapshot.data ?? "",
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: "Amiri",
-                                  ),
-                                );
+                                if (snapshot.hasData) {
+                                  return Text(
+                                    snapshot.data ?? "",
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Amiri",
+                                    ),
+                                  );
+                                } else {
+                                  return Text("");
+                                }
                               }),
                         ],
                       ),
@@ -907,7 +934,7 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                                 top: height * 0,
                                 bottom: height * 0),
                             child: Text(
-                              order.price.toString(),
+                              order.price.toString() ?? "",
                               style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.bold,
@@ -934,7 +961,7 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                                 top: height * 0,
                                 bottom: height * 0),
                             child: Text(
-                              stateOrder,
+                              stateOrder ?? "",
                               style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.bold,
@@ -1005,14 +1032,16 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                                 .customerName,
                             builder: (context, snapshot) {
                               // print(order.customerID);
-                              return Text(
-                                snapshot.data ?? "",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: "Amiri",
-                                ),
-                              );
+                              if (snapshot.hasData) {
+                                return Text(
+                                  snapshot.data ?? "",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "Amiri",
+                                  ),
+                                );
+                              }
                             },
                           ),
                         ],
@@ -1036,7 +1065,8 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
 
                           //  SizedBox(width: 33,),
                           Text(
-                            intl.DateFormat('yyyy-MM-dd').format(order.date),
+                            intl.DateFormat('yyyy-MM-dd').format(order.date) ??
+                                "",
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -1075,14 +1105,16 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                                 .customerCity,
                             builder: (context, snapshot) {
                               // print(order.customerID);
-                              return Text(
-                                snapshot.data ?? "",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: "Amiri",
-                                ),
-                              );
+                              if (snapshot.hasData) {
+                                return Text(
+                                  snapshot.data ?? "",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "Amiri",
+                                  ),
+                                );
+                              }
                             },
                           ),
                         ],
@@ -1102,7 +1134,7 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
 
                           //  SizedBox(width: 33,),
                           Text(
-                            order.price.toString(),
+                            order.price.toString() ?? "",
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -1321,6 +1353,126 @@ class CustomDialog extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16.0,
+                ),
+              ),
+              SizedBox(height: 24.0),
+              Align(
+                alignment: Alignment.bottomLeft,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    FlatButton(
+                      onPressed: cancelPressed, // To close the dialog
+                      child: Text(
+                        cancelButton,
+                        style: TextStyle(
+                          fontFamily: 'Amiri',
+                          fontSize: 18.0,
+                          color: Color(0xff316686),
+                        ),
+                      ),
+                    ),
+                    FlatButton(
+                      onPressed: onPressed,
+                      child: Text(
+                        buttonText,
+                        style: TextStyle(
+                          fontFamily: 'Amiri',
+                          fontSize: 18.0,
+                          color: Color(0xff316686),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class CustomDialogSelectAll extends StatelessWidget {
+  final String title, description, name, buttonText, cancelButton;
+  final Image image;
+  final Function onPressed, cancelPressed;
+
+  CustomDialogSelectAll(
+      {@required this.title,
+      @required this.description,
+      @required this.buttonText,
+      this.image,
+      this.name,
+      this.onPressed,
+      @required this.cancelButton,
+      this.cancelPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(Consts.padding),
+      ),
+      elevation: 0.0,
+      backgroundColor: Colors.transparent,
+      child: dialogContent(context),
+    );
+  }
+
+  dialogContent(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        Container(
+          padding: EdgeInsets.only(
+            top: Consts.padding,
+            bottom: Consts.padding,
+            left: Consts.padding,
+            right: Consts.padding,
+          ),
+          // margin: EdgeInsets.only(top: Consts.avatarRadius),
+          decoration: new BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.circular(Consts.padding),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black26,
+                blurRadius: 10.0,
+                offset: const Offset(0.0, 10.0),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min, // To make the card compact
+            children: <Widget>[
+              Icon(
+                Icons.check,
+                color: Colors.blue[900],
+                size: 70,
+              ),
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              SizedBox(height: 16.0),
+              Text(
+                description,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16.0,
+                ),
+              ),
+              Text(
+                name,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
               SizedBox(height: 24.0),

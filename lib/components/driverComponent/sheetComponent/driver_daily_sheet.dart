@@ -480,8 +480,11 @@ class _AllDriverOrdersState extends State<AllDriverOrders> {
     IconData icon;
     String stateOrder;
     Color colorIcon;
-
-    if (widget.order.isCancelld == true) {
+    if (widget.order.inStock == true) {
+      colorIcon = KBadgeColorAndContainerBorderColorWithDriverOrders;
+      icon = Icons.archive_sharp;
+      stateOrder = "في المخزن";
+    } else if (widget.order.isCancelld == true) {
       colorIcon = KBadgeColorAndContainerBorderColorCancelledOrders;
       icon = Icons.cancel;
       stateOrder = "ملغي";
@@ -558,15 +561,18 @@ class _AllDriverOrdersState extends State<AllDriverOrders> {
                                   CustomerServices(uid: widget.order.customerID)
                                       .customerName,
                               builder: (context, snapshot) {
-                                // print(order.customerID);
-                                return Text(
-                                  snapshot.data ?? "",
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: "Amiri",
-                                  ),
-                                );
+                                if (snapshot.hasData) {
+                                  return Text(
+                                    snapshot.data ?? "",
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Amiri",
+                                    ),
+                                  );
+                                } else {
+                                  return Text("");
+                                }
                               },
                             ),
                           ],
@@ -589,42 +595,54 @@ class _AllDriverOrdersState extends State<AllDriverOrders> {
                                         uid: widget.order.customerID)
                                     .customerCity,
                                 builder: (context, snapshot) {
-                                  return Text(
-                                    snapshot.data ?? "",
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: "Amiri",
-                                    ),
-                                  );
+                                  if (snapshot.hasData) {
+                                    return Text(
+                                      snapshot.data ?? "",
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: "Amiri",
+                                      ),
+                                    );
+                                  } else {
+                                    return Text("");
+                                  }
                                 }),
                             FutureBuilder<String>(
                                 future: CustomerServices(
                                         uid: widget.order.customerID)
                                     .customerSublineName,
                                 builder: (context, snapshot) {
-                                  return Text(
-                                    ' - ${snapshot.data}' ?? "",
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: "Amiri",
-                                    ),
-                                  );
+                                  if (snapshot.hasData) {
+                                    return Text(
+                                      ' - ${snapshot.data}' ?? "",
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: "Amiri",
+                                      ),
+                                    );
+                                  } else {
+                                    return Text("");
+                                  }
                                 }),
                             FutureBuilder<String>(
                                 future: CustomerServices(
                                         uid: widget.order.customerID)
                                     .customerAdress,
                                 builder: (context, snapshot) {
-                                  return Text(
-                                    ' - ${snapshot.data}' ?? "",
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: "Amiri",
-                                    ),
-                                  );
+                                  if (snapshot.hasData) {
+                                    return Text(
+                                      ' - ${snapshot.data}' ?? "",
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: "Amiri",
+                                      ),
+                                    );
+                                  } else {
+                                    return Text("");
+                                  }
                                 }),
                           ],
                         ),
@@ -647,7 +665,8 @@ class _AllDriverOrdersState extends State<AllDriverOrders> {
                             //  SizedBox(width: 33,),
                             Text(
                               intl.DateFormat('yyyy-MM-dd')
-                                  .format(widget.order.date),
+                                      .format(widget.order.date) ??
+                                  "",
                               style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.bold,
@@ -680,14 +699,18 @@ class _AllDriverOrdersState extends State<AllDriverOrders> {
                                     .businessName,
                                 builder: (context, snapshot) {
                                   // print(snapshot.data);
-                                  return Text(
-                                    snapshot.data ?? "",
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: "Amiri",
-                                    ),
-                                  );
+                                  if (snapshot.hasData) {
+                                    return Text(
+                                      snapshot.data ?? "",
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: "Amiri",
+                                      ),
+                                    );
+                                  } else {
+                                    return Text("");
+                                  }
                                 }),
                           ],
                         ),
@@ -712,7 +735,7 @@ class _AllDriverOrdersState extends State<AllDriverOrders> {
                                 top: height * 0,
                                 bottom: height * 0),
                             child: Text(
-                              widget.order.price.toString(),
+                              widget.order.price.toString() ?? "0",
                               style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.bold,
@@ -739,7 +762,7 @@ class _AllDriverOrdersState extends State<AllDriverOrders> {
                                 top: height * 0,
                                 bottom: height * 0),
                             child: Text(
-                              stateOrder,
+                              stateOrder ?? "",
                               style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.bold,

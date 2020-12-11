@@ -16,6 +16,12 @@ class OrganizeOrderInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     switch (orderState) {
+      case 'inStock':
+        {
+          return LoadingInfo(uid: uid, name: name);
+        }
+        break;
+
       case 'isLoading':
         {
           return LoadingInfo(uid: uid, name: name);

@@ -70,10 +70,13 @@ class _AddInvoiceState extends State<AddInvoice> {
                             future: OrderServices(businesID: widget.businessId)
                                 .countBusinessOrders(widget.businessId),
                             builder: (context, snapshot) {
-                              print(snapshot.data);
-                              return Text(
-                                "  ${snapshot.data.toString()} " ?? "0",
-                              );
+                              if (snapshot.hasData) {
+                                return Text(
+                                  "  ${snapshot.data.toString()} " ?? "0",
+                                );
+                              } else {
+                                return Text("0");
+                              }
                             }),
                         SizedBox(
                           width: 30,
@@ -90,10 +93,13 @@ class _AddInvoiceState extends State<AddInvoice> {
                             future: OrderServices(businesID: widget.businessId)
                                 .countBusinessOrderByStateOrder("isDone"),
                             builder: (context, snapshot) {
-                              print(snapshot.data);
-                              return Text(
-                                "  ${snapshot.data.toString()} " ?? "0",
-                              );
+                              if (snapshot.hasData) {
+                                return Text(
+                                  "  ${snapshot.data.toString()} ",
+                                );
+                              } else {
+                                return Text("0");
+                              }
                             }),
                       ],
                     ),

@@ -26,11 +26,20 @@ class StuckOrderDetails extends StatefulWidget {
 class _StuckOrderDetailsState extends State<StuckOrderDetails> {
   TextEditingController noteController = TextEditingController();
   String type, status;
-  bool isCancelld, isReturn, isDone, isDelivery;
+  bool isCancelld, isReturn, isDone, isDelivery,isReceived;
   final _formKey = GlobalKey<FormState>();
   String cityId;
-  DateTime deliveryDate = new DateTime.now();
+  DateTime deliveryDate, doneDate, cancelledDate, returnDate, receivedDate;
 
+  @override
+  void initState() {
+    deliveryDate = new DateTime.now();
+    doneDate = new DateTime.now();
+    cancelledDate = new DateTime.now();
+    returnDate = new DateTime.now();
+    receivedDate = new DateTime.now();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -785,6 +794,9 @@ class _StuckOrderDetailsState extends State<StuckOrderDetails> {
                                                     isCancelld = false;
                                                     isReturn = false;
                                                     isDelivery = false;
+                                                    isReceived = false;
+                                                    doneDate =
+                                                        new DateTime.now();
                                                   } else if (type ==
                                                       'لم يتم الرد على الهاتف') {
                                                     status = "2";
@@ -792,6 +804,7 @@ class _StuckOrderDetailsState extends State<StuckOrderDetails> {
                                                     isCancelld = false;
                                                     isReturn = false;
                                                     isDelivery = true;
+                                                    isReceived = false;
                                                   } else if (type ==
                                                       'تم التوصيل مع تغيير السعر') {
                                                     status = "3";
@@ -799,6 +812,9 @@ class _StuckOrderDetailsState extends State<StuckOrderDetails> {
                                                     isCancelld = false;
                                                     isReturn = false;
                                                     isDelivery = false;
+                                                    isReceived = false;
+                                                    doneDate =
+                                                        new DateTime.now();
                                                   } else if (type ==
                                                       'ملغية بسبب خطأ في المنتج') {
                                                     status = "4";
@@ -806,6 +822,9 @@ class _StuckOrderDetailsState extends State<StuckOrderDetails> {
                                                     isCancelld = true;
                                                     isReturn = false;
                                                     isDelivery = false;
+                                                    isReceived = false;
+                                                    cancelledDate =
+                                                        new DateTime.now();
                                                   } else if (type ==
                                                       'ملغية لاسباب شخصية') {
                                                     status = "5";
@@ -813,6 +832,9 @@ class _StuckOrderDetailsState extends State<StuckOrderDetails> {
                                                     isCancelld = true;
                                                     isReturn = false;
                                                     isDelivery = false;
+                                                    isReceived = false;
+                                                    cancelledDate =
+                                                        new DateTime.now();
                                                   } else if (type ==
                                                       'ملغية لاسباب أخرى') {
                                                     status = "6";
@@ -820,6 +842,9 @@ class _StuckOrderDetailsState extends State<StuckOrderDetails> {
                                                     isCancelld = true;
                                                     isReturn = false;
                                                     isDelivery = false;
+                                                    isReceived = false;
+                                                    cancelledDate =
+                                                        new DateTime.now();
                                                   } else if (type ==
                                                       'راجعة بسبب خطأ في المنتج') {
                                                     status = "7";
@@ -827,6 +852,9 @@ class _StuckOrderDetailsState extends State<StuckOrderDetails> {
                                                     isCancelld = false;
                                                     isReturn = true;
                                                     isDelivery = false;
+                                                    isReceived = false;
+                                                    returnDate =
+                                                        new DateTime.now();
                                                   } else if (type ==
                                                       'راجعة لاسباب شخصية') {
                                                     status = "8";
@@ -834,6 +862,9 @@ class _StuckOrderDetailsState extends State<StuckOrderDetails> {
                                                     isCancelld = false;
                                                     isReturn = true;
                                                     isDelivery = false;
+                                                    isReceived = false;
+                                                    returnDate =
+                                                        new DateTime.now();
                                                   } else if (type ==
                                                       'راجعة لاسباب أخرى') {
                                                     status = "9";
@@ -841,12 +872,18 @@ class _StuckOrderDetailsState extends State<StuckOrderDetails> {
                                                     isCancelld = false;
                                                     isReturn = true;
                                                     isDelivery = false;
+                                                    isReceived = false;
+                                                    returnDate =
+                                                        new DateTime.now();
                                                   } else if (type == 'مؤجلة') {
                                                     status = "10";
                                                     isDone = false;
                                                     isCancelld = true;
                                                     isReturn = false;
                                                     isDelivery = false;
+                                                    isReceived = false;
+                                                    cancelledDate =
+                                                        new DateTime.now();
                                                   } else if (type ==
                                                       'تم فقدان الطرد') {
                                                     status = "11";
@@ -854,12 +891,24 @@ class _StuckOrderDetailsState extends State<StuckOrderDetails> {
                                                     isCancelld = false;
                                                     isReturn = false;
                                                     isDelivery = true;
+                                                    isReceived = false;
+                                                  } else if (type ==
+                                                      'ارجاع الى المخزن') {
+                                                    status = "12";
+                                                    isDone = false;
+                                                    isCancelld = false;
+                                                    isReturn = false;
+                                                    isDelivery = false;
+                                                    isReceived = true;
+                                                    cancelledDate =
+                                                        new DateTime.now();
                                                   } else {
                                                     status = "0";
                                                     isDone = false;
                                                     isCancelld = false;
                                                     isReturn = false;
                                                     isDelivery = true;
+                                                    isReceived = false;
                                                   }
 
                                                   await DeliveriesStatusServices()
@@ -897,8 +946,19 @@ class _StuckOrderDetailsState extends State<StuckOrderDetails> {
                                                               order.description,
                                                           date: order.date,
                                                           note: order.note,
-                                                          customerID: order
-                                                              .customerID));
+                                                          customerID:
+                                                              order.customerID,
+                                                          isCancelldDate:
+                                                              cancelledDate,
+                                                          isDoneDate: doneDate,
+                                                          isReturnDate:
+                                                              returnDate,
+                                                          isDeliveryDate:
+                                                              deliveryDate,
+                                                          isReceived:
+                                                              isReceived,
+                                                          isReceivedDate:
+                                                              receivedDate));
                                                   // Notification here for the admin
                                                   Toast.show(
                                                       "تم تعديل حالة الطرد",
