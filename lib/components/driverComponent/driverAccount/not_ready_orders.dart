@@ -26,7 +26,7 @@ class NotReadyOrderDetails extends StatefulWidget {
 class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
   TextEditingController noteController = TextEditingController();
   String type, status;
-  bool isCancelld, isReturn, isDone, isDelivery, isReceived;
+  bool isCancelld, isReturn, isDone, isDelivery, isReceived, inStoke;
   final _formKey = GlobalKey<FormState>();
   String cityId;
   DateTime deliveryDate, doneDate, cancelledDate, returnDate, receivedDate;
@@ -796,6 +796,7 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                     isCancelld = false;
                                                     isReturn = false;
                                                     isDelivery = false;
+                                                    inStoke = false;
                                                     isReceived = false;
                                                     doneDate =
                                                         new DateTime.now();
@@ -804,9 +805,12 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                     status = "2";
                                                     isDone = false;
                                                     isCancelld = false;
-                                                    isReturn = false;
-                                                    isDelivery = true;
+                                                    isReturn = true;
+                                                    isDelivery = false;
                                                     isReceived = false;
+                                                    inStoke = false;
+                                                    returnDate =
+                                                        new DateTime.now();
                                                   } else if (type ==
                                                       'تم التوصيل مع تغيير السعر') {
                                                     status = "3";
@@ -815,6 +819,7 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                     isReturn = false;
                                                     isDelivery = false;
                                                     isReceived = false;
+                                                    inStoke = false;
                                                     doneDate =
                                                         new DateTime.now();
                                                   } else if (type ==
@@ -825,6 +830,7 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                     isReturn = false;
                                                     isDelivery = false;
                                                     isReceived = false;
+                                                    inStoke = false;
                                                     cancelledDate =
                                                         new DateTime.now();
                                                   } else if (type ==
@@ -835,6 +841,7 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                     isReturn = false;
                                                     isDelivery = false;
                                                     isReceived = false;
+                                                    inStoke = false;
                                                     cancelledDate =
                                                         new DateTime.now();
                                                   } else if (type ==
@@ -845,6 +852,7 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                     isReturn = false;
                                                     isDelivery = false;
                                                     isReceived = false;
+                                                    inStoke = false;
                                                     cancelledDate =
                                                         new DateTime.now();
                                                   } else if (type ==
@@ -855,6 +863,7 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                     isReturn = true;
                                                     isDelivery = false;
                                                     isReceived = false;
+                                                    inStoke = false;
                                                     returnDate =
                                                         new DateTime.now();
                                                   } else if (type ==
@@ -865,6 +874,7 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                     isReturn = true;
                                                     isDelivery = false;
                                                     isReceived = false;
+                                                    inStoke = false;
                                                     returnDate =
                                                         new DateTime.now();
                                                   } else if (type ==
@@ -875,15 +885,17 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                     isReturn = true;
                                                     isDelivery = false;
                                                     isReceived = false;
+                                                    inStoke = false;
                                                     returnDate =
                                                         new DateTime.now();
                                                   } else if (type == 'مؤجلة') {
                                                     status = "10";
                                                     isDone = false;
-                                                    isCancelld = true;
-                                                    isReturn = false;
+                                                    isCancelld = false;
+                                                    isReturn = true;
                                                     isDelivery = false;
                                                     isReceived = false;
+                                                    inStoke = false;
                                                     cancelledDate =
                                                         new DateTime.now();
                                                   } else if (type ==
@@ -891,17 +903,19 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                     status = "11";
                                                     isDone = false;
                                                     isCancelld = false;
-                                                    isReturn = false;
-                                                    isDelivery = true;
+                                                    isReturn = true;
+                                                    isDelivery = false;
                                                     isReceived = false;
+                                                    inStoke = false;
                                                   } else if (type ==
                                                       'ارجاع الى المخزن') {
                                                     status = "12";
+                                                    inStoke = true;
                                                     isDone = false;
                                                     isCancelld = false;
                                                     isReturn = false;
                                                     isDelivery = false;
-                                                    isReceived = true;
+                                                    isReceived = false;
                                                     cancelledDate =
                                                         new DateTime.now();
                                                   } else {
@@ -911,6 +925,7 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                     isReturn = false;
                                                     isDelivery = true;
                                                     isReceived = false;
+                                                    inStoke = false;
                                                   }
 
                                                   await DeliveriesStatusServices()
@@ -934,33 +949,31 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                   await OrderServices(
                                                           uid: order.uid)
                                                       .updateOrderStatus(Order(
-                                                          isCancelld:
-                                                              isCancelld,
-                                                          isReturn: isReturn,
-                                                          isDone: isDone,
-                                                          isDelivery:
-                                                              isDelivery,
-                                                          price: order.price,
-                                                          totalPrice:
-                                                              order.totalPrice,
-                                                          type: order.type,
-                                                          description:
-                                                              order.description,
-                                                          date: order.date,
-                                                          note: order.note,
-                                                          customerID:
-                                                              order.customerID,
-                                                          isCancelldDate:
-                                                              cancelledDate,
-                                                          isDoneDate: doneDate,
-                                                          isReturnDate:
-                                                              returnDate,
-                                                          isDeliveryDate:
-                                                              deliveryDate,
-                                                          isReceived:
-                                                              isReceived,
-                                                          isReceivedDate:
-                                                              receivedDate));
+                                                    isCancelld: isCancelld,
+                                                    isReturn: isReturn,
+                                                    isDone: isDone,
+                                                    isDelivery: isDelivery,
+                                                    price: order.price,
+                                                    totalPrice:
+                                                        order.totalPrice,
+                                                    type: order.type,
+                                                    description:
+                                                        order.description,
+                                                    date: order.date,
+                                                    note: order.note,
+                                                    customerID:
+                                                        order.customerID,
+                                                    isCancelldDate:
+                                                        cancelledDate,
+                                                    isDoneDate: doneDate,
+                                                    isReturnDate: returnDate,
+                                                    isDeliveryDate:
+                                                        deliveryDate,
+                                                    isReceived: isReceived,
+                                                    isReceivedDate:
+                                                        receivedDate,
+                                                    inStock: inStoke,
+                                                  ));
                                                   // Notification here for the admin
                                                   Toast.show(
                                                       "تم تعديل حالة الطرد",

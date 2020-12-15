@@ -71,7 +71,6 @@ class DriverDrawer extends StatelessWidget {
                   ),
                   leading: Image.asset('assets/homePage.png'),
                   onTap: () {
-                    Navigator.pop(context);
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
@@ -102,7 +101,6 @@ class DriverDrawer extends StatelessWidget {
                   leading: Image.asset('assets/profile-business-drawer.png',
                       width: 32),
                   onTap: () {
-                    Navigator.pop(context);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -131,7 +129,6 @@ class DriverDrawer extends StatelessWidget {
                   leading: Image.asset('assets/profile-business-drawer.png',
                       width: 32),
                   onTap: () {
-                    Navigator.pop(context);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -161,7 +158,7 @@ class DriverDrawer extends StatelessWidget {
                   onTap: () {
                     AuthService _authService = AuthService();
                     _authService.signOut();
-context.read<AuthenticationService>().signOut();
+                    context.read<AuthenticationService>().signOut();
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => LoginAdmin()),

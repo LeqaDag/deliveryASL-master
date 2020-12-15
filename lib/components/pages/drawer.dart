@@ -1,3 +1,4 @@
+import 'package:AsyadLogistic/components/locationComponent/location_admin.dart';
 import 'package:flutter/material.dart';
 import 'package:AsyadLogistic/components/adminComponent/admin_secretary_home.dart';
 import 'package:AsyadLogistic/components/cityComponent/city_admin.dart';
@@ -264,13 +265,39 @@ class AdminDrawer extends StatelessWidget {
                         fontSize: 18.0,
                         fontFamily: 'Amiri'),
                   ),
-                  leading: Image.asset('assets/city-draw.png'),
+                  leading: Image.asset('assets/city-draw.png',width: 40,),
                   onTap: () {
                     Navigator.pop(context);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => AdminCitiesHome(name: name)),
+                    );
+                  },
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0),
+              child: Card(
+                color: Color(0xff464646),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: ListTile(
+                  title: Text(
+                    'المناطق',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18.0,
+                        fontFamily: 'Amiri'),
+                  ),
+                  leading: Image.asset('assets/wregion50.png', width:40),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AllLocation(name: name)),
                     );
                   },
                 ),

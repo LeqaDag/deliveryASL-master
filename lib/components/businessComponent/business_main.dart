@@ -1,3 +1,5 @@
+import 'package:AsyadLogistic/classes/order.dart';
+import 'package:AsyadLogistic/services/businessServices.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -18,6 +20,9 @@ class BusinessMain extends StatefulWidget {
 
 class _BusinessMainState extends State<BusinessMain> {
   String orderNumber = "0";
+  List<Order> orders;
+  int total = 0, paidSalary = 0;
+
   @override
   void initState() {
     orderNumber = "0";
@@ -49,10 +54,8 @@ class _BusinessMainState extends State<BusinessMain> {
         ),
         body: Column(
           children: <Widget>[
-            SizedBox(
-              height: 30,
-            ),
-            Container(
+            Expanded(
+                child: Container(
               margin: EdgeInsets.all(10),
               child: Table(
                 border: TableBorder.all(
@@ -74,15 +77,25 @@ class _BusinessMainState extends State<BusinessMain> {
                                   .countBusinessOrders(widget.uid),
                               builder: (context, snapshot) {
                                 orderNumber = snapshot.data.toString();
-
-                                return Text(
-                                  orderNumber ?? "",
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: "Amiri",
-                                  ),
-                                );
+                                if (snapshot.hasData) {
+                                  return Text(
+                                    orderNumber ?? "",
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Amiri",
+                                    ),
+                                  );
+                                } else {
+                                  return Text(
+                                    "0",
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Amiri",
+                                    ),
+                                  );
+                                }
                               }),
                         ],
                       ),
@@ -92,12 +105,9 @@ class _BusinessMainState extends State<BusinessMain> {
                       Text(
                         "عدد الطلبيات  ",
                         style: TextStyle(
-                          fontSize: 17,
+                          fontSize: 16,
                           fontFamily: "Amiri",
                         ),
-                      ),
-                      SizedBox(
-                        height: 30,
                       ),
                     ]),
                     Column(children: [
@@ -109,25 +119,23 @@ class _BusinessMainState extends State<BusinessMain> {
                             width: 40,
                             height: 40,
                           ),
-                          FutureBuilder<int>(
-                              future: InvoiceServices(businessId: widget.uid)
-                                  .total(widget.uid),
+                          StreamBuilder<List<Order>>(
+                              stream:
+                                  OrderServices().businessAllOrders(widget.uid),
                               builder: (context, snapshot) {
-                                totalPrice = snapshot.data;
-                                if (totalPrice == null) {
-                                  return Text(
-                                    "0",
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: "Amiri",
-                                    ),
-                                  );
+                                int totalPrice = 0;
+                                if (!snapshot.hasData) {
+                                  return Text('جاري التحميل ... ');
                                 } else {
+                                  orders = snapshot.data;
+                                  orders.forEach((element) {
+                                    totalPrice += element.price;
+                                    total = totalPrice;
+                                  });
                                   return Text(
-                                    snapshot.data.toString() ?? "",
+                                    totalPrice.toString(),
                                     style: TextStyle(
-                                      fontSize: 18,
+                                      fontSize: 15,
                                       fontWeight: FontWeight.bold,
                                       fontFamily: "Amiri",
                                     ),
@@ -141,11 +149,108 @@ class _BusinessMainState extends State<BusinessMain> {
                       ),
                       Text("المبلغ الكلي  ",
                           style: TextStyle(
-                            fontSize: 17,
+                            fontSize: 16,
                             fontFamily: "Amiri",
                           )),
                       SizedBox(
-                        height: 30,
+                        height: 20,
+                      ),
+                    ]),
+                  ]),
+                  TableRow(children: [
+                    Column(children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Image(
+                            image: AssetImage("assets/done.png"),
+                            width: 40,
+                            height: 40,
+                          ),
+                          FutureBuilder<int>(
+                              future: OrderServices()
+                                  .countBusinessDoneOrders(widget.uid),
+                              builder: (context, snapshot) {
+                                orderNumber = snapshot.data.toString();
+                                if (snapshot.hasData) {
+                                  return Text(
+                                    orderNumber ?? "",
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Amiri",
+                                    ),
+                                  );
+                                } else {
+                                  return Text(
+                                    "0",
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Amiri",
+                                    ),
+                                  );
+                                }
+                              }),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        "عدد الطرود الجاهزة  ",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontFamily: "Amiri",
+                        ),
+                      ),
+                    ]),
+                    Column(children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Image(
+                            image: AssetImage("assets/return.png"),
+                            width: 40,
+                            height: 40,
+                          ),
+                          FutureBuilder<int>(
+                              future: OrderServices()
+                                  .countBusinessReturnOrders(widget.uid),
+                              builder: (context, snapshot) {
+                                orderNumber = snapshot.data.toString();
+                                if (snapshot.hasData) {
+                                  return Text(
+                                    orderNumber ?? "",
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Amiri",
+                                    ),
+                                  );
+                                } else {
+                                  return Text(
+                                    "0",
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Amiri",
+                                    ),
+                                  );
+                                }
+                              }),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(" عدد الطرود الراجعة",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontFamily: "Amiri",
+                          )),
+                      SizedBox(
+                        height: 20,
                       ),
                     ]),
                   ]),
@@ -160,23 +265,24 @@ class _BusinessMainState extends State<BusinessMain> {
                             height: 40,
                           ),
                           FutureBuilder<int>(
-                              future: InvoiceServices(businessId: widget.uid)
-                                  .paidPrice(widget.uid),
+                              future: BusinessServices(uid: widget.uid)
+                                  .businessPaidSalary,
                               builder: (context, snapshot) {
-                                if (snapshot.data == null) {
+                                if (snapshot.hasData) {
+                                  paidSalary = snapshot.data;
                                   return Text(
-                                    "0",
+                                    snapshot.data.toString() ?? "",
                                     style: TextStyle(
-                                      fontSize: 18,
+                                      fontSize: 15,
                                       fontWeight: FontWeight.bold,
                                       fontFamily: "Amiri",
                                     ),
                                   );
                                 } else {
                                   return Text(
-                                    snapshot.data.toString() ?? "",
+                                    "0",
                                     style: TextStyle(
-                                      fontSize: 18,
+                                      fontSize: 15,
                                       fontWeight: FontWeight.bold,
                                       fontFamily: "Amiri",
                                     ),
@@ -191,12 +297,12 @@ class _BusinessMainState extends State<BusinessMain> {
                       Text(
                         "المبلغ المدفوع ",
                         style: TextStyle(
-                          fontSize: 17,
+                          fontSize: 16,
                           fontFamily: "Amiri",
                         ),
                       ),
                       SizedBox(
-                        height: 30,
+                        height: 20,
                       ),
                     ]),
                     Column(children: [
@@ -208,32 +314,14 @@ class _BusinessMainState extends State<BusinessMain> {
                             width: 40,
                             height: 40,
                           ),
-                          FutureBuilder<int>(
-                              future: InvoiceServices(businessId: widget.uid)
-                                  .paidPrice(widget.uid),
-                              builder: (context, snapshot) {
-                                if (snapshot.data == null) {
-                                  return Text(
-                                    "0",
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: "Amiri",
-                                    ),
-                                  );
-                                } else {
-                                  paidPrice = snapshot.data;
-                                  remainingPrice = totalPrice - paidPrice;
-                                  return Text(
-                                    remainingPrice.toString() ?? "",
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: "Amiri",
-                                    ),
-                                  );
-                                }
-                              }),
+                          Text(
+                            (total - paidSalary).toString() ?? "0",
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "Amiri",
+                            ),
+                          ),
                         ],
                       ),
                       SizedBox(
@@ -242,25 +330,21 @@ class _BusinessMainState extends State<BusinessMain> {
                       Text(
                         " المبلغ المتبقي  ",
                         style: TextStyle(
-                          fontSize: 17,
+                          fontSize: 16,
                           fontFamily: "Amiri",
                         ),
-                      ),
-                      SizedBox(
-                        height: 30,
                       ),
                     ]),
                   ]),
                 ],
               ),
-            ),
-            SizedBox(
-              height: 50,
-            ),
-            Column(
+            )),
+            Expanded(
+                child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                Column(
+                Expanded(
+                    child: Column(
                   children: <Widget>[
                     Image(
                       image: AssetImage("assets/icon_add_new_order.png"),
@@ -283,10 +367,7 @@ class _BusinessMainState extends State<BusinessMain> {
                       ),
                     ),
                   ],
-                ),
-                SizedBox(
-                  height: 40,
-                ),
+                )),
                 Column(
                   children: <Widget>[
                     Image(
@@ -312,7 +393,7 @@ class _BusinessMainState extends State<BusinessMain> {
                   ],
                 ),
               ],
-            ),
+            )),
           ],
         ),
       ),

@@ -25,13 +25,13 @@ class OrderDetails extends StatelessWidget {
         orderState: orderState,
       );
     } else if (orderState == "done") {
-      return DoneOrderDetails(
+      return NotReadyOrderDetails(
         name: name,
         uid: uid,
         orderState: orderState,
       );
     } else {
-      return StuckOrderDetails(
+      return NotReadyOrderDetails(
         name: name,
         uid: uid,
         orderState: orderState,

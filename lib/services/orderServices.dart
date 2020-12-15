@@ -46,7 +46,9 @@ class OrderServices {
       'driverPrice': order.driverPrice,
       'sublineID': order.sublineID,
       'locationID': order.locationID,
-      'indexLine': order.indexLine
+      'indexLine': order.indexLine,
+      'mainLineIndex': order.mainLineIndex,
+      'mainlineID': order.mainlineID
     });
   }
 
@@ -72,6 +74,7 @@ class OrderServices {
       'isCancelldDate': order.isCancelldDate,
       'isDeliveryDate': order.isDeliveryDate,
       'isReceivedDate': order.isReceivedDate,
+      'inStock': order.inStock,
     });
   }
 
@@ -100,6 +103,8 @@ class OrderServices {
         sublineID: snapshot.data()['sublineID'],
         locationID: snapshot.data()['locationID'],
         indexLine: snapshot.data()['indexLine'],
+        mainLineIndex: snapshot.data()['mainLineIndex'],
+        mainlineID: snapshot.data()['mainlineID'],
         driverPrice: snapshot.data()['driverPrice']);
   }
 // locationID
@@ -129,7 +134,9 @@ class OrderServices {
           isArchived: doc.data()['isArchived'] ?? '',
           driverPrice: doc.data()['driverPrice'] ?? '',
           indexLine: doc.data()['indexLine'] ?? '',
+          mainLineIndex: doc.data()['mainLineIndex'] ?? '',
           locationID: doc.data()['locationID'] ?? '',
+          mainlineID: doc.data()['mainlineID'] ?? '',
           sublineID: doc.data()['sublineID'] ?? '');
     }).toList();
   }
@@ -421,6 +428,7 @@ class OrderServices {
       case 'driverOrders':
         {
           return orderCollection
+              .orderBy('mainLineIndex', descending: false)
               .orderBy('indexLine', descending: false)
               .snapshots()
               .map(_orderListFromSnapshot);
@@ -593,6 +601,24 @@ class OrderServices {
   Future<int> countBusinessOrders(String businessID) {
     return orderCollection
         .where('businesID', isEqualTo: businessID)
+        .where('isArchived', isEqualTo: false)
+        .get()
+        .then((value) => value.size);
+  }
+
+  Future<int> countBusinessDoneOrders(String businessID) {
+    return orderCollection
+        .where('businesID', isEqualTo: businessID)
+        .where('isDone', isEqualTo: true)
+        .where('isArchived', isEqualTo: false)
+        .get()
+        .then((value) => value.size);
+  }
+
+  Future<int> countBusinessReturnOrders(String businessID) {
+    return orderCollection
+        .where('businesID', isEqualTo: businessID)
+        .where('isReturn', isEqualTo: true)
         .where('isArchived', isEqualTo: false)
         .get()
         .then((value) => value.size);

@@ -1002,7 +1002,8 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
               borderRadius: BorderRadius.circular(0.0),
             ),
             //color: KCustomCompanyOrdersStatus,
-            child: Row(
+            child: Expanded(
+                child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 Container(
@@ -1027,7 +1028,8 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                           ),
 
                           //  SizedBox(width: 33,),
-                          FutureBuilder<String>(
+                          Expanded(
+                              child: FutureBuilder<String>(
                             future: CustomerServices(uid: order.customerID)
                                 .customerName,
                             builder: (context, snapshot) {
@@ -1041,9 +1043,11 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                                     fontFamily: "Amiri",
                                   ),
                                 );
+                              } else {
+                                return Text("");
                               }
                             },
-                          ),
+                          )),
                         ],
                       ),
                       Row(
@@ -1064,7 +1068,8 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                           ),
 
                           //  SizedBox(width: 33,),
-                          Text(
+                          Expanded(
+                              child: Text(
                             intl.DateFormat('yyyy-MM-dd').format(order.date) ??
                                 "",
                             style: TextStyle(
@@ -1072,82 +1077,86 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                               fontFamily: "Amiri",
                             ),
-                          ),
+                          )),
                         ],
                       ),
                     ],
                   ),
                 ),
-                Container(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Row(
-                        //3
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.only(
-                                left: height * 0.025,
-                                right: height * 0.025,
-                                top: height * 0,
-                                bottom: height * 0),
-                            child: Icon(
-                              Icons.location_on,
-                              color: Colors.blueGrey,
-                            ),
+                Expanded(
+                    child:Container(
+                    child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Expanded(
+                        child: Row(
+                      //3
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(
+                              left: height * 0.025,
+                              right: height * 0.025,
+                              top: height * 0,
+                              bottom: height * 0),
+                          child: Icon(
+                            Icons.location_on,
+                            color: Colors.blueGrey,
                           ),
+                        ),
 
-                          //  SizedBox(width: 33,),
-                          FutureBuilder<String>(
-                            future: CustomerServices(uid: order.customerID)
-                                .customerCity,
-                            builder: (context, snapshot) {
-                              // print(order.customerID);
-                              if (snapshot.hasData) {
-                                return Text(
-                                  snapshot.data ?? "",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: "Amiri",
-                                  ),
-                                );
-                              }
-                            },
-                          ),
-                        ],
-                      ),
-                      Row(
-                        //3
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.only(
-                                left: height * 0.025,
-                                right: height * 0.025,
-                                top: height * 0,
-                                bottom: height * 0),
-                            child: Image.asset('assets/price.png'),
-                          ),
+                        //  SizedBox(width: 33,),
+                        FutureBuilder<String>(
+                          future: CustomerServices(uid: order.customerID)
+                              .customerCity,
+                          builder: (context, snapshot) {
+                            // print(order.customerID);
+                            if (snapshot.hasData) {
+                              return Text(
+                                snapshot.data ?? "",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: "Amiri",
+                                ),
+                              );
+                            } else {
+                              return Text("");
+                            }
+                          },
+                        ),
+                      ],
+                    )),
+                    Expanded(
+                        child: Row(
+                      //3
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(
+                              left: height * 0.025,
+                              right: height * 0.025,
+                              top: height * 0,
+                              bottom: height * 0),
+                          child: Image.asset('assets/price.png'),
+                        ),
 
-                          //  SizedBox(width: 33,),
-                          Text(
-                            order.price.toString() ?? "",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: "Amiri",
-                            ),
+                        //  SizedBox(width: 33,),
+                        Text(
+                          order.price.toString() ?? "",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: "Amiri",
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
+                        ),
+                      ],
+                    )),
+                  ],
+                ))),
               ],
-            ),
+            )),
           ),
         ),
       );

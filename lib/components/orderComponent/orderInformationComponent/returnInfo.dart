@@ -233,7 +233,7 @@ class ReturnInfo extends StatelessWidget {
         break;
       default:
         {
-          return "";
+          return "لا يوجد ملاحظات";
         }
         break;
     }

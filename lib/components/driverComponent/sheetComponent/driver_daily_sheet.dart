@@ -1,3 +1,4 @@
+import 'package:AsyadLogistic/components/pages/loadingData.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:AsyadLogistic/classes/driver.dart';
@@ -38,6 +39,7 @@ class _DriverDailySheetState extends State<DriverDailySheet> {
               endDrawer: Directionality(
                   textDirection: TextDirection.rtl,
                   child: DriverDrawer(
+                    uid: driverData.uid,
                     name: widget.name,
                   )),
               appBar: AppBar(
@@ -395,10 +397,10 @@ class _DriverDailySheetState extends State<DriverDailySheet> {
                       ),
                       Container(
                         child: StreamProvider<List<Order>>.value(
-                          value: OrderServices(driverID: widget.driverID)
+                          value: OrderServices(driverID: driverData.uid)
                               .sheetListDriver,
                           child: SheetListDriver(
-                              name: widget.name, driverID: widget.driverID),
+                              name: widget.name, driverID: driverData.uid),
                           catchError: (_, __) => null,
                         ),
                       ),
@@ -429,7 +431,7 @@ class SheetListDriver extends StatefulWidget {
 class _SheetListDriverState extends State<SheetListDriver> {
   @override
   Widget build(BuildContext context) {
-    //final orders = Provider.of<List<Order>>(context) ?? [];
+    // final orders = Provider.of<List<Order>>(context) ?? [];
     final orders = Provider.of<List<Order>>(context).where((order) {
           return order.driverID == widget.driverID;
         }).toList() ??
@@ -441,19 +443,23 @@ class _SheetListDriverState extends State<SheetListDriver> {
         itemCount: orders.length,
         physics: ScrollPhysics(),
         itemBuilder: (context, index) {
+          // if (orders[index].driverID == widget.driverID) {
           return AllDriverOrders(
               order: orders[index], name: widget.name, uid: widget.driverID);
+
+          //  else {
+          //   return Visibility(
+          //     child: Text(""),
+          //     visible: false,
+          //   );
+          // }
         },
         separatorBuilder: (context, index) {
           return Divider();
         },
       );
     } else {
-      return Center(
-        child: Container(
-          child: Image.asset("assets/EmptyOrder.png"),
-        ),
-      );
+      return Center(child: LoadingData());
     }
   }
 }

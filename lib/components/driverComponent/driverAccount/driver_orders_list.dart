@@ -328,7 +328,7 @@ class _PendingDriverOrdersState extends State<PendingDriverOrders> {
         visible: false,
       );
     } else if (widget.order.isDelivery == true &&
-        widget.order.driverID == widget.uid) {
+        widget.order.driverID == widget.uid ) {
       return InkWell(
         onTap: () {
           Navigator.push(
@@ -426,12 +426,7 @@ class _StuckDriverOrdersState extends State<StuckDriverOrders> {
       color = Colors.greenAccent;
     else
       color = Colors.white;
-    if (widget.order.isReturn == false) {
-      return Visibility(
-        child: Text("Gone"),
-        visible: false,
-      );
-    } else if (widget.order.isReturn == true &&
+    if ((widget.order.isReturn == true || widget.order.isCancelld == true) &&
         widget.order.driverID == widget.uid) {
       return InkWell(
         onTap: () {

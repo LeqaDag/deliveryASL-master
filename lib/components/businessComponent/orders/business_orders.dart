@@ -2,11 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:AsyadLogistic/classes/order.dart';
-import 'package:AsyadLogistic/components/businessComponent/orders/update_order.dart';
 import 'package:AsyadLogistic/components/widgetsComponent/CustomWidgets.dart';
 import 'package:AsyadLogistic/services/customerServices.dart';
 import 'package:AsyadLogistic/services/orderServices.dart';
 
+import '../../../constants.dart';
 import 'order_status.dart';
 
 class BusinessOrderList extends StatelessWidget {
@@ -46,40 +46,56 @@ class _CustomCompanyOrdersStatusState extends State<CustomCompanyOrdersStatus> {
     print(widget.uid);
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-    String orderState;
-    if (widget.order.isCancelld == true)
-      //color = KBadgeColorAndContainerBorderColorCancelledOrders;
-      orderState = "تم الغاء الطرد ";
-    else if (widget.order.isDelivery == true)
-      //color = KAllOrdersListTileColor;
-      orderState = " تم توزيع الطرد على السائق";
-    else if (widget.order.isDone == true)
-      // color = KBadgeColorAndContainerBorderColorReadyOrders;
-      orderState = "تم استلام الطرد من قبل الزبون";
-    else if (widget.order.isLoading == true)
-      // color = KBadgeColorAndContainerBorderColorLoadingOrder;
-      orderState = "لم يتم تحميل الطرد بعد";
-    else if (widget.order.isUrgent == true)
-      // color = KBadgeColorAndContainerBorderColorUrgentOrders;
-      orderState = "تم الغاء الطرد ";
-    else if (widget.order.isReturn == true)
-      // color = KBadgeColorAndContainerBorderColorReturnOrders;
-      orderState = "تم ارجاع الطرد ";
-    else if (widget.order.isReceived == true)
-      // color = KBadgeColorAndContainerBorderColorRecipientOrder;
-      orderState = "تم استلام الطرد منكم ";
+    IconData icon;
+    String stateOrder;
+    Color color;
+
+    if (widget.order.inStock == true) {
+      color = KBadgeColorAndContainerBorderColorWithDriverOrders;
+      icon = Icons.archive_sharp;
+      stateOrder = "في المخزن";
+    }
+    if (widget.order.isCancelld == true) {
+      color = KBadgeColorAndContainerBorderColorCancelledOrders;
+      icon = Icons.cancel;
+      stateOrder = "ملغي";
+    } else if (widget.order.isDelivery == true) {
+      color = KAllOrdersListTileColor;
+      icon = Icons.business_center_outlined;
+      stateOrder = "جاهز للتوزيع";
+    } else if (widget.order.isDone == true) {
+      color = KBadgeColorAndContainerBorderColorReadyOrders;
+      icon = Icons.done;
+      stateOrder = "جاهز";
+    } else if (widget.order.isLoading == true) {
+      color = KBadgeColorAndContainerBorderColorLoadingOrder;
+      icon = Icons.arrow_circle_up_rounded;
+      stateOrder = "محمل";
+    } else if (widget.order.isUrgent == true) {
+      color = KBadgeColorAndContainerBorderColorUrgentOrders;
+      icon = Icons.info_outline;
+      stateOrder = "مستعجل";
+    } else if (widget.order.isReturn == true) {
+      color = KBadgeColorAndContainerBorderColorReturnOrders;
+      icon = Icons.restore;
+      stateOrder = "راجع";
+    } else if (widget.order.isReceived == true) {
+      color = KBadgeColorAndContainerBorderColorRecipientOrder;
+      icon = Icons.assignment_turned_in_outlined;
+      stateOrder = "تم استلامه";
+    }
 
     return InkWell(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => OrderStatus(
-                  name: widget.name,
-                  order: widget.order,
-                  customerName: customerName,
-                  orderState: orderState)),
-        );
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //       builder: (context) => OrderStatus(
+        //           name: widget.name,
+        //           order: widget.order,
+        //           customerName: customerName,
+        //           orderState: orderState)),
+        // );
       },
       child: Container(
           width: width - 50,
@@ -117,15 +133,20 @@ class _CustomCompanyOrdersStatusState extends State<CustomCompanyOrdersStatus> {
                                       .customerName,
                               builder: (context, snapshot) {
                                 customerName = snapshot.data;
-
-                                return Text(
-                                  customerName ?? "",
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: "Amiri",
-                                  ),
-                                );
+                                if (snapshot.hasData) {
+                                  return Text(
+                                    customerName ?? "",
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Amiri",
+                                    ),
+                                  );
+                                } else {
+                                  return Text(
+                                    "",
+                                  );
+                                }
                               }),
                         ],
                       ),
@@ -147,82 +168,138 @@ class _CustomCompanyOrdersStatusState extends State<CustomCompanyOrdersStatus> {
                                   CustomerServices(uid: widget.order.customerID)
                                       .customerCity,
                               builder: (context, snapshot) {
-                                return Text(
-                                  "${snapshot.data}-" ?? "",
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: "Amiri",
-                                  ),
-                                );
+                                if (snapshot.hasData) {
+                                  return Text(
+                                    "${snapshot.data}-" ?? "",
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Amiri",
+                                    ),
+                                  );
+                                } else {
+                                  return Text("");
+                                }
+                              }),
+                          FutureBuilder<String>(
+                              future:
+                                  CustomerServices(uid: widget.order.customerID)
+                                      .customerSublineName,
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return Text(
+                                    "${snapshot.data}-" ?? "",
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Amiri",
+                                    ),
+                                  );
+                                } else {
+                                  return Text("");
+                                }
                               }),
                           FutureBuilder<String>(
                               future:
                                   CustomerServices(uid: widget.order.customerID)
                                       .customerAdress,
                               builder: (context, snapshot) {
-                                return Text(
-                                  snapshot.data ?? "",
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: "Amiri",
-                                  ),
-                                );
+                                if (snapshot.hasData) {
+                                  return Text(
+                                    snapshot.data ?? "",
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Amiri",
+                                    ),
+                                  );
+                                } else {
+                                  return Text("");
+                                }
                               }),
                         ],
                       ),
                     ]),
               ),
-              Container(
-                child: Row(children: <Widget>[
-                  IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => UpdateOrder(
-                                  orderID: widget.order.uid,
-                                  customerID: widget.order.customerID,
-                                  name: widget.name,
-                                )),
-                      );
-                    },
-                    icon: Icon(
-                      Icons.create,
-                      color: Colors.green,
+              Column(
+                children: [
+                  Row(children: <Widget>[
+                    IconButton(
+                      onPressed: () {
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //       builder: (context) => UpdateOrder(
+                        //             orderID: widget.order.uid,
+                        //             customerID: widget.order.customerID,
+                        //             name: widget.name,
+                        //           )),
+                        // );
+                      },
+                      icon: Icon(
+                        Icons.create,
+                        color: Colors.green,
+                      ),
                     ),
+                    IconButton(
+                      onPressed: () {
+                        return showDialog<void>(
+                            context: context,
+                            barrierDismissible: false, // user must tap button!
+                            builder: (BuildContext context) => CustomDialog(
+                                  title: "حذف طلبية",
+                                  description: ' هل ترغب بحذف طلبية',
+                                  name: customerName,
+                                  buttonText: "تأكيد",
+                                  onPressed: () {
+                                    final FirebaseAuth auth =
+                                        FirebaseAuth.instance;
+                                    final User user = auth.currentUser;
+                                    OrderServices().deleteOrderData(
+                                        widget.order.uid, user.uid);
+                                    Navigator.of(context).pop();
+                                  },
+                                  cancelButton: "الغاء",
+                                  cancelPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ));
+                      },
+                      icon: Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                      ),
+                    )
+                  ]),
+                  Row(
+                    //3
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      Icon(
+                        icon,
+                        color: color,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                            left: height * 0.025,
+                            right: height * 0.025,
+                            top: height * 0,
+                            bottom: height * 0),
+                        child: Text(
+                          stateOrder ?? "",
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: "Amiri",
+                          ),
+                        ),
+                      ),
+                      //  SizedBox(width: 33,),
+
+                      //  SizedBox(width: 33,),
+                    ],
                   ),
-                  IconButton(
-                    onPressed: () {
-                      return showDialog<void>(
-                          context: context,
-                          barrierDismissible: false, // user must tap button!
-                          builder: (BuildContext context) => CustomDialog(
-                                title: "حذف طلبية",
-                                description: ' هل ترغب بحذف طلبية',
-                                name: customerName,
-                                buttonText: "تأكيد",
-                                onPressed: () {
-                                  final FirebaseAuth auth =
-                                      FirebaseAuth.instance;
-                                  final User user = auth.currentUser;
-                                  OrderServices().deleteOrderData(
-                                      widget.order.uid, user.uid);
-                                  Navigator.of(context).pop();
-                                },
-                                cancelButton: "الغاء",
-                                cancelPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ));
-                    },
-                    icon: Icon(
-                      Icons.delete,
-                      color: Colors.red,
-                    ),
-                  )
-                ]),
+                ],
               ),
             ]),
           )),

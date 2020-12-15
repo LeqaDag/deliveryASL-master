@@ -35,16 +35,15 @@ class _AddNewOdersState extends State<AddNewOders> {
   List<SubLine> sublines;
   List<MainLine> mainlines;
   List<Business> business;
-
+  bool isBusinessSelected;
   String cityID = "0",
-      mainline = "0",
-      subline = "0",
-      mainLineId = "0",
-      businessID = "0",
+      mainline,
+      subline,
+      businessID,
       bus = "0",
       cityName = "0",
       sublineName = "0",
-      locationID = "0",
+      locationID,
       typeOrder = "عادي";
   List<int> orderTotalPrice = [0];
   static String deliveryPrice = "0";
@@ -55,9 +54,6 @@ class _AddNewOdersState extends State<AddNewOders> {
   void initState() {
     deliveryPrice = "0";
     orderTotalPrice = [0];
-    businessID = "";
-    locationID = "";
-    mainLineId = "";
     indexLine = 0;
     sublineName = "";
     super.initState();
@@ -69,7 +65,7 @@ class _AddNewOdersState extends State<AddNewOders> {
   bool orderType = false;
   DateTime orderDate = new DateTime.now();
   TextEditingController orderNote = new TextEditingController();
-
+  TextEditingController totalPriceController = new TextEditingController();
   //Customer Fileds
   TextEditingController customerName = new TextEditingController();
   TextEditingController customerPhoneNumber = new TextEditingController();
@@ -138,9 +134,7 @@ class _AddNewOdersState extends State<AddNewOders> {
                       future: SubLineServices(uid: subline).sublineIndex,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
-                          print(snapshot.data.toString());
                           indexLine = snapshot.data ?? -1;
-                          print(indexLine);
                           return Visibility(
                             child: Text("Gone"),
                             visible: false,
@@ -156,7 +150,6 @@ class _AddNewOdersState extends State<AddNewOders> {
                       future: SubLineServices(uid: subline).sublineName,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
-                          print(snapshot.data.toString());
                           sublineName = snapshot.data ?? -1;
                           return Visibility(
                             child: Text("Gone"),
@@ -181,7 +174,6 @@ class _AddNewOdersState extends State<AddNewOders> {
                         if (snapshot.hasData) {
                           print(snapshot.data.toString());
                           cityName = snapshot.data ?? "";
-                          print(cityName);
                           return Visibility(
                             child: Text("Gone"),
                             visible: false,
@@ -249,6 +241,8 @@ class _AddNewOdersState extends State<AddNewOders> {
                               setState(() {
                                 orderTotalPrice[0] = (int.parse(value) +
                                     int.parse(deliveryPrice));
+                                totalPriceController =
+                                    orderTotalPrice[0] as TextEditingController;
                               });
                             },
                             controller: orderPrice,
@@ -274,6 +268,7 @@ class _AddNewOdersState extends State<AddNewOders> {
                               top: 10, bottom: 10, left: 10, right: 0),
                           child: TextFormField(
                             enabled: false,
+                            //controller: totalPriceController,
                             decoration: InputDecoration(
                               labelText: orderTotalPrice[0].toString(),
                               contentPadding: EdgeInsets.only(right: 20.0),
@@ -350,6 +345,14 @@ class _AddNewOdersState extends State<AddNewOders> {
       child: Container(
         margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: right),
         child: TextFormField(
+          validator: (value) {
+            if (value.isEmpty) {
+              return 'ادخل رقم جوال';
+            } else if (value.length != 10 || value.length > 10) {
+              return 'الرجاء ادخال رقم جوال صحيح';
+            }
+            return null;
+          },
           controller: fieldController,
           keyboardType: TextInputType.numberWithOptions(decimal: true),
           decoration: InputDecoration(
@@ -402,6 +405,7 @@ class _AddNewOdersState extends State<AddNewOders> {
   }
 
   Widget _locationChoice() {
+    // if (isBusinessSelected == true) {
     return Expanded(
       flex: 2,
       child: Container(
@@ -415,7 +419,7 @@ class _AddNewOdersState extends State<AddNewOders> {
               } else {
                 cities = snapshot.data;
                 return DropdownButtonFormField<String>(
-                  //value: locationID,
+                  value: locationID,
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
@@ -461,6 +465,7 @@ class _AddNewOdersState extends State<AddNewOders> {
                       FirebaseFirestore.instance
                           .collection('delivery_costs')
                           .where('locationID', isEqualTo: locationID)
+                          .where('businesID', isEqualTo: businessID)
                           .get()
                           .then((value) => {
                                 setState(() {
@@ -476,6 +481,42 @@ class _AddNewOdersState extends State<AddNewOders> {
             }),
       ),
     );
+
+    //  else {
+    //   return Expanded(
+    //     flex: 2,
+    //     child: Container(
+    //       margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
+    //       // ignore: missing_required_param
+    //       child: DropdownButtonFormField<String>(
+    //         value: locationID,
+    //         decoration: InputDecoration(
+    //           enabledBorder: OutlineInputBorder(
+    //             borderRadius: BorderRadius.circular(10.0),
+    //             borderSide: BorderSide(
+    //               width: 1.0,
+    //               color: Color(0xff636363),
+    //             ),
+    //           ),
+    //           focusedBorder: OutlineInputBorder(
+    //             borderRadius: BorderRadius.circular(10.0),
+    //             borderSide: BorderSide(
+    //               width: 2.0,
+    //               color: Color(0xff73a16a),
+    //             ),
+    //           ),
+    //           contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
+    //           labelText: "المنطقة",
+    //           labelStyle: TextStyle(
+    //             fontFamily: 'Amiri',
+    //             fontSize: 18.0,
+    //             color: Color(0xff316686),
+    //           ),
+    //         ),
+    //       ),
+    //     ),
+    //   );
+    // }
   }
 
   Widget _subLineChoice() {
@@ -491,7 +532,7 @@ class _AddNewOdersState extends State<AddNewOders> {
               } else {
                 sublines = snapshot.data;
                 return DropdownButtonFormField<String>(
-                  //value: subline,
+                  value: subline,
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
@@ -549,14 +590,15 @@ class _AddNewOdersState extends State<AddNewOders> {
       child: Container(
         margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
         child: StreamBuilder<List<MainLine>>(
-            stream: MainLineServices(cityID: locationID).mainLineByLocationID,
+            stream:
+                MainLineServices(locationID: locationID).mainLineByLocationID,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Text('Loading...');
               } else {
                 mainlines = snapshot.data;
                 return DropdownButtonFormField<String>(
-                  // value: mainline,
+                  value: mainline,
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
@@ -587,7 +629,7 @@ class _AddNewOdersState extends State<AddNewOders> {
                         child: Align(
                             alignment: Alignment.centerRight,
                             child: Text(
-                              mainline.cityName,
+                              '${mainline.name}-${mainline.cityName}',
                               style: TextStyle(
                                 fontFamily: 'Amiri',
                                 fontSize: 16.0,
@@ -744,6 +786,7 @@ class _AddNewOdersState extends State<AddNewOders> {
                 customer = new Customer(
                     name: customerName.text,
                     phoneNumber: int.parse(customerPhoneNumber.text),
+                    phoneNumberAdditional: int.parse("0"),
                     cityID: cityID,
                     cityName: cityName,
                     address: customerAddress.text,
@@ -784,33 +827,22 @@ class _AddNewOdersState extends State<AddNewOders> {
                   businesID: businessID,
                   sublineID: subline,
                   indexLine: indexLine,
+                  mainLineIndex: 0,
+                  mainlineID: mainline,
                   isUrgent: isUrgent,
                   driverID: ""));
               Toast.show("تم اضافة الطلبية بنجاح", context,
                   duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
               await Future.delayed(Duration(milliseconds: 1000));
-              Navigator.of(context).pop();
+              customerPhoneNumber.clear();
+              orderDescription.clear();
+              orderPrice.clear();
+              customerName.clear();
+              customerAddress.clear();
+              customerPhoneNumberAdditional.clear();
+              orderTotalPrice[0] = 0;
+              totalPriceController.clear();
             }
-            // Customer customer = new Customer(
-            //     name: customerName.text,
-            //     phoneNumber: int.parse(customerPhoneNumber.text),
-            //     phoneNumberAdditional:
-            //         int.parse(customerPhoneNumberAdditional.text),
-            //     cityID: customerCityID,
-            //     address: customerAddress.text,
-            //     isArchived: false);
-            // String customerID =
-            //     await CustomerService().addcustomerData(customer);
-
-            // await OrderService().addOrderData(new Order(
-            //     price: int.parse(orderPrice.text),
-            //     totalPrice: orderTotalPrice,
-            //     type: orderType,
-            //     description: orderDescription.text,
-            //     date: orderDate,
-            //     note: orderNote.text,
-            //     customerID: customerID,
-            //     businesID: businessID));
           },
           child: Text('اضافة',
               style: TextStyle(
@@ -831,7 +863,7 @@ class _AddNewOdersState extends State<AddNewOders> {
                 print(business.length);
 
                 return DropdownButtonFormField<String>(
-                  // value: businessID,
+                  value: businessID,
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),

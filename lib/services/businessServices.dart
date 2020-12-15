@@ -93,6 +93,13 @@ class BusinessServices {
         .then((value) => value.data()['phoneNumber']);
   }
 
+  Future<int> get businessPaidSalary {
+    return businessCollection
+        .doc(uid)
+        .get()
+        .then((value) => value.data()['paidSalary']);
+  }
+
   Future<String> businessID(String businessId) {
     return businessCollection
         .where("userID", isEqualTo: businessId)

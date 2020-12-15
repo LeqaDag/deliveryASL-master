@@ -9,6 +9,7 @@ class MainLine {
   bool isArchived;
   DateTime deleteDate;
   String deleteUser;
+  int index;
 
   MainLine({
     this.uid,
@@ -17,6 +18,7 @@ class MainLine {
     @required this.cityName,
     @required this.cityID,
     this.isArchived = false,
+    this.index = 0,
     this.deleteDate,
     this.deleteUser,
   });

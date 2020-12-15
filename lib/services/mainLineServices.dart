@@ -19,7 +19,8 @@ class MainLineServices {
       'locationID': mainLine.locationID,
       'isArchived': mainLine.isArchived,
       'cityName': mainLine.cityName,
-      'cityID': mainLine.cityID
+      'cityID': mainLine.cityID,
+      'index': mainLine.index,
     });
 
     return docReference.id;
@@ -42,6 +43,7 @@ class MainLineServices {
       isArchived: snapshot.data()['isArchived'],
       cityName: snapshot.data()['cityName'],
       cityID: snapshot.data()['cityID'],
+      index: snapshot.data()['index'],
     );
   }
 
@@ -54,6 +56,7 @@ class MainLineServices {
         isArchived: doc.data()['isArchived'] ?? '',
         cityName: doc.data()['cityName'] ?? '',
         cityID: doc.data()['cityID'] ?? '',
+        index: doc.data()['index'] ?? '',
       );
     }).toList();
   }
@@ -72,11 +75,45 @@ class MainLineServices {
         .map(_mainLineListFromSnapshot);
   }
 
+  List<String> mainlineList = [];
+
+  void getNameByLocation() async {
+    mainLineCollection
+        .where('locationID', isEqualTo: locationID)
+        .where('isArchived', isEqualTo: false)
+        .get()
+        .then((value) {
+      List<MainLine> mainlines = _mainLineListFromSnapshot(value);
+      print(mainlines.length);
+
+      for (int i = 0; i < mainlines.length; i++) {
+        mainlineList.insert(i, mainlines[i].name);
+      }
+    });
+  }
+
+  List<String> mainLineNameByLocationID(String locationID) {
+    mainLineCollection
+        .where('locationID', isEqualTo: locationID)
+        .where('isArchived', isEqualTo: false)
+        .get()
+        .then((value) {
+      List<MainLine> mainlines = _mainLineListFromSnapshot(value);
+      print(mainlines.length);
+
+      for (int i = 0; i < mainlines.length; i++) {
+        mainlineList.insert(i, mainlines[i].name);
+        print(mainlineList);
+      }
+    });
+    print(mainlineList.length);
+    return mainlineList;
+  }
 
   Stream<List<MainLine>> get mainLineByLocationID {
     return mainLineCollection
         .where('isArchived', isEqualTo: false)
-        .where('locationID', isEqualTo: cityID)
+        .where('locationID', isEqualTo: locationID)
         .snapshots()
         .map(_mainLineListFromSnapshot);
   }

@@ -35,8 +35,10 @@ class Order {
   String driverID;
   String customerID;
   int indexLine;
+  int mainLineIndex;
   String sublineID;
   String locationID;
+  String mainlineID;
 
   bool isArchived;
   DateTime deleteDate;
@@ -63,6 +65,8 @@ class Order {
     this.driverID = '',
     this.driverPrice = 0,
     this.indexLine = 0,
+    this.mainLineIndex = 0,
+    this.mainlineID,
     @required this.customerID,
     this.locationID,
     this.isArchived = false,

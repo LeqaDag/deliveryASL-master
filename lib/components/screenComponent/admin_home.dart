@@ -1,3 +1,4 @@
+import 'package:AsyadLogistic/components/locationComponent/location_admin.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -169,28 +170,38 @@ class AdminHome extends StatelessWidget {
                           ),
                           CustomBoxSize(height: 0.05),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    right: 21, bottom: 20),
-                                child: CustomContainer(
-                                    width: 0.28,
-                                    height: 0.15,
-                                    imagepath:
-                                        AssetImage("assets/city-100.png"),
-                                    text: "المدن",
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                AdminCitiesHome(name: name)),
-                                      );
-                                    }),
-                              ),
+                              CustomContainer(
+                                  width: 0.28,
+                                  height: 0.15,
+                                  imagepath: AssetImage("assets/city-100.png"),
+                                  text: "المدن",
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              AdminCitiesHome(name: name)),
+                                    );
+                                  }),
+                              CustomContainer(
+                                  width: 0.28,
+                                  height: 0.15,
+                                  imagepath: AssetImage("assets/region100.png"),
+                                  text: "المناطق",
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => AllLocation(
+                                                name: name,
+                                              )),
+                                    );
+                                  }),
                             ],
                           ),
+                          CustomBoxSize(height: 0.05),
                         ],
                       ),
                     ],
