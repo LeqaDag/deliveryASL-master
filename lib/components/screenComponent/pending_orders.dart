@@ -42,6 +42,7 @@ class _PendingOrdersState extends State<PendingOrders> {
           textDirection: TextDirection.rtl,
           child: StreamProvider<List<Order>>.value(
             value: OrderServices().ordersByState('isLoading'),
+           // catchError: (_, __) => null,
             child: PendingOrderList(orderState: 'isLoading', name: widget.name),
           ),
         ));

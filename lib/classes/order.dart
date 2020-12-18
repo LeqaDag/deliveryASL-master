@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 class Order {
   String uid;
   int price;
-  List<int> totalPrice;
+  int totalPrice;
   bool type;
   String description;
   DateTime date;
@@ -30,6 +30,7 @@ class Order {
   DateTime isDoneDate;
   DateTime isPaidDate;
   DateTime inStockDate;
+  DateTime paidDriverDate;
 
   String businesID;
   String driverID;
@@ -43,6 +44,7 @@ class Order {
   bool isArchived;
   DateTime deleteDate;
   String deleteUser;
+  bool isPaidDriver;
 
   Order({
     this.uid,
@@ -61,9 +63,10 @@ class Order {
     this.isDone = false,
     this.isPaid = false,
     this.inStock = false,
+    this.isPaidDriver = false,
     this.businesID,
-    this.driverID = '',
-    this.driverPrice = 0,
+    this.driverID = "",
+    //this.driverPrice = 0,
     this.indexLine = 0,
     this.mainLineIndex = 0,
     this.mainlineID,
@@ -82,5 +85,6 @@ class Order {
     this.isDoneDate,
     this.isPaidDate,
     this.inStockDate,
+    this.paidDriverDate,
   });
 }

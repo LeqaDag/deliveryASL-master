@@ -45,7 +45,7 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
       cityName = "",
       sublineName = "",
       typeOrder = "عادي";
-  List<int> orderTotalPrice = [0];
+  int orderTotalPrice = 0;
   static String deliveryPrice = "0";
   bool locationSelected = false, mainlineSelected = false;
   int indexLine;
@@ -53,7 +53,7 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
   @override
   void initState() {
     deliveryPrice = "0";
-    orderTotalPrice = [0];
+    orderTotalPrice = 0;
     businessID = "";
     mainLineId = "";
     indexLine = 0;
@@ -217,7 +217,7 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
                             },
                             onChanged: (value) {
                               setState(() {
-                                orderTotalPrice[0] = (int.parse(value) +
+                                orderTotalPrice = (int.parse(value) +
                                     int.parse(deliveryPrice));
                               });
                             },
@@ -245,7 +245,7 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
                           child: TextFormField(
                             enabled: false,
                             decoration: InputDecoration(
-                              labelText: orderTotalPrice[0].toString(),
+                              labelText: orderTotalPrice.toString(),
                               contentPadding: EdgeInsets.only(right: 20.0),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),

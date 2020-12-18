@@ -235,7 +235,7 @@ class _DriverDailySheetState extends State<DriverDailySheet> {
                                     } else {
                                       orders = snapshot.data;
                                       orders.forEach((element) {
-                                        totalPrice += element.totalPrice[0];
+                                        totalPrice += element.totalPrice;
                                         totalController.text =
                                             totalPrice.toString();
                                       });

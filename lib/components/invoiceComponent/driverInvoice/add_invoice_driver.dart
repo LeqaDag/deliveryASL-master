@@ -26,6 +26,7 @@ class _AddInvoiceDriverState extends State<AddInvoiceDriver> {
   bool isLoading = false;
   int isDoneOrders = 0, totalSalary = 0;
   List<Order> orders;
+  List<String> orderIds = [];
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
   final CollectionReference invoiceCollection =
@@ -262,6 +263,23 @@ class _AddInvoiceDriverState extends State<AddInvoiceDriver> {
                             color: Colors.white,
                             size: 32.0,
                           ),
+                          StreamBuilder<List<Order>>(
+                              stream:
+                                  OrderServices(driverID: widget.driverId)
+                                      .driversIsDoneOrders(widget.driverId),
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData) {
+                                  return Text("");
+                                } else {
+                                  orders = snapshot.data;
+                                  int index = 0;
+                                  orders.forEach((element) {
+                                    orderIds.insert(index, element.uid);
+                                    index++;
+                                  });
+                                  return Text("");
+                                }
+                              }),
                         ],
                       ),
                     ),
@@ -283,6 +301,13 @@ class _AddInvoiceDriverState extends State<AddInvoiceDriver> {
         .update({
       "paidDate": new DateTime.now(),
       "paidSalary": int.parse(priceController.text)
+    });
+
+    orderIds.forEach((element) async {
+      FirebaseFirestore.instance
+          .collection('orders')
+          .doc(element)
+          .update({"isPaidDriver": true, "paidSriverDate": new DateTime.now(),});
     });
 
     Toast.show("تم اضافة الفاتورة بنجاح", context,

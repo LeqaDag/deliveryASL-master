@@ -49,28 +49,34 @@ class _CustomCompanyOrdersStatusState extends State<CustomCompanyOrdersStatus> {
     IconData icon;
     String stateOrder;
     Color color;
+    DateTime date;
 
     if (widget.order.inStock == true) {
       color = KBadgeColorAndContainerBorderColorWithDriverOrders;
       icon = Icons.archive_sharp;
       stateOrder = "في المخزن";
+      date = widget.order.inStockDate;
     }
     if (widget.order.isCancelld == true) {
       color = KBadgeColorAndContainerBorderColorCancelledOrders;
       icon = Icons.cancel;
       stateOrder = "ملغي";
+      date = widget.order.isCancelldDate;
     } else if (widget.order.isDelivery == true) {
       color = KAllOrdersListTileColor;
       icon = Icons.business_center_outlined;
       stateOrder = "جاهز للتوزيع";
+      date = widget.order.isDeliveryDate;
     } else if (widget.order.isDone == true) {
       color = KBadgeColorAndContainerBorderColorReadyOrders;
       icon = Icons.done;
       stateOrder = "جاهز";
+      date = widget.order.isDoneDate;
     } else if (widget.order.isLoading == true) {
       color = KBadgeColorAndContainerBorderColorLoadingOrder;
       icon = Icons.arrow_circle_up_rounded;
       stateOrder = "محمل";
+      date = widget.order.isLoadingDate;
     } else if (widget.order.isUrgent == true) {
       color = KBadgeColorAndContainerBorderColorUrgentOrders;
       icon = Icons.info_outline;
@@ -79,10 +85,12 @@ class _CustomCompanyOrdersStatusState extends State<CustomCompanyOrdersStatus> {
       color = KBadgeColorAndContainerBorderColorReturnOrders;
       icon = Icons.restore;
       stateOrder = "راجع";
+      date = widget.order.isReturnDate;
     } else if (widget.order.isReceived == true) {
       color = KBadgeColorAndContainerBorderColorRecipientOrder;
       icon = Icons.assignment_turned_in_outlined;
       stateOrder = "تم استلامه";
+      date = widget.order.isReceivedDate;
     }
 
     return InkWell(

@@ -1,17 +1,14 @@
 import 'package:badges/badges.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:AsyadLogistic/classes/business.dart';
 import 'package:AsyadLogistic/classes/order.dart';
-import 'package:AsyadLogistic/components/businessComponent/updateComponent/update_company.dart';
 import 'package:AsyadLogistic/components/pages/drawer.dart';
-import 'package:AsyadLogistic/components/widgetsComponent/CustomWidgets.dart';
 import 'package:AsyadLogistic/services/businessServices.dart';
 import 'package:AsyadLogistic/services/customerServices.dart';
 import 'package:AsyadLogistic/services/orderServices.dart';
-
+import 'package:intl/intl.dart' as intl;
 import '../../../constants.dart';
 
 class AllBuisness extends StatelessWidget {
@@ -136,37 +133,37 @@ class AllBuisness extends StatelessWidget {
                           //     color: Colors.green,
                           //   ),
                           // ),
-                          IconButton(
-                            onPressed: () {
-                              return showDialog<void>(
-                                  context: context,
-                                  barrierDismissible:
-                                      false, // user must tap button!
-                                  builder: (BuildContext context) =>
-                                      CustomDialog(
-                                        title: "حذف شركة",
-                                        description: ' هل ترغب بحذف الشركة',
-                                        name: business.name,
-                                        buttonText: "تأكيد",
-                                        onPressed: () {
-                                          final FirebaseAuth auth =
-                                              FirebaseAuth.instance;
-                                          final User user = auth.currentUser;
-                                          BusinessServices().deleteBusinessData(
-                                              businessID, user.uid);
-                                          Navigator.of(context).pop();
-                                        },
-                                        cancelButton: "الغاء",
-                                        cancelPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                      ));
-                            },
-                            icon: Icon(
-                              Icons.delete,
-                              color: Colors.red,
-                            ),
-                          ),
+                          // IconButton(
+                          //   onPressed: () {
+                          //     return showDialog<void>(
+                          //         context: context,
+                          //         barrierDismissible:
+                          //             false, // user must tap button!
+                          //         builder: (BuildContext context) =>
+                          //             CustomDialog(
+                          //               title: "حذف شركة",
+                          //               description: ' هل ترغب بحذف الشركة',
+                          //               name: business.name,
+                          //               buttonText: "تأكيد",
+                          //               onPressed: () {
+                          //                 final FirebaseAuth auth =
+                          //                     FirebaseAuth.instance;
+                          //                 final User user = auth.currentUser;
+                          //                 BusinessServices().deleteBusinessData(
+                          //                     businessID, user.uid);
+                          //                 Navigator.of(context).pop();
+                          //               },
+                          //               cancelButton: "الغاء",
+                          //               cancelPressed: () {
+                          //                 Navigator.of(context).pop();
+                          //               },
+                          //             ));
+                          //   },
+                          //   icon: Icon(
+                          //     Icons.delete,
+                          //     color: Colors.red,
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),
@@ -253,30 +250,36 @@ class _CustomCompanyOrdersStatusState extends State<CustomCompanyOrdersStatus> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-    String cityID;
     IconData icon;
     String orderState;
+    DateTime date;
+
     if (widget.order.inStock == true) {
       color = KBadgeColorAndContainerBorderColorWithDriverOrders;
       icon = Icons.archive_sharp;
       orderState = "في المخزن";
+      date = widget.order.inStockDate;
     }
     if (widget.order.isCancelld == true) {
       color = KBadgeColorAndContainerBorderColorCancelledOrders;
       icon = Icons.cancel;
       orderState = "ملغي";
+      date = widget.order.isCancelldDate;
     } else if (widget.order.isDelivery == true) {
       color = KAllOrdersListTileColor;
       icon = Icons.business_center_outlined;
       orderState = "جاهز للتوزيع";
+      date = widget.order.isDeliveryDate;
     } else if (widget.order.isDone == true) {
       color = KBadgeColorAndContainerBorderColorReadyOrders;
       icon = Icons.done;
       orderState = "جاهز";
+      date = widget.order.isDoneDate;
     } else if (widget.order.isLoading == true) {
       color = KBadgeColorAndContainerBorderColorLoadingOrder;
       icon = Icons.arrow_circle_up_rounded;
       orderState = "محمل";
+      date = widget.order.isLoadingDate;
     } else if (widget.order.isUrgent == true) {
       color = KBadgeColorAndContainerBorderColorUrgentOrders;
       icon = Icons.info_outline;
@@ -285,10 +288,12 @@ class _CustomCompanyOrdersStatusState extends State<CustomCompanyOrdersStatus> {
       color = KBadgeColorAndContainerBorderColorReturnOrders;
       icon = Icons.restore;
       orderState = "راجع";
+      date = widget.order.isReturnDate;
     } else if (widget.order.isReceived == true) {
       color = KBadgeColorAndContainerBorderColorRecipientOrder;
       icon = Icons.assignment_turned_in_outlined;
       orderState = "تم استلامه";
+      date = widget.order.isReceivedDate;
     }
 
     return InkWell(
@@ -414,6 +419,47 @@ class _CustomCompanyOrdersStatusState extends State<CustomCompanyOrdersStatus> {
                                   );
                                 }
                               }),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(
+                                right: height * 0.025,
+                                top: height * 0,
+                                bottom: height * 0),
+                            child: Icon(
+                              Icons.calendar_today,
+                              color: Colors.blueGrey,
+                            ),
+                          ),
+                          Text(
+                            intl.DateFormat('yyyy-MM-dd').format(date),
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "Amiri",
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                                right: height * 0.025,
+                                top: height * 0,
+                                bottom: height * 0),
+                            child: Icon(
+                              Icons.access_alarm,
+                              color: Colors.blueGrey,
+                            ),
+                          ),
+                          Text(
+                            intl.DateFormat('h:m').format(date),
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "Amiri",
+                            ),
+                          ),
                         ],
                       ),
                     ]),

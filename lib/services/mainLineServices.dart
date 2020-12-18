@@ -92,22 +92,28 @@ class MainLineServices {
     });
   }
 
-  List<String> mainLineNameByLocationID(String locationID) {
-    mainLineCollection
+  Stream<List<MainLine>> mainLineNameByLocationID(String locationID) {
+    return mainLineCollection
         .where('locationID', isEqualTo: locationID)
         .where('isArchived', isEqualTo: false)
         .get()
-        .then((value) {
-      List<MainLine> mainlines = _mainLineListFromSnapshot(value);
-      print(mainlines.length);
+        .asStream()
+        .map(_mainLineListFromSnapshot);
+    // mainLineCollection
+    //     .where('locationID', isEqualTo: locationID)
+    //     .where('isArchived', isEqualTo: false)
+    //     .get()
+    //     .then((value) {
+    //   List<MainLine> mainlines = _mainLineListFromSnapshot(value);
+    //   print(mainlines.length);
 
-      for (int i = 0; i < mainlines.length; i++) {
-        mainlineList.insert(i, mainlines[i].name);
-        print(mainlineList);
-      }
-    });
-    print(mainlineList.length);
-    return mainlineList;
+    //   for (int i = 0; i < mainlines.length; i++) {
+    //     mainlineList.insert(i, mainlines[i].name);
+    //     print(mainlineList);
+    //   }
+    // });
+    // print(mainlineList.length);
+    // return mainlineList;
   }
 
   Stream<List<MainLine>> get mainLineByLocationID {

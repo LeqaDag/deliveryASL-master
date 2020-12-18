@@ -43,12 +43,21 @@ class OrderServices {
       'businesID': order.businesID,
       'driverID': order.driverID,
       'isArchived': order.isArchived,
-      'driverPrice': order.driverPrice,
       'sublineID': order.sublineID,
       'locationID': order.locationID,
       'indexLine': order.indexLine,
       'mainLineIndex': order.mainLineIndex,
-      'mainlineID': order.mainlineID
+      'mainlineID': order.mainlineID,
+      'isPaidDriver' : order.isPaidDriver,
+      'paidDriverDate' :order.paidDriverDate,
+      'isReceivedDate' :order.isReceivedDate,
+      'isDeliveryDate' :order.isDeliveryDate,
+      'isCancelldDate' :order.isCancelldDate, 
+      'isReturnDate' :order.isReturnDate,
+      'isDoneDate' :order.isDoneDate,
+      'isPaidDate' :order.isPaidDate,
+      'inStockDate' :order.inStockDate,
+
     });
   }
 
@@ -68,7 +77,7 @@ class OrderServices {
       'date': order.date,
       'note': order.note,
       'customerID': order.customerID,
-      'driverPrice': order.driverPrice,
+     // 'driverPrice': order.driverPrice,
       'isReturnDate': order.isReturnDate,
       'isDoneDate': order.isDoneDate,
       'isCancelldDate': order.isCancelldDate,
@@ -82,7 +91,7 @@ class OrderServices {
     return Order(
         uid: snapshot.id,
         price: snapshot.data()['price'],
-        totalPrice: snapshot.data()['totalPrice'].cast<int>(),
+        totalPrice: snapshot.data()['totalPrice'],
         type: snapshot.data()['type'],
         description: snapshot.data()['description'],
         date: snapshot.data()['date'].toDate(),
@@ -105,7 +114,18 @@ class OrderServices {
         indexLine: snapshot.data()['indexLine'],
         mainLineIndex: snapshot.data()['mainLineIndex'],
         mainlineID: snapshot.data()['mainlineID'],
-        driverPrice: snapshot.data()['driverPrice']);
+        isPaidDriver: snapshot.data()['isPaidDriver'],
+        paidDriverDate: snapshot.data()['paidDriverDate'].toDate(),
+        isReceivedDate: snapshot.data()['isReceivedDate'].toDate(),
+        isDeliveryDate: snapshot.data()['isDeliveryDate'].toDate(),
+        isCancelldDate: snapshot.data()['isCancelldDate'].toDate(),
+        isReturnDate: snapshot.data()['isReturnDate'].toDate(),
+        isDoneDate: snapshot.data()['isDoneDate'].toDate(),
+        isPaidDate: snapshot.data()['isPaidDate'].toDate(),
+        inStockDate: snapshot.data()['inStockDate'].toDate(),
+        isLoadingDate: snapshot.data()['isLoadingDate'].toDate(),
+        
+        );
   }
 // locationID
 
@@ -114,7 +134,7 @@ class OrderServices {
       return Order(
           uid: doc.reference.id,
           price: doc.data()['price'] ?? '',
-          totalPrice: doc.data()['totalPrice'].cast<int>() ?? '',
+          totalPrice: doc.data()['totalPrice'] ?? '',
           type: doc.data()['type'] ?? '',
           description: doc.data()['description'] ?? '',
           date: doc.data()['date'].toDate() ?? '',
@@ -132,12 +152,22 @@ class OrderServices {
           businesID: doc.data()['businesID'] ?? '',
           driverID: doc.data()['driverID'] ?? '',
           isArchived: doc.data()['isArchived'] ?? '',
-          driverPrice: doc.data()['driverPrice'] ?? '',
+         // driverPrice: doc.data()['driverPrice'] ?? '',
           indexLine: doc.data()['indexLine'] ?? '',
           mainLineIndex: doc.data()['mainLineIndex'] ?? '',
           locationID: doc.data()['locationID'] ?? '',
+          isPaidDriver: doc.data()['isPaidDriver'] ?? '',
           mainlineID: doc.data()['mainlineID'] ?? '',
-          sublineID: doc.data()['sublineID'] ?? '');
+          isLoadingDate: doc.data()['isLoadingDate'].toDate() ?? '',
+          isReceivedDate: doc.data()['isReceivedDate'].toDate() ?? '',
+          isDeliveryDate: doc.data()['isDeliveryDate'].toDate() ?? '',
+          isCancelldDate: doc.data()['isCancelldDate'].toDate() ?? '',
+          isReturnDate: doc.data()['isReturnDate'].toDate() ?? '',
+          isDoneDate: doc.data()['isDoneDate'].toDate() ?? '',
+          isPaidDate: doc.data()['isPaidDate'].toDate() ?? '',
+          inStockDate: doc.data()['inStockDate'].toDate() ?? '',
+          paidDriverDate: doc.data()['paidDriverDate'].toDate() ?? '',
+          );
     }).toList();
   }
 
@@ -428,6 +458,7 @@ class OrderServices {
       case 'driverOrders':
         {
           return orderCollection
+              // .where('driverID', isEqualTo: driverID)
               .orderBy('mainLineIndex', descending: false)
               .orderBy('indexLine', descending: false)
               .snapshots()
@@ -641,6 +672,15 @@ class OrderServices {
         .map(_orderListFromSnapshot);
   }
 
+  Stream<List<Order>> driversIsDoneOrders(String driverID) {
+    return orderCollection
+        .where('driverID', isEqualTo: driverID)
+        .where('isArchived', isEqualTo: false)
+        .where('isDone', isEqualTo: true)
+        .snapshots()
+        .map(_orderListFromSnapshot);
+  }
+
   Stream<List<Order>> driversAllOrders(String driverID) {
     return orderCollection
         .where('driverID', isEqualTo: driverID)
@@ -667,10 +707,12 @@ class OrderServices {
     var today = new DateTime.now();
     today = new DateTime(today.year, today.month, today.day);
     return orderCollection
-        //.where('driverID', isEqualTo: driverID)
+        .where('driverID', isEqualTo: driverID)
+        .where('isDone', isEqualTo: true)
+        .where('isPaidDriver', isEqualTo: false)
         // .where("date", isGreaterThan: today)
-        //.where('isArchived', isEqualTo: false)
-        .orderBy('indexLine', descending: false)
+        .where('isArchived', isEqualTo: false)
+        // .orderBy('indexLine', descending: false)
         .snapshots()
         .map(_orderListFromSnapshot);
   }

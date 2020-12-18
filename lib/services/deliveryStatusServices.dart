@@ -20,6 +20,18 @@ class DeliveriesStatusServices {
     });
   }
 
+  Future<void> updateDeliveryStatus(DeliveryStatus deliveryStatus) async {
+    return await deliveryStatusCollection.doc(uid).update({
+      'status': deliveryStatus.status,
+      'businessID': deliveryStatus.businessID,
+      'note': deliveryStatus.note,
+      'orderID': deliveryStatus.orderID,
+      'driverID': deliveryStatus.driverID,
+      'isArchived': deliveryStatus.isArchived,
+      'date': deliveryStatus.date,
+    });
+  }
+
   // DeliveryStatus _deliveryStatusDataFromSnapshot(DocumentSnapshot snapshot) {
   //   return DeliveryStatus(
   //     uid: snapshot.id,
@@ -53,5 +65,19 @@ class DeliveriesStatusServices {
         .where('orderID', isEqualTo: orderID)
         .snapshots()
         .map(_deliveryStatusListFromSnapshot);
+  }
+
+  Future<int> get deliveryStatusSizeByOrderId {
+    return deliveryStatusCollection
+        .where('orderID', isEqualTo: orderID)
+        .get()
+        .then((value) => value.size);
+  }
+
+  Future<String> get deliveryStatusId {
+    return deliveryStatusCollection
+        .where('orderID', isEqualTo: orderID)
+        .get()
+        .then((value) => value.docs[0].id);
   }
 }

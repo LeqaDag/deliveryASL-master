@@ -28,7 +28,8 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
   String type, status;
   bool isCancelld, isReturn, isDone, isDelivery, isReceived, inStoke;
   final _formKey = GlobalKey<FormState>();
-  String cityId;
+  String cityId, deliveryStatusId;
+  int ifOrderExist;
   DateTime deliveryDate, doneDate, cancelledDate, returnDate, receivedDate;
 
   @override
@@ -62,7 +63,6 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                             BusinessServices(uid: order.businesID).businessByID,
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
-                            Business business = snapshot.data;
                             return Scaffold(
                                 appBar: AppBar(
                                   title: Text(" طرد ${customer.name}",
@@ -212,6 +212,27 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.start,
                                                   children: <Widget>[
+                                                    // FutureBuilder<int>(
+                                                    //     future: DeliveriesStatusServices(
+                                                    //             uid:
+                                                    //                 "6T0G3Eai8bra4k1HHm9A")
+                                                    //         .deliveryStatusSizeByOrderId,
+                                                    //     builder: (context,
+                                                    //         snapshot) {
+                                                    //       if (snapshot
+                                                    //           .hasData) {
+                                                    //         ifOrderExist =
+                                                    //             snapshot.data;
+                                                    //         print(ifOrderExist);
+                                                    //         if (ifOrderExist ==
+                                                    //             1) {
+
+                                                    //         }
+                                                    //       }
+                                                    //       return Text(
+                                                    //         "",
+                                                    //       );
+                                                    //     }),
                                                     Padding(
                                                       padding: EdgeInsets.only(
                                                           left: height * 0.025,
@@ -240,6 +261,27 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                               fontFamily:
                                                                   "Amiri",
                                                             ),
+                                                          );
+                                                        }),
+                                                    FutureBuilder<String>(
+                                                        future:
+                                                            DeliveriesStatusServices(
+                                                                    orderID:
+                                                                        order
+                                                                            .uid)
+                                                                .deliveryStatusId,
+                                                        builder: (context,
+                                                            snapshot) {
+                                                          if (snapshot
+                                                              .hasData) {
+                                                            print(
+                                                                snapshot.data);
+                                                            deliveryStatusId =
+                                                                snapshot.data
+                                                                    .toString();
+                                                          }
+                                                          return Text(
+                                                            "",
                                                           );
                                                         }),
                                                   ],
@@ -927,24 +969,46 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                     isReceived = false;
                                                     inStoke = false;
                                                   }
-
-                                                  await DeliveriesStatusServices()
-                                                      .addDeliveryStatusData(
-                                                          DeliveryStatus(
-                                                              orderID:
-                                                                  order.uid,
-                                                              driverID: order
-                                                                  .driverID,
-                                                              businessID: order
-                                                                  .businesID,
-                                                              status: status,
-                                                              date: DateTime
-                                                                  .now(),
-                                                              note:
-                                                                  noteController
-                                                                      .text,
-                                                              isArchived:
-                                                                  false));
+                                                  if (deliveryStatusId !=
+                                                      null) {
+                                                    await DeliveriesStatusServices(
+                                                            uid:
+                                                                deliveryStatusId)
+                                                        .updateDeliveryStatus(
+                                                            DeliveryStatus(
+                                                                orderID:
+                                                                    order.uid,
+                                                                driverID: order
+                                                                    .driverID,
+                                                                businessID: order
+                                                                    .businesID,
+                                                                status: status,
+                                                                date: DateTime
+                                                                    .now(),
+                                                                note:
+                                                                    noteController
+                                                                        .text,
+                                                                isArchived:
+                                                                    false));
+                                                  } else {
+                                                    await DeliveriesStatusServices()
+                                                        .addDeliveryStatusData(
+                                                            DeliveryStatus(
+                                                                orderID:
+                                                                    order.uid,
+                                                                driverID: order
+                                                                    .driverID,
+                                                                businessID: order
+                                                                    .businesID,
+                                                                status: status,
+                                                                date: DateTime
+                                                                    .now(),
+                                                                note:
+                                                                    noteController
+                                                                        .text,
+                                                                isArchived:
+                                                                    false));
+                                                  }
 
                                                   await OrderServices(
                                                           uid: order.uid)
@@ -1019,3 +1083,5 @@ class CustomerInformation {
     return TabBarView(children: []);
   }
 }
+
+void changeDeliveryStatus() {}

@@ -35,7 +35,7 @@ class _AddNewOdersState extends State<AddNewOders> {
   List<SubLine> sublines;
   List<MainLine> mainlines;
   List<Business> business;
-  bool isBusinessSelected;
+
   String cityID = "0",
       mainline,
       subline,
@@ -45,17 +45,19 @@ class _AddNewOdersState extends State<AddNewOders> {
       sublineName = "0",
       locationID,
       typeOrder = "عادي";
-  List<int> orderTotalPrice = [0];
+  int orderTotalPrice = 0;
   static String deliveryPrice = "0";
-  bool locationSelected = false, mainlineSelected = false;
+  bool isBusinessSelected, locationSelected, mainlineSelected;
   int indexLine;
 
   @override
   void initState() {
     deliveryPrice = "0";
-    orderTotalPrice = [0];
+    orderTotalPrice = 0;
     indexLine = 0;
     sublineName = "";
+    isBusinessSelected = false;
+    locationSelected = false;
     super.initState();
   }
 
@@ -65,7 +67,6 @@ class _AddNewOdersState extends State<AddNewOders> {
   bool orderType = false;
   DateTime orderDate = new DateTime.now();
   TextEditingController orderNote = new TextEditingController();
-  TextEditingController totalPriceController = new TextEditingController();
   //Customer Fileds
   TextEditingController customerName = new TextEditingController();
   TextEditingController customerPhoneNumber = new TextEditingController();
@@ -124,9 +125,17 @@ class _AddNewOdersState extends State<AddNewOders> {
                   ),
 
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       _mainLineChoice(),
+                    ],
+                  ),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
                       _subLineChoice(),
+                      _customerAddress(customerAddress),
                     ],
                   ),
 
@@ -162,11 +171,7 @@ class _AddNewOdersState extends State<AddNewOders> {
                           );
                         }
                       }),
-                  Row(
-                    children: <Widget>[
-                      _customerAddress(customerAddress),
-                    ],
-                  ),
+
                   FutureBuilder<String>(
                       future:
                           MainLineServices(uid: mainline).cityNameByMainLine,
@@ -239,10 +244,8 @@ class _AddNewOdersState extends State<AddNewOders> {
                             },
                             onChanged: (value) {
                               setState(() {
-                                orderTotalPrice[0] = (int.parse(value) +
+                                orderTotalPrice = (int.parse(value) +
                                     int.parse(deliveryPrice));
-                                totalPriceController =
-                                    orderTotalPrice[0] as TextEditingController;
                               });
                             },
                             controller: orderPrice,
@@ -270,7 +273,7 @@ class _AddNewOdersState extends State<AddNewOders> {
                             enabled: false,
                             //controller: totalPriceController,
                             decoration: InputDecoration(
-                              labelText: orderTotalPrice[0].toString(),
+                              labelText: orderTotalPrice.toString(),
                               contentPadding: EdgeInsets.only(right: 20.0),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
@@ -405,123 +408,123 @@ class _AddNewOdersState extends State<AddNewOders> {
   }
 
   Widget _locationChoice() {
-    // if (isBusinessSelected == true) {
-    return Expanded(
-      flex: 2,
-      child: Container(
-        margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
-        child: StreamBuilder<List<DeliveriesCosts>>(
-            stream: DeliveriesCostsServices(businessId: businessID)
-                .deliveryCostsBusiness,
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return Text('Loading...');
-              } else {
-                cities = snapshot.data;
-                return DropdownButtonFormField<String>(
-                  value: locationID,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide(
-                        width: 1.0,
-                        color: Color(0xff636363),
+    if (isBusinessSelected == true) {
+      return Expanded(
+        flex: 2,
+        child: Container(
+          margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
+          child: StreamBuilder<List<DeliveriesCosts>>(
+              stream: DeliveriesCostsServices(businessId: businessID)
+                  .deliveryCostsBusiness,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return Text('Loading...');
+                } else {
+                  cities = snapshot.data;
+                  return DropdownButtonFormField<String>(
+                    value: locationID,
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: BorderSide(
+                          width: 1.0,
+                          color: Color(0xff636363),
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: BorderSide(
+                          width: 2.0,
+                          color: Color(0xff73a16a),
+                        ),
+                      ),
+                      contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
+                      labelText: "المنطقة",
+                      labelStyle: TextStyle(
+                        fontFamily: 'Amiri',
+                        fontSize: 18.0,
+                        color: Color(0xff316686),
                       ),
                     ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide(
-                        width: 2.0,
-                        color: Color(0xff73a16a),
-                      ),
-                    ),
-                    contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
-                    labelText: "المنطقة",
-                    labelStyle: TextStyle(
-                      fontFamily: 'Amiri',
-                      fontSize: 18.0,
-                      color: Color(0xff316686),
-                    ),
-                  ),
-                  items: cities.map(
-                    (location) {
-                      return DropdownMenuItem<String>(
-                        value: location.locationID.toString(),
-                        child: Align(
-                            alignment: Alignment.centerRight,
-                            child: Text(
-                              location.locationName,
-                              style: TextStyle(
-                                fontFamily: 'Amiri',
-                                fontSize: 16.0,
-                              ),
-                            )),
-                      );
+                    items: cities.map(
+                      (location) {
+                        return DropdownMenuItem<String>(
+                          value: location.locationID.toString(),
+                          child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Text(
+                                location.locationName,
+                                style: TextStyle(
+                                  fontFamily: 'Amiri',
+                                  fontSize: 16.0,
+                                ),
+                              )),
+                        );
+                      },
+                    ).toList(),
+                    onChanged: (val) {
+                      setState(() {
+                        locationID = val;
+                        FirebaseFirestore.instance
+                            .collection('delivery_costs')
+                            .where('locationID', isEqualTo: locationID)
+                            .where('businesID', isEqualTo: businessID)
+                            .get()
+                            .then((value) => {
+                                  setState(() {
+                                    locationSelected = true;
+                                    deliveryPrice =
+                                        value.docs[0]["deliveryPrice"];
+                                    //cityName = value.docs[0]["locationName"];
+                                  })
+                                });
+                      });
                     },
-                  ).toList(),
-                  onChanged: (val) {
-                    setState(() {
-                      locationID = val;
-                      FirebaseFirestore.instance
-                          .collection('delivery_costs')
-                          .where('locationID', isEqualTo: locationID)
-                          .where('businesID', isEqualTo: businessID)
-                          .get()
-                          .then((value) => {
-                                setState(() {
-                                  deliveryPrice =
-                                      value.docs[0]["deliveryPrice"];
-                                  //cityName = value.docs[0]["locationName"];
-                                })
-                              });
-                    });
-                  },
-                );
-              }
-            }),
-      ),
-    );
-
-    //  else {
-    //   return Expanded(
-    //     flex: 2,
-    //     child: Container(
-    //       margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
-    //       // ignore: missing_required_param
-    //       child: DropdownButtonFormField<String>(
-    //         value: locationID,
-    //         decoration: InputDecoration(
-    //           enabledBorder: OutlineInputBorder(
-    //             borderRadius: BorderRadius.circular(10.0),
-    //             borderSide: BorderSide(
-    //               width: 1.0,
-    //               color: Color(0xff636363),
-    //             ),
-    //           ),
-    //           focusedBorder: OutlineInputBorder(
-    //             borderRadius: BorderRadius.circular(10.0),
-    //             borderSide: BorderSide(
-    //               width: 2.0,
-    //               color: Color(0xff73a16a),
-    //             ),
-    //           ),
-    //           contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
-    //           labelText: "المنطقة",
-    //           labelStyle: TextStyle(
-    //             fontFamily: 'Amiri',
-    //             fontSize: 18.0,
-    //             color: Color(0xff316686),
-    //           ),
-    //         ),
-    //       ),
-    //     ),
-    //   );
-    // }
+                  );
+                }
+              }),
+        ),
+      );
+    } else {
+      return Expanded(
+        flex: 2,
+        child: Container(
+          margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
+          // ignore: missing_required_param
+          child: DropdownButtonFormField<String>(
+            value: locationID,
+            decoration: InputDecoration(
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: BorderSide(
+                  width: 1.0,
+                  color: Color(0xff636363),
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: BorderSide(
+                  width: 2.0,
+                  color: Color(0xff73a16a),
+                ),
+              ),
+              contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
+              labelText: "المنطقة",
+              labelStyle: TextStyle(
+                fontFamily: 'Amiri',
+                fontSize: 18.0,
+                color: Color(0xff316686),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
   }
 
   Widget _subLineChoice() {
     return Expanded(
-      flex: 2,
+      // flex: 2,
       child: Container(
         margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
         child: StreamBuilder<List<SubLine>>(
@@ -586,7 +589,6 @@ class _AddNewOdersState extends State<AddNewOders> {
 
   Widget _mainLineChoice() {
     return Expanded(
-      flex: 2,
       child: Container(
         margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
         child: StreamBuilder<List<MainLine>>(
@@ -624,23 +626,26 @@ class _AddNewOdersState extends State<AddNewOders> {
                   ),
                   items: mainlines.map(
                     (mainline) {
+                      print(mainline.name);
                       return DropdownMenuItem<String>(
                         value: mainline.uid.toString(),
-                        child: Align(
-                            alignment: Alignment.centerRight,
-                            child: Text(
-                              '${mainline.name}-${mainline.cityName}',
-                              style: TextStyle(
-                                fontFamily: 'Amiri',
-                                fontSize: 16.0,
-                              ),
-                            )),
+                        child: Expanded(
+                            child: Align(
+                                alignment: Alignment.centerRight,
+                                child: Text(
+                                  '${mainline.name}-${mainline.cityName}',
+                                  style: TextStyle(
+                                    fontFamily: 'Amiri',
+                                    fontSize: 16.0,
+                                  ),
+                                ))),
                       );
                     },
                   ).toList(),
                   onChanged: (val) {
                     setState(() {
                       mainline = val;
+                      print(mainline);
                     });
                   },
                 );
@@ -652,7 +657,7 @@ class _AddNewOdersState extends State<AddNewOders> {
 
   Widget _customerAddress(TextEditingController fieldController) {
     return Expanded(
-      flex: 3,
+      //flex: 2,
       child: Container(
         margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 0),
         child: TextFormField(
@@ -822,15 +827,35 @@ class _AddNewOdersState extends State<AddNewOders> {
                   description: orderDescription.text,
                   date: orderDate,
                   note: orderNote.text,
+                  isLoading: true,
+                  isLoadingDate: DateTime.now(),
+                  isReceived: false,
+                  isDelivery: false,
+                  isUrgent: isUrgent,
+                  isCancelld: false,
+                  isReturn: false,
+                  isDone: false,
+                  isPaid: false,
+                  inStock: false,
                   customerID: customerID,
-                  locationID: locationID,
                   businesID: businessID,
+                  driverID: "",
+                  isArchived: false,
                   sublineID: subline,
+                  locationID: locationID,
                   indexLine: indexLine,
                   mainLineIndex: 0,
                   mainlineID: mainline,
-                  isUrgent: isUrgent,
-                  driverID: ""));
+                  isPaidDriver: false,
+                  paidDriverDate: DateTime.now(),
+                  isReceivedDate: DateTime.now(),
+                  isDeliveryDate: DateTime.now(),
+                  isCancelldDate: DateTime.now(),
+                  isReturnDate: DateTime.now(),
+                  isDoneDate: DateTime.now(),
+                  isPaidDate: DateTime.now(),
+                  inStockDate: DateTime.now(),
+                  ));
               Toast.show("تم اضافة الطلبية بنجاح", context,
                   duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
               await Future.delayed(Duration(milliseconds: 1000));
@@ -840,8 +865,7 @@ class _AddNewOdersState extends State<AddNewOders> {
               customerName.clear();
               customerAddress.clear();
               customerPhoneNumberAdditional.clear();
-              orderTotalPrice[0] = 0;
-              totalPriceController.clear();
+              orderTotalPrice = 0;
             }
           },
           child: Text('اضافة',
@@ -908,8 +932,9 @@ class _AddNewOdersState extends State<AddNewOders> {
                       //bus = val;
                       businessID = val;
                       deliveryPrice = "0";
-                      orderTotalPrice[0] = 0;
+                      orderTotalPrice = 0;
                       orderPrice.text = "";
+                      isBusinessSelected = true;
                     });
                   },
                 );

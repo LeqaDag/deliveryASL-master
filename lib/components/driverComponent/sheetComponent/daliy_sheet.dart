@@ -231,7 +231,7 @@ class _DailySheetState extends State<DailySheet> {
                                     } else {
                                       orders = snapshot.data;
                                       orders.forEach((element) {
-                                        totalPrice += element.totalPrice[0];
+                                        totalPrice += element.totalPrice;
                                         totalController.text =
                                             totalPrice.toString();
                                       });

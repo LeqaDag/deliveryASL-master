@@ -20,19 +20,19 @@ class Customer {
       this.cityID,
       this.address,
       this.businesID,
-      this.isArchived,
+      this.isArchived = false,
       this.deleteDate,
       this.deleteUser,
       this.cityName,
       this.sublineName});
 
-  Map<String, dynamic> toJson() => {
-        'name': name,
-        'phoneNumber': phoneNumber,
-        'phoneNumberAdditional': phoneNumberAdditional,
-        'cityID': cityID,
-        'address': address,
-        'businesID': businesID,
-        'isArchived': isArchived
-      };
+  // Map<String, dynamic> toJson() => {
+  //       'name': name,
+  //       'phoneNumber': phoneNumber,
+  //       'phoneNumberAdditional': phoneNumberAdditional,
+  //       'cityID': cityID,
+  //       'address': address,
+  //       'businesID': businesID,
+  //       'isArchived': isArchived
+  //     };
 }

@@ -76,9 +76,9 @@ class AutoDivisiovServices {
   List<Order> _orderListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) {
       return Order(
-          uid: doc.reference.id,
+         uid: doc.reference.id,
           price: doc.data()['price'] ?? '',
-          totalPrice: doc.data()['totalPrice'].cast<int>() ?? '',
+          totalPrice: doc.data()['totalPrice'] ?? '',
           type: doc.data()['type'] ?? '',
           description: doc.data()['description'] ?? '',
           date: doc.data()['date'].toDate() ?? '',
@@ -96,9 +96,12 @@ class AutoDivisiovServices {
           businesID: doc.data()['businesID'] ?? '',
           driverID: doc.data()['driverID'] ?? '',
           isArchived: doc.data()['isArchived'] ?? '',
-          driverPrice: doc.data()['driverPrice'] ?? '',
+         // driverPrice: doc.data()['driverPrice'] ?? '',
           indexLine: doc.data()['indexLine'] ?? '',
+          mainLineIndex: doc.data()['mainLineIndex'] ?? '',
           locationID: doc.data()['locationID'] ?? '',
+          isPaidDriver: doc.data()['isPaidDriver'] ?? '',
+          mainlineID: doc.data()['mainlineID'] ?? '',
           sublineID: doc.data()['sublineID'] ?? '');
     }).toList();
   }
