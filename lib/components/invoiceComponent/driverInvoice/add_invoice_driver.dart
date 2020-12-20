@@ -61,12 +61,14 @@ class _AddInvoiceDriverState extends State<AddInvoiceDriver> {
                     margin: EdgeInsets.all(20.0),
                     child: Row(
                       children: <Widget>[
-                        Text(
-                          " عدد الطرود الكلية:",
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: "Amiri",
+                        Expanded(
+                          child: Text(
+                            " عدد الطرود الكلية:",
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "Amiri",
+                            ),
                           ),
                         ),
                         FutureBuilder<int>(
@@ -74,19 +76,23 @@ class _AddInvoiceDriverState extends State<AddInvoiceDriver> {
                                 .countDriverOrders(widget.driverId),
                             builder: (context, snapshot) {
                               print(snapshot.data);
-                              return Text(
-                                "  ${snapshot.data.toString()} " ?? "0",
+                              return Expanded(
+                                child: Text(
+                                  "  ${snapshot.data.toString()} " ?? "0",
+                                ),
                               );
                             }),
                         SizedBox(
                           width: 30,
                         ),
-                        Text(
-                          " عدد الطرود الموزعة :",
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: "Amiri",
+                        Expanded(
+                          child: Text(
+                            " عدد الطرود الموزعة :",
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "Amiri",
+                            ),
                           ),
                         ),
                         FutureBuilder<int>(
@@ -94,8 +100,10 @@ class _AddInvoiceDriverState extends State<AddInvoiceDriver> {
                                 .countDriverOrderByStateOrder("isDone"),
                             builder: (context, snapshot) {
                               print(snapshot.data);
-                              return Text(
-                                "  ${snapshot.data.toString()} " ?? "0",
+                              return Expanded(
+                                child: Text(
+                                  "  ${snapshot.data.toString()} " ?? "0",
+                                ),
                               );
                             }),
                       ],
@@ -105,12 +113,14 @@ class _AddInvoiceDriverState extends State<AddInvoiceDriver> {
                     margin: EdgeInsets.all(20.0),
                     child: Row(
                       children: <Widget>[
-                        Text(
-                          "المبلغ الكلي للسائق : ",
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: "Amiri",
+                        Expanded(
+                          child: Text(
+                            "المبلغ الكلي للسائق : ",
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "Amiri",
+                            ),
                           ),
                         ),
 
@@ -131,8 +141,11 @@ class _AddInvoiceDriverState extends State<AddInvoiceDriver> {
                                             snapshot.data * isDoneOrders;
                                         print(snapshot.data);
                                         //  isDoneOrders = snapshot.data;
-                                        return Text(
-                                          "  ${totalSalary.toString()} " ?? "0",
+                                        return Expanded(
+                                          child: Text(
+                                            "  ${totalSalary.toString()} " ??
+                                                "0",
+                                          ),
                                         );
                                       } else {
                                         return Text("");
@@ -264,9 +277,8 @@ class _AddInvoiceDriverState extends State<AddInvoiceDriver> {
                             size: 32.0,
                           ),
                           StreamBuilder<List<Order>>(
-                              stream:
-                                  OrderServices(driverID: widget.driverId)
-                                      .driversIsDoneOrders(widget.driverId),
+                              stream: OrderServices(driverID: widget.driverId)
+                                  .driversIsDoneOrders(widget.driverId),
                               builder: (context, snapshot) {
                                 if (!snapshot.hasData) {
                                   return Text("");
@@ -304,10 +316,10 @@ class _AddInvoiceDriverState extends State<AddInvoiceDriver> {
     });
 
     orderIds.forEach((element) async {
-      FirebaseFirestore.instance
-          .collection('orders')
-          .doc(element)
-          .update({"isPaidDriver": true, "paidSriverDate": new DateTime.now(),});
+      FirebaseFirestore.instance.collection('orders').doc(element).update({
+        "isPaidDriver": true,
+        "paidSriverDate": new DateTime.now(),
+      });
     });
 
     Toast.show("تم اضافة الفاتورة بنجاح", context,

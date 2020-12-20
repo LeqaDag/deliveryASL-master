@@ -11,16 +11,19 @@ class Order {
 
   int driverPrice;
 
+  //this all order state in application
   bool isLoading;
   bool isReceived;
+  bool inStock;
   bool isDelivery;
   bool isUrgent;
   bool isCancelld;
   bool isReturn;
   bool isDone;
   bool isPaid;
-  bool inStock;
+  bool isPaidDriver;
 
+  //this all DateTime for order state in application
   DateTime isLoadingDate;
   DateTime isReceivedDate;
   DateTime isDeliveryDate;
@@ -32,19 +35,21 @@ class Order {
   DateTime inStockDate;
   DateTime paidDriverDate;
 
+  int indexLine; //this indexing in firebase that will readed orderBy ... indexLine
+  int mainLineIndex; //also this :)
+
   String businesID;
   String driverID;
   String customerID;
-  int indexLine;
-  int mainLineIndex;
   String sublineID;
   String locationID;
   String mainlineID;
+  String invoiceDriverID;
+  String invoiceID;
 
   bool isArchived;
   DateTime deleteDate;
   String deleteUser;
-  bool isPaidDriver;
 
   Order({
     this.uid,
@@ -70,6 +75,8 @@ class Order {
     this.indexLine = 0,
     this.mainLineIndex = 0,
     this.mainlineID,
+    this.invoiceDriverID = "",
+    this.invoiceID = "",
     @required this.customerID,
     this.locationID,
     this.isArchived = false,

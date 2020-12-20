@@ -48,9 +48,10 @@ class InvoiceAdmin extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => CompanyInvoiceAdmin(
-                            name: name,
-                          )),
+                    builder: (context) => CompanyInvoiceAdmin(
+                      name: name,
+                    ),
+                  ),
                 );
               },
             ),
@@ -68,9 +69,10 @@ class InvoiceAdmin extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => DriverInvoiceAdmin(
-                            name: name,
-                          )),
+                    builder: (context) => DriverInvoiceAdmin(
+                      name: name,
+                    ),
+                  ),
                 );
               },
             ),

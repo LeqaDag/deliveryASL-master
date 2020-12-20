@@ -92,7 +92,17 @@ class _CustomCompanyOrdersStatusState extends State<CustomCompanyOrdersStatus> {
       stateOrder = "تم استلامه";
       date = widget.order.isReceivedDate;
     }
+    if (widget.order.isLoading == true) {
+      return orderBusinessItem(
+          width, height, context, icon, color, stateOrder, true);
+    } else {
+      return orderBusinessItem(
+          width, height, context, icon, color, stateOrder, false);
+    }
+  }
 
+  InkWell orderBusinessItem(double width, double height, BuildContext context,
+      IconData icon, Color color, String stateOrder, bool showDelete) {
     return InkWell(
       onTap: () {
         // Navigator.push(
@@ -230,55 +240,61 @@ class _CustomCompanyOrdersStatusState extends State<CustomCompanyOrdersStatus> {
                     ]),
               ),
               Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Row(children: <Widget>[
-                    IconButton(
-                      onPressed: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //       builder: (context) => UpdateOrder(
-                        //             orderID: widget.order.uid,
-                        //             customerID: widget.order.customerID,
-                        //             name: widget.name,
-                        //           )),
-                        // );
-                      },
-                      icon: Icon(
-                        Icons.create,
-                        color: Colors.green,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        return showDialog<void>(
-                            context: context,
-                            barrierDismissible: false, // user must tap button!
-                            builder: (BuildContext context) => CustomDialog(
-                                  title: "حذف طلبية",
-                                  description: ' هل ترغب بحذف طلبية',
-                                  name: customerName,
-                                  buttonText: "تأكيد",
-                                  onPressed: () {
-                                    final FirebaseAuth auth =
-                                        FirebaseAuth.instance;
-                                    final User user = auth.currentUser;
-                                    OrderServices().deleteOrderData(
-                                        widget.order.uid, user.uid);
-                                    Navigator.of(context).pop();
-                                  },
-                                  cancelButton: "الغاء",
-                                  cancelPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                ));
-                      },
-                      icon: Icon(
-                        Icons.delete,
-                        color: Colors.red,
-                      ),
-                    )
-                  ]),
+                  Visibility(
+                        visible: showDelete,
+
+                    child: Row(children: <Widget>[
+                      // IconButton(
+                      //   onPressed: () {
+                      //     // Navigator.push(
+                      //     //   context,
+                      //     //   MaterialPageRoute(
+                      //     //       builder: (context) => UpdateOrder(
+                      //     //             orderID: widget.order.uid,
+                      //     //             customerID: widget.order.customerID,
+                      //     //             name: widget.name,
+                      //     //           )),
+                      //     // );
+                      //   },
+                      //   icon: Icon(
+                      //     Icons.create,
+                      //     color: Colors.green,
+                      //   ),
+                      // ),
+                      IconButton(
+                        onPressed: () {
+                          return showDialog<void>(
+                              context: context,
+                              barrierDismissible:
+                                  false, // user must tap button!
+                              builder: (BuildContext context) => CustomDialog(
+                                    title: "حذف طلبية",
+                                    description: ' هل ترغب بحذف طلبية',
+                                    name: customerName,
+                                    buttonText: "تأكيد",
+                                    onPressed: () {
+                                      final FirebaseAuth auth =
+                                          FirebaseAuth.instance;
+                                      final User user = auth.currentUser;
+                                      OrderServices().deleteOrderData(
+                                          widget.order.uid, user.uid);
+                                      Navigator.of(context).pop();
+                                    },
+                                    cancelButton: "الغاء",
+                                    cancelPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ));
+                        },
+                        icon: Icon(
+                          Icons.delete,
+                          color: Colors.red,
+                        ),
+                      )
+                    ]),
+                  ),
                   Row(
                     //3
                     mainAxisAlignment: MainAxisAlignment.spaceAround,

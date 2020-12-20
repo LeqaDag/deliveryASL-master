@@ -324,6 +324,12 @@ class _AddNewOdersState extends State<AddNewOders> {
     return Container(
       margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
       child: TextFormField(
+        validator: (value) {
+         if (value.isEmpty) {
+            return 'ادخل اسم الزبون  ';
+          }
+          return null;
+        },
         controller: fieldController,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
@@ -601,6 +607,7 @@ class _AddNewOdersState extends State<AddNewOders> {
                 mainlines = snapshot.data;
                 return DropdownButtonFormField<String>(
                   value: mainline,
+                  isExpanded: true,
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
@@ -821,41 +828,41 @@ class _AddNewOdersState extends State<AddNewOders> {
                 isUrgent = true;
               }
               await OrderServices().addOrderData(new Order(
-                  price: int.parse(orderPrice.text),
-                  totalPrice: orderTotalPrice,
-                  type: false,
-                  description: orderDescription.text,
-                  date: orderDate,
-                  note: orderNote.text,
-                  isLoading: true,
-                  isLoadingDate: DateTime.now(),
-                  isReceived: false,
-                  isDelivery: false,
-                  isUrgent: isUrgent,
-                  isCancelld: false,
-                  isReturn: false,
-                  isDone: false,
-                  isPaid: false,
-                  inStock: false,
-                  customerID: customerID,
-                  businesID: businessID,
-                  driverID: "",
-                  isArchived: false,
-                  sublineID: subline,
-                  locationID: locationID,
-                  indexLine: indexLine,
-                  mainLineIndex: 0,
-                  mainlineID: mainline,
-                  isPaidDriver: false,
-                  paidDriverDate: DateTime.now(),
-                  isReceivedDate: DateTime.now(),
-                  isDeliveryDate: DateTime.now(),
-                  isCancelldDate: DateTime.now(),
-                  isReturnDate: DateTime.now(),
-                  isDoneDate: DateTime.now(),
-                  isPaidDate: DateTime.now(),
-                  inStockDate: DateTime.now(),
-                  ));
+                price: int.parse(orderPrice.text),
+                totalPrice: orderTotalPrice,
+                type: false,
+                description: orderDescription.text,
+                date: orderDate,
+                note: orderNote.text,
+                isLoading: true,
+                isLoadingDate: DateTime.now(),
+                isReceived: false,
+                isDelivery: false,
+                isUrgent: isUrgent,
+                isCancelld: false,
+                isReturn: false,
+                isDone: false,
+                isPaid: false,
+                inStock: false,
+                customerID: customerID,
+                businesID: businessID,
+                driverID: "",
+                isArchived: false,
+                sublineID: subline,
+                locationID: locationID,
+                indexLine: indexLine,
+                mainLineIndex: 0,
+                mainlineID: mainline,
+                isPaidDriver: false,
+                paidDriverDate: DateTime.now(),
+                isReceivedDate: DateTime.now(),
+                isDeliveryDate: DateTime.now(),
+                isCancelldDate: DateTime.now(),
+                isReturnDate: DateTime.now(),
+                isDoneDate: DateTime.now(),
+                isPaidDate: DateTime.now(),
+                inStockDate: DateTime.now(),
+              ));
               Toast.show("تم اضافة الطلبية بنجاح", context,
                   duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
               await Future.delayed(Duration(milliseconds: 1000));

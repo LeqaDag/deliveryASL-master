@@ -15,11 +15,13 @@ class DriverOrderList extends StatefulWidget {
 class _DriverOrderListState extends State<DriverOrderList> {
   @override
   Widget build(BuildContext context) {
-    final inStockOrders = Provider.of<List<Order>>(context) ?? [];
-    final pendingOrders = Provider.of<List<Order>>(context) ?? [];
-    final doneOrders = Provider.of<List<Order>>(context) ?? [];
-    final stuckOrders = Provider.of<List<Order>>(context) ?? [];
-
+    List<Order> inStockOrders = Provider.of<List<Order>>(context) ?? [];
+    List<Order> pendingOrders = Provider.of<List<Order>>(context) ?? [];
+    List<Order> doneOrders = Provider.of<List<Order>>(context) ?? [];
+    List<Order> stuckOrders = Provider.of<List<Order>>(context) ?? [];
+    // inStockOrders.sort((order1, order2) {
+    //   return order1.indexLine.compareTo(order2.indexLine);
+    // });
     return TabBarView(children: [
       ListView.builder(
         itemCount: stuckOrders.length,
@@ -328,7 +330,7 @@ class _PendingDriverOrdersState extends State<PendingDriverOrders> {
         visible: false,
       );
     } else if (widget.order.isDelivery == true &&
-        widget.order.driverID == widget.uid ) {
+        widget.order.driverID == widget.uid) {
       return InkWell(
         onTap: () {
           Navigator.push(

@@ -1,4 +1,5 @@
 import 'package:AsyadLogistic/components/locationComponent/location_admin.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:AsyadLogistic/components/adminComponent/admin_secretary_home.dart';
 import 'package:AsyadLogistic/components/cityComponent/city_admin.dart';
@@ -11,8 +12,9 @@ import 'package:AsyadLogistic/components/businessComponent/businesssComponent/bu
 import 'package:AsyadLogistic/components/driverComponent/driversComponent/driveradmin.dart';
 import 'package:AsyadLogistic/components/orderComponent/store_profile.dart';
 import 'package:AsyadLogistic/services/auth/auth.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:provider/provider.dart';
-
+import 'package:flutter/services.dart';
 import '../../constants.dart';
 import '../../services/auth/authentication_service.dart';
 
@@ -47,11 +49,13 @@ class AdminDrawer extends StatelessWidget {
                     );
                   },
                   padding: EdgeInsets.all(0.0),
-                  child: Image.asset(
-                    "assets/user.png",
-                    height: 90,
-                    width: 90,
-                    fit: BoxFit.cover,
+                  child: ClipOval(
+                    child: Image.asset(
+                      "assets/asyadlogo2.jpeg",
+                      height: 90,
+                      width: 90,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
                 backgroundColor: kAppBarColor,
@@ -265,7 +269,10 @@ class AdminDrawer extends StatelessWidget {
                         fontSize: 18.0,
                         fontFamily: 'Amiri'),
                   ),
-                  leading: Image.asset('assets/city-draw.png',width: 40,),
+                  leading: Image.asset(
+                    'assets/city-draw.png',
+                    width: 40,
+                  ),
                   onTap: () {
                     Navigator.pop(context);
                     Navigator.push(
@@ -292,7 +299,7 @@ class AdminDrawer extends StatelessWidget {
                         fontSize: 18.0,
                         fontFamily: 'Amiri'),
                   ),
-                  leading: Image.asset('assets/wregion50.png', width:40),
+                  leading: Image.asset('assets/wregion50.png', width: 40),
                   onTap: () {
                     Navigator.push(
                       context,
@@ -322,12 +329,10 @@ class AdminDrawer extends StatelessWidget {
                   onTap: () {
                     AuthService _authService = AuthService();
                     _authService.signOut();
+
                     context.read<AuthenticationService>().signOut();
-                    Navigator.pop(context);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => LoginAdmin()),
-                    );
+                    Phoenix.rebirth(context);
+                    // SystemNavigator.pop();
                   },
                 ),
               ),

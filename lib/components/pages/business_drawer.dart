@@ -3,9 +3,10 @@ import 'package:AsyadLogistic/components/businessComponent/business_main.dart';
 import 'package:AsyadLogistic/components/businessComponent/business_profile.dart';
 import 'package:AsyadLogistic/components/businessComponent/orders/add_order.dart';
 import 'package:AsyadLogistic/components/businessComponent/orders/all_orders.dart';
-import 'package:AsyadLogistic/components/screenComponent/admin_login.dart';
 import 'package:AsyadLogistic/services/auth/auth.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
 
 import '../../constants.dart';
 import '../../services/auth/authentication_service.dart';
@@ -42,11 +43,13 @@ class BusinessDrawer extends StatelessWidget {
                     );
                   },
                   padding: EdgeInsets.all(0.0),
-                  child: Image.asset(
-                    "assets/user.png",
-                    height: 90,
-                    width: 90,
-                    fit: BoxFit.cover,
+                  child: ClipOval(
+                    child: Image.asset(
+                      "assets/asyadlogo2.jpeg",
+                      height: 90,
+                      width: 90,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
                 backgroundColor: kAppBarColor,
@@ -185,13 +188,13 @@ class BusinessDrawer extends StatelessWidget {
                   ),
                   leading: Image.asset('assets/logout.png'),
                   onTap: () {
-                    AuthService _authService = AuthService();
+                   AuthService _authService = AuthService();
                     _authService.signOut();
+                    
                     context.read<AuthenticationService>().signOut();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => LoginAdmin()),
-                    );
+                    Phoenix.rebirth(context);
+
+                    // SystemNavigator.pop();
                   },
                 ),
               ),

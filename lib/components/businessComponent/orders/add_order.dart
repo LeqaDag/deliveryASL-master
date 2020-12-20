@@ -549,6 +549,7 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
                 mainlines = snapshot.data;
                 return DropdownButtonFormField<String>(
                   value: mainline,
+                  isExpanded: true,
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),

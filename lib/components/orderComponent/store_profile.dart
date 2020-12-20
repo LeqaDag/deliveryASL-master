@@ -35,7 +35,7 @@ class StoreProfile extends StatelessWidget {
                       padding: const EdgeInsets.only(top: 15),
                       child: ClipOval(
                         child: Image.asset(
-                          "assets/user.png",
+                          "assets/asyadlogo2.jpeg",
                           height: 90,
                           width: 90,
                           fit: BoxFit.cover,

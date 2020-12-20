@@ -277,9 +277,10 @@ class _DriverDailySheetState extends State<DriverDailySheet> {
                             child: Padding(
                               padding: const EdgeInsets.only(top: 8.0, left: 8),
                               child: FutureBuilder<int>(
-                                  future: OrderServices(
-                                          driverID: driverData.uid)
-                                      .countDriverOrderByStateOrder("isDone"),
+                                  future:
+                                      OrderServices(driverID: driverData.uid)
+                                          .countDriverOrderByStateOrder(
+                                              "isDoneDriver"),
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
                                       isDoneOrders = snapshot.data;
@@ -294,7 +295,7 @@ class _DriverDailySheetState extends State<DriverDailySheet> {
                                                   snapshot.data * isDoneOrders;
                                               driverPriceController.text =
                                                   totalSalary.toString();
-                                              print(snapshot.data);
+                                              // print(snapshot.data);
                                               //  isDoneOrders = snapshot.data;
                                               return TextFormField(
                                                 controller:
@@ -401,7 +402,6 @@ class _DriverDailySheetState extends State<DriverDailySheet> {
                               .sheetListDriver,
                           child: SheetListDriver(
                               name: widget.name, driverID: driverData.uid),
-                          catchError: (_, __) => null,
                         ),
                       ),
                     ],
@@ -432,10 +432,7 @@ class _SheetListDriverState extends State<SheetListDriver> {
   @override
   Widget build(BuildContext context) {
     // final orders = Provider.of<List<Order>>(context) ?? [];
-    final orders = Provider.of<List<Order>>(context).where((order) {
-          return order.driverID == widget.driverID;
-        }).toList() ??
-        [];
+    List<Order> orders = Provider.of<List<Order>>(context) ?? [];
 
     if (orders != [] && orders != null) {
       return ListView.separated(

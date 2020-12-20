@@ -8,13 +8,14 @@ import 'components/pages/loadingData.dart';
 import 'components/screenComponent/admin_home.dart';
 import 'components/screenComponent/admin_login.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 
 import 'services/auth/authentication_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(MainApp());
+  runApp(Phoenix(child: MainApp()));
 }
 
 class MainApp extends StatelessWidget {

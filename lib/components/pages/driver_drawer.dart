@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:AsyadLogistic/components/driverComponent/driverAccount/driver_main.dart';
 import 'package:AsyadLogistic/components/driverComponent/driverAccount/driver_profile.dart';
 import 'package:AsyadLogistic/components/driverComponent/sheetComponent/driver_daily_sheet.dart';
-import 'package:AsyadLogistic/components/screenComponent/admin_login.dart';
 import 'package:AsyadLogistic/services/auth/auth.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
 
 import '../../constants.dart';
 import '../../services/auth/authentication_service.dart';
@@ -36,16 +37,19 @@ class DriverDrawer extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              DriverProfile(name: name, uid: uid)),
+                        builder: (context) =>
+                            DriverProfile(name: name, uid: uid),
+                      ),
                     );
                   },
                   padding: EdgeInsets.all(0.0),
-                  child: Image.asset(
-                    "assets/user.png",
-                    height: 90,
-                    width: 90,
-                    fit: BoxFit.cover,
+                  child: ClipOval(
+                    child: Image.asset(
+                      "assets/asyadlogo2.jpeg",
+                      height: 90,
+                      width: 90,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
                 backgroundColor: kAppBarColor,
@@ -65,9 +69,10 @@ class DriverDrawer extends StatelessWidget {
                   title: Text(
                     'الصفحة الرئيسية',
                     style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18.0,
-                        fontFamily: 'Amiri'),
+                      color: Colors.white,
+                      fontSize: 18.0,
+                      fontFamily: 'Amiri',
+                    ),
                   ),
                   leading: Image.asset('assets/homePage.png'),
                   onTap: () {
@@ -122,9 +127,10 @@ class DriverDrawer extends StatelessWidget {
                   title: Text(
                     'الانجاز اليومي',
                     style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18.0,
-                        fontFamily: 'Amiri'),
+                      color: Colors.white,
+                      fontSize: 18.0,
+                      fontFamily: 'Amiri',
+                    ),
                   ),
                   leading: Image.asset('assets/profile-business-drawer.png',
                       width: 32),
@@ -132,8 +138,9 @@ class DriverDrawer extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              DriverDailySheet(name: name, driverID: uid)),
+                        builder: (context) =>
+                            DriverDailySheet(name: name, driverID: uid),
+                      ),
                     );
                   },
                 ),
@@ -150,19 +157,20 @@ class DriverDrawer extends StatelessWidget {
                   title: Text(
                     'تسجيل خروج',
                     style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18.0,
-                        fontFamily: 'Amiri'),
+                      color: Colors.white,
+                      fontSize: 18.0,
+                      fontFamily: 'Amiri',
+                    ),
                   ),
                   leading: Image.asset('assets/logout.png'),
                   onTap: () {
                     AuthService _authService = AuthService();
                     _authService.signOut();
+
                     context.read<AuthenticationService>().signOut();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => LoginAdmin()),
-                    );
+                    Phoenix.rebirth(context);
+
+                    // SystemNavigator.pop();
                   },
                 ),
               ),
