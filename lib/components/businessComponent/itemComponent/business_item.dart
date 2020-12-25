@@ -453,7 +453,7 @@ class _CustomCompanyOrdersStatusState extends State<CustomCompanyOrdersStatus> {
                             ),
                           ),
                           Text(
-                            intl.DateFormat('h:m').format(date),
+                            intl.DateFormat.jm().format(date),
                             style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.bold,

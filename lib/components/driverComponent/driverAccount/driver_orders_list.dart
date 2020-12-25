@@ -2,7 +2,10 @@ import 'package:AsyadLogistic/classes/order.dart';
 import 'package:AsyadLogistic/services/customerServices.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:toast/toast.dart';
 import 'orders_details.dart';
+import 'package:AsyadLogistic/components/widgetsComponent/CustomWidgets.dart';
+import 'package:AsyadLogistic/services/orderServices.dart';
 
 class DriverOrderList extends StatefulWidget {
   final String name, uid;
@@ -19,19 +22,104 @@ class _DriverOrderListState extends State<DriverOrderList> {
     List<Order> pendingOrders = Provider.of<List<Order>>(context) ?? [];
     List<Order> doneOrders = Provider.of<List<Order>>(context) ?? [];
     List<Order> stuckOrders = Provider.of<List<Order>>(context) ?? [];
-    // inStockOrders.sort((order1, order2) {
-    //   return order1.indexLine.compareTo(order2.indexLine);
-    // });
+    bool visible = true;
+    inStockOrders.sort((order1, order2) {
+      return order1.indexLine.compareTo(order2.indexLine);
+    });
+    pendingOrders.sort((order1, order2) {
+      return order1.indexLine.compareTo(order2.indexLine);
+    });
+    doneOrders.sort((order1, order2) {
+      return order1.indexLine.compareTo(order2.indexLine);
+    });
+    stuckOrders.sort((order1, order2) {
+      return order1.indexLine.compareTo(order2.indexLine);
+    });
+    int size = inStockOrders.where((order) {
+      return order.inStock == true;
+    }).length;
+    print(size);
+    if (size == 0) {
+      visible = false;
+    }
     return TabBarView(children: [
-      ListView.builder(
-        itemCount: stuckOrders.length,
-        itemBuilder: (context, index) {
-          return InStockDriverOrders(
-              order: inStockOrders[index],
-              orderState: "inStoke",
-              name: widget.name,
-              uid: widget.uid);
-        },
+      SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              child: Visibility(
+                visible: visible,
+                child: RaisedButton(
+                  elevation: 3,
+                  onPressed: () {
+                    return showDialog<void>(
+                        context: context,
+                        barrierDismissible: false, // user must tap button!
+                        builder: (BuildContext context) =>
+                            CustomDialogSelectAll(
+                              title: "تحديد جميع الطرود في المخزن",
+                              description: 'تأكيد استلام جميع الطرود ',
+                              name: "",
+                              buttonText: "تأكيد",
+                              onPressed: () async {
+                                for (var order in inStockOrders) {
+                                  OrderServices(
+                                    uid: order.uid,
+                                  ).updateOrderFromInStokeToisDelivery;
+                                }
+
+                                Toast.show("تم الاستلام", context,
+                                    duration: Toast.LENGTH_LONG,
+                                    gravity: Toast.BOTTOM);
+                                await Future.delayed(
+                                    Duration(milliseconds: 1000));
+                                Navigator.of(context).pop();
+                              },
+                              cancelButton: "الغاء",
+                              cancelPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ));
+                  },
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18.0),
+                    side: BorderSide(
+                      color: Color(0xff62A8EB),
+                      width: 3,
+                    ),
+                  ),
+                  child: Text(
+                    "استلام جميع الطرود".toUpperCase(),
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Amiri',
+                    ),
+                  ),
+                  color: Color(0xff62A8EB),
+                  textColor: Colors.white,
+                ),
+              ),
+            ),
+            ListView.separated(
+              shrinkWrap: true,
+              physics: ScrollPhysics(),
+              itemCount: stuckOrders.length,
+              itemBuilder: (context, index) {
+                return InStockDriverOrders(
+                    order: inStockOrders[index],
+                    orderState: "inStoke",
+                    name: widget.name,
+                    uid: widget.uid);
+              },
+              separatorBuilder: (context, index) {
+                return Divider(
+                  height: 0.5,
+                );
+              },
+            ),
+          ],
+        ),
       ),
       ListView.builder(
         itemCount: pendingOrders.length,
@@ -217,31 +305,32 @@ Widget driverOrders(Order order, Color color, double height, double width,
           ),
           Container(
             child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: height * 0.025,
-                          right: height * 0.025,
-                          top: height * 0,
-                        ),
-                        child: Image.asset('assets/price.png'),
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: height * 0.025,
+                        right: height * 0.025,
+                        top: height * 0,
                       ),
-                      Text(
-                        order.price.toString() ?? "0",
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: "Amiri",
-                        ),
+                      child: Image.asset('assets/price.png'),
+                    ),
+                    Text(
+                      order.totalPrice.toString() ?? "0",
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: "Amiri",
                       ),
-                    ],
-                  ),
-                ]),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
           SizedBox(
             width: 20,

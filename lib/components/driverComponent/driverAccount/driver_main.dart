@@ -28,8 +28,9 @@ class DriverMain extends StatelessWidget {
                       indicatorSize: TabBarIndicatorSize.label,
                       indicator: BoxDecoration(
                           borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(5),
-                              topRight: Radius.circular(5)),
+                            topLeft: Radius.circular(5),
+                            topRight: Radius.circular(5),
+                          ),
                           color: Colors.white),
                       tabs: [
                         Tab(

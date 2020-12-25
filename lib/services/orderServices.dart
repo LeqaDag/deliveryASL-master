@@ -472,6 +472,7 @@ class OrderServices {
         {
           return orderCollection
               .where('driverID', isEqualTo: driverID)
+              .where('isArchived', isEqualTo: false)
               .snapshots()
               .map(_orderListFromSnapshot);
         }

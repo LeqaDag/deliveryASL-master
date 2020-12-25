@@ -34,6 +34,7 @@ class DriverDrawer extends StatelessWidget {
               currentAccountPicture: CircleAvatar(
                 child: FlatButton(
                   onPressed: () {
+                    Navigator.pop(context);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -76,6 +77,7 @@ class DriverDrawer extends StatelessWidget {
                   ),
                   leading: Image.asset('assets/homePage.png'),
                   onTap: () {
+                    Navigator.pop(context);
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
@@ -106,6 +108,7 @@ class DriverDrawer extends StatelessWidget {
                   leading: Image.asset('assets/profile-business-drawer.png',
                       width: 32),
                   onTap: () {
+                    Navigator.pop(context);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -135,6 +138,7 @@ class DriverDrawer extends StatelessWidget {
                   leading: Image.asset('assets/profile-business-drawer.png',
                       width: 32),
                   onTap: () {
+                    Navigator.pop(context);
                     Navigator.push(
                       context,
                       MaterialPageRoute(

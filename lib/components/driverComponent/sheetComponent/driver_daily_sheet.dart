@@ -738,7 +738,7 @@ class _AllDriverOrdersState extends State<AllDriverOrders> {
                                 top: height * 0,
                                 bottom: height * 0),
                             child: Text(
-                              widget.order.price.toString() ?? "0",
+                              widget.order.totalPrice.toString() ?? "0",
                               style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.bold,

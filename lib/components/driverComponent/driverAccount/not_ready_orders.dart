@@ -441,28 +441,35 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                                 .customerAdditionalPhoneNumber,
                                                             builder: (context,
                                                                 snapshot) {
-                                                              return InkWell(
-                                                                child: Text(
-                                                                  " 0${snapshot.data.toString()} ",
-                                                                  style:
-                                                                      TextStyle(
-                                                                    fontSize:
-                                                                        14,
-                                                                    color: Colors
-                                                                        .green,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    fontFamily:
-                                                                        "Amiri",
+                                                              if (snapshot
+                                                                      .hasData &&
+                                                                  snapshot.data !=
+                                                                      0) {
+                                                                return InkWell(
+                                                                  child: Text(
+                                                                    " 0${snapshot.data.toString()} ",
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          14,
+                                                                      color: Colors
+                                                                          .green,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      fontFamily:
+                                                                          "Amiri",
+                                                                    ),
                                                                   ),
-                                                                ),
-                                                                onTap: () {
-                                                                  launch("tel:" +
-                                                                      Uri.encodeComponent(
-                                                                          '0${snapshot.data.toString()}'));
-                                                                },
-                                                              );
+                                                                  onTap: () {
+                                                                    launch("tel:" +
+                                                                        Uri.encodeComponent(
+                                                                            '0${snapshot.data.toString()}'));
+                                                                  },
+                                                                );
+                                                              } else {
+                                                                return Text("غير متوفر");
+                                                              }
                                                             }),
                                                       ],
                                                     )

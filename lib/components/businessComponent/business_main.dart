@@ -109,7 +109,7 @@ class _BusinessMainState extends State<BusinessMain> {
                           fontFamily: "Amiri",
                         ),
                       ),
-                    ]),
+                    ],),
                     Column(children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -141,7 +141,7 @@ class _BusinessMainState extends State<BusinessMain> {
                                     ),
                                   );
                                 }
-                              }),
+                              },),
                         ],
                       ),
                       SizedBox(
@@ -344,30 +344,32 @@ class _BusinessMainState extends State<BusinessMain> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 Expanded(
-                    child: Column(
-                  children: <Widget>[
-                    Image(
-                      image: AssetImage("assets/icon_add_new_order.png"),
-                      width: 70,
-                      height: 70,
-                    ),
-                    FlatButton(
-                      padding: EdgeInsets.all(0.0),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AddNewOdersByBusiness(
-                                  name: widget.name, uid: widget.uid)),
-                        );
-                      },
-                      child: Text(
-                        "اضافة طلبية جديدة",
-                        textAlign: TextAlign.center,
+                  child: Column(
+                    children: <Widget>[
+                      Image(
+                        image: AssetImage("assets/icon_add_new_order.png"),
+                        width: 70,
+                        height: 70,
                       ),
-                    ),
-                  ],
-                )),
+                      FlatButton(
+                        padding: EdgeInsets.all(0.0),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AddNewOdersByBusiness(
+                                  name: widget.name, uid: widget.uid),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          "اضافة طلبية جديدة",
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 Column(
                   children: <Widget>[
                     Image(

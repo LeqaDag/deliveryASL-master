@@ -733,27 +733,29 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
               Customer customer;
               if (customerPhoneNumberAdditional.text == '') {
                 customer = new Customer(
-                    name: customerName.text,
-                    phoneNumber: int.parse(customerPhoneNumber.text),
-                    phoneNumberAdditional: int.parse("0"),
-                    cityID: cityID,
-                    cityName: cityName,
-                    address: customerAddress.text,
-                    businesID: widget.uid,
-                    sublineName: sublineName,
-                    isArchived: false);
+                  name: customerName.text,
+                  phoneNumber: int.parse(customerPhoneNumber.text),
+                  phoneNumberAdditional: int.parse("0"),
+                  cityID: cityID,
+                  cityName: cityName,
+                  address: customerAddress.text,
+                  businesID: widget.uid,
+                  sublineName: sublineName,
+                  isArchived: false,
+                );
               } else {
                 customer = new Customer(
-                    name: customerName.text,
-                    phoneNumber: int.parse(customerPhoneNumber.text),
-                    phoneNumberAdditional:
-                        int.parse(customerPhoneNumberAdditional.text),
-                    cityID: cityID,
-                    cityName: cityName,
-                    address: customerAddress.text,
-                    businesID: widget.uid,
-                    sublineName: sublineName,
-                    isArchived: false);
+                  name: customerName.text,
+                  phoneNumber: int.parse(customerPhoneNumber.text),
+                  phoneNumberAdditional:
+                      int.parse(customerPhoneNumberAdditional.text),
+                  cityID: cityID,
+                  cityName: cityName,
+                  address: customerAddress.text,
+                  businesID: widget.uid,
+                  sublineName: sublineName,
+                  isArchived: false,
+                );
               }
 
               bool isUrgent = false;
@@ -765,21 +767,41 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
                 isUrgent = true;
               }
               await OrderServices().addOrderData(new Order(
-                  locationID: locationID,
-                  mainLineIndex: 0,
-                  mainlineID: mainline,
-                  price: int.parse(orderPrice.text),
-                  totalPrice: orderTotalPrice,
-                  type: false,
-                  description: orderDescription.text,
-                  date: orderDate,
-                  note: orderNote.text,
-                  customerID: customerID,
-                  businesID: widget.uid,
-                  sublineID: subline,
-                  indexLine: indexLine,
-                  isUrgent: isUrgent,
-                  driverID: ""));
+                price: int.parse(orderPrice.text),
+                totalPrice: orderTotalPrice,
+                type: false,
+                description: orderDescription.text,
+                date: orderDate,
+                note: orderNote.text,
+                isLoading: true,
+                isLoadingDate: DateTime.now(),
+                isReceived: false,
+                isDelivery: false,
+                isUrgent: isUrgent,
+                isCancelld: false,
+                isReturn: false,
+                isDone: false,
+                isPaid: false,
+                inStock: false,
+                customerID: customerID,
+                businesID: widget.uid,
+                driverID: "",
+                isArchived: false,
+                sublineID: subline,
+                locationID: locationID,
+                indexLine: indexLine,
+                mainLineIndex: 0,
+                mainlineID: mainline,
+                isPaidDriver: false,
+                paidDriverDate: DateTime.now(),
+                isReceivedDate: DateTime.now(),
+                isDeliveryDate: DateTime.now(),
+                isCancelldDate: DateTime.now(),
+                isReturnDate: DateTime.now(),
+                isDoneDate: DateTime.now(),
+                isPaidDate: DateTime.now(),
+                inStockDate: DateTime.now(),
+              ));
               Toast.show("تم اضافة الطلبية بنجاح", context,
                   duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
               await Future.delayed(Duration(milliseconds: 1000));

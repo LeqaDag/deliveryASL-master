@@ -35,6 +35,7 @@ class BusinessDrawer extends StatelessWidget {
               currentAccountPicture: CircleAvatar(
                 child: FlatButton(
                   onPressed: () {
+                    Navigator.pop(context);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -75,6 +76,7 @@ class BusinessDrawer extends StatelessWidget {
                   ),
                   leading: Image.asset('assets/homePage.png'),
                   onTap: () {
+                    Navigator.pop(context);
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
@@ -105,6 +107,7 @@ class BusinessDrawer extends StatelessWidget {
                   leading: Image.asset('assets/profile-business-drawer.png',
                       width: 32),
                   onTap: () {
+                    Navigator.pop(context);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -133,6 +136,7 @@ class BusinessDrawer extends StatelessWidget {
                   leading:
                       Image.asset('assets/add-order-drawer.png', width: 32),
                   onTap: () {
+                    Navigator.pop(context);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -161,6 +165,7 @@ class BusinessDrawer extends StatelessWidget {
                   leading:
                       Image.asset('assets/all-order-drawer.png', width: 35),
                   onTap: () {
+                    Navigator.pop(context);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -188,9 +193,9 @@ class BusinessDrawer extends StatelessWidget {
                   ),
                   leading: Image.asset('assets/logout.png'),
                   onTap: () {
-                   AuthService _authService = AuthService();
+                    AuthService _authService = AuthService();
                     _authService.signOut();
-                    
+
                     context.read<AuthenticationService>().signOut();
                     Phoenix.rebirth(context);
 

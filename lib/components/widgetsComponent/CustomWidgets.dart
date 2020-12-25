@@ -522,7 +522,7 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
     String stateOrder;
     Color color;
     TextEditingController driverPrice = new TextEditingController();
-    print(orderState);
+    print(order.totalPrice.toString());
     if (order.inStock == true) {
       color = KBadgeColorAndContainerBorderColorWithDriverOrders;
       icon = Icons.archive_sharp;
@@ -565,7 +565,7 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
             context,
             MaterialPageRoute(
                 builder: (context) => OrganizeOrderInfo(
-                    uid: order.uid, orderState: orderState, name: name)),
+                    uid: order.uid, orderState: orderState, name: name),),
           );
         },
         child: Container(
@@ -705,7 +705,7 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
 
                           //  SizedBox(width: 33,),
                           Text(
-                            order.price.toString(),
+                            order.totalPrice.toString(),
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -724,6 +724,7 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
       );
     }
     if (orderState == 'sheet') {
+    print(order.totalPrice.toString());
       return InkWell(
         child: Container(
           width: width - 50,
@@ -934,7 +935,7 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                                 top: height * 0,
                                 bottom: height * 0),
                             child: Text(
-                              order.price.toString() ?? "",
+                              order.totalPrice.toString() ?? "",
                               style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.bold,
@@ -942,7 +943,6 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                               ),
                             ),
                           ),
-
                           //  SizedBox(width: 33,),
                         ],
                       ),
@@ -1144,7 +1144,7 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
 
                         //  SizedBox(width: 33,),
                         Text(
-                          order.price.toString() ?? "",
+                          order.totalPrice.toString() ?? "",
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,

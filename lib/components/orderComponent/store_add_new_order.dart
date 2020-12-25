@@ -325,7 +325,7 @@ class _AddNewOdersState extends State<AddNewOders> {
       margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
       child: TextFormField(
         validator: (value) {
-         if (value.isEmpty) {
+          if (value.isEmpty) {
             return 'ادخل اسم الزبون  ';
           }
           return null;
@@ -796,27 +796,29 @@ class _AddNewOdersState extends State<AddNewOders> {
               Customer customer;
               if (customerPhoneNumberAdditional.text == '') {
                 customer = new Customer(
-                    name: customerName.text,
-                    phoneNumber: int.parse(customerPhoneNumber.text),
-                    phoneNumberAdditional: int.parse("0"),
-                    cityID: cityID,
-                    cityName: cityName,
-                    address: customerAddress.text,
-                    businesID: businessID,
-                    sublineName: sublineName,
-                    isArchived: false);
+                  name: customerName.text,
+                  phoneNumber: int.parse(customerPhoneNumber.text),
+                  phoneNumberAdditional: int.parse("0"),
+                  cityID: cityID,
+                  cityName: cityName,
+                  address: customerAddress.text,
+                  businesID: businessID,
+                  sublineName: sublineName,
+                  isArchived: false,
+                );
               } else {
                 customer = new Customer(
-                    name: customerName.text,
-                    phoneNumber: int.parse(customerPhoneNumber.text),
-                    phoneNumberAdditional:
-                        int.parse(customerPhoneNumberAdditional.text),
-                    cityID: cityID,
-                    cityName: cityName,
-                    address: customerAddress.text,
-                    businesID: businessID,
-                    sublineName: sublineName,
-                    isArchived: false);
+                  name: customerName.text,
+                  phoneNumber: int.parse(customerPhoneNumber.text),
+                  phoneNumberAdditional:
+                      int.parse(customerPhoneNumberAdditional.text),
+                  cityID: cityID,
+                  cityName: cityName,
+                  address: customerAddress.text,
+                  businesID: businessID,
+                  sublineName: sublineName,
+                  isArchived: false,
+                );
               }
               bool isUrgent = false;
               String customerID =

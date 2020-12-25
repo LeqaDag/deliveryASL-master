@@ -1,4 +1,5 @@
 import 'package:AsyadLogistic/components/pages/loadingData.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:AsyadLogistic/classes/driver.dart';
@@ -20,6 +21,7 @@ class _DriverProfileState extends State<DriverProfile> {
   String email;
   String phoneNumber;
   String passowrd;
+  String address;
 
   @override
   Widget build(BuildContext context) {
@@ -211,6 +213,12 @@ class _DriverProfileState extends State<DriverProfile> {
                           EdgeInsets.only(top: 20.0, right: 40.0, left: 40.0),
                       child: TextFormField(
                         onChanged: (val) => setState(() => passowrd = val),
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'الرجاء ادخال كلمة المرور';
+                          }
+                          return null;
+                        },
                         obscureText: true,
                         decoration: InputDecoration(
                           labelText: 'كلمة المرور',
@@ -247,19 +255,28 @@ class _DriverProfileState extends State<DriverProfile> {
                             borderRadius: new BorderRadius.circular(30.0)),
                         onPressed: () async {
                           if (_formKey.currentState.validate()) {
-                            // await DriverService(uid: widget.driverID)
-                            //     .updateData(Driver(
-                            //   name: driverName ?? snapshot.data.name,
-                            //   type: type ?? snapshot.data.type,
-                            //   email: email ?? snapshot.data.email,
-                            //   phoneNumber:
-                            //       phoneNumber ?? snapshot.data.phoneNumber,
-                            //   passowrd: passowrd ?? snapshot.data.passowrd,
-                            //   address: address ?? snapshot.data.address,
-                            //   cityID: cityID ?? snapshot.data.cityID,
-                            //   line: line ?? snapshot.data.line,
-                            // ));
-                            // Navigator.pop(context);
+                            final FirebaseAuth firebaseAuth =
+                                FirebaseAuth.instance;
+                            User currentUser = firebaseAuth.currentUser;
+                            print(currentUser);
+                            currentUser.updatePassword(passowrd).then((_) {
+                              print("Succesfull changed password");
+                              DriverServices(uid: widget.uid).updateData(Driver(
+                                  name: driverName ?? snapshot.data.name,
+                                  email: email ?? snapshot.data.email,
+                                  phoneNumber:
+                                      phoneNumber ?? snapshot.data.phoneNumber,
+                                  address: address ?? snapshot.data.address,
+                                  load: snapshot.data.load,
+                                  cityID: snapshot.data.cityID,
+                                  locationID: snapshot.data.locationID,
+                                  type: snapshot.data.type));
+                            }).catchError((error) {
+                              print("Password can't be changed" +
+                                  error.toString());
+                              //This might happen, when the wrong password is in, the user isn't found, or if the user hasn't logged in recently.
+                            });
+                            Navigator.pop(context);
                           }
                         },
                         color: Color(0xff73a16a),
