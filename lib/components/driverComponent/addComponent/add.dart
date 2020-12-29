@@ -571,6 +571,7 @@ class _AddDriverState extends State<AddDriver> {
           await DriverDeliveryCostServices().addDriverDeliveryCostData(
               new DriverDeliveryCost(
                   cost: int.parse(deliveryPriceController.text),
+                  paid:0,
                   locationID: locationID,
                   driverID: result.user.uid));
         });

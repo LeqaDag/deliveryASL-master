@@ -15,6 +15,7 @@ class DriverDeliveryCostServices {
       'driverID': driverDeliveryCost.driverID,
       'locationID': driverDeliveryCost.locationID,
       'isArchived': driverDeliveryCost.isArchived,
+      'paid': driverDeliveryCost.paid,
     });
   }
 
@@ -25,6 +26,7 @@ class DriverDeliveryCostServices {
         cost: snapshot.data()['cost'],
         locationID: snapshot.data()['locationID'],
         driverID: snapshot.data()['driverID'],
+        paid: snapshot.data()['paid'],
         isArchived: snapshot.data()['isArchived']);
   }
 
@@ -36,6 +38,7 @@ class DriverDeliveryCostServices {
           cost: doc.data()['cost'] ?? '',
           locationID: doc.data()['locationID'] ?? '',
           driverID: doc.data()['driverID'] ?? '',
+          paid: doc.data()['paid'] ?? '',
           isArchived: doc.data()['isArchived'] ?? '');
     }).toList();
   }

@@ -133,8 +133,11 @@ class _AllInvoiceState extends State<AllInvoice> {
                                     } else {
                                       orders = snapshot.data;
                                       orders.forEach((element) {
-                                        totalPrice += element.price;
-                                        total = totalPrice;
+                                        if(element.isPaid == false) {
+                                          totalPrice += element.price;
+                                          total = totalPrice;
+                                        } 
+                                        
                                       });
                                       return Text(totalPrice.toString());
                                     }
@@ -195,7 +198,7 @@ class _AllInvoiceState extends State<AllInvoice> {
                         ),
                         FutureBuilder<int>(
                             future: OrderServices(businesID: widget.businessId)
-                                .countBusinessOrderByStateOrder("isDone"),
+                                .countBusinessOrderByStateOrder("isDone1"),
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
                                 return Text(

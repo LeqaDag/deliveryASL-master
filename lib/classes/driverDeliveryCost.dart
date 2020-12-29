@@ -4,6 +4,7 @@ class DriverDeliveryCost {
   String uid;
   String driverID;
   int cost;
+  int paid;
   String locationID;
 
   bool isArchived;
@@ -14,6 +15,7 @@ class DriverDeliveryCost {
     this.uid,
     @required this.driverID,
     this.cost,
+    this.paid =0,
     this.locationID,
     this.isArchived = false,
     this.deleteDate,

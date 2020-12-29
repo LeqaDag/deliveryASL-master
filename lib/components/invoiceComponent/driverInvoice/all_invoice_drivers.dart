@@ -127,7 +127,7 @@ class _AllInvoiceDriversState extends State<AllInvoiceDrivers> {
                               FutureBuilder<int>(
                                   future: OrderServices(
                                           driverID: widget.driverId)
-                                      .countDriverOrderByStateOrder("isDone"),
+                                      .countDriverOrderByStateOrder("isDone1"),
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
                                       isDoneOrders = snapshot.data;
@@ -137,6 +137,8 @@ class _AllInvoiceDriversState extends State<AllInvoiceDrivers> {
                                                   driverId: widget.driverId)
                                               .driverPriceData(widget.driverId),
                                           builder: (context, snapshot) {
+                                            
+
                                             if (snapshot.hasData) {
                                               totalSalary =
                                                   snapshot.data * isDoneOrders;

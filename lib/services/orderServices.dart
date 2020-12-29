@@ -426,6 +426,16 @@ class OrderServices {
               .then((value) => value.size);
         }
         break;
+        case 'isDone1':
+        {
+          return orderCollection
+              .where('isDone', isEqualTo: true)
+              .where('businesID', isEqualTo: businesID)
+              .where('isArchived', isEqualTo: false)
+              .get()
+              .then((value) => value.size);
+        }
+        break;
       case 'isPaid':
         {
           return orderCollection
@@ -675,6 +685,15 @@ class OrderServices {
         .map(_orderListFromSnapshot);
   }
 
+  Stream<List<Order>> driversAllDoneOrders(String driverID) {
+    return orderCollection
+        .where('driverID', isEqualTo: driverID)
+        .where('isArchived', isEqualTo: false)
+        .where('isDone', isEqualTo: true)
+        .snapshots()
+        .map(_orderListFromSnapshot);
+  }
+
   Stream<List<Order>> businessIsDoneOrders(String businessID) {
     return orderCollection
         .where('businesID', isEqualTo: businessID)
@@ -859,6 +878,17 @@ class OrderServices {
               .where('isDone', isEqualTo: true)
               .where('driverID', isEqualTo: driverID)
               .where('isArchived', isEqualTo: false)
+              .get()
+              .then((value) => value.size);
+        }
+        break;
+        case 'isDone1':
+        {
+          return orderCollection
+              .where('isDone', isEqualTo: true)
+              .where('driverID', isEqualTo: driverID)
+              .where('isArchived', isEqualTo: false)
+              .where('isPaidDriver', isEqualTo: false)
               .get()
               .then((value) => value.size);
         }
