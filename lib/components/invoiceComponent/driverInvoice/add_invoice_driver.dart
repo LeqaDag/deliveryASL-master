@@ -315,6 +315,7 @@ class _AddInvoiceDriverState extends State<AddInvoiceDriver> {
       "paidSalary": int.parse(priceController.text)
     });
 
+  
     orderIds.forEach((element) async {
       FirebaseFirestore.instance.collection('orders').doc(element).update({
         "isPaidDriver": true,
