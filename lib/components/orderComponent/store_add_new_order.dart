@@ -42,13 +42,13 @@ class _AddNewOdersState extends State<AddNewOders> {
       businessID,
       bus = "0",
       cityName = "0",
-      sublineName = "0",
+      sublineName = "",
       locationID,
       typeOrder = "عادي";
   int orderTotalPrice = 0;
   static String deliveryPrice = "0";
-  bool isBusinessSelected, locationSelected, mainlineSelected;
-  int indexLine;
+  bool isBusinessSelected = false, locationSelected = false, mainlineSelected;
+  int indexLine= 0;
 
   @override
   void initState() {
@@ -299,22 +299,25 @@ class _AddNewOdersState extends State<AddNewOders> {
   Widget _infoLabel(String lableText, Icon icon) {
     return Container(
       margin: EdgeInsets.only(top: 10, bottom: 10, left: 50, right: 50),
-      child: TextField(
-        enabled: false,
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: Color(0xff316686),
-          labelText: lableText,
-          labelStyle: TextStyle(
-            fontSize: 18,
-            color: Colors.white,
-            fontFamily: 'Amiri',
+      child: Expanded(
+        child: TextField(
+          enabled: false,
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: Color(0xff316686),
+            labelText: lableText,
+            labelStyle: TextStyle(
+              fontSize: 18,
+              color: Colors.white,
+              fontFamily: 'Amiri',
+            ),
+            contentPadding: EdgeInsets.only(right: 20),
+            prefixIcon:
+                icon, //Icon(Icons.person,color: Colors.white,size: 30,),
+            border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: BorderSide()),
           ),
-          contentPadding: EdgeInsets.only(right: 20),
-          prefixIcon: icon, //Icon(Icons.person,color: Colors.white,size: 30,),
-          border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(30),
-              borderSide: BorderSide()),
         ),
       ),
     );
@@ -323,24 +326,26 @@ class _AddNewOdersState extends State<AddNewOders> {
   Widget _customerName(TextEditingController fieldController) {
     return Container(
       margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
-      child: TextFormField(
-        validator: (value) {
-          if (value.isEmpty) {
-            return 'ادخل اسم الزبون  ';
-          }
-          return null;
-        },
-        controller: fieldController,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
-          labelText: "اسم الزبون",
-          labelStyle: TextStyle(
-            fontFamily: 'Amiri',
-            fontSize: 18.0,
-            color: Color(0xff316686),
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+      child: Expanded(
+        child: TextFormField(
+          validator: (value) {
+            if (value.isEmpty) {
+              return 'ادخل اسم الزبون  ';
+            }
+            return null;
+          },
+          controller: fieldController,
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
+            labelText: "اسم الزبون",
+            labelStyle: TextStyle(
+              fontFamily: 'Amiri',
+              fontSize: 18.0,
+              color: Color(0xff316686),
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
         ),
       ),
@@ -689,15 +694,17 @@ class _AddNewOdersState extends State<AddNewOders> {
   Widget _orderDescription(TextEditingController fieldController) {
     return Container(
       margin: EdgeInsets.all(10),
-      child: TextFormField(
-        controller: fieldController,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
-          labelText: "وصف الطلبية",
-          labelStyle: TextStyle(
-              fontFamily: 'Amiri', fontSize: 18.0, color: Color(0xff316686)),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+      child: Expanded(
+        child: TextFormField(
+          controller: fieldController,
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
+            labelText: "وصف الطلبية",
+            labelStyle: TextStyle(
+                fontFamily: 'Amiri', fontSize: 18.0, color: Color(0xff316686)),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
         ),
       ),
@@ -759,20 +766,22 @@ class _AddNewOdersState extends State<AddNewOders> {
   Widget _notes(TextEditingController fieldController) {
     return Container(
       margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
-      child: TextFormField(
-        controller: fieldController,
+      child: Expanded(
+        child: TextFormField(
+          controller: fieldController,
 
-        //minLines: 2,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
-          labelText: "الملاحظات",
-          labelStyle: TextStyle(
-            fontFamily: 'Amiri',
-            fontSize: 18.0,
-            color: Color(0xff316686),
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+          //minLines: 2,
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
+            labelText: "الملاحظات",
+            labelStyle: TextStyle(
+              fontFamily: 'Amiri',
+              fontSize: 18.0,
+              color: Color(0xff316686),
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
         ),
       ),
