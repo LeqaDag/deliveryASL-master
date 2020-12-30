@@ -6,6 +6,7 @@ import 'orderInformationComponent/doneInfo.dart';
 import 'orderInformationComponent/loadingInfo.dart';
 import 'orderInformationComponent/receivedInfo.dart';
 import 'orderInformationComponent/returnInfo.dart';
+import 'orderInformationComponent/stockInfo.dart';
 import 'orderInformationComponent/urgentInfo.dart';
 
 class OrganizeOrderInfo extends StatelessWidget {
@@ -18,7 +19,7 @@ class OrganizeOrderInfo extends StatelessWidget {
     switch (orderState) {
       case 'inStock':
         {
-          return LoadingInfo(uid: uid, name: name);
+          return StockInfo(uid: uid, name: name);
         }
         break;
 
