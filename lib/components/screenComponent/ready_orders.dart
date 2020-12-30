@@ -1,12 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:AsyadLogistic/classes/order.dart';
-import 'package:AsyadLogistic/components/orderComponent/orderList.dart';
 import 'package:AsyadLogistic/components/pages/drawer.dart';
 import 'package:AsyadLogistic/components/screenComponent/done_orders.dart';
 import 'package:AsyadLogistic/components/screenComponent/paid_orders.dart';
-import 'package:AsyadLogistic/services/orderServices.dart';
 
 import '../../constants.dart';
 

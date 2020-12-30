@@ -227,33 +227,33 @@ class AdminDrawer extends StatelessWidget {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0),
-              child: Card(
-                color: Color(0xff464646),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: ListTile(
-                  title: Text(
-                    'العاملين',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18.0,
-                        fontFamily: 'Amiri'),
-                  ),
-                  leading: Image.asset('assets/adminwhite.png'),
-                  onTap: () {
-                    Navigator.pop(context);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => AdminSecretaryHome(name: name)),
-                    );
-                  },
-                ),
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0),
+            //   child: Card(
+            //     color: Color(0xff464646),
+            //     shape: RoundedRectangleBorder(
+            //       borderRadius: BorderRadius.circular(10.0),
+            //     ),
+            //     child: ListTile(
+            //       title: Text(
+            //         'العاملين',
+            //         style: TextStyle(
+            //             color: Colors.white,
+            //             fontSize: 18.0,
+            //             fontFamily: 'Amiri'),
+            //       ),
+            //       leading: Image.asset('assets/adminwhite.png'),
+            //       onTap: () {
+            //         Navigator.pop(context);
+            //         Navigator.push(
+            //           context,
+            //           MaterialPageRoute(
+            //               builder: (context) => AdminSecretaryHome(name: name)),
+            //         );
+            //       },
+            //     ),
+            //   ),
+            // ),
             Padding(
               padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0),
               child: Card(
@@ -284,32 +284,32 @@ class AdminDrawer extends StatelessWidget {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0),
-              child: Card(
-                color: Color(0xff464646),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: ListTile(
-                  title: Text(
-                    'المناطق',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18.0,
-                        fontFamily: 'Amiri'),
-                  ),
-                  leading: Image.asset('assets/wregion50.png', width: 40),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => AllLocation(name: name)),
-                    );
-                  },
-                ),
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0),
+            //   child: Card(
+            //     color: Color(0xff464646),
+            //     shape: RoundedRectangleBorder(
+            //       borderRadius: BorderRadius.circular(10.0),
+            //     ),
+            //     child: ListTile(
+            //       title: Text(
+            //         'المناطق',
+            //         style: TextStyle(
+            //             color: Colors.white,
+            //             fontSize: 18.0,
+            //             fontFamily: 'Amiri'),
+            //       ),
+            //       leading: Image.asset('assets/wregion50.png', width: 40),
+            //       onTap: () {
+            //         Navigator.push(
+            //           context,
+            //           MaterialPageRoute(
+            //               builder: (context) => AllLocation(name: name)),
+            //         );
+            //       },
+            //     ),
+            //   ),
+            // ),
             Padding(
               padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0),
               child: Card(

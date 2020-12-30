@@ -20,6 +20,7 @@ import 'package:toast/toast.dart';
 
 import '../../classes/mainLine.dart';
 import '../../services/mainLineServices.dart';
+import 'mainline_order_dropdown.dart';
 
 class AddNewOders extends StatefulWidget {
   final String name;
@@ -31,6 +32,7 @@ class AddNewOders extends StatefulWidget {
 
 class _AddNewOdersState extends State<AddNewOders> {
   final _formKey = GlobalKey<FormState>();
+  final _key = GlobalKey<FormFieldState>();
   List<DeliveriesCosts> cities;
   List<SubLine> sublines;
   List<MainLine> mainlines;
@@ -38,17 +40,22 @@ class _AddNewOdersState extends State<AddNewOders> {
 
   String cityID = "0",
       mainline,
+      mainlineID,
       subline,
       businessID,
       bus = "0",
       cityName = "0",
       sublineName = "",
       locationID,
+      locationId,
       typeOrder = "عادي";
   int orderTotalPrice = 0;
   static String deliveryPrice = "0";
-  bool isBusinessSelected = false, locationSelected = false, mainlineSelected;
-  int indexLine= 0;
+  bool isBusinessSelected = false, isLocationSelected = false, mainlineSelected;
+  int indexLine = 0;
+  reset() {
+    _key.currentState.reset();
+  }
 
   @override
   void initState() {
@@ -56,8 +63,10 @@ class _AddNewOdersState extends State<AddNewOders> {
     orderTotalPrice = 0;
     indexLine = 0;
     sublineName = "";
+    //mainline = "";
+    // locationID = "";
     isBusinessSelected = false;
-    locationSelected = false;
+    isLocationSelected = false;
     super.initState();
   }
 
@@ -127,6 +136,7 @@ class _AddNewOdersState extends State<AddNewOders> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
+                      // MainLineDropDown(locationID:locationID, mainline:mainline, mainlines:mainlines),
                       _mainLineChoice(),
                     ],
                   ),
@@ -177,7 +187,7 @@ class _AddNewOdersState extends State<AddNewOders> {
                           MainLineServices(uid: mainline).cityNameByMainLine,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
-                          print(snapshot.data.toString());
+                          // print(snapshot.data.toString());
                           cityName = snapshot.data ?? "";
                           return Visibility(
                             child: Text("Gone"),
@@ -476,6 +486,8 @@ class _AddNewOdersState extends State<AddNewOders> {
                     onChanged: (val) {
                       setState(() {
                         locationID = val;
+                        locationId = val;
+                        isLocationSelected = true;
                         FirebaseFirestore.instance
                             .collection('delivery_costs')
                             .where('locationID', isEqualTo: locationID)
@@ -483,12 +495,13 @@ class _AddNewOdersState extends State<AddNewOders> {
                             .get()
                             .then((value) => {
                                   setState(() {
-                                    locationSelected = true;
+                                    // isLocationSelected = true;
                                     deliveryPrice =
                                         value.docs[0]["deliveryPrice"];
                                     //cityName = value.docs[0]["locationName"];
                                   })
                                 });
+                        
                       });
                     },
                   );
@@ -539,7 +552,8 @@ class _AddNewOdersState extends State<AddNewOders> {
       child: Container(
         margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
         child: StreamBuilder<List<SubLine>>(
-            stream: SubLineServices(mainLineID: mainline).subLinesByMainLineID,
+            stream:
+                SubLineServices(mainLineID: mainlineID).subLinesByMainLineID,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Text('Loading...');
@@ -599,72 +613,114 @@ class _AddNewOdersState extends State<AddNewOders> {
   }
 
   Widget _mainLineChoice() {
-    return Expanded(
-      child: Container(
-        margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
-        child: StreamBuilder<List<MainLine>>(
-            stream:
-                MainLineServices(locationID: locationID).mainLineByLocationID,
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return Text('Loading...');
-              } else {
-                mainlines = snapshot.data;
-                return DropdownButtonFormField<String>(
-                  value: mainline,
-                  isExpanded: true,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide(
-                        width: 1.0,
-                        color: Color(0xff636363),
+    if (isLocationSelected == true) {
+      return Expanded(
+        child: Container(
+          margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
+          child: StreamBuilder<List<MainLine>>(
+              stream:
+                  MainLineServices(locationID: locationId).mainLineByLocationID,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return Text('Loading...');
+                } else {
+                  mainlines = snapshot.data;
+                  return DropdownButtonFormField<String>(
+                    key: _key,
+                    value: mainline,
+                    isExpanded: true,
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: BorderSide(
+                          width: 1.0,
+                          color: Color(0xff636363),
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: BorderSide(
+                          width: 2.0,
+                          color: Color(0xff73a16a),
+                        ),
+                      ),
+                      contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
+                      labelText: " المدينة",
+                      labelStyle: TextStyle(
+                        fontFamily: 'Amiri',
+                        fontSize: 18.0,
+                        color: Color(0xff316686),
                       ),
                     ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide(
-                        width: 2.0,
-                        color: Color(0xff73a16a),
-                      ),
-                    ),
-                    contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
-                    labelText: " المدينة",
-                    labelStyle: TextStyle(
-                      fontFamily: 'Amiri',
-                      fontSize: 18.0,
-                      color: Color(0xff316686),
-                    ),
-                  ),
-                  items: mainlines.map(
-                    (mainline) {
-                      print(mainline.name);
-                      return DropdownMenuItem<String>(
-                        value: mainline.uid.toString(),
-                        child: Expanded(
-                            child: Align(
-                                alignment: Alignment.centerRight,
-                                child: Text(
-                                  '${mainline.name}-${mainline.cityName}',
-                                  style: TextStyle(
-                                    fontFamily: 'Amiri',
-                                    fontSize: 16.0,
-                                  ),
-                                ))),
-                      );
+                    items: mainlines.map(
+                      (mainline) {
+                        // print(mainline.name);
+                        return DropdownMenuItem<String>(
+                          value: mainline.uid.toString(),
+                          child: Expanded(
+                              child: Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Text(
+                                    '${mainline.name}-${mainline.cityName}',
+                                    style: TextStyle(
+                                      fontFamily: 'Amiri',
+                                      fontSize: 16.0,
+                                    ),
+                                  ))),
+                        );
+                      },
+                    ).toList(),
+                    onChanged: (val) {
+                      setState(() {
+                        mainline = val;
+                        mainlineID = mainline;
+                        print("mainline: ");
+                        print(mainline);
+                      });
+                      
+                     // _key.currentState.reset();
                     },
-                  ).toList(),
-                  onChanged: (val) {
-                    setState(() {
-                      mainline = val;
-                      print(mainline);
-                    });
-                  },
-                );
-              }
-            }),
-      ),
-    );
+                    
+                  );
+                }
+              }),
+        ),
+      );
+    } else {
+      return Expanded(
+        flex: 2,
+        child: Container(
+          margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
+          // ignore: missing_required_param
+          child: DropdownButtonFormField<String>(
+            value: locationID,
+            decoration: InputDecoration(
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: BorderSide(
+                  width: 1.0,
+                  color: Color(0xff636363),
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: BorderSide(
+                  width: 2.0,
+                  color: Color(0xff73a16a),
+                ),
+              ),
+              contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
+              labelText: "المدينة",
+              labelStyle: TextStyle(
+                fontFamily: 'Amiri',
+                fontSize: 18.0,
+                color: Color(0xff316686),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
   }
 
   Widget _customerAddress(TextEditingController fieldController) {
@@ -902,7 +958,7 @@ class _AddNewOdersState extends State<AddNewOders> {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 business = snapshot.data;
-                print(business.length);
+                //print(business.length);
 
                 return DropdownButtonFormField<String>(
                   value: businessID,

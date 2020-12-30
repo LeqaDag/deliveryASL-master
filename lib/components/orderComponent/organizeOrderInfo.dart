@@ -4,6 +4,7 @@ import 'orderInformationComponent/cancelInfo.dart';
 import 'orderInformationComponent/deliveryInfo.dart';
 import 'orderInformationComponent/doneInfo.dart';
 import 'orderInformationComponent/loadingInfo.dart';
+import 'orderInformationComponent/paidInfo.dart';
 import 'orderInformationComponent/receivedInfo.dart';
 import 'orderInformationComponent/returnInfo.dart';
 import 'orderInformationComponent/stockInfo.dart';
@@ -57,6 +58,11 @@ class OrganizeOrderInfo extends StatelessWidget {
       case 'isReturn':
         {
           return ReturnInfo(uid: uid, name: name);
+        }
+        break;
+      case 'isPaid':
+        {
+          return PaidInfo(uid: uid, name: name);
         }
         break;
       default:

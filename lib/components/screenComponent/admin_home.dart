@@ -153,26 +153,7 @@ class AdminHome extends StatelessWidget {
                                               InvoiceAdmin(name: name)),
                                     );
                                   }),
-                              CustomContainer(
-                                  width: 0.28,
-                                  height: 0.15,
-                                  imagepath: AssetImage("assets/admin.png"),
-                                  text: " العاملين",
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              AdminSecretaryHome(name: name)),
-                                    );
-                                  }),
-                            ],
-                          ),
-                          CustomBoxSize(height: 0.05),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: <Widget>[
-                              CustomContainer(
+                                  CustomContainer(
                                   width: 0.28,
                                   height: 0.15,
                                   imagepath: AssetImage("assets/city-100.png"),
@@ -185,23 +166,43 @@ class AdminHome extends StatelessWidget {
                                               AdminCitiesHome(name: name)),
                                     );
                                   }),
-                              CustomContainer(
-                                  width: 0.28,
-                                  height: 0.15,
-                                  imagepath: AssetImage("assets/region100.png"),
-                                  text: "المناطق",
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => AllLocation(
-                                                name: name,
-                                              )),
-                                    );
-                                  }),
+                              // CustomContainer(
+                              //     width: 0.28,
+                              //     height: 0.15,
+                              //     imagepath: AssetImage("assets/admin.png"),
+                              //     text: " العاملين",
+                              //     onTap: () {
+                              //       Navigator.push(
+                              //         context,
+                              //         MaterialPageRoute(
+                              //             builder: (context) =>
+                              //                 AdminSecretaryHome(name: name)),
+                              //       );
+                              //     }),
                             ],
                           ),
-                          CustomBoxSize(height: 0.05),
+                          //CustomBoxSize(height: 0.05),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          //   children: <Widget>[
+                              
+                          //     CustomContainer(
+                          //         width: 0.28,
+                          //         height: 0.15,
+                          //         imagepath: AssetImage("assets/region100.png"),
+                          //         text: "المناطق",
+                          //         onTap: () {
+                          //           Navigator.push(
+                          //             context,
+                          //             MaterialPageRoute(
+                          //                 builder: (context) => AllLocation(
+                          //                       name: name,
+                          //                     )),
+                          //           );
+                          //         }),
+                          //   ],
+                          // ),
+                         // CustomBoxSize(height: 0.05),
                         ],
                       ),
                     ],
