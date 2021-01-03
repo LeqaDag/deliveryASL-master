@@ -21,6 +21,7 @@ class _AddCityState extends State<AddCity> {
 
   @override
   void initState() {
+    
     citiesList = [null];
     citiesListController = {};
     super.initState();
