@@ -106,6 +106,13 @@ class DriverServices {
         .then((value) => value.data()['name']);
   }
 
+  Future<String> get driverPhone {
+    return deiverCollection
+        .doc(uid)
+        .get()
+        .then((value) => value.data()['phoneNumber']);
+  }
+
   Stream<List<Driver>> get driversBymainLineID {
     return deiverCollection
         .where('locationID', isEqualTo: mainLineID)

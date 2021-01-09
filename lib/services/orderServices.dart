@@ -9,16 +9,16 @@ class OrderServices {
   final String driverID;
   final String locationID;
   final int driverPrice;
+  final String invoiceType;
 // locationID
-  OrderServices({
-    this.uid,
-    this.businesID,
-    this.orderState,
-    this.driverID,
-    this.locationID,
-    this.driverPrice,
-  });
-
+  OrderServices(
+      {this.uid,
+      this.businesID,
+      this.orderState,
+      this.driverID,
+      this.locationID,
+      this.driverPrice,
+      this.invoiceType});
 
   final CollectionReference orderCollection =
       FirebaseFirestore.instance.collection('orders');
@@ -177,6 +177,10 @@ class OrderServices {
   }
 
   Stream<Order> get orderData {
+    return orderCollection.doc(uid).snapshots().map(_orderDataFromSnapshot);
+  }
+
+  Stream<Order> get orderByID {
     return orderCollection.doc(uid).snapshots().map(_orderDataFromSnapshot);
   }
 
@@ -429,7 +433,7 @@ class OrderServices {
               .then((value) => value.size);
         }
         break;
-        case 'isDone1':
+      case 'isDone1':
         {
           return orderCollection
               .where('isDone', isEqualTo: true)
@@ -885,7 +889,7 @@ class OrderServices {
               .then((value) => value.size);
         }
         break;
-        case 'isDone1':
+      case 'isDone1':
         {
           return orderCollection
               .where('isDone', isEqualTo: true)
@@ -971,5 +975,57 @@ class OrderServices {
         });
       }
     });
+  }
+
+  Stream<List<Order>> get ordersByInvoiceType {
+    switch (invoiceType) {
+      case 'order':
+        {
+          return orderCollection
+              .where('isArchived', isEqualTo: false)
+              .where('driverID', isNotEqualTo: "")
+              .snapshots()
+              .map(_orderListFromSnapshot);
+        }
+        break;
+      case 'driver':
+        {
+          return orderCollection
+              .where('isArchived', isEqualTo: false)
+              .where('driverID', isNotEqualTo: "")
+              .snapshots()
+              .map(_orderListFromSnapshot);
+        }
+        break;
+      case 'business':
+        {
+          return orderCollection
+              .where('isArchived', isEqualTo: false)
+              .where('businesID', isNotEqualTo: "")
+              .snapshots()
+              .map(_orderListFromSnapshot);
+        }
+        break;
+      default:
+        {
+          return null;
+        }
+        break;
+    }
+  }
+
+  Stream<List<Order>> allDoneOrders() {
+    return orderCollection
+        .where('isArchived', isEqualTo: false)
+        .where('isDone', isEqualTo: true)
+        .snapshots()
+        .map(_orderListFromSnapshot);
+  }
+
+  Stream<List<Order>> allOrders() {
+    return orderCollection
+        .where('isArchived', isEqualTo: false)
+        .snapshots()
+        .map(_orderListFromSnapshot);
   }
 }

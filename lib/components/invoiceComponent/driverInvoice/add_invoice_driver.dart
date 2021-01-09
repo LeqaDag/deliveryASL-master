@@ -6,16 +6,18 @@ import 'package:AsyadLogistic/classes/driver.dart';
 import 'package:AsyadLogistic/classes/order.dart';
 import 'package:AsyadLogistic/components/pages/drawer.dart';
 import 'package:AsyadLogistic/services/driverDeliveryCostServices.dart';
-import 'package:AsyadLogistic/services/driverServices.dart';
 import 'package:AsyadLogistic/services/orderServices.dart';
 import 'package:toast/toast.dart';
 
 import '../../../constants.dart';
+import '../shared_data.dart';
 
 class AddInvoiceDriver extends StatefulWidget {
   final String name, driverId, driverName;
   final int total;
-  AddInvoiceDriver({this.name, this.driverId, this.driverName, this.total});
+  final Order order;
+  AddInvoiceDriver(
+      {this.name, this.driverId, this.driverName, this.total, this.order});
 
   @override
   _AddInvoiceDriverState createState() => _AddInvoiceDriverState();
@@ -40,7 +42,7 @@ class _AddInvoiceDriverState extends State<AddInvoiceDriver> {
     print(widget.driverId);
     return Scaffold(
       appBar: AppBar(
-        title: Text('اضافة فاتورة ${widget.driverName} ',
+        title: Text('اضافة فاتورة',
             style: TextStyle(fontSize: 20.0, fontFamily: 'Amiri')),
         centerTitle: true,
         backgroundColor: kAppBarColor,
@@ -57,6 +59,22 @@ class _AddInvoiceDriverState extends State<AddInvoiceDriver> {
               key: _formKey,
               child: ListView(
                 children: <Widget>[
+                  Container(
+                    margin: EdgeInsets.all(20.0),
+                    child: Row(
+                      children: <Widget>[
+                        Text(
+                          " اضافة فاتورة ",
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: "Amiri",
+                          ),
+                        ),
+                        DriverName(order: widget.order),
+                      ],
+                    ),
+                  ),
                   Container(
                     margin: EdgeInsets.all(20.0),
                     child: Row(
@@ -126,7 +144,7 @@ class _AddInvoiceDriverState extends State<AddInvoiceDriver> {
 
                         FutureBuilder<int>(
                             future: OrderServices(driverID: widget.driverId)
-                                .countDriverOrderByStateOrder("isDone"),
+                                .countDriverOrderByStateOrder("isDone1"),
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
                                 isDoneOrders = snapshot.data;
@@ -155,38 +173,9 @@ class _AddInvoiceDriverState extends State<AddInvoiceDriver> {
                                 return Text("");
                               }
                             }),
-
-                        // StreamBuilder<List<Order>>(
-                        //     stream: OrderServices()
-                        //         .driverAllOrders(widget.driverId),
-                        //     builder: (context, snapshot) {
-                        //       if (!snapshot.hasData) {
-                        //         return Text('0');
-                        //       } else {
-                        //         return Text(widget.total.toString());
-                        //       }
-                        //     }),
                       ],
                     ),
                   ),
-                  // Container(
-                  //   margin: EdgeInsets.all(10.0),
-                  //   child: StreamBuilder<List<Order>>(
-                  //       stream:
-                  //           OrderService().businessAllOrders(widget.businessId),
-                  //       builder: (context, snapshot) {
-                  //         int totalPrice = 0;
-                  //         if (!snapshot.hasData) {
-                  //           return Text('Loading...');
-                  //         } else {
-                  //           orders = snapshot.data;
-                  //           orders.forEach((element) {
-                  //             totalPrice += element.price;
-                  //           });
-                  //           return Text(totalPrice.toString());
-                  //         }
-                  //       }),
-                  // ),
                   Container(
                     margin: EdgeInsets.all(20.0),
                     child: TextFormField(
@@ -304,8 +293,6 @@ class _AddInvoiceDriverState extends State<AddInvoiceDriver> {
   }
 
   void _addInvoice() async {
-    final FirebaseAuth auth = FirebaseAuth.instance;
-    final User user = auth.currentUser;
 
     FirebaseFirestore.instance
         .collection('drivers')
@@ -315,11 +302,10 @@ class _AddInvoiceDriverState extends State<AddInvoiceDriver> {
       "paidSalary": int.parse(priceController.text)
     });
 
-  
     orderIds.forEach((element) async {
       FirebaseFirestore.instance.collection('orders').doc(element).update({
         "isPaidDriver": true,
-        "paidSriverDate": new DateTime.now(),
+        "paidDriverDate": new DateTime.now(),
       });
     });
 
@@ -327,20 +313,5 @@ class _AddInvoiceDriverState extends State<AddInvoiceDriver> {
         duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
     await Future.delayed(Duration(milliseconds: 1000));
     Navigator.of(context).pop();
-    // invoiceCollection.doc().set({
-    //   "note": noteController.text,
-    //   "adminID": user.uid,
-    //   "driverID": widget.driverId,
-    //   "paidPriceDriver": int.parse(priceController.text),
-    //   "totalPriceDriver": widget.total,
-    //   "isArchived": false,
-    // }).then((value) async {
-    //   isLoading = false;
-
-    //   Toast.show("تم اضافة الفاتورة بنجاح", context,
-    //       duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
-    //   await Future.delayed(Duration(milliseconds: 1000));
-    //   Navigator.of(context).pop();
-    // }).catchError((err) {});
   }
 }

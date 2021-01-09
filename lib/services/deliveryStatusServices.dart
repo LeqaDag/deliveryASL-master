@@ -80,4 +80,18 @@ class DeliveriesStatusServices {
         .get()
         .then((value) => value.docs[0].id);
   }
+
+  Future<String> get deliveryStatusNote {
+    return deliveryStatusCollection
+        .where('orderID', isEqualTo: orderID)
+        .get()
+        .then((value) => value.docs[0]['note']);
+  }
+
+  Future<String> get deliveryStatus {
+    return deliveryStatusCollection
+        .where('orderID', isEqualTo: orderID)
+        .get()
+        .then((value) => value.docs[0]['status']);
+  }
 }

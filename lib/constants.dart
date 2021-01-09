@@ -11,6 +11,7 @@ const KBadgeColorAndContainerBorderColorRecipientOrder = Color(0xffD68F53);
 const KBadgeColorAndContainerBorderColorAllOrder = Color(0xff316686);
 const KBadgeColorAndContainerBorderColorUrgentOrders = Color(0xffF57C00);
 const KBadgeColorAndContainerBorderColorReadyOrders = Color(0xff73A16A);
+const KBadgeColorAndContainerBorderColorPaidOrders = Color(0xff1b0e57);
 const KBadgeColorAndContainerBorderColorReturnOrders = Color(0xffF1C40F);
 const KBadgeColorAndContainerBorderColorCancelledOrders = Color(0xffB82D25);
 const KBadgeColorAndContainerBorderColorWithDriverOrders = Color(0xff33BEF0);
