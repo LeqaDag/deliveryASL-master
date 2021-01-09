@@ -273,6 +273,8 @@ class _AddCompanyState extends State<AddCompany> {
                                 setState(() {
                                   cityID = val;
                                 });
+                                FocusScope.of(context)
+                                    .requestFocus(new FocusNode());
                               },
                             );
                           }

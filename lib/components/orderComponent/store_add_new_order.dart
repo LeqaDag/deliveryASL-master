@@ -501,8 +501,8 @@ class _AddNewOdersState extends State<AddNewOders> {
                                     //cityName = value.docs[0]["locationName"];
                                   })
                                 });
-                        
                       });
+                      FocusScope.of(context).requestFocus(new FocusNode());
                     },
                   );
                 }
@@ -604,6 +604,7 @@ class _AddNewOdersState extends State<AddNewOders> {
                     setState(() {
                       subline = val;
                     });
+                    FocusScope.of(context).requestFocus(new FocusNode());
                   },
                 );
               }
@@ -677,10 +678,9 @@ class _AddNewOdersState extends State<AddNewOders> {
                         print("mainline: ");
                         print(mainline);
                       });
-                      
-                     // _key.currentState.reset();
+                      FocusScope.of(context).requestFocus(new FocusNode());
+                      // _key.currentState.reset();
                     },
-                    
                   );
                 }
               }),
@@ -776,6 +776,7 @@ class _AddNewOdersState extends State<AddNewOders> {
           onChanged: (String newValue) {
             setState(() {
               //  typeOrder = newValue;
+              FocusScope.of(context).requestFocus(new FocusNode());
             });
           },
           items: <String>['عادي', 'مستعجل']
@@ -1010,6 +1011,7 @@ class _AddNewOdersState extends State<AddNewOders> {
                       orderPrice.text = "";
                       isBusinessSelected = true;
                     });
+                    FocusScope.of(context).requestFocus(new FocusNode());
                   },
                 );
               } else {

@@ -115,12 +115,16 @@ class _UpdateDriverState extends State<UpdateDriver> {
                             margin: EdgeInsets.all(10.0),
                             child: DropdownButtonFormField(
                               value: driverData.type ? 'سائق شركة' : 'سائق خاص',
-                              onChanged: (val) => setState(() {
-                                if (val == 'سائق خاص')
-                                  type = false;
-                                else
-                                  type = true;
-                              }),
+                              onChanged: (val) {
+                                setState(() {
+                                  if (val == 'سائق خاص')
+                                    type = false;
+                                  else
+                                    type = true;
+                                });
+                                FocusScope.of(context)
+                                    .requestFocus(new FocusNode());
+                              },
                               items: <String>[
                                 'سائق خاص',
                                 'سائق شركة'
@@ -249,6 +253,9 @@ class _UpdateDriverState extends State<UpdateDriver> {
                                               setState(() {
                                                 cityID = val;
                                               });
+                                              FocusScope.of(context)
+                                                  .requestFocus(
+                                                      new FocusNode());
                                             },
                                             items: cities.map(
                                               (city) {
@@ -393,6 +400,9 @@ class _UpdateDriverState extends State<UpdateDriver> {
                                               setState(() {
                                                 locationID = val;
                                               });
+                                              FocusScope.of(context)
+                                                  .requestFocus(
+                                                      new FocusNode());
                                             },
                                             items: locations.map(
                                               (location) {

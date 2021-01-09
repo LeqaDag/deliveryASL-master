@@ -121,7 +121,10 @@ class _AddDriverState extends State<AddDriver> {
                     Container(
                       margin: EdgeInsets.all(10.0),
                       child: DropdownButtonFormField(
-                        onChanged: (val) => setState(() => type = val),
+                        onChanged: (val) {
+                          setState(() => type = val);
+                          FocusScope.of(context).requestFocus(new FocusNode());
+                        },
                         items: <String>['سائق خاص', 'سائق شركة']
                             .map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
@@ -290,6 +293,8 @@ class _AddDriverState extends State<AddDriver> {
                                 setState(() {
                                   cityID = val;
                                 });
+                                FocusScope.of(context)
+                                    .requestFocus(new FocusNode());
                               },
                             );
                           }
@@ -416,6 +421,8 @@ class _AddDriverState extends State<AddDriver> {
                                 setState(() {
                                   locationID = val;
                                 });
+                                FocusScope.of(context)
+                                    .requestFocus(new FocusNode());
                               },
                             );
                           }
@@ -543,6 +550,7 @@ class _AddDriverState extends State<AddDriver> {
           .createUserWithEmailAndPassword(
               email: emailController.text, password: passwordController.text)
           .then((result) async {
+        print(auth.currentUser);
         userCollection.doc().set({
           "userID": result.user.uid,
           "email": emailController.text,
@@ -555,23 +563,23 @@ class _AddDriverState extends State<AddDriver> {
           else
             typeResult = true;
           await DriverServices().addDriverData(Driver(
-              uid: result.user.uid,
-              name: driverNameController.text,
-              type: typeResult,
-              email: emailController.text,
-              phoneNumber: phoneController.text,
-              address: addressController.text,
-              cityID: cityID,
-              pLoad: 0,
-              load: int.parse(loadController.text),
-              locationID: locationID,
-              userID: result.user.uid,
-              ));
+            uid: result.user.uid,
+            name: driverNameController.text,
+            type: typeResult,
+            email: emailController.text,
+            phoneNumber: phoneController.text,
+            address: addressController.text,
+            cityID: cityID,
+            pLoad: 0,
+            load: int.parse(loadController.text),
+            locationID: locationID,
+            userID: result.user.uid,
+          ));
 
           await DriverDeliveryCostServices().addDriverDeliveryCostData(
               new DriverDeliveryCost(
                   cost: int.parse(deliveryPriceController.text),
-                  paid:0,
+                  paid: 0,
                   locationID: locationID,
                   driverID: result.user.uid));
         });

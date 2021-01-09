@@ -121,6 +121,8 @@ class _UpdateSubLineState extends State<UpdateSubLine> {
                                       setState(() {
                                         cityID = val;
                                       });
+                                      FocusScope.of(context)
+                                          .requestFocus(new FocusNode());
                                     },
                                   );
                                 }

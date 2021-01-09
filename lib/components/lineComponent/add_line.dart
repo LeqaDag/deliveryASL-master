@@ -126,6 +126,8 @@ class _AddLineState extends State<AddLine> {
                                   locationID = val;
                                   print(locationID);
                                 });
+                                FocusScope.of(context)
+                                    .requestFocus(new FocusNode());
                               },
                             );
                           }
@@ -228,6 +230,8 @@ class _AddLineState extends State<AddLine> {
                                   cityID = val;
                                   // print(cityID);
                                 });
+                                FocusScope.of(context)
+                                    .requestFocus(new FocusNode());
                               },
                             );
                           }

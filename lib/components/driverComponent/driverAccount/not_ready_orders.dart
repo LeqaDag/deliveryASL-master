@@ -468,7 +468,8 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                                                   },
                                                                 );
                                                               } else {
-                                                                return Text("غير متوفر");
+                                                                return Text(
+                                                                    "غير متوفر");
                                                               }
                                                             }),
                                                       ],
@@ -717,9 +718,12 @@ class _NotReadyOrderDetailsState extends State<NotReadyOrderDetails> {
                                             Container(
                                               margin: EdgeInsets.all(25.0),
                                               child: DropdownButtonFormField(
-                                                onChanged: (String value) =>
-                                                    setState(
-                                                        () => type = value),
+                                                onChanged: (String value) {
+                                                  setState(() => type = value);
+                                                  FocusScope.of(context)
+                                                      .requestFocus(
+                                                          new FocusNode());
+                                                },
                                                 value: type,
                                                 items: <String>[
                                                   'تم التوصيل',

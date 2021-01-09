@@ -26,7 +26,7 @@ class StuckOrderDetails extends StatefulWidget {
 class _StuckOrderDetailsState extends State<StuckOrderDetails> {
   TextEditingController noteController = TextEditingController();
   String type, status;
-  bool isCancelld, isReturn, isDone, isDelivery,isReceived;
+  bool isCancelld, isReturn, isDone, isDelivery, isReceived;
   final _formKey = GlobalKey<FormState>();
   String cityId;
   DateTime deliveryDate, doneDate, cancelledDate, returnDate, receivedDate;
@@ -40,6 +40,7 @@ class _StuckOrderDetailsState extends State<StuckOrderDetails> {
     receivedDate = new DateTime.now();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -64,7 +65,8 @@ class _StuckOrderDetailsState extends State<StuckOrderDetails> {
                             Business business = snapshot.data;
                             return Scaffold(
                                 appBar: AppBar(
-                                  title: Text(" تعديل حالة توصيل طرد ${customer.name}",
+                                  title: Text(
+                                      " تعديل حالة توصيل طرد ${customer.name}",
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontFamily: 'Amiri',
@@ -667,9 +669,12 @@ class _StuckOrderDetailsState extends State<StuckOrderDetails> {
                                             Container(
                                               margin: EdgeInsets.all(25.0),
                                               child: DropdownButtonFormField(
-                                                onChanged: (String value) =>
-                                                    setState(
-                                                        () => type = value),
+                                                onChanged: (String value) {
+                                                  setState(() => type = value);
+                                                  FocusScope.of(context)
+                                                      .requestFocus(
+                                                          new FocusNode());
+                                                },
                                                 value: type,
                                                 items: <String>[
                                                   'تم التوصيل',
