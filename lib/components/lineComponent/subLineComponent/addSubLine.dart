@@ -37,7 +37,7 @@ class _AddSubLineState extends State<AddSubLine> {
         future: SubLineServices(mainLineID: widget.mainLineID).maxIndex,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            int maxIndex = snapshot.data +1;
+            int maxIndex = snapshot.data + 1;
             print(maxIndex);
             return Scaffold(
               backgroundColor: Colors.white,
@@ -296,6 +296,7 @@ class _FriendTextFieldsState extends State<FriendTextFields> {
                         // cityID = val;
                         _AddSubLineState.citiesList[widget.index] = val;
                         // print(cityID);
+                        FocusScope.of(context).requestFocus(new FocusNode());
                       });
                     },
                   );

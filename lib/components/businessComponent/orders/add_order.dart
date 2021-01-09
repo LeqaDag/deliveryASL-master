@@ -461,6 +461,7 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
                                 })
                               });
                     });
+                    FocusScope.of(context).requestFocus(new FocusNode());
                   },
                 );
               }
@@ -526,6 +527,7 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
                     setState(() {
                       subline = val;
                     });
+                    FocusScope.of(context).requestFocus(new FocusNode());
                   },
                 );
               }
@@ -593,6 +595,7 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
                     setState(() {
                       mainline = val;
                     });
+                    FocusScope.of(context).requestFocus(new FocusNode());
                   },
                 );
               }
@@ -653,6 +656,7 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
             setState(() {
               typeOrder = newValue;
             });
+            FocusScope.of(context).requestFocus(new FocusNode());
           },
           items: <String>['عادي', 'مستعجل']
               .map<DropdownMenuItem<String>>((String value) {

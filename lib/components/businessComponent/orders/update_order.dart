@@ -470,6 +470,7 @@ class _UpdateOrderState extends State<UpdateOrder> {
             setState(() {
               typeOrder = newValue;
             });
+            FocusScope.of(context).requestFocus(new FocusNode());
           },
           items: <String>['عادي', 'مستعجل']
               .map<DropdownMenuItem<String>>((String value) {
