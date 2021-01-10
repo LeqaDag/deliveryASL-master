@@ -72,10 +72,10 @@ class _MainLineDetailsState extends State<MainLineDetails> {
                   textDirection: TextDirection.rtl,
                   child: StreamProvider<List<SubLine>>.value(
                     value:
-                        SubLineServices(mainLineID: widget.mainLineID).subLines,
-                    child: SubLineList1(
-                        name: widget.name, mainLineID: widget.mainLineID),
-                    catchError: (_, __) => null,
+                        SubLineServices(mainLineID: widget.mainLineID).subLines1,
+                    child: SubLineList(
+                        name: widget.name, mainLineID: widget.mainLineID)??null,
+                      catchError: (_, __) => null,
                   ),
                 ));
           } else {
@@ -95,9 +95,8 @@ class SubLineList1 extends StatefulWidget {
 class _SubLineList1State extends State<SubLineList1> {
   @override
   Widget build(BuildContext context) {
-    
     return StreamProvider<List<SubLine>>.value(
-      value: SubLineServices().subLines1,
+      value: SubLineServices().subLines,
       child: SubLineList(name: widget.name, mainLineID: widget.mainLineID),
       catchError: (_, __) => null,
     );

@@ -1,3 +1,4 @@
+import 'package:AsyadLogistic/components/businessComponent/updateComponent/update_company.dart';
 import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -119,20 +120,20 @@ class AllBuisness extends StatelessWidget {
                                   );
                                 }
                               }),
-                          // IconButton(
-                          //   onPressed: () {
-                          //     Navigator.push(
-                          //       context,
-                          //       MaterialPageRoute(
-                          //           builder: (context) => UpdateCompany(
-                          //               businessID: businessID, name: name)),
-                          //     );
-                          //   },
-                          //   icon: Icon(
-                          //     Icons.create,
-                          //     color: Colors.green,
-                          //   ),
-                          // ),
+                          IconButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => UpdateCompany(
+                                        businessID: businessID, name: name)),
+                              );
+                            },
+                            icon: Icon(
+                              Icons.create,
+                              color: Colors.green,
+                            ),
+                          ),
                           // IconButton(
                           //   onPressed: () {
                           //     return showDialog<void>(

@@ -119,7 +119,7 @@ class _AddInvoiceState extends State<AddInvoice> {
                         ),
                         StreamBuilder<List<Order>>(
                             stream: OrderServices()
-                                .businessAllOrders(widget.businessId),
+                                .businessAllDoneOrders(widget.businessId),
                             builder: (context, snapshot) {
                               int totalPrice = 0;
                               if (!snapshot.hasData) {

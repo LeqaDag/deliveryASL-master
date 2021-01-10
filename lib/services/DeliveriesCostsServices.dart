@@ -19,11 +19,12 @@ class DeliveriesCostsServices {
     });
   }
 
-  // Future<void> updateData(DeliveriesCosts subLine) async {
-  //   return await deliveryCostCollection.doc(uid).update({
-  //
-  //   });
-  // }
+  Future<void> updateData(DeliveriesCosts deliveryCost) async {
+    return await deliveryCostCollection.
+    doc(uid).update({
+      'deliveryPrice': deliveryCost.deliveryPrice,
+    });
+  }
 
   DeliveriesCosts _deliveryCostDataFromSnapshot(DocumentSnapshot snapshot) {
     return DeliveriesCosts(
@@ -75,5 +76,19 @@ class DeliveriesCostsServices {
 
   Future<void> deleteDeliveryCostData(String uid) async {
     return await deliveryCostCollection.doc(uid).update({'isArchived': true});
+  }
+
+  Future<String> get locatinName {
+    return deliveryCostCollection
+        .doc(uid)
+        .get()
+        .then((value) => value.data()['locationName']);
+  }
+
+  Future<String> get deliveryPrice {
+    return deliveryCostCollection
+        .doc(uid)
+        .get()
+        .then((value) => value.data()['deliveryPrice']);
   }
 }

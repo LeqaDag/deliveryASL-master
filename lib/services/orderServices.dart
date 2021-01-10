@@ -1028,4 +1028,14 @@ class OrderServices {
         .snapshots()
         .map(_orderListFromSnapshot);
   }
+
+  Stream<List<Order>> businessAllDoneOrders(String businessID) {
+    return orderCollection
+        .where('businesID', isEqualTo: businessID)
+        .where('isArchived', isEqualTo: false)
+        .where('isDone', isEqualTo: true)
+        .where('isPaid', isEqualTo: false)
+        .snapshots()
+        .map(_orderListFromSnapshot);
+  }
 }

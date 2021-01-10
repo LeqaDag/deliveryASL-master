@@ -20,7 +20,7 @@ class Business {
     this.uid,
     @required this.name,
     @required this.phoneNumber,
-    @required this.email,
+     this.email,
     @required this.userID,
     this.cityID,
     this.isArchived = false,

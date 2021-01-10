@@ -22,7 +22,6 @@ class BusinessServices {
   Future<void> updateData(Business business) async {
     return await businessCollection.doc(uid).update({
       'name': business.name,
-      'email': business.email,
       'phoneNumber': business.phoneNumber,
       'userID': business.userID,
       'cityID': business.cityID,

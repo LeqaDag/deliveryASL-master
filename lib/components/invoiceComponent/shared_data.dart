@@ -1,5 +1,7 @@
+import 'package:AsyadLogistic/classes/business.dart';
 import 'package:AsyadLogistic/classes/order.dart';
 import 'package:AsyadLogistic/services/businessServices.dart';
+import 'package:AsyadLogistic/services/cityServices.dart';
 import 'package:AsyadLogistic/services/customerServices.dart';
 import 'package:AsyadLogistic/services/deliveryStatusServices.dart';
 import 'package:AsyadLogistic/services/driverServices.dart';
@@ -90,8 +92,7 @@ class BisunessrName extends StatelessWidget {
           } else {
             return Expanded(
                 child: Text(
-              "${snapshot.data.toString()} " ??
-                  "",
+              "${snapshot.data.toString()} " ?? "",
               style: new TextStyle(
                 fontSize: 13.0,
                 color: Color(0xFF457B9D),
@@ -120,8 +121,7 @@ class CustomerName extends StatelessWidget {
           } else {
             return Expanded(
                 child: Text(
-              "${snapshot.data.toString()} " ??
-                  "",
+              "${snapshot.data.toString()} " ?? "",
               style: new TextStyle(
                 fontSize: 13.0,
                 color: Color(0xFF457B9D),
@@ -362,7 +362,7 @@ class OrderCountByState extends StatelessWidget {
                                 total = totalPrice;
                               }
                             });
-                            return  Text(
+                            return Text(
                               totalPrice.toString(),
                             );
                           }
@@ -379,7 +379,7 @@ class OrderCountByState extends StatelessWidget {
                         future: OrderServices().orderDone,
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
-                            return  Text(
+                            return Text(
                               ":${snapshot.data.toString()} " ?? "0",
                             );
                           } else {
@@ -400,7 +400,7 @@ class OrderCountByState extends StatelessWidget {
                         future: OrderServices().orderReturn,
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
-                            return  Text(
+                            return Text(
                               ":${snapshot.data.toString()} " ?? "0",
                             );
                           } else {
@@ -421,7 +421,7 @@ class OrderCountByState extends StatelessWidget {
                         future: OrderServices().orderCancelld,
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
-                            return  Text(
+                            return Text(
                               ":${snapshot.data.toString()} " ?? "0",
                             );
                           } else {
@@ -442,7 +442,7 @@ class OrderCountByState extends StatelessWidget {
                         future: OrderServices().orderDelivery,
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
-                            return  Text(
+                            return Text(
                               ":${snapshot.data.toString()} " ?? "0",
                             );
                           } else {
@@ -463,7 +463,7 @@ class OrderCountByState extends StatelessWidget {
                         future: OrderServices().orderReceived,
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
-                            return  Text(
+                            return Text(
                               ":${snapshot.data.toString()} " ?? "0",
                             );
                           } else {
@@ -523,7 +523,7 @@ class OrderCountByStateDriver extends StatelessWidget {
                                 total = totalPrice;
                               }
                             });
-                            return  Text(
+                            return Text(
                               totalPrice.toString(),
                             );
                           }
@@ -557,7 +557,7 @@ class OrderCountByStateDriver extends StatelessWidget {
                                 total = totalPrice;
                               }
                             });
-                            return  Text(
+                            return Text(
                               totalPrice.toString(),
                             );
                           }
@@ -574,7 +574,7 @@ class OrderCountByStateDriver extends StatelessWidget {
                         future: OrderServices().orderDone,
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
-                            return  Text(
+                            return Text(
                               ":${snapshot.data.toString()} " ?? "0",
                             );
                           } else {
@@ -595,7 +595,7 @@ class OrderCountByStateDriver extends StatelessWidget {
                         future: OrderServices().orderReturn,
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
-                            return  Text(
+                            return Text(
                               ":${snapshot.data.toString()} " ?? "0",
                             );
                           } else {
@@ -616,7 +616,7 @@ class OrderCountByStateDriver extends StatelessWidget {
                         future: OrderServices().orderCancelld,
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
-                            return  Text(
+                            return Text(
                               ":${snapshot.data.toString()} " ?? "0",
                             );
                           } else {
@@ -629,5 +629,174 @@ class OrderCountByStateDriver extends StatelessWidget {
             ],
           ))
     ]);
+  }
+}
+
+// ignore: must_be_immutable
+class BusinessCityName extends StatelessWidget {
+  Business business;
+
+  BusinessCityName({this.business});
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<String>(
+        future: CityServices(uid: business.cityID).cityName,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Text(
+              "",
+            );
+          } else {
+            return Expanded(
+                child: Text(
+              "${snapshot.data.toString()} " ?? "",
+            ));
+          }
+        });
+  }
+}
+
+// ignore: must_be_immutable
+class OrderCountByBusiness extends StatelessWidget {
+  Business business;
+
+  OrderCountByBusiness({this.business});
+
+  @override
+  Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: <Widget>[
+        Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: <Widget>[
+        Icon(
+          Icons.done,
+          color: KBadgeColorAndContainerBorderColorReadyOrders,
+        ),
+        FutureBuilder<int>(
+            future: OrderServices(businesID: business.uid)
+                .countBusinessOrderByStateOrder("isDone1"),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Text(
+                  ":${snapshot.data.toString()} " ?? "0",
+                );
+              } else {
+                return Text(
+                  "0",
+                );
+              }
+            })]),
+            Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: <Widget>[
+        Icon(
+          Icons.restore,
+          color: KBadgeColorAndContainerBorderColorReturnOrders,
+        ),
+        FutureBuilder<int>(
+            future: OrderServices(businesID: business.uid)
+                .countBusinessOrderByStateOrder("isReturn"),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Text(
+                  ":${snapshot.data.toString()} " ?? "0",
+                );
+              } else {
+                return Text(
+                  "0",
+                );
+              }
+            })]),
+            Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: <Widget>[
+        Icon(
+          Icons.cancel,
+          color: KBadgeColorAndContainerBorderColorCancelledOrders,
+        ),
+        FutureBuilder<int>(
+            future: OrderServices(businesID: business.uid)
+                .countBusinessOrderByStateOrder("isCancelld"),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Text(
+                  ":${snapshot.data.toString()} " ?? "0",
+                );
+              } else {
+                return Text(
+                  "0",
+                );
+              }
+            })]),
+            Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: <Widget>[
+        Icon(
+          Icons.business_center_outlined,
+          color: KAllOrdersListTileColor,
+        ),
+        FutureBuilder<int>(
+            future: OrderServices(businesID: business.uid)
+                .countBusinessOrderByStateOrder("isDelivery"),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Text(
+                  ":${snapshot.data.toString()} " ?? "0",
+                );
+              } else {
+                return Text(
+                  "0",
+                );
+              }
+            })]),
+            Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: <Widget>[
+        Icon(
+          Icons.arrow_circle_up_rounded,
+          color: KBadgeColorAndContainerBorderColorLoadingOrder,
+        ),
+        FutureBuilder<int>(
+            future: OrderServices(businesID: business.uid)
+                .countBusinessOrderByStateOrder("isLoading"),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Text(
+                  ":${snapshot.data.toString()} " ?? "0",
+                );
+              } else {
+                return Text(
+                  "0",
+                );
+              }
+            })]),
+            Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: <Widget>[
+        Icon(
+          Icons.assignment_turned_in_outlined,
+          color: KBadgeColorAndContainerBorderColorRecipientOrder,
+        ),
+        FutureBuilder<int>(
+            future: OrderServices(businesID: business.uid)
+                .countBusinessOrderByStateOrder("isReceived"),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Text(
+                  ":${snapshot.data.toString()} " ?? "0",
+                );
+              } else {
+                return Text(
+                  "0",
+                );
+              }
+            })]),
+      ],
+    );
   }
 }

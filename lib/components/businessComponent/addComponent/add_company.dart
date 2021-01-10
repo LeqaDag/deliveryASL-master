@@ -397,11 +397,6 @@ class _AddCompanyState extends State<AddCompany> {
                 duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
             await Future.delayed(Duration(milliseconds: 1000));
             Navigator.of(context).pop();
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(
-            //       builder: (context) => AddDeliveryCost()),
-            // );
           });
         });
       }).catchError((err) {});

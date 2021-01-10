@@ -552,8 +552,7 @@ class _AddNewOdersState extends State<AddNewOders> {
       child: Container(
         margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
         child: StreamBuilder<List<SubLine>>(
-            stream:
-                SubLineServices(mainLineID: mainlineID).subLinesByMainLineID,
+            stream: SubLineServices().subLines,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Text('Loading...');
@@ -619,8 +618,7 @@ class _AddNewOdersState extends State<AddNewOders> {
         child: Container(
           margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
           child: StreamBuilder<List<MainLine>>(
-              stream:
-                  MainLineServices(locationID: locationId).mainLineByLocationID,
+              stream: MainLineServices().mainLines,
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return Text('Loading...');

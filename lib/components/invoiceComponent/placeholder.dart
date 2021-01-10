@@ -184,7 +184,7 @@ class CustomCard extends StatelessWidget {
             return Center(child: CircularProgressIndicator());
           } else {
             Business business = snapshot.data;
-            return BusinessInvoice(business: business);
+            return BusinessInvoice(business: business, name: name);
           }
         },
       );
