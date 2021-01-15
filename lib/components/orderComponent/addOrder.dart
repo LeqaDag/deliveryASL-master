@@ -52,7 +52,8 @@ class _AddOrderState extends State<AddOrder> {
   bool isBusinessSelected = false,
       isLocationSelected = false,
       mainlineSelected = false,
-      isSubLineSelected = false;
+      isSubLineSelected = false,
+      priceEnabled = false;
   int indexLine = 0;
   reset() {
     _key.currentState.reset();
@@ -225,60 +226,6 @@ class _AddOrderState extends State<AddOrder> {
                         _customerAddress(customerAddress),
                       ],
                     ),
-                    // FutureBuilder<int>(
-                    //   future: SubLineServices(uid: subline).sublineIndex,
-                    //   builder: (context, snapshot) {
-                    //     if (snapshot.hasData ||
-                    //         snapshot.data.toString().isEmpty) {
-                    //       indexLine = snapshot.data ?? -1;
-                    //       return Visibility(
-                    //         child: Text("Gone"),
-                    //         visible: false,
-                    //       );
-                    //     } else {
-                    //       return Visibility(
-                    //         child: Text("Gone"),
-                    //         visible: false,
-                    //       );
-                    //     }
-                    //   },
-                    // ),
-                    // FutureBuilder<String>(
-                    //   future: SubLineServices(uid: subline).sublineName,
-                    //   builder: (context, snapshot) {
-                    //     if (snapshot.hasData) {
-                    //       sublineName = snapshot.data ?? -1;
-                    //       return Visibility(
-                    //         child: Text("Gone"),
-                    //         visible: false,
-                    //       );
-                    //     } else {
-                    //       return Visibility(
-                    //         child: Text("Gone"),
-                    //         visible: false,
-                    //       );
-                    //     }
-                    //   },
-                    // ),
-                    // FutureBuilder<String>(
-                    //   future:
-                    //       MainLineServices(uid: mainline).cityNameByMainLine,
-                    //   builder: (context, snapshot) {
-                    //     if (snapshot.hasData) {
-                    //       // print(snapshot.data.toString());
-                    //       cityName = snapshot.data ?? "";
-                    //       return Visibility(
-                    //         child: Text("Gone"),
-                    //         visible: false,
-                    //       );
-                    //     } else {
-                    //       return Visibility(
-                    //         child: Text("Gone"),
-                    //         visible: false,
-                    //       );
-                    //     }
-                    //   },
-                    // ),
                     _infoLabel(
                       "معلومات الطلبية",
                       Icon(Icons.info, color: Colors.white, size: 30),
@@ -319,6 +266,7 @@ class _AddOrderState extends State<AddOrder> {
                             margin: EdgeInsets.only(
                                 top: 10, bottom: 10, left: 10, right: 0),
                             child: TextFormField(
+                              enabled: priceEnabled,
                               validator: (value) {
                                 if (value.isEmpty) {
                                   return 'ادخل سعر المنتج ';
@@ -367,6 +315,11 @@ class _AddOrderState extends State<AddOrder> {
                         ),
                       ],
                     ),
+                    Row(
+                    children: <Widget>[
+                      _deliveryType(),
+                    ],
+                  ),
                     _notes(orderNote),
                     _addNewOrderButton(),
                   ],
@@ -528,7 +481,10 @@ class _AddOrderState extends State<AddOrder> {
                       mainlineSelected = false;
                       mainlines = null;
                       mainline = '';
+                      priceEnabled = true;
                     });
+                    orderPrice.clear();
+
                     FirebaseFirestore.instance
                         .collection('delivery_costs')
                         .where('locationID', isEqualTo: locationID)
@@ -545,6 +501,7 @@ class _AddOrderState extends State<AddOrder> {
                             )
                           },
                         );
+                    orderTotalPrice = 0;
                     FocusScope.of(context).requestFocus(new FocusNode());
                   },
                 );
@@ -653,6 +610,21 @@ class _AddOrderState extends State<AddOrder> {
                       subline = '';
                       sublines = null;
                       isSubLineSelected = false;
+
+                      FirebaseFirestore.instance
+                          .collection('mainLines')
+                          .doc(mainline)
+                          .get()
+                          .then(
+                            (value) => {
+                              setState(
+                                () {
+                                  cityName = value.data()["cityName"];
+                                },
+                              )
+                            },
+                          );
+
                       // print("mainline: ");
                       // print(mainline);
                     });
@@ -757,7 +729,36 @@ class _AddOrderState extends State<AddOrder> {
                       setState(() {
                         subline = val;
                         isSubLineSelected = true;
+                        print(subline);
+                        FirebaseFirestore.instance
+                            .collection('subLines')
+                            .doc(subline)
+                            .get()
+                            .then(
+                              (value) => {
+                                setState(
+                                  () {
+                                    sublineName = value.data()["name"];
+                                  },
+                                )
+                              },
+                            );
+
+                        FirebaseFirestore.instance
+                            .collection('subLines')
+                            .doc(subline)
+                            .get()
+                            .then(
+                              (value) => {
+                                setState(
+                                  () {
+                                    indexLine = value.data()["indexLine"];
+                                  },
+                                )
+                              },
+                            );
                       });
+
                       FocusScope.of(context).requestFocus(new FocusNode());
                     },
                   );
@@ -820,6 +821,59 @@ class _AddOrderState extends State<AddOrder> {
               borderRadius: BorderRadius.circular(10),
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _deliveryType() {
+    return Expanded(
+      flex: 2,
+      child: Container(
+        margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
+        child: DropdownButtonFormField(
+          onChanged: (String newValue) {
+            setState(() {
+              typeOrder = newValue;
+            });
+            FocusScope.of(context).requestFocus(new FocusNode());
+          },
+          items: <String>['عادي', 'مستعجل']
+              .map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Text(
+                  value,
+                  textAlign: TextAlign.right,
+                  style: TextStyle(fontFamily: 'Amiri', fontSize: 16.0),
+                ),
+              ),
+            );
+          }).toList(),
+          decoration: InputDecoration(
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: BorderSide(
+                  width: 1.0,
+                  color: Color(0xff636363),
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: BorderSide(
+                  width: 2.0,
+                  color: Color(0xff73a16a),
+                ),
+                //Change color to Color(0xff73a16a)
+              ),
+              contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
+              labelText: typeOrder,
+              labelStyle: TextStyle(
+                  fontFamily: 'Amiri',
+                  fontSize: 18.0,
+                  color: Color(0xff316686))),
         ),
       ),
     );

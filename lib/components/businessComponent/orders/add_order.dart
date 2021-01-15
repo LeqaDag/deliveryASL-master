@@ -31,43 +31,57 @@ class AddNewOdersByBusiness extends StatefulWidget {
 
 class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
   final _formKey = GlobalKey<FormState>();
+  final _key = GlobalKey<FormFieldState>();
   List<DeliveriesCosts> cities;
   List<SubLine> sublines;
   List<MainLine> mainlines;
   List<Business> business;
 
-  String cityID,
+  List<Location> locations;
+
+  String cityID = "0",
       mainline,
+      mainlineID,
       subline,
-      mainLineId = "",
-      businessID = "",
-      bus,
-      cityName = "",
+      businessID,
+      bus = "0",
+      cityName = "0",
       sublineName = "",
+      locationID,
+      locationId,
       typeOrder = "عادي";
   int orderTotalPrice = 0;
   static String deliveryPrice = "0";
-  bool locationSelected = false, mainlineSelected = false;
-  int indexLine;
+  bool isBusinessSelected = false,
+      isLocationSelected = false,
+      mainlineSelected = false,
+      isSubLineSelected = false,
+      priceEnabled = false;
+  int indexLine = 0;
+  reset() {
+    _key.currentState.reset();
+  }
 
   @override
   void initState() {
-    deliveryPrice = "0";
-    orderTotalPrice = 0;
-    businessID = "";
-    mainLineId = "";
-    indexLine = 0;
-    sublineName = "";
+    setState(() {
+      deliveryPrice = "0";
+      orderTotalPrice = 0;
+      indexLine = 0;
+      sublineName = "";
+      mainline = "";
+      // locationID = "";
+      isBusinessSelected = false;
+      isLocationSelected = false;
+    });
     super.initState();
   }
 
-  //Order Filed
   TextEditingController orderDescription = new TextEditingController();
   TextEditingController orderPrice = new TextEditingController();
   bool orderType = false;
   DateTime orderDate = new DateTime.now();
   TextEditingController orderNote = new TextEditingController();
-
   //Customer Fileds
   TextEditingController customerName = new TextEditingController();
   TextEditingController customerPhoneNumber = new TextEditingController();
@@ -75,18 +89,12 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
       new TextEditingController();
   TextEditingController customerAddress = new TextEditingController();
   //
-
-  List<Location> locations;
-  String locationID;
-
-  String mainLineID;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       endDrawer: Directionality(
           textDirection: TextDirection.rtl,
-          child: BusinessDrawer(name: widget.name, uid: widget.uid)),
+          child: BusinessDrawer(name: widget.name)),
       appBar: AppBar(
         title: Text('اضافة طلبية جديدة',
             style: TextStyle(fontSize: 20.0, fontFamily: 'Amiri')),
@@ -94,183 +102,165 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
         backgroundColor: Color(0xff316686),
       ),
       body: Directionality(
-        textDirection: TextDirection.rtl,
-        child: ListView(
-          children: <Widget>[
-            _infoLabel(
-              "معلومات الزبون",
-              Icon(Icons.person, color: Colors.white, size: 30),
-            ),
-            Form(
-              key: _formKey,
-              child: Column(
-                children: <Widget>[
-                  _customerName(customerName),
-                  Row(
-                    children: <Widget>[
-                      _customerPhoneNumber(
-                          "رقم الزبون", 10, customerPhoneNumber),
-                      _customerAdditionPhoneNumber(
-                          "رقم احتياطي", 0, customerPhoneNumberAdditional),
-                    ],
-                  ),
-
-                  Row(
-                    children: <Widget>[
-                      _locationChoice(),
-                    ],
-                  ),
-
-                  Row(
-                    children: <Widget>[
-                      _mainLineChoice(),
-                      _subLineChoice(),
-                    ],
-                  ),
-                  FutureBuilder<int>(
-                      future: SubLineServices(uid: subline).sublineIndex,
-                      builder: (context, snapshot) {
-                        //print(snapshot.data.toString());
-                        indexLine = snapshot.data;
-                        return Visibility(
-                          child: Text("Gone"),
-                          visible: false,
-                        );
-                      }),
-                  FutureBuilder<String>(
-                      future: SubLineServices(uid: subline).sublineName,
-                      builder: (context, snapshot) {
-                        // print(snapshot.data.toString());
-                        sublineName = snapshot.data;
-                        return Visibility(
-                          child: Text("Gone"),
-                          visible: false,
-                        );
-                      }),
-                  Row(
-                    children: <Widget>[
-                      _customerAddress(customerAddress),
-                    ],
-                  ),
-                  FutureBuilder<String>(
-                      future:
-                          MainLineServices(uid: mainline).cityNameByMainLine,
-                      builder: (context, snapshot) {
-                        //print(snapshot.data.toString());
-                        cityName = snapshot.data.toString();
-                        return Visibility(
-                          child: Text("Gone"),
-                          visible: false,
-                        );
-                      }),
-                  _infoLabel(
-                    "معلومات الطلبية",
-                    Icon(Icons.info, color: Colors.white, size: 30),
-                  ),
-                  _orderDescription(orderDescription),
-                  // Row(
-                  //   children: <Widget>[
-                  //     _deliveryType(),
-                  //   ],
-                  // ),
-                  Row(
-                    children: <Widget>[
-                      Expanded(
-                        flex: 3,
-                        child: Container(
-                          margin: EdgeInsets.only(
-                              top: 10, bottom: 10, left: 10, right: 10),
-                          child: TextFormField(
-                            onChanged: (String newValue) {
-                              setState(() {
-                                deliveryPrice = newValue;
-                              });
-                            },
-                            enabled: false,
-                            decoration: InputDecoration(
-                              labelText: deliveryPrice,
-                              labelStyle: TextStyle(
-                                  fontFamily: 'Amiri',
-                                  fontSize: 18.0,
-                                  color: Colors.red),
-                              contentPadding: EdgeInsets.only(right: 20.0),
-                              filled: true,
-                              fillColor: Color(0xffC6C4C4),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
+          textDirection: TextDirection.rtl,
+          child: SingleChildScrollView(
+            child: Container(
+              padding: EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
+              child: Form(
+                key: _formKey,
+                child: ListView(
+                  physics: ScrollPhysics(),
+                  shrinkWrap: true,
+                  children: [
+                    _infoLabel(
+                      "معلومات الزبون",
+                      Icon(Icons.person, color: Colors.white, size: 30),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(
+                          top: 10, bottom: 10, left: 10, right: 10),
+                      child: TextFormField(
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'ادخل اسم الزبون  ';
+                          }
+                          return null;
+                        },
+                        controller: customerName,
+                        decoration: InputDecoration(
+                          contentPadding:
+                              EdgeInsets.only(right: 20.0, left: 10.0),
+                          labelText: "اسم الزبون",
+                          labelStyle: TextStyle(
+                            fontFamily: 'Amiri',
+                            fontSize: 18.0,
+                            color: Color(0xff316686),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Row(
+                      children: <Widget>[
+                        _customerPhoneNumber(
+                            "رقم الزبون", 10, customerPhoneNumber),
+                        _customerAdditionPhoneNumber(
+                            "رقم احتياطي", 0, customerPhoneNumberAdditional),
+                      ],
+                    ),
+                    _locationChoice(),
+                    _mainLineChoice(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        _subLineChoice(),
+                        _customerAddress(customerAddress),
+                      ],
+                    ),
+                    _infoLabel(
+                      "معلومات الطلبية",
+                      Icon(Icons.info, color: Colors.white, size: 30),
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Expanded(
+                          flex: 3,
+                          child: Container(
+                            margin: EdgeInsets.only(
+                                top: 10, bottom: 10, left: 10, right: 10),
+                            child: TextFormField(
+                              onChanged: (String newValue) {
+                                setState(() {
+                                  deliveryPrice = newValue;
+                                });
+                              },
+                              enabled: false,
+                              decoration: InputDecoration(
+                                labelText: deliveryPrice,
+                                labelStyle: TextStyle(
+                                    fontFamily: 'Amiri',
+                                    fontSize: 18.0,
+                                    color: Colors.red),
+                                contentPadding: EdgeInsets.only(right: 20.0),
+                                filled: true,
+                                fillColor: Color(0xffC6C4C4),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      Expanded(
-                        flex: 3,
-                        child: Container(
-                          margin: EdgeInsets.only(
-                              top: 10, bottom: 10, left: 10, right: 0),
-                          child: TextFormField(
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'ادخل سعر المنتج ';
-                              }
-                              return null;
-                            },
-                            onChanged: (value) {
-                              setState(() {
-                                orderTotalPrice = (int.parse(value) +
-                                    int.parse(deliveryPrice));
-                              });
-                            },
-                            controller: orderPrice,
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                              labelText: "سعر المنتج",
-                              labelStyle: TextStyle(
-                                  fontFamily: 'Amiri',
-                                  fontSize: 18.0,
-                                  color: Color(0xff316686)),
-                              contentPadding: EdgeInsets.only(right: 20.0),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
+                        Expanded(
+                          flex: 3,
+                          child: Container(
+                            margin: EdgeInsets.only(
+                                top: 10, bottom: 10, left: 10, right: 0),
+                            child: TextFormField(
+                              enabled: priceEnabled,
+                              validator: (value) {
+                                if (value.isEmpty) {
+                                  return 'ادخل سعر المنتج ';
+                                }
+                                return null;
+                              },
+                              onChanged: (value) {
+                                setState(() {
+                                  orderTotalPrice = (int.parse(value) +
+                                      int.parse(deliveryPrice));
+                                });
+                              },
+                              controller: orderPrice,
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                labelText: "سعر المنتج",
+                                labelStyle: TextStyle(
+                                    fontFamily: 'Amiri',
+                                    fontSize: 18.0,
+                                    color: Color(0xff316686)),
+                                contentPadding: EdgeInsets.only(right: 20.0),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      Expanded(
-                        flex: 3,
-                        child: Container(
-                          margin: EdgeInsets.only(
-                              top: 10, bottom: 10, left: 10, right: 0),
-                          child: TextFormField(
-                            enabled: false,
-                            decoration: InputDecoration(
-                              labelText: orderTotalPrice.toString(),
-                              contentPadding: EdgeInsets.only(right: 20.0),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
+                        Expanded(
+                          flex: 3,
+                          child: Container(
+                            margin: EdgeInsets.only(
+                                top: 10, bottom: 10, left: 10, right: 0),
+                            child: TextFormField(
+                              enabled: false,
+                              //controller: totalPriceController,
+                              decoration: InputDecoration(
+                                labelText: orderTotalPrice.toString(),
+                                contentPadding: EdgeInsets.only(right: 20.0),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-
-                  Row(
-                    children: <Widget>[
-                      _deliveryType(),
-                    ],
-                  ),
-                  _notes(orderNote),
-
-                  _addNewOrderButton(),
-                ],
+                      ],
+                    ),
+                    Row(
+                      children: <Widget>[
+                        _deliveryType(),
+                      ],
+                    ),
+                    _notes(orderNote),
+                    _addNewOrderButton(),
+                  ],
+                ),
               ),
-            )
-          ],
-        ),
-      ),
+            ),
+          )),
     );
   }
 
@@ -293,33 +283,6 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
           border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(30),
               borderSide: BorderSide()),
-        ),
-      ),
-    );
-  }
-
-  Widget _customerName(TextEditingController fieldController) {
-    return Container(
-      margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
-      child: TextFormField(
-        validator: (value) {
-          if (value.isEmpty) {
-            return 'ادخل اسم الزبون  ';
-          }
-          return null;
-        },
-        controller: fieldController,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
-          labelText: "اسم الزبون",
-          labelStyle: TextStyle(
-            fontFamily: 'Amiri',
-            fontSize: 18.0,
-            color: Color(0xff316686),
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
         ),
       ),
     );
@@ -392,9 +355,8 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
   }
 
   Widget _locationChoice() {
-    return Expanded(
-      flex: 2,
-      child: Container(
+   
+      return Container(
         margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
         child: StreamBuilder<List<DeliveriesCosts>>(
             stream: DeliveriesCostsServices(businessId: widget.uid)
@@ -448,109 +410,61 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
                   onChanged: (val) {
                     setState(() {
                       locationID = val;
-                      FirebaseFirestore.instance
-                          .collection('delivery_costs')
-                          .where('locationID', isEqualTo: locationID)
-                          .where('businesID', isEqualTo: widget.uid)
-                          .get()
-                          .then((value) => {
-                                setState(() {
-                                  deliveryPrice =
-                                      value.docs[0]["deliveryPrice"];
-                                  //cityName = value.docs[0]["locationName"];
-                                })
-                              });
+                      locationId = val;
+                      isLocationSelected = true;
+                      mainlineSelected = false;
+                      mainlines = null;
+                      mainline = '';
+                      priceEnabled = true;
                     });
-                    FocusScope.of(context).requestFocus(new FocusNode());
-                  },
-                );
-              }
-            }),
-      ),
-    );
-  }
+                    orderPrice.clear();
 
-  Widget _subLineChoice() {
-    return Expanded(
-      flex: 2,
-      child: Container(
-        margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
-        child: StreamBuilder<List<SubLine>>(
-            stream: SubLineServices().subLines,
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return Text('Loading...');
-              } else {
-                sublines = snapshot.data;
-                return DropdownButtonFormField<String>(
-                  value: subline,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide(
-                        width: 1.0,
-                        color: Color(0xff636363),
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide(
-                        width: 2.0,
-                        color: Color(0xff73a16a),
-                      ),
-                    ),
-                    contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
-                    labelText: " العنوان",
-                    labelStyle: TextStyle(
-                      fontFamily: 'Amiri',
-                      fontSize: 18.0,
-                      color: Color(0xff316686),
-                    ),
-                  ),
-                  items: sublines.map(
-                    (subline) {
-                      return DropdownMenuItem<String>(
-                        value: subline.uid.toString(),
-                        child: Align(
-                            alignment: Alignment.centerRight,
-                            child: Text(
-                              subline.name,
-                              style: TextStyle(
-                                fontFamily: 'Amiri',
-                                fontSize: 16.0,
-                              ),
-                            )),
-                      );
-                    },
-                  ).toList(),
-                  onChanged: (val) {
-                    setState(() {
-                      subline = val;
-                    });
+                    FirebaseFirestore.instance
+                        .collection('delivery_costs')
+                        .where('locationID', isEqualTo: locationID)
+                        .where('businesID', isEqualTo: widget.uid)
+                        .get()
+                        .then(
+                          (value) => {
+                            setState(
+                              () {
+                                // isLocationSelected = true;
+                                deliveryPrice = value.docs[0]["deliveryPrice"];
+                                //cityName = value.docs[0]["locationName"];
+                              },
+                            )
+                          },
+                        );
+                    orderTotalPrice = 0;
                     FocusScope.of(context).requestFocus(new FocusNode());
                   },
                 );
               }
             }),
-      ),
-    );
+      );
+    
   }
 
   Widget _mainLineChoice() {
-    return Expanded(
-      flex: 2,
-      child: Container(
+    print(locationID);
+    if (isLocationSelected == true) {
+      return Container(
         margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
         child: StreamBuilder<List<MainLine>>(
-            stream: MainLineServices().mainLines,
+            stream:
+                MainLineServices(locationID: locationID).mainLineByLocationID,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Text('Loading...');
+              } else if (snapshot.hasError) {
+                print(snapshot.error.toString());
+                return Text('snapshot.error');
               } else {
-                mainlines = snapshot.data;
+                mainlines = snapshot.data ?? [];
+                print(mainlines);
                 return DropdownButtonFormField<String>(
-                  value: mainline,
-                  isExpanded: true,
+                  // key: _key,
+                  value: mainlineSelected ? mainline : null,
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
@@ -575,37 +489,225 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
                     ),
                   ),
                   items: mainlines.map(
-                    (mainline) {
+                    (mainL) {
                       return DropdownMenuItem<String>(
-                        value: mainline.uid.toString(),
+                        value: mainL.uid.toString(),
                         child: Align(
-                            alignment: Alignment.centerRight,
-                            child: Text(
-                              '${mainline.name}-${mainline.cityName}',
-                              style: TextStyle(
-                                fontFamily: 'Amiri',
-                                fontSize: 16.0,
-                              ),
-                            )),
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            '${mainL.name}-${mainL.cityName}',
+                            style: TextStyle(
+                              fontFamily: 'Amiri',
+                              fontSize: 16.0,
+                            ),
+                          ),
+                        ),
                       );
                     },
                   ).toList(),
                   onChanged: (val) {
                     setState(() {
                       mainline = val;
+                      mainlineID = mainline;
+                      mainlineSelected = true;
+                      subline = '';
+                      sublines = null;
+                      isSubLineSelected = false;
+
+                      FirebaseFirestore.instance
+                          .collection('mainLines')
+                          .doc(mainline)
+                          .get()
+                          .then(
+                            (value) => {
+                              setState(
+                                () {
+                                  cityName = value.data()["cityName"];
+                                },
+                              )
+                            },
+                          );
+
+                      // print("mainline: ");
+                      // print(mainline);
                     });
                     FocusScope.of(context).requestFocus(new FocusNode());
+                    // _key.currentState.reset();
                   },
                 );
               }
             }),
-      ),
-    );
+      );
+    } else {
+      return Container(
+        margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
+        // ignore: missing_required_param
+        child: DropdownButtonFormField<String>(
+          value: locationID,
+          decoration: InputDecoration(
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.0),
+              borderSide: BorderSide(
+                width: 1.0,
+                color: Color(0xff636363),
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.0),
+              borderSide: BorderSide(
+                width: 2.0,
+                color: Color(0xff73a16a),
+              ),
+            ),
+            contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
+            labelText: "المدينة",
+            labelStyle: TextStyle(
+              fontFamily: 'Amiri',
+              fontSize: 18.0,
+              color: Color(0xff636363),
+            ),
+          ),
+        ),
+      );
+    }
+  }
+
+  Widget _subLineChoice() {
+    // print(mainline);
+    if (mainlineSelected == true) {
+      return Flexible(
+        child: Container(
+          margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
+          child: StreamBuilder<List<SubLine>>(
+              stream:
+                  SubLineServices(mainLineID: mainline).subLinesByMainLineID,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return Text('Loading...');
+                } else {
+                  sublines = snapshot.data;
+                  // print(sublines);
+                  return DropdownButtonFormField<String>(
+                    value: isSubLineSelected ? subline : null,
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: BorderSide(
+                          width: 1.0,
+                          color: Color(0xff636363),
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: BorderSide(
+                          width: 2.0,
+                          color: Color(0xff73a16a),
+                        ),
+                      ),
+                      contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
+                      labelText: " العنوان",
+                      labelStyle: TextStyle(
+                        fontFamily: 'Amiri',
+                        fontSize: 18.0,
+                        color: Color(0xff316686),
+                      ),
+                    ),
+                    items: sublines.map(
+                      (sub) {
+                        return DropdownMenuItem<String>(
+                          value: sub.uid.toString(),
+                          child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Text(
+                                sub.name,
+                                style: TextStyle(
+                                  fontFamily: 'Amiri',
+                                  fontSize: 16.0,
+                                ),
+                              )),
+                        );
+                      },
+                    ).toList(),
+                    onChanged: (val) {
+                      setState(() {
+                        subline = val;
+                        isSubLineSelected = true;
+                        print(subline);
+                        FirebaseFirestore.instance
+                            .collection('subLines')
+                            .doc(subline)
+                            .get()
+                            .then(
+                              (value) => {
+                                setState(
+                                  () {
+                                    sublineName = value.data()["name"];
+                                  },
+                                )
+                              },
+                            );
+
+                        FirebaseFirestore.instance
+                            .collection('subLines')
+                            .doc(subline)
+                            .get()
+                            .then(
+                              (value) => {
+                                setState(
+                                  () {
+                                    indexLine = value.data()["indexLine"];
+                                  },
+                                )
+                              },
+                            );
+                      });
+
+                      FocusScope.of(context).requestFocus(new FocusNode());
+                    },
+                  );
+                }
+              }),
+        ),
+      );
+    } else {
+      return Flexible(
+        child: Container(
+          margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
+          child: DropdownButtonFormField<String>(
+            value: subline,
+            decoration: InputDecoration(
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: BorderSide(
+                  width: 1.0,
+                  color: Color(0xff636363),
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                borderSide: BorderSide(
+                  width: 2.0,
+                  color: Color(0xff73a16a),
+                ),
+              ),
+              contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
+              labelText: "المدينة",
+              labelStyle: TextStyle(
+                fontFamily: 'Amiri',
+                fontSize: 18.0,
+                color: Color(0xff636363),
+              ),
+            ),
+            items: [],
+            onChanged: (val) {},
+          ),
+        ),
+      );
+    }
   }
 
   Widget _customerAddress(TextEditingController fieldController) {
-    return Expanded(
-      flex: 3,
+    return Flexible(
       child: Container(
         margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 0),
         child: TextFormField(
@@ -621,24 +723,6 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
             ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _orderDescription(TextEditingController fieldController) {
-    return Container(
-      margin: EdgeInsets.all(10),
-      child: TextFormField(
-        controller: fieldController,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
-          labelText: "وصف الطلبية",
-          labelStyle: TextStyle(
-              fontFamily: 'Amiri', fontSize: 18.0, color: Color(0xff316686)),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
           ),
         ),
       ),
@@ -701,20 +785,22 @@ class _AddNewOdersByBusinessState extends State<AddNewOdersByBusiness> {
   Widget _notes(TextEditingController fieldController) {
     return Container(
       margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
-      child: TextFormField(
-        controller: fieldController,
+      child: Expanded(
+        child: TextFormField(
+          controller: fieldController,
 
-        //minLines: 2,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
-          labelText: "الملاحظات",
-          labelStyle: TextStyle(
-            fontFamily: 'Amiri',
-            fontSize: 18.0,
-            color: Color(0xff316686),
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+          //minLines: 2,
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
+            labelText: "الملاحظات",
+            labelStyle: TextStyle(
+              fontFamily: 'Amiri',
+              fontSize: 18.0,
+              color: Color(0xff316686),
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
         ),
       ),
