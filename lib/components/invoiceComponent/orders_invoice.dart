@@ -1,6 +1,7 @@
 import 'package:AsyadLogistic/components/widgetsComponent/CustomWidgets.dart';
 import 'package:AsyadLogistic/services/driverServices.dart';
 import 'package:AsyadLogistic/services/orderServices.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:AsyadLogistic/classes/order.dart';
@@ -206,8 +207,11 @@ class _OrdersInvoiceState extends State<OrdersInvoice> {
                               name: widget.order.description,
                               buttonText: "تأكيد",
                               onPressed: () {
+                                final FirebaseAuth auth =
+                                          FirebaseAuth.instance;
+                                      final User user = auth.currentUser;
                                 OrderServices().deleteOrderData(
-                                    widget.order.uid, widget.name);
+                                    widget.order.uid, user.uid);
                                 Navigator.of(context).pop();
                               },
                               cancelButton: "الغاء",

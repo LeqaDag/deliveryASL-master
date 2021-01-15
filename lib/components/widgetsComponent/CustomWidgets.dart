@@ -564,8 +564,9 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => OrganizeOrderInfo(
-                    uid: order.uid, orderState: orderState, name: name),),
+              builder: (context) => OrganizeOrderInfo(
+                  uid: order.uid, orderState: orderState, name: name),
+            ),
           );
         },
         child: Container(
@@ -578,7 +579,8 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
               borderRadius: BorderRadius.circular(0.0),
             ),
             //color: KCustomCompanyOrdersStatus,
-            child: Row(
+            child: Expanded(
+                child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 Container(
@@ -651,7 +653,8 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                     ],
                   ),
                 ),
-                Container(
+                Expanded(
+                    child: Container(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -716,15 +719,50 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                       ),
                     ],
                   ),
-                ),
+                )),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    IconButton(
+                      onPressed: () {
+                        final FirebaseAuth auth = FirebaseAuth.instance;
+                        final User user = auth.currentUser;
+                        final userid = user.uid;
+
+                        return showDialog<void>(
+                            context: context,
+                            barrierDismissible: false, // user must tap button!
+                            builder: (BuildContext context) => CustomDialog(
+                                  title: "حذف طلبية",
+                                  description: ' هل ترغب بحذف هذه الطلبية',
+                                  name: "",
+                                  buttonText: "تأكيد",
+                                  onPressed: () {
+                                    OrderServices()
+                                        .deleteOrderData(order.uid, userid);
+                                    Navigator.of(context).pop();
+                                  },
+                                  cancelButton: "الغاء",
+                                  cancelPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ));
+                      },
+                      icon: Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                      ),
+                    )
+                  ],
+                )
               ],
-            ),
+            )),
           ),
         ),
       );
     }
     if (orderState == 'sheet') {
-    print(order.totalPrice.toString());
+      print(order.totalPrice.toString());
       return InkWell(
         child: Container(
           width: width - 50,
@@ -1084,8 +1122,8 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                    child:Container(
-                    child: Column(
+                    child: Container(
+                        child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -1155,6 +1193,41 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                     )),
                   ],
                 ))),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    IconButton(
+                      onPressed: () {
+                        final FirebaseAuth auth = FirebaseAuth.instance;
+                        final User user = auth.currentUser;
+                        final userid = user.uid;
+
+                        return showDialog<void>(
+                            context: context,
+                            barrierDismissible: false, // user must tap button!
+                            builder: (BuildContext context) => CustomDialog(
+                                  title: "حذف طلبية",
+                                  description: ' هل ترغب بحذف هذه الطلبية',
+                                  name: "",
+                                  buttonText: "تأكيد",
+                                  onPressed: () {
+                                    OrderServices()
+                                        .deleteOrderData(order.uid, userid);
+                                    Navigator.of(context).pop();
+                                  },
+                                  cancelButton: "الغاء",
+                                  cancelPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ));
+                      },
+                      icon: Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                      ),
+                    )
+                  ],
+                )
               ],
             )),
           ),
