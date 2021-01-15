@@ -1,9 +1,6 @@
-import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
+
 import 'package:AsyadLogistic/classes/business.dart';
 import 'package:AsyadLogistic/classes/customer.dart';
 import 'package:AsyadLogistic/classes/deliveriesCost.dart';
@@ -16,11 +13,11 @@ import 'package:AsyadLogistic/services/businessServices.dart';
 import 'package:AsyadLogistic/services/customerServices.dart';
 import 'package:AsyadLogistic/services/orderServices.dart';
 import 'package:AsyadLogistic/services/subLineServices.dart';
+
 import 'package:toast/toast.dart';
 
 import '../../classes/mainLine.dart';
 import '../../services/mainLineServices.dart';
-import 'mainline_order_dropdown.dart';
 
 class AddNewOders extends StatefulWidget {
   final String name;

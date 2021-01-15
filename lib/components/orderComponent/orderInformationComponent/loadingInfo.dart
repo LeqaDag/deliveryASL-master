@@ -134,8 +134,12 @@ class LoadingInfo extends StatelessWidget {
 
                                       CustomTitle("معلومات الطلبية"),
 
-                                      LabelTextField(Icons.short_text,
-                                          Colors.green[700], order.description),
+                                      LabelTextField(
+                                          Icons.short_text,
+                                          Colors.green[700],
+                                          order.description == ""
+                                              ? "لا يوجد وصف  لطلبية"
+                                              : order.description),
                                       LabelTextFieldPrice(order.price
                                           .toString()), // تغير الايكونات بعد اضافتها على الاجهزة بشكل رسمي
                                       LabelTextField(

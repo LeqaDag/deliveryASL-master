@@ -18,6 +18,9 @@ class _SubLineListState extends State<SubLineList> {
   @override
   Widget build(BuildContext context) {
     final subLine = Provider.of<List<SubLine>>(context) ?? [];
+    subLine.sort((order1, order2) {
+      return order1.indexLine.compareTo(order2.indexLine);
+    });
     if (subLine == null) {
       return Visibility(
         child: Text("Gone"),

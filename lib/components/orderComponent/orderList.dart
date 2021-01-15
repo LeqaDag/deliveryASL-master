@@ -21,6 +21,9 @@ class _OrderListState extends State<OrderList> {
     if (orders != []) {
       final ids = orders.map((e) => e.businesID).toSet();
       orders.retainWhere((x) => ids.remove(x.businesID));
+      orders.sort((order1, order2) {
+        return order1.indexLine.compareTo(order2.indexLine);
+      });
       return ListView.builder(
         physics: ScrollPhysics(),
         shrinkWrap: true,

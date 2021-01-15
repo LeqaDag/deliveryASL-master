@@ -1,3 +1,4 @@
+import 'package:AsyadLogistic/components/orderComponent/addOrder.dart';
 import 'package:flutter/material.dart';
 import 'package:AsyadLogistic/components/orderComponent/store_add_new_order.dart';
 import 'package:AsyadLogistic/components/pages/drawer.dart';
@@ -66,7 +67,7 @@ class _AdminOrdersState extends State<AdminOrders> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => AddNewOders(name: widget.name)),
+                              builder: (context) => AddOrder(name: widget.name)),
                         );
                       },
                       icon: Icon(Icons.add),
