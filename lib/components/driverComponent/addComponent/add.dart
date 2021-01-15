@@ -545,12 +545,12 @@ class _AddDriverState extends State<AddDriver> {
   void _addDriver() async {
     final FirebaseAuth auth = FirebaseAuth.instance;
     final User user = auth.currentUser;
+
     if (_formKey.currentState.validate()) {
       firebaseAuth
           .createUserWithEmailAndPassword(
               email: emailController.text, password: passwordController.text)
           .then((result) async {
-        print(auth.currentUser);
         userCollection.doc().set({
           "userID": result.user.uid,
           "email": emailController.text,
@@ -587,6 +587,12 @@ class _AddDriverState extends State<AddDriver> {
         Toast.show("تم اضافة سائق بنجاح", context,
             duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
         await Future.delayed(Duration(milliseconds: 1000));
+        EmailAuthCredential credential = EmailAuthProvider.credential(
+            email: user.email, password: '1234567');
+
+
+        await FirebaseAuth.instance.currentUser
+            .reauthenticateWithCredential(credential);
         Navigator.of(context).pop();
       }).catchError((err) {});
     }
