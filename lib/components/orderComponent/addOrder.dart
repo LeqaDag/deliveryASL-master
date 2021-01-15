@@ -51,7 +51,8 @@ class _AddOrderState extends State<AddOrder> {
   static String deliveryPrice = "0";
   bool isBusinessSelected = false,
       isLocationSelected = false,
-      mainlineSelected = false;
+      mainlineSelected = false,
+      isSubLineSelected = false;
   int indexLine = 0;
   reset() {
     _key.currentState.reset();
@@ -522,8 +523,11 @@ class _AddOrderState extends State<AddOrder> {
                   onChanged: (val) {
                     setState(() {
                       locationID = val;
-                      // locationId = val;
+                      locationId = val;
                       isLocationSelected = true;
+                      mainlineSelected = false;
+                      mainlines = null;
+                      mainline = '';
                     });
                     FirebaseFirestore.instance
                         .collection('delivery_costs')
@@ -646,6 +650,9 @@ class _AddOrderState extends State<AddOrder> {
                       mainline = val;
                       mainlineID = mainline;
                       mainlineSelected = true;
+                      subline = '';
+                      sublines = null;
+                      isSubLineSelected = false;
                       // print("mainline: ");
                       // print(mainline);
                     });
@@ -706,7 +713,7 @@ class _AddOrderState extends State<AddOrder> {
                   sublines = snapshot.data;
                   // print(sublines);
                   return DropdownButtonFormField<String>(
-                    value: subline,
+                    value: isSubLineSelected ? subline : null,
                     decoration: InputDecoration(
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.0),
@@ -749,6 +756,7 @@ class _AddOrderState extends State<AddOrder> {
                     onChanged: (val) {
                       setState(() {
                         subline = val;
+                        isSubLineSelected = true;
                       });
                       FocusScope.of(context).requestFocus(new FocusNode());
                     },
