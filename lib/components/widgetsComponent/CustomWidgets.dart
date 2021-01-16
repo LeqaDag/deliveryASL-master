@@ -1,3 +1,4 @@
+import 'package:AsyadLogistic/components/orderComponent/edit_order.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:AsyadLogistic/classes/business.dart';
@@ -1196,6 +1197,9 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
+                     Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
                     IconButton(
                       onPressed: () {
                         final FirebaseAuth auth = FirebaseAuth.instance;
@@ -1225,7 +1229,24 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                         Icons.delete,
                         color: Colors.red,
                       ),
-                    )
+                    ),
+                     IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => EditOrder(
+                          order: order,
+name: name
+                        )),
+              );
+                      },
+                      icon: Icon(
+                        Icons.create,
+                        color: Colors.green,
+                      ),
+                    ),
+                  ]),
                   ],
                 )
               ],

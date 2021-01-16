@@ -71,4 +71,12 @@ class LocationServices {
         .get()
         .then((value) => value.data()['name']);
   }
+
+  Future<String> get locationName {
+    return locationCollection
+        .doc(uid)
+        .get()
+        .then((value) => value.data()['name']);
+  }
+
 }

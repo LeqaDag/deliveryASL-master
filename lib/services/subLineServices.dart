@@ -108,7 +108,7 @@ class SubLineServices {
         .then((value) => value.data()['indexLine']);
   }
 
-  Future<String> get sublineName {
+ Future<String> get sublineName {
     return subLineCollection
         .doc(uid)
         .get()

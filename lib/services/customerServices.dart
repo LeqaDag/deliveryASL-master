@@ -28,6 +28,20 @@ class CustomerServices {
     return docReference.id;
   }
 
+  Future<void> updateData(Customer customer) async {
+    return await customerCollection.doc(uid).update({
+      'name': customer.name,
+      'phoneNumber': customer.phoneNumber,
+      'phoneNumberAdditional': customer.phoneNumberAdditional,
+      'cityID': customer.cityID,
+      'address': customer.address,
+      'businesID': customer.businesID,
+      'cityName': customer.cityName,
+      'isArchived': customer.isArchived,
+      'sublineName': customer.sublineName
+    });
+  }
+
   Customer _customerDataFromSnapshot(DocumentSnapshot snapshot) {
     return Customer(
         uid: snapshot.id,
