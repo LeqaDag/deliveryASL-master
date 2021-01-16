@@ -98,12 +98,14 @@ class _EditOrderState extends State<EditOrder> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Order>(
-        stream: OrderServices(uid: widget.order.uid).orderByID,
-        builder: (context, snapshot) {
+      stream: OrderServices(uid: widget.order.uid).orderByID,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
           Order orderData = snapshot.data;
           return StreamBuilder<Customer>(
-              stream: CustomerServices(uid: orderData.customerID).customerByID,
-              builder: (context, snapshot) {
+            stream: CustomerServices(uid: orderData.customerID).customerByID,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
                 Customer customerData = snapshot.data;
                 return Scaffold(
                   endDrawer: Directionality(
@@ -230,6 +232,7 @@ class _EditOrderState extends State<EditOrder> {
                                   margin: EdgeInsets.only(
                                       top: 10, bottom: 10, left: 10, right: 10),
                                   child: TextFormField(
+                                    initialValue: customerData.name,
                                     onChanged: (String newValue) {
                                       setState(() {
                                         customerName = newValue;
@@ -239,7 +242,7 @@ class _EditOrderState extends State<EditOrder> {
                                     decoration: InputDecoration(
                                       contentPadding: EdgeInsets.only(
                                           right: 20.0, left: 10.0),
-                                      labelText: customerData.name,
+                                      labelText: 'اسم الزبون',
                                       labelStyle: TextStyle(
                                         fontFamily: 'Amiri',
                                         fontSize: 18.0,
@@ -255,6 +258,8 @@ class _EditOrderState extends State<EditOrder> {
                                   margin: EdgeInsets.only(
                                       top: 10, bottom: 10, left: 10, right: 10),
                                   child: TextFormField(
+                                    initialValue: "0" +
+                                        customerData.phoneNumber.toString(),
                                     onChanged: (String newValue) {
                                       setState(() {
                                         phoneNumber = newValue;
@@ -266,8 +271,7 @@ class _EditOrderState extends State<EditOrder> {
                                     decoration: InputDecoration(
                                       contentPadding:
                                           EdgeInsets.only(right: 20),
-                                      labelText: "0" +
-                                          customerData.phoneNumber.toString(),
+                                      labelText: "رقم الزبون",
                                       labelStyle: TextStyle(
                                         fontFamily: 'Amiri',
                                         fontSize: 18.0,
@@ -400,8 +404,10 @@ class _EditOrderState extends State<EditOrder> {
                                             right: 0),
                                         child: TextFormField(
                                           enabled: priceEnabled,
-                                          initialValue:
-                                              orderData.price.toString() ?? "0",
+                                          initialValue: (orderData.totalPrice -
+                                                      int.parse(deliveryPrice))
+                                                  .toString() ??
+                                              "0",
                                           onChanged: (value) {
                                             setState(() {
                                               orderTotalPrice =
@@ -459,15 +465,23 @@ class _EditOrderState extends State<EditOrder> {
                                   ],
                                 ),
                                 _notes(orderData.note),
-                                _addNewOrderButton(snapshot, customerData),
+                                _addNewOrderButton(orderData, customerData),
                               ],
                             ),
                           ),
                         ),
                       )),
                 );
-              });
-        });
+              } else {
+                return Center(child: CircularProgressIndicator());
+              }
+            },
+          );
+        } else {
+          return Center(child: CircularProgressIndicator());
+        }
+      },
+    );
   }
 
   Widget _infoLabel(String lableText, Icon icon) {
@@ -499,7 +513,7 @@ class _EditOrderState extends State<EditOrder> {
       margin: EdgeInsets.all(10),
       child: Expanded(
         child: TextFormField(
-          initialValue: description,
+          initialValue: description ?? '',
           onChanged: (String newValue) {
             setState(() {
               orderDescription = newValue;
@@ -512,6 +526,21 @@ class _EditOrderState extends State<EditOrder> {
                 fontFamily: 'Amiri', fontSize: 18.0, color: Color(0xff316686)),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.0),
+              borderSide: BorderSide(
+                width: 1.0,
+                color: Color(0xff636363),
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.0),
+              borderSide: BorderSide(
+                width: 2.0,
+                color: Color(0xff73a16a),
+              ),
+              //Change color to Color(0xff73a16a)
             ),
           ),
         ),
@@ -1006,7 +1035,7 @@ class _EditOrderState extends State<EditOrder> {
       margin: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
       child: Expanded(
         child: TextFormField(
-          initialValue: fieldController,
+          initialValue: fieldController ?? "لا يوجد ملاحظات",
           onChanged: (String newValue) {
             setState(() {
               orderNote = newValue;
@@ -1015,7 +1044,7 @@ class _EditOrderState extends State<EditOrder> {
           //minLines: 2,
           decoration: InputDecoration(
             contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
-            labelText: fieldController ?? "لا يوجد ملاحظات",
+            labelText: "ملاحظات",
             labelStyle: TextStyle(
               fontFamily: 'Amiri',
               fontSize: 18.0,
@@ -1030,7 +1059,7 @@ class _EditOrderState extends State<EditOrder> {
     );
   }
 
-  Widget _addNewOrderButton(snapshot, customerData) {
+  Widget _addNewOrderButton(orderData, customerData) {
     return Container(
       child: RaisedButton(
           padding: EdgeInsets.only(right: 60, left: 60),
@@ -1050,7 +1079,7 @@ class _EditOrderState extends State<EditOrder> {
                 cityName: cityName ?? customerData.cityName,
                 cityID: cityID,
                 address: address ?? customerData.address,
-                businesID: businessID ?? snapshot.data.businesID,
+                businesID: businessID ?? orderData.businesID,
                 sublineName: sublineName ?? customerData.sublineName,
                 isArchived: false,
               ));
@@ -1058,11 +1087,11 @@ class _EditOrderState extends State<EditOrder> {
               await CustomerServices(uid: widget.order.customerID)
                   .updateData(Customer(
                 name: customerName ?? customerData.name,
-                phoneNumber: int.parse(phoneNumber),
+                phoneNumber: phoneNumber ?? customerData.phoneNumber,
                 cityName: cityName ?? customerData.cityName,
                 cityID: cityID,
                 address: address ?? customerData.address,
-                businesID: businessID ?? snapshot.data.businesID,
+                businesID: businessID ?? orderData.businesID,
                 sublineName: sublineName ?? customerData.sublineName,
                 isArchived: false,
               ));
@@ -1075,19 +1104,20 @@ class _EditOrderState extends State<EditOrder> {
             } else {
               isUrgent = true;
             }
+            print(orderData.sublineID);
             await OrderServices(uid: widget.order.uid).updateOrderData(Order(
-              price: int.parse(deliveryPrice) ?? snapshot.data.price,
-              totalPrice: orderTotalPrice ?? snapshot.data.totalPrice,
-              description: orderDescription ?? snapshot.data.description,
-              note: orderNote ?? snapshot.data.note,
+              price: int.parse(deliveryPrice) ?? orderData.price,
+              totalPrice: orderTotalPrice ?? orderData.totalPrice,
+              description: orderDescription ?? orderData.description,
+              note: orderNote ?? orderData.note,
               // customerID: customerData.uid,
-              businesID: businessID ?? snapshot.data.businesID,
-              sublineID: subline ?? snapshot.data.sublineID,
-              locationID: locationID ?? snapshot.data.locationID,
-              indexLine: indexLine ?? snapshot.data.indexLine,
-              //mainLineIndex: snapshot.data.mainLineIndex,
-              mainlineID: mainlineID ?? snapshot.data.mainlineID,
-              isUrgent: isUrgent ?? snapshot.data.isUrgent,
+              businesID: businessID ?? orderData.businesID,
+              sublineID: subline ?? orderData.sublineID,
+              locationID: locationID ?? orderData.locationID,
+              indexLine: indexLine ?? orderData.indexLine,
+              //mainLineIndex: orderData.mainLineIndex,
+              mainlineID: mainlineID ?? orderData.mainlineID,
+              isUrgent: isUrgent ?? orderData.isUrgent,
             ));
 
             Toast.show("تم تعديل الطلبية بنجاح", context,
