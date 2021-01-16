@@ -90,6 +90,24 @@ class OrderServices {
     });
   }
 
+
+  Future<void> updateOrderData(Order order) async {
+    return await orderCollection.doc(uid).update({
+      'price': order.price,
+      'totalPrice': order.totalPrice,
+      'isUrgent': order.isUrgent,
+      'description': order.description,
+      'note': order.note,
+     // 'customerID': order.customerID,
+      'businesID': order.businesID,
+      'sublineID': order.sublineID,
+      'locationID': order.locationID,
+      'indexLine': order.indexLine,
+      //'mainLineIndex': order.mainLineIndex,
+      'mainlineID': order.mainlineID,
+    });
+  }
+
   Order _orderDataFromSnapshot(DocumentSnapshot snapshot) {
     return Order(
       uid: snapshot.id,

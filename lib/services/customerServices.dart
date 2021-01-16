@@ -32,7 +32,7 @@ class CustomerServices {
     return await customerCollection.doc(uid).update({
       'name': customer.name,
       'phoneNumber': customer.phoneNumber,
-      'phoneNumberAdditional': customer.phoneNumberAdditional,
+     // 'phoneNumberAdditional': customer.phoneNumberAdditional,
       'cityID': customer.cityID,
       'address': customer.address,
       'businesID': customer.businesID,

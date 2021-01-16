@@ -230,6 +230,7 @@ class _AddOrderState extends State<AddOrder> {
                       "معلومات الطلبية",
                       Icon(Icons.info, color: Colors.white, size: 30),
                     ),
+                    _orderDescription(orderDescription),
                     Row(
                       children: <Widget>[
                         Expanded(
@@ -542,6 +543,26 @@ class _AddOrderState extends State<AddOrder> {
     }
   }
 
+Widget _orderDescription(TextEditingController fieldController) {
+    return Container(
+      margin: EdgeInsets.all(10),
+      child: Expanded(
+        child: TextFormField(
+          controller: fieldController,
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.only(right: 20.0, left: 10.0),
+            labelText: "وصف الطلبية",
+            labelStyle: TextStyle(
+                fontFamily: 'Amiri', fontSize: 18.0, color: Color(0xff316686)),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+  
   Widget _mainLineChoice() {
     print(locationID);
     if (isLocationSelected == true) {

@@ -776,11 +776,7 @@ class _UpdateCompanyState extends State<UpdateCompany> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: new BorderRadius.circular(30.0)),
                             onPressed: () async {
-                              print(companyName);
-                              print(email);
-                              print(companyName);
-                              print(phoneNumber);
-                              print(cityID);
+                             
 
                               if (_formKey.currentState.validate()) {
                                 await BusinessServices(uid: widget.businessID)
