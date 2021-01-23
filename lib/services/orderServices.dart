@@ -507,6 +507,7 @@ class OrderServices {
         {
           return orderCollection
               .where('driverID', isEqualTo: driverID)
+              .where('isPaid', isEqualTo: false)
               .where('isArchived', isEqualTo: false)
               .snapshots()
               .map(_orderListFromSnapshot);
@@ -633,6 +634,7 @@ class OrderServices {
   //To is Received  isReceivedDate
   Future<void> get updateOrderToisReceived {
     return orderCollection.doc(uid).update({
+      'inStock': false,
       'isReceived': true,
       'isLoading': false,
       'isReceivedDate': DateTime.now(),

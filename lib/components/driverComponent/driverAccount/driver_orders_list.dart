@@ -26,6 +26,7 @@ class _DriverOrderListState extends State<DriverOrderList> {
     inStockOrders.sort((order1, order2) {
       return order1.indexLine.compareTo(order2.indexLine);
     });
+
     pendingOrders.sort((order1, order2) {
       return order1.indexLine.compareTo(order2.indexLine);
     });
@@ -62,6 +63,9 @@ class _DriverOrderListState extends State<DriverOrderList> {
                               name: "",
                               buttonText: "تأكيد",
                               onPressed: () async {
+                                inStockOrders = inStockOrders.where((order) {
+                                  return order.inStock == true;
+                                }).toList();
                                 for (var order in inStockOrders) {
                                   OrderServices(
                                     uid: order.uid,
