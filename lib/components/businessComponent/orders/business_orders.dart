@@ -105,15 +105,17 @@ class _CustomCompanyOrdersStatusState extends State<CustomCompanyOrdersStatus> {
       IconData icon, Color color, String stateOrder, bool showDelete) {
     return InkWell(
       onTap: () {
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //       builder: (context) => OrderStatus(
-        //           name: widget.name,
-        //           order: widget.order,
-        //           customerName: customerName,
-        //           orderState: orderState)),
-        // );
+        if (!showDelete) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => OrderStatus(
+                    name: widget.name,
+                    order: widget.order,
+                    customerName: customerName,
+                    orderState: stateOrder)),
+          );
+        } else {}
       },
       child: Container(
           width: width - 50,
@@ -243,8 +245,7 @@ class _CustomCompanyOrdersStatusState extends State<CustomCompanyOrdersStatus> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Visibility(
-                        visible: showDelete,
-
+                    visible: showDelete,
                     child: Row(children: <Widget>[
                       // IconButton(
                       //   onPressed: () {
