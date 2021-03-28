@@ -60,7 +60,7 @@ class _InvoiceAdminState extends State<InvoiceAdmin> {
           items: [
             BottomNavigationBarItem(
               icon: new Icon(Icons.work),
-              title: new Text('الطرود'),
+              label: 'الطرود',
             ),
             // BottomNavigationBarItem(
             //   icon: new Icon(Icons.content_paste_outlined),
@@ -68,10 +68,12 @@ class _InvoiceAdminState extends State<InvoiceAdmin> {
             // ),
             BottomNavigationBarItem(
               icon: new Icon(Icons.airport_shuttle_outlined),
-              title: new Text('وضع السائق'),
+              label: 'وضع السائق',
             ),
             BottomNavigationBarItem(
-                icon: Icon(Icons.business), title: Text('الزبائن'))
+              icon: Icon(Icons.business),
+              label: 'الزبائن',
+            ),
           ],
           onTap: (_cIndex) {
             _incrementTab(_cIndex);

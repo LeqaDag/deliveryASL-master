@@ -191,8 +191,8 @@ class CustomContainer extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-          height: height * 0.15,
-          width: width * 0.29,
+          height: 100,
+          width: 100,
 
           //child: Image.asset("assets/OrdersBox.png"),
           decoration: BoxDecoration(
@@ -203,7 +203,7 @@ class CustomContainer extends StatelessWidget {
             image: DecorationImage(image: imagepath, scale: 1.5),
           ),
           child: Padding(
-            padding: const EdgeInsets.only(top: 90),
+            padding: const EdgeInsets.only(top: 75),
             child: Text(
               text,
               textAlign: TextAlign.center,
@@ -476,11 +476,11 @@ class CustomCardAndListTile extends StatelessWidget {
   }
 }
 
-class CustomFlatButton extends StatelessWidget {
+class CustomTextButton extends StatelessWidget {
   final String text;
   final Color color;
   final Function onPressed;
-  CustomFlatButton({this.text, this.color, this.onPressed});
+  CustomTextButton({this.text, this.color, this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -580,8 +580,7 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
               borderRadius: BorderRadius.circular(0.0),
             ),
             //color: KCustomCompanyOrdersStatus,
-            child: Expanded(
-                child: Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 Container(
@@ -654,8 +653,7 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                     ],
                   ),
                 ),
-                Expanded(
-                    child: Container(
+                Container(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -720,7 +718,7 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                       ),
                     ],
                   ),
-                )),
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
@@ -757,7 +755,7 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                   ],
                 )
               ],
-            )),
+            ),
           ),
         ),
       );
@@ -1041,8 +1039,7 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
               borderRadius: BorderRadius.circular(0.0),
             ),
             //color: KCustomCompanyOrdersStatus,
-            child: Expanded(
-                child: Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 Container(
@@ -1122,14 +1119,12 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                     ],
                   ),
                 ),
-                Expanded(
-                    child: Container(
-                        child: Column(
+                Container(
+                    child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Expanded(
-                        child: Row(
+                    Row(
                       //3
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
@@ -1166,9 +1161,8 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                           },
                         ),
                       ],
-                    )),
-                    Expanded(
-                        child: Row(
+                    ),
+                    Row(
                       //3
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
@@ -1191,66 +1185,64 @@ class CustomCompanyOrdersStatus extends StatelessWidget {
                           ),
                         ),
                       ],
-                    )),
+                    ),
                   ],
-                ))),
+                )),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                     Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    IconButton(
-                      onPressed: () {
-                        final FirebaseAuth auth = FirebaseAuth.instance;
-                        final User user = auth.currentUser;
-                        final userid = user.uid;
+                    Row(mainAxisAlignment: MainAxisAlignment.start, children: <
+                        Widget>[
+                      IconButton(
+                        onPressed: () {
+                          final FirebaseAuth auth = FirebaseAuth.instance;
+                          final User user = auth.currentUser;
+                          final userid = user.uid;
 
-                        return showDialog<void>(
-                            context: context,
-                            barrierDismissible: false, // user must tap button!
-                            builder: (BuildContext context) => CustomDialog(
-                                  title: "حذف طلبية",
-                                  description: ' هل ترغب بحذف هذه الطلبية',
-                                  name: "",
-                                  buttonText: "تأكيد",
-                                  onPressed: () {
-                                    OrderServices()
-                                        .deleteOrderData(order.uid, userid);
-                                    Navigator.of(context).pop();
-                                  },
-                                  cancelButton: "الغاء",
-                                  cancelPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                ));
-                      },
-                      icon: Icon(
-                        Icons.delete,
-                        color: Colors.red,
+                          return showDialog<void>(
+                              context: context,
+                              barrierDismissible:
+                                  false, // user must tap button!
+                              builder: (BuildContext context) => CustomDialog(
+                                    title: "حذف طلبية",
+                                    description: ' هل ترغب بحذف هذه الطلبية',
+                                    name: "",
+                                    buttonText: "تأكيد",
+                                    onPressed: () {
+                                      OrderServices()
+                                          .deleteOrderData(order.uid, userid);
+                                      Navigator.of(context).pop();
+                                    },
+                                    cancelButton: "الغاء",
+                                    cancelPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ));
+                        },
+                        icon: Icon(
+                          Icons.delete,
+                          color: Colors.red,
+                        ),
                       ),
-                    ),
-                     IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => EditOrder(
-                          order: order,
-name: name
-                        )),
-              );
-                      },
-                      icon: Icon(
-                        Icons.create,
-                        color: Colors.green,
+                      IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    EditOrder(order: order, name: name)),
+                          );
+                        },
+                        icon: Icon(
+                          Icons.create,
+                          color: Colors.green,
+                        ),
                       ),
-                    ),
-                  ]),
+                    ]),
                   ],
                 )
               ],
-            )),
+            ),
           ),
         ),
       );

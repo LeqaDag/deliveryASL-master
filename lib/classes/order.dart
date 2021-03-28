@@ -10,7 +10,7 @@ class Order {
   String note;
 
   int driverPrice;
-
+  String curentState;
   //this all order state in application
   bool isLoading;
   bool isReceived;
@@ -57,7 +57,7 @@ class Order {
     this.totalPrice,
     this.type,
     this.description,
-     this.date,
+    this.date,
     this.note,
     this.isLoading = true,
     this.isReceived = false,
@@ -77,7 +77,7 @@ class Order {
     this.mainlineID,
     this.invoiceDriverID = "",
     this.invoiceID = "",
-     this.customerID,
+    this.customerID,
     this.locationID,
     this.isArchived = false,
     this.deleteDate,
@@ -93,5 +93,6 @@ class Order {
     this.isPaidDate,
     this.inStockDate,
     this.paidDriverDate,
+    this.curentState ="isLoading",
   });
 }

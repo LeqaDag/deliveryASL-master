@@ -62,6 +62,7 @@ class OrderServices {
       'isDoneDate': order.isDoneDate,
       'isPaidDate': order.isPaidDate,
       'inStockDate': order.inStockDate,
+      'curentState': order.curentState,
     });
   }
 
@@ -135,6 +136,7 @@ class OrderServices {
       sublineID: snapshot.data()['sublineID'],
       locationID: snapshot.data()['locationID'],
       indexLine: snapshot.data()['indexLine'],
+      curentState: snapshot.data()['curentState'],
       mainLineIndex: snapshot.data()['mainLineIndex'],
       mainlineID: snapshot.data()['mainlineID'],
       isPaidDriver: snapshot.data()['isPaidDriver'],
@@ -177,6 +179,7 @@ class OrderServices {
         isArchived: doc.data()['isArchived'] ?? '',
         // driverPrice: doc.data()['driverPrice'] ?? '',
         indexLine: doc.data()['indexLine'] ?? '',
+        curentState: doc.data()['curentState'] ?? '',
         mainLineIndex: doc.data()['mainLineIndex'] ?? '',
         locationID: doc.data()['locationID'] ?? '',
         isPaidDriver: doc.data()['isPaidDriver'] ?? '',

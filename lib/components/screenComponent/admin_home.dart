@@ -1,4 +1,5 @@
 import 'package:AsyadLogistic/components/locationComponent/location_admin.dart';
+import 'package:AsyadLogistic/components/screenComponent/scanResult.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -12,12 +13,20 @@ import 'package:AsyadLogistic/components/widgetsComponent/CustomWidgets.dart';
 import 'package:AsyadLogistic/components/lineComponent/all_lines.dart';
 import '../../constants.dart';
 import 'admin_orders.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:flutter/services.dart';
 
-class AdminHome extends StatelessWidget {
+class AdminHome extends StatefulWidget {
   final String name;
   final bool type;
   AdminHome({this.name, this.type});
 
+  @override
+  _AdminHomeState createState() => _AdminHomeState();
+}
+
+class _AdminHomeState extends State<AdminHome> {
+  String _scanBarcode = 'Unknown';
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -29,9 +38,24 @@ class AdminHome extends StatelessWidget {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        drawer: AdminDrawer(name: name),
+        floatingActionButton: FloatingActionButton(
+          // onPressed: () => scanBarcodeNormal(),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ShowcaseDeliveryTimeline(
+                  name: widget.name,
+                ),
+              ),
+            );
+          },
+          backgroundColor: kAppBarColor,
+          child: Image.asset('assets/barcode-scanner.png'),
+        ),
+        drawer: AdminDrawer(name: widget.name),
         appBar: AppBar(
-          title: Text(name,
+          title: Text(widget.name,
               style: TextStyle(
                 color: Colors.white,
                 fontFamily: 'Amiri',
@@ -84,7 +108,7 @@ class AdminHome extends StatelessWidget {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              BusinessAdmin(name: name)),
+                                              BusinessAdmin(name: widget.name)),
                                     );
                                   }),
                               CustomContainer(
@@ -97,7 +121,7 @@ class AdminHome extends StatelessWidget {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              AdminOrders(name: name)),
+                                              AdminOrders(name: widget.name)),
                                     );
                                   }),
                             ],
@@ -116,7 +140,7 @@ class AdminHome extends StatelessWidget {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              DriverAdmin(name: name)),
+                                              DriverAdmin(name: widget.name)),
                                     );
                                   }),
                               CustomContainer(
@@ -130,7 +154,7 @@ class AdminHome extends StatelessWidget {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              AllLines(name: name)),
+                                              AllLines(name: widget.name)),
                                     );
                                   }),
                             ],
@@ -150,10 +174,10 @@ class AdminHome extends StatelessWidget {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              InvoiceAdmin(name: name)),
+                                              InvoiceAdmin(name: widget.name)),
                                     );
                                   }),
-                                  CustomContainer(
+                              CustomContainer(
                                   width: 0.28,
                                   height: 0.15,
                                   imagepath: AssetImage("assets/city-100.png"),
@@ -162,8 +186,8 @@ class AdminHome extends StatelessWidget {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) =>
-                                              AdminCitiesHome(name: name)),
+                                          builder: (context) => AdminCitiesHome(
+                                              name: widget.name)),
                                     );
                                   }),
                               // CustomContainer(
@@ -181,11 +205,13 @@ class AdminHome extends StatelessWidget {
                               //     }),
                             ],
                           ),
+                          Text('Scan result : $_scanBarcode\n',
+                              style: TextStyle(fontSize: 20))
                           //CustomBoxSize(height: 0.05),
                           // Row(
                           //   mainAxisAlignment: MainAxisAlignment.spaceAround,
                           //   children: <Widget>[
-                              
+
                           //     CustomContainer(
                           //         width: 0.28,
                           //         height: 0.15,
@@ -202,7 +228,7 @@ class AdminHome extends StatelessWidget {
                           //         }),
                           //   ],
                           // ),
-                         // CustomBoxSize(height: 0.05),
+                          // CustomBoxSize(height: 0.05),
                         ],
                       ),
                     ],
@@ -212,6 +238,27 @@ class AdminHome extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> scanBarcodeNormal() async {
+    String barcodeScanRes;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+          "#ff6666", "Cancel", true, ScanMode.BARCODE);
+      print(barcodeScanRes);
+    } on PlatformException {
+      barcodeScanRes = 'Failed to get platform version.';
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    // if (!mounted) return;
+
+    setState(() {
+      _scanBarcode = barcodeScanRes;
+    });
   }
 }
 
