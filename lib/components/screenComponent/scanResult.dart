@@ -1,4 +1,6 @@
 import 'package:AsyadLogistic/services/orderServices.dart';
+import 'package:flutter/scheduler.dart';
+import './rightChild.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_showcase/flutter_showcase.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -7,30 +9,36 @@ import '../../constants.dart';
 import 'package:AsyadLogistic/classes/order.dart';
 import 'package:AsyadLogistic/components/pages/drawer.dart';
 
-class ShowcaseDeliveryTimeline extends StatelessWidget {
+@immutable
+// ignore: must_be_immutable
+class ShowcaseDeliveryTimeline extends StatefulWidget {
   final String name;
   ShowcaseDeliveryTimeline({this.name});
-  bool orderStateisloading = false;
-  bool orderStateisReceived = false;
-  bool orderStateinStock = false;
-  bool orderStateisDelivery = false;
-  bool orderStateisDone = false;
-  bool orderStateisPaid = false;
-  bool orderStateisCancelld = false;
-  bool orderStateisReturn = false;
+
+  @override
+  _ShowcaseDeliveryTimelineState createState() =>
+      _ShowcaseDeliveryTimelineState();
+}
+
+class _ShowcaseDeliveryTimelineState extends State<ShowcaseDeliveryTimeline> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Map<String, bool> orderState = {
-    //   'isloading': false,
-    //   'isReceived': false,
-    //   'inStock': false,
-    //   'isDelivery': false,
-    //   'isCancelld': false,
-    //   'isReturn': false,
-    //   'isDone': false,
-    //   'isPaid': false,
-    // };
-
+    String currentState = "isloading";
+    var orderState = {
+      'isloading': 'acitve',
+      'isReceived': 'disable',
+      'inStock': 'disable',
+      'isDelivery': 'disable',
+      'isCancelld': 'none',
+      'isReturn': 'none',
+      'isDone': 'disable',
+      'isPaid': 'disable',
+    };
     return Scaffold(
       appBar: AppBar(
         title: Text("تتبع الطرد",
@@ -42,7 +50,8 @@ class ShowcaseDeliveryTimeline extends StatelessWidget {
         backgroundColor: kAppBarColor,
       ),
       endDrawer: Directionality(
-          textDirection: TextDirection.rtl, child: AdminDrawer(name: name)),
+          textDirection: TextDirection.rtl,
+          child: AdminDrawer(name: widget.name)),
       backgroundColor: Colors.white,
       body: Directionality(
         textDirection: TextDirection.rtl,
@@ -53,429 +62,353 @@ class ShowcaseDeliveryTimeline extends StatelessWidget {
               child: StreamBuilder<Order>(
                 stream: OrderServices(uid: '3mpwR4vYrH7bOeU3CZzv').orderByID,
                 builder: (context, snapshot) {
-                 Order order = snapshot.data;
-                  print(order.curentState);
-                  _setOrderState(
-                    order,
-                  );
-                  print(orderStateisReceived);
+                  if (snapshot.hasData) {
+                    Order order = snapshot.data;
+                    if (order.isReceived == true) {
+                      currentState = "isReceived";
+                      orderState['isloading'] = 'Done';
+                      orderState['isReceived'] = 'active';
+                      orderState['inStock'] = 'disable';
+                      orderState['isDelivery'] = 'disable';
+                      orderState['isDone'] = 'disable';
+                      orderState['isPaid'] = 'disable';
+                      orderState['isCancelld'] = 'none';
+                      orderState['isReturn'] = 'none';
+                    } else if (order.inStock == true) {
+                      currentState = "inStock";
+                      orderState['isloading'] = 'Done';
+                      orderState['isReceived'] = 'Done';
+                      orderState['inStock'] = 'active';
+                      orderState['isDelivery'] = 'disable';
+                      orderState['isDone'] = 'disable';
+                      orderState['isPaid'] = 'disable';
+                      orderState['isCancelld'] = 'none';
+                      orderState['isReturn'] = 'none';
+                    } else if (order.isDelivery == true) {
+                      currentState = "isDelivery";
+                      orderState['isloading'] = 'Done';
+                      orderState['isReceived'] = 'Done';
+                      orderState['inStock'] = 'Done';
+                      orderState['isDelivery'] = 'active';
+                      orderState['isDone'] = 'disable';
+                      orderState['isPaid'] = 'disable';
+                      orderState['isCancelld'] = 'none';
+                      orderState['isReturn'] = 'none';
+                    } else if (order.isDone == true && order.isPaid == false) {
+                      currentState = "isDone";
+                      orderState['isloading'] = 'Done';
+                      orderState['isReceived'] = 'Done';
+                      orderState['inStock'] = 'Done';
+                      orderState['isDelivery'] = 'Done';
+                      orderState['isDone'] = 'active';
+                      orderState['isPaid'] = 'disable';
+                      orderState['isCancelld'] = 'none';
+                      orderState['isReturn'] = 'none';
+                    } else if (order.isPaid == true && order.isDone == true) {
+                      currentState = "isPaid";
+                      orderState['isloading'] = 'Done';
+                      orderState['isReceived'] = 'Done';
+                      orderState['inStock'] = 'Done';
+                      orderState['isDelivery'] = 'Done';
+                      orderState['isDone'] = 'Done';
+                      orderState['isPaid'] = 'active';
+                      orderState['isCancelld'] = 'none';
+                      orderState['isReturn'] = 'none';
+                    } else if (order.isCancelld == true) {
+                      currentState = "isCancelld";
+                      orderState['isloading'] = 'Done';
+                      orderState['isReceived'] = 'active';
+                      orderState['inStock'] = 'disable';
+                      orderState['isDelivery'] = 'disable';
+                      orderState['isDone'] = 'disable';
+                      orderState['isPaid'] = 'disable';
+                      orderState['isCancelld'] = 'none';
+                      orderState['isReturn'] = 'none';
+                    } else if (order.isReturn == true) {
+                      currentState = "isReturn";
+                      orderState['isloading'] = 'Done';
+                      orderState['isReceived'] = 'active';
+                      orderState['inStock'] = 'disable';
+                      orderState['isDelivery'] = 'disable';
+                      orderState['isDone'] = 'disable';
+                      orderState['isPaid'] = 'disable';
+                      orderState['isCancelld'] = 'none';
+                      orderState['isReturn'] = 'none';
+                    }
 
-                  return Center(
-                    child: ListView(
-                      shrinkWrap: true,
-                      children: <Widget>[
-                        TimelineTile(
-                          alignment: TimelineAlign.manual,
-                          lineXY: 0.1,
-                          isFirst: true,
-                          indicatorStyle: IndicatorStyle(
-                            width: 20,
-                            color:
-                                KBadgeColorAndContainerBorderColorLoadingOrder,
-                            padding: EdgeInsets.all(6),
+                    print(currentState);
+                    return Center(
+                      child: ListView(
+                        shrinkWrap: true,
+                        children: <Widget>[
+                          TimelineTile(
+                            alignment: TimelineAlign.manual,
+                            lineXY: 0.1,
+                            isFirst: true,
+                            indicatorStyle: IndicatorStyle(
+                              width: 20,
+                              color: orderState['isloading'] == 'disable'
+                                  ? Color(0xFFDADADA)
+                                  : KBadgeColorAndContainerBorderColorLoadingOrder,
+                              padding: EdgeInsets.all(6),
+                            ),
+                            endChild: RightChild(
+                              disabled: orderState['isloading'] == 'disable'
+                                  ? true
+                                  : false,
+                              active: orderState['isloading'] == 'active'
+                                  ? true
+                                  : false,
+                              title: 'الطرد المحمل',
+                              message: 'اسم الشركة',
+                              dateTime: order.isLoadingDate,
+                              currentState: currentState,
+                              orderState: orderState["isloading"] + "loading",
+                            ),
+                            beforeLineStyle: LineStyle(
+                              color: orderState['isloading'] == 'disable'
+                                  ? Color(0xFFDADADA)
+                                  : orderState['isloading'] == 'active'
+                                      ? Color(0xFFDADADA)
+                                      : KBadgeColorAndContainerBorderColorLoadingOrder,
+                            ),
                           ),
-                          endChild: _RightChild(
-                            title: 'الطرد المحمل',
-                            message: 'اسم الشركة',
+                          TimelineTile(
+                            alignment: TimelineAlign.manual,
+                            lineXY: 0.1,
+                            indicatorStyle: IndicatorStyle(
+                              width: 20,
+                              color: orderState['isReceived'] == 'disable'
+                                  ? Color(0xFFDADADA)
+                                  : KBadgeColorAndContainerBorderColorRecipientOrder,
+                              padding: EdgeInsets.all(6),
+                            ),
+                            endChild: RightChild(
+                              disabled: orderState['isReceived'] == 'disable'
+                                  ? true
+                                  : false,
+                              active: orderState['isReceived'] == 'active'
+                                  ? true
+                                  : false,
+                              title: 'تم الإستلام',
+                              message: '',
+                              dateTime: order.isReceivedDate,
+                              currentState: currentState,
+                              orderState:
+                                  orderState["isReceived"] + "isReceived",
+                            ),
+                            beforeLineStyle: LineStyle(
+                              color: orderState['isReceived'] == 'disable'
+                                  ? Color(0xFFDADADA)
+                                  : KBadgeColorAndContainerBorderColorLoadingOrder,
+                            ),
+                            afterLineStyle: LineStyle(
+                              color: orderState['isReceived'] == 'disable'
+                                  ? Color(0xFFDADADA)
+                                  : orderState['isReceived'] == 'active'
+                                      ? Color(0xFFDADADA)
+                                      : KBadgeColorAndContainerBorderColorRecipientOrder,
+                            ),
                           ),
-                          beforeLineStyle: LineStyle(
-                            color:
-                                KBadgeColorAndContainerBorderColorLoadingOrder,
+                          TimelineTile(
+                            alignment: TimelineAlign.manual,
+                            lineXY: 0.1,
+                            indicatorStyle: IndicatorStyle(
+                              width: 20,
+                              color: orderState['inStock'] == 'disable'
+                                  ? Color(0xFFDADADA)
+                                  : KBadgeColorAndContainerBorderColorWithDriverOrders,
+                              padding: EdgeInsets.all(6),
+                            ),
+                            endChild: RightChild(
+                              disabled: orderState['inStock'] == 'disable'
+                                  ? true
+                                  : false,
+                              active: orderState['inStock'] == 'active'
+                                  ? true
+                                  : false,
+                              title: 'في المخزن',
+                              message: '',
+                              dateTime: order.inStockDate,
+                              currentState: currentState,
+                              orderState: orderState["inStock"] + "inStock",
+                            ),
+                            beforeLineStyle: LineStyle(
+                              color: orderState['inStock'] == 'disable'
+                                  ? Color(0xFFDADADA)
+                                  : KBadgeColorAndContainerBorderColorRecipientOrder,
+                            ),
+                            afterLineStyle: LineStyle(
+                              color: orderState['inStock'] == 'disable'
+                                  ? Color(0xFFDADADA)
+                                  : orderState['inStock'] == 'active'
+                                      ? Color(0xFFDADADA)
+                                      : KBadgeColorAndContainerBorderColorWithDriverOrders,
+                            ),
                           ),
-                        ),
-                        orderStateisReceived
-                            ? TimelineTile(
-                                alignment: TimelineAlign.manual,
-                                lineXY: 0.1,
-                                indicatorStyle: IndicatorStyle(
-                                  width: 20,
-                                  color:
-                                      KBadgeColorAndContainerBorderColorRecipientOrder,
-                                  padding: EdgeInsets.all(6),
-                                ),
-                                endChild: _RightChild(
-                                    // disabled: orderStateisReceived,
-                                    title: 'تم الإستلام',
-                                    message: '',
-                                    dateTime: order.isLoadingDate),
-                                beforeLineStyle: LineStyle(
-                                  color:
-                                      KBadgeColorAndContainerBorderColorRecipientOrder,
-                                ),
-                              )
-                            : TimelineTile(
-                                alignment: TimelineAlign.manual,
-                                lineXY: 0.1,
-                                indicatorStyle: IndicatorStyle(
-                                  width: 20,
-                                  color:
-                                      KBadgeColorAndContainerBorderColorRecipientOrder,
-                                  padding: EdgeInsets.all(6),
-                                ),
-                                endChild: _RightChild(
-                                  // disabled: orderStateisReceived,
-                                  title: 'تم الإستلام',
-                                  message: '',
-                                ),
-                                beforeLineStyle: LineStyle(
-                                  color:
-                                      KBadgeColorAndContainerBorderColorRecipientOrder,
-                                ),
-                              ),
-                        TimelineTile(
-                          alignment: TimelineAlign.manual,
-                          lineXY: 0.1,
-                          indicatorStyle:  IndicatorStyle(
-                            width: 20,
-                            color:
-                                KBadgeColorAndContainerBorderColorWithDriverOrders,
-                            padding: EdgeInsets.all(6),
+                          TimelineTile(
+                            alignment: TimelineAlign.manual,
+                            lineXY: 0.1,
+                            indicatorStyle: IndicatorStyle(
+                              width: 20,
+                              color: orderState['isDelivery'] == 'disable'
+                                  ? Color(0xFFDADADA)
+                                  : KBadgeColorAndContainerBorderColorAllOrder,
+                              padding: EdgeInsets.all(6),
+                            ),
+                            endChild: RightChild(
+                              disabled: orderState['isDelivery'] == 'disable'
+                                  ? true
+                                  : false,
+                              active: orderState['isDelivery'] == 'active'
+                                  ? true
+                                  : false,
+                              title: 'مع السائق',
+                              message: '',
+                              dateTime: order.isDeliveryDate,
+                              currentState: currentState,
+                              orderState:
+                                  orderState["isDelivery"] + "isDelivery",
+                            ),
+                            beforeLineStyle: LineStyle(
+                              color: orderState['isDelivery'] == 'disable'
+                                  ? Color(0xFFDADADA)
+                                  : KBadgeColorAndContainerBorderColorWithDriverOrders,
+                            ),
+                            afterLineStyle: LineStyle(
+                              color: orderState['isDelivery'] == 'disable'
+                                  ? Color(0xFFDADADA)
+                                  : orderState['isDelivery'] == 'active'
+                                      ? Color(0xFFDADADA)
+                                      : KBadgeColorAndContainerBorderColorAllOrder,
+                            ),
                           ),
-                          endChild:  _RightChild(
-                            title: 'في المخزن',
-                            message: '',
+                          TimelineTile(
+                            alignment: TimelineAlign.manual,
+                            lineXY: 0.1,
+                            indicatorStyle: IndicatorStyle(
+                              width: 20,
+                              color: orderState['isDone'] == 'disable'
+                                  ? Color(0xFFDADADA)
+                                  : KBadgeColorAndContainerBorderColorReadyOrders,
+                              padding: EdgeInsets.all(6),
+                            ),
+                            endChild: RightChild(
+                              disabled: orderState['isDone'] == 'disable'
+                                  ? true
+                                  : false,
+                              active: orderState['isDone'] == 'active'
+                                  ? true
+                                  : false,
+                              title: 'تم التوصيل',
+                              message: '',
+                              dateTime: order.isDoneDate,
+                              currentState: currentState,
+                              orderState: orderState["isDone"] + "isDone",
+                            ),
+                            beforeLineStyle: LineStyle(
+                              color: orderState['isDone'] == 'disable'
+                                  ? Color(0xFFDADADA)
+                                  : KBadgeColorAndContainerBorderColorAllOrder,
+                            ),
+                            afterLineStyle: LineStyle(
+                              color: orderState['isDone'] == 'disable'
+                                  ? Color(0xFFDADADA)
+                                  : orderState['isDone'] == 'active'
+                                      ? Color(0xFFDADADA)
+                                      : KBadgeColorAndContainerBorderColorReadyOrders,
+                            ),
                           ),
-                          beforeLineStyle:  LineStyle(
-                            color:
-                                KBadgeColorAndContainerBorderColorWithDriverOrders,
+                          TimelineTile(
+                            alignment: TimelineAlign.manual,
+                            lineXY: 0.1,
+                            isLast: true,
+                            indicatorStyle: IndicatorStyle(
+                              width: 20,
+                              color: orderState['isPaid'] == 'disable'
+                                  ? Color(0xFFDADADA)
+                                  : KBadgeColorAndContainerBorderColorPaidOrders,
+                              padding: EdgeInsets.all(6),
+                            ),
+                            endChild: RightChild(
+                              disabled: orderState['isPaid'] == 'disable'
+                                  ? true
+                                  : false,
+                              active: orderState['isPaid'] == 'active'
+                                  ? true
+                                  : false,
+                              title: 'تم التحصيل',
+                              message: '',
+                              dateTime: order.isPaidDate,
+                              currentState: currentState,
+                              orderState: orderState["isPaid"] + "isPaid",
+                            ),
+                            beforeLineStyle: LineStyle(
+                              color: orderState['isPaid'] == 'disable'
+                                  ? Color(0xFFDADADA)
+                                  : orderState['isPaid'] == 'active'
+                                      ? KBadgeColorAndContainerBorderColorReadyOrders
+                                  : Color(0xFFDADADA),
+                            ),
                           ),
-                        ),
-                        TimelineTile(
-                          alignment: TimelineAlign.manual,
-                          lineXY: 0.1,
-                          indicatorStyle:  IndicatorStyle(
-                            width: 20,
-                            color: KBadgeColorAndContainerBorderColorAllOrder,
-                            padding: EdgeInsets.all(6),
+                          TimelineTile(
+                            alignment: TimelineAlign.manual,
+                            lineXY: 0.1,
+                            isLast: true,
+                            indicatorStyle: IndicatorStyle(
+                              width: 20,
+                              color:
+                                  KBadgeColorAndContainerBorderColorReturnOrders,
+                              padding: EdgeInsets.all(6),
+                            ),
+                            endChild: RightChild(
+                              disabled: true,
+                              title: 'طرد راجع',
+                              message: '',
+                              dateTime: order.isReturnDate,
+                              currentState: currentState,
+                              orderState: orderState["isReturn"] + "isReturn",
+                            ),
+                            beforeLineStyle: LineStyle(
+                              color:
+                                  KBadgeColorAndContainerBorderColorReturnOrders,
+                            ),
                           ),
-                          endChild:  _RightChild(
-                            title: 'مع السائق',
-                            message: '',
+                          TimelineTile(
+                            alignment: TimelineAlign.manual,
+                            lineXY: 0.1,
+                            isLast: true,
+                            indicatorStyle: const IndicatorStyle(
+                              width: 20,
+                              color:
+                                  KBadgeColorAndContainerBorderColorCancelledOrders,
+                              padding: EdgeInsets.all(6),
+                            ),
+                            endChild: RightChild(
+                              disabled: true,
+                              title: 'طرد ملغي',
+                              message: '',
+                              dateTime: order.isCancelldDate,
+                              currentState: currentState,
+                              orderState:
+                                  orderState["isCancelld"] + "isCancelld",
+                            ),
+                            beforeLineStyle: LineStyle(
+                              color:
+                                  KBadgeColorAndContainerBorderColorCancelledOrders,
+                            ),
                           ),
-                          beforeLineStyle:  LineStyle(
-                            color: KBadgeColorAndContainerBorderColorAllOrder,
-                          ),
-                        ),
-                        TimelineTile(
-                          alignment: TimelineAlign.manual,
-                          lineXY: 0.1,
-                          indicatorStyle:  IndicatorStyle(
-                            width: 20,
-                            color:
-                                KBadgeColorAndContainerBorderColorReadyOrders,
-                            padding: EdgeInsets.all(6),
-                          ),
-                          endChild:  _RightChild(
-                            title: 'تم التوصيل',
-                            message: '',
-                          ),
-                          beforeLineStyle:  LineStyle(
-                            color:
-                                KBadgeColorAndContainerBorderColorReadyOrders,
-                          ),
-                          afterLineStyle:  LineStyle(
-                            color:
-                                KBadgeColorAndContainerBorderColorReadyOrders,
-                          ),
-                        ),
-                        TimelineTile(
-                          alignment: TimelineAlign.manual,
-                          lineXY: 0.1,
-                          indicatorStyle:  IndicatorStyle(
-                            width: 20,
-                            color:
-                                KBadgeColorAndContainerBorderColorReturnOrders,
-                            padding: EdgeInsets.all(6),
-                          ),
-                          endChild:  _RightChild(
-                            disabled: true,
-                            title: 'طرد راجع',
-                            message: '',
-                          ),
-                          beforeLineStyle:  LineStyle(
-                            color:
-                                KBadgeColorAndContainerBorderColorReturnOrders,
-                          ),
-                        ),
-                        TimelineTile(
-                          alignment: TimelineAlign.manual,
-                          lineXY: 0.1,
-                          isLast: true,
-                          indicatorStyle: const IndicatorStyle(
-                            width: 20,
-                            color:
-                                KBadgeColorAndContainerBorderColorCancelledOrders,
-                            padding: EdgeInsets.all(6),
-                          ),
-                          endChild:  _RightChild(
-                            disabled: true,
-                            title: 'طرد ملغي',
-                            message: '',
-                          ),
-                          beforeLineStyle: LineStyle(
-                            color:
-                                KBadgeColorAndContainerBorderColorCancelledOrders,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
+                        ],
+                      ),
+                    );
+                  } else {
+                    return Text("Loading ...");
+                  }
                 },
               ),
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  _setOrderState(Order order) {
-    switch (order.curentState) {
-      case 'isLoading':
-        {
-          // orderState['isloading'] = true;
-          // orderState['isReceived'] = false;
-          // orderState['inStock'] = false;
-          // orderState['isDelivery'] = false;
-          // orderState['isDone'] = false;
-          // orderState['isPaid'] = false;
-          // orderState['isCancelld'] = false;
-          // orderState['isReturn'] = false;
-          orderStateisloading = true;
-          orderStateisReceived = false;
-          orderStateinStock = false;
-          orderStateisDelivery = false;
-          orderStateisDone = false;
-          orderStateisPaid = false;
-          orderStateisCancelld = false;
-          orderStateisReturn = false;
-        }
-        break;
-      case 'isReceived':
-        {
-          // orderState['isloading'] = true;
-          // orderState['isReceived'] = true;
-          // orderState['inStock'] = false;
-          // orderState['isDelivery'] = false;
-          // orderState['isDone'] = false;
-          // orderState['isPaid'] = false;
-          // orderState['isCancelld'] = false;
-          // orderState['isReturn'] = false;
-          orderStateisloading = true;
-          orderStateisReceived = true;
-          orderStateinStock = false;
-          orderStateisDelivery = false;
-          orderStateisDone = false;
-          orderStateisPaid = false;
-          orderStateisCancelld = false;
-          orderStateisReturn = false;
-        }
-        break;
-      case 'inStock':
-        {
-          // orderState['isloading'] = true;
-          // orderState['isReceived'] = true;
-          // orderState['inStock'] = true;
-          // orderState['isDelivery'] = false;
-          // orderState['isDone'] = false;
-          // orderState['isPaid'] = false;
-          // orderState['isCancelld'] = false;
-          // orderState['isReturn'] = false;
-          orderStateisloading = true;
-          orderStateisReceived = true;
-          orderStateinStock = true;
-          orderStateisDelivery = false;
-          orderStateisDone = false;
-          orderStateisPaid = false;
-          orderStateisCancelld = false;
-          orderStateisReturn = false;
-        }
-        break;
-      case 'isCancelld':
-        {
-          // orderState['isloading'] = true;
-          // orderState['isReceived'] = true;
-          // orderState['inStock'] = true;
-          // orderState['isDelivery'] = true;
-          // orderState['isDone'] = false;
-          // orderState['isPaid'] = false;
-          // orderState['isCancelld'] = true;
-          // orderState['isReturn'] = false;
-          orderStateisloading = true;
-          orderStateisReceived = true;
-          orderStateinStock = true;
-          orderStateisDelivery = true;
-          orderStateisDone = false;
-          orderStateisPaid = false;
-          orderStateisCancelld = true;
-          orderStateisReturn = false;
-        }
-        break;
-
-      case 'isDelivery':
-        {
-          // orderState['isloading'] = true;
-          // orderState['isReceived'] = true;
-          // orderState['inStock'] = true;
-          // orderState['isDelivery'] = true;
-          // orderState['isDone'] = false;
-          // orderState['isPaid'] = false;
-          // orderState['isCancelld'] = false;
-          // orderState['isReturn'] = false;
-          orderStateisloading = true;
-          orderStateisReceived = true;
-          orderStateinStock = true;
-          orderStateisDelivery = true;
-          orderStateisDone = false;
-          orderStateisPaid = false;
-          orderStateisCancelld = false;
-          orderStateisReturn = false;
-        }
-        break;
-      case 'isDone':
-        {
-          // orderState['isloading'] = true;
-          // orderState['isReceived'] = true;
-          // orderState['inStock'] = true;
-          // orderState['isDelivery'] = true;
-          // orderState['isDone'] = true;
-          // orderState['isPaid'] = false;
-          // orderState['isCancelld'] = false;
-          // orderState['isReturn'] = false;
-          orderStateisloading = true;
-          orderStateisReceived = true;
-          orderStateinStock = true;
-          orderStateisDelivery = true;
-          orderStateisDone = true;
-          orderStateisPaid = false;
-          orderStateisCancelld = false;
-          orderStateisReturn = false;
-        }
-        break;
-      case 'isReturn':
-        {
-          // orderState['isloading'] = true;
-          // orderState['isReceived'] = true;
-          // orderState['inStock'] = true;
-          // orderState['isDelivery'] = true;
-          // orderState['isDone'] = false;
-          // orderState['isPaid'] = false;
-          // orderState['isCancelld'] = false;
-          // orderState['isReturn'] = true;
-          orderStateisloading = true;
-          orderStateisReceived = true;
-          orderStateinStock = true;
-          orderStateisDelivery = true;
-          orderStateisDone = false;
-          orderStateisPaid = false;
-          orderStateisCancelld = false;
-          orderStateisReturn = true;
-        }
-        break;
-      case 'isPaid':
-        {
-          // orderState['isloading'] = true;
-          // orderState['isReceived'] = true;
-          // orderState['inStock'] = true;
-          // orderState['isDelivery'] = true;
-          // orderState['isDone'] = true;
-          // orderState['isPaid'] = false;
-          // orderState['isCancelld'] = false;
-          // orderState['isReturn'] = false;
-          orderStateisloading = true;
-          orderStateisReceived = true;
-          orderStateinStock = true;
-          orderStateisDelivery = true;
-          orderStateisDone = true;
-          orderStateisPaid = false;
-          orderStateisCancelld = false;
-          orderStateisReturn = false;
-        }
-        break;
-      default:
-        {
-          return null;
-        }
-        break;
-    }
-  }
-}
-
-class _RightChild extends StatelessWidget {
-   _RightChild({
-    this.title,
-    this.message,
-    this.dateTime,
-    this.disabled = false,
-  }) ;
-
-  final String title;
-  final String message;
-  final bool disabled;
-  final DateTime dateTime;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding:  EdgeInsets.all(16.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: <Widget>[
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-               SizedBox(height: 6),
-              Text(
-                title,
-                style: GoogleFonts.yantramanav(
-                  color: disabled
-                      ?  Color(0xFFBABABA)
-                      :  Color(0xFF636564),
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              // SizedBox(height: 6),
-              // Text(
-              //   message,
-              //   style: GoogleFonts.yantramanav(
-              //     color: disabled
-              //         ?  Color(0xFFD5D5D5)
-              //         :  Color(0xFF636564),
-              //     fontSize: 16,
-              //   ),
-              // ),
-            ],
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-               SizedBox(height: 6),
-              Text(
-                "10/10/2020",
-                style: GoogleFonts.yantramanav(
-                  color: disabled
-                      ?  Color(0xFFBABABA)
-                      :  Color(0xFF636564),
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-               SizedBox(height: 6),
-              Text(
-                "10:11 AM",
-                style: GoogleFonts.yantramanav(
-                  color: disabled
-                      ?  Color(0xFFD5D5D5)
-                      :  Color(0xFF636564),
-                  fontSize: 16,
-                ),
-              ),
-            ],
-          ),
-        ],
       ),
     );
   }

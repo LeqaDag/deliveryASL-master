@@ -73,8 +73,7 @@ class _CustomCardCityState extends State<CustomCardCity> {
               icon: Icon(Icons.edit, color: Colors.green),
               onPressed: () {
                 return showDialog<String>(
-                  context: context,
-                  child: new AlertDialog(
+                  builder: (context) => new AlertDialog(
                     contentPadding: const EdgeInsets.all(16.0),
                     content: new Row(
                       children: <Widget>[
@@ -133,7 +132,7 @@ class _CustomCardCityState extends State<CustomCardCity> {
                             Navigator.of(context).pop();
                           })
                     ],
-                  ),
+                  ), context: context,
                 );
               },
             ),
