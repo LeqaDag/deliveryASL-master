@@ -67,8 +67,8 @@ class CancelldInfo extends StatelessWidget {
                                   child: ListView(
                                     children: <Widget>[
                                       CustomTitle(
-                                          "معلومات الاتصال بـ ${business.name}"),
-
+                                        "معلومات الاتصال بـ ${business.name}",
+                                      ),
                                       GestureDetector(
                                           onTap: () {
                                             print(customer.phoneNumber

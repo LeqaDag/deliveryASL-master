@@ -16,7 +16,7 @@ class RightChild extends StatefulWidget {
   });
 
   String title;
-  final String message;
+  String message;
   bool disabled;
   DateTime dateTime;
   String currentState;
@@ -57,16 +57,18 @@ class _RightChildState extends State<RightChild> {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              // SizedBox(height: 6),
-              // Text(
-              //   message,
-              //   style: GoogleFonts.yantramanav(
-              //     color: disabled
-              //         ?  Color(0xFFD5D5D5)
-              //         :  Color(0xFF636564),
-              //     fontSize: 16,
-              //   ),
-              // ),
+              SizedBox(height: 6),
+              widget.message != null
+                  ? Text(
+                      widget.message,
+                      style: GoogleFonts.yantramanav(
+                        color: widget.disabled
+                            ? Color(0xFFD5D5D5)
+                            : Color(0xFF636564),
+                        fontSize: 16,
+                      ),
+                    )
+                  : Container(),
             ],
           ),
           Column(
@@ -77,7 +79,7 @@ class _RightChildState extends State<RightChild> {
               Text(
                 intl.DateFormat('yyyy-MM-dd').format(widget.dateTime),
                 style: GoogleFonts.yantramanav(
-                  color:widget.disabled
+                  color: widget.disabled
                       ? Color(0xFFBABABA)
                       : widget.active
                           ? Color(0xff316686)
@@ -90,8 +92,7 @@ class _RightChildState extends State<RightChild> {
               Text(
                 intl.DateFormat.jm().format(widget.dateTime),
                 style: GoogleFonts.yantramanav(
-                  color:
-                      widget.disabled
+                  color: widget.disabled
                       ? Color(0xFFBABABA)
                       : widget.active
                           ? Color(0xff316686)
