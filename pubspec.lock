@@ -833,7 +833,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.19"
-<<<<<<< HEAD
   timeline_tile:
     dependency: "direct main"
     description:
@@ -841,8 +840,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
-=======
->>>>>>> master
   timing:
     dependency: transitive
     description:
@@ -963,9 +960,5 @@ packages:
     source: hosted
     version: "2.2.1"
 sdks:
-<<<<<<< HEAD
   dart: ">=2.12.0 <3.0.0"
-=======
-  dart: ">=2.12.0-0.0 <3.0.0"
->>>>>>> master
   flutter: ">=1.22.2"
