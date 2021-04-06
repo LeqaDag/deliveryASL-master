@@ -1,3 +1,4 @@
+import 'package:AsyadLogistic/components/searchComponent/lineSearch.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:AsyadLogistic/components/lineComponent/mainLineComponent/listMainLine.dart';
@@ -25,12 +26,28 @@ class AllLines extends StatelessWidget {
             backgroundColor: kAppBarColor,
             centerTitle: true,
             actions: <Widget>[
-              IconButton(
-                  icon: Icon(
-                    Icons.search,
-                    color: Colors.white,
-                  ),
-                  onPressed: null),
+              StreamBuilder<List<MainLine>>(
+                stream: MainLineServices().mainLines,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    List<MainLine> mainLineList = snapshot.data;
+                    return IconButton(
+                      icon: Icon(
+                        Icons.search,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        showSearch(
+                          context: context,
+                          delegate: LineSearch(list: mainLineList, name: name),
+                        );
+                      },
+                    );
+                  } else {
+                    return Container();
+                  }
+                },
+              ),
               IconButton(
                 onPressed: () {
                   Navigator.push(

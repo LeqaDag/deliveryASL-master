@@ -1,3 +1,4 @@
+import 'package:AsyadLogistic/components/searchComponent/businessSearch.dart';
 import 'package:flutter/material.dart';
 import 'package:AsyadLogistic/classes/business.dart';
 import 'package:AsyadLogistic/components/businessComponent/addComponent/add_company.dart';
@@ -27,17 +28,28 @@ class BusinessAdmin extends StatelessWidget {
           centerTitle: true,
           backgroundColor: kAppBarColor,
           actions: <Widget>[
-            IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => CloudFirestoreSearch()),
-                );
-              },
-              icon: Icon(Icons.search),
-              color: Colors.white,
-            ),
+            StreamBuilder<List<Business>>(
+                stream: BusinessServices().business,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    List<Business> businessList = snapshot.data;
+                    return IconButton(
+                      onPressed: () {
+                        showSearch(
+                          context: context,
+                          delegate: BusinessSearch(
+                            list: businessList,
+                            name: name,
+                          ),
+                        );
+                      },
+                      icon: Icon(Icons.search),
+                      color: Colors.white,
+                    );
+                  } else {
+                    return Container();
+                  }
+                }),
             IconButton(
               onPressed: () {
                 Navigator.push(

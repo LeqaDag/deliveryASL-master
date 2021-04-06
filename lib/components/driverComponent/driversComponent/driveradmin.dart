@@ -1,3 +1,4 @@
+import 'package:AsyadLogistic/components/searchComponent/driversSearch.dart';
 import 'package:flutter/material.dart';
 import 'package:AsyadLogistic/classes/driver.dart';
 import 'package:AsyadLogistic/components/driverComponent/addComponent/add.dart';
@@ -61,11 +62,28 @@ class DriverAdmin extends StatelessWidget {
                   centerTitle: true,
                   backgroundColor: kAppBarColor,
                   actions: <Widget>[
-                    IconButton(
-                      onPressed: () {},
-                      icon: Icon(Icons.search),
-                      color: Colors.white,
-                    ),
+                    StreamBuilder<List<Driver>>(
+                        stream: DriverServices().drivers,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            List<Driver> driverList = snapshot.data;
+                            return IconButton(
+                              onPressed: () {
+                                showSearch(
+                                  context: context,
+                                  delegate: DriversSearch(
+                                    list: driverList,
+                                    name: name,
+                                  ),
+                                );
+                              },
+                              icon: Icon(Icons.search),
+                              color: Colors.white,
+                            );
+                          } else {
+                            return Container();
+                          }
+                        }),
                     IconButton(
                       onPressed: () {
                         Navigator.push(

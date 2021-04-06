@@ -38,6 +38,7 @@ dependencies:
   english_words:
   toast: ^0.1.5
   flutter_phoenix: ^0.1.0
+  get: ^4.1.2
   flutter_barcode_scanner: ^1.0.2
   # bubble_showcase: ^1.0.0
   flutter_showcase: ^0.1.0

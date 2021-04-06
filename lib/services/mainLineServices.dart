@@ -141,4 +141,12 @@ class MainLineServices {
         .get()
         .then((value) => value.data()['cityName']);
   }
+
+  Stream<List<MainLine>> searchMainLine(String name) {
+    return mainLineCollection
+        .where('name', isEqualTo : name.substring(0, 1).toUpperCase())
+        .where('isArchived', isEqualTo: false)
+        .snapshots()
+        .map(_mainLineListFromSnapshot);
+  }
 }
