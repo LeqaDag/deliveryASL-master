@@ -19,7 +19,8 @@ import 'package:AsyadLogistic/components/pages/drawer.dart';
 // ignore: must_be_immutable
 class ShowcaseDeliveryTimeline extends StatefulWidget {
   final String name;
-  ShowcaseDeliveryTimeline({this.name});
+  final String barcode;
+  ShowcaseDeliveryTimeline({this.name, this.barcode});
 
   @override
   _ShowcaseDeliveryTimelineState createState() =>
@@ -65,11 +66,11 @@ class _ShowcaseDeliveryTimelineState extends State<ShowcaseDeliveryTimeline> {
           children: <Widget>[
             _Header(),
             Expanded(
-              child: StreamBuilder<Order>(
-                stream: OrderServices(uid: '3mpwR4vYrH7bOeU3CZzv').orderByID,
+              child: StreamBuilder<List<Order>>(
+                stream: OrderServices(barcode: widget.barcode).orderByBarcode,
                 builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    Order order = snapshot.data;
+                  if (snapshot.hasData && snapshot.data.length > 0) {
+                    Order order = snapshot.data[0];
                     if (order.isReceived == true) {
                       currentState = "isReceived";
                       orderState['isloading'] = 'Done';
@@ -493,6 +494,8 @@ class _ShowcaseDeliveryTimelineState extends State<ShowcaseDeliveryTimeline> {
                         ],
                       ),
                     );
+                  } else if (snapshot.hasError) {
+                    return Text("Loading ...");
                   } else {
                     return Text("Loading ...");
                   }

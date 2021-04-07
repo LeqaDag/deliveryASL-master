@@ -39,17 +39,17 @@ class _AdminHomeState extends State<AdminHome> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         floatingActionButton: FloatingActionButton(
-          // onPressed: () => scanBarcodeNormal(),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ShowcaseDeliveryTimeline(
-                  name: widget.name,
-                ),
-              ),
-            );
-          },
+          onPressed: () => scanBarcodeNormal(),
+          // onPressed: () {
+          //   Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //       builder: (context) => ShowcaseDeliveryTimeline(
+          //         name: widget.name,
+          //       ),
+          //     ),
+          //   );
+          // },
           backgroundColor: kAppBarColor,
           child: Image.asset('assets/barcode-scanner.png'),
         ),
@@ -245,7 +245,12 @@ class _AdminHomeState extends State<AdminHome> {
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
-          "#ff6666", "Cancel", true, ScanMode.BARCODE);
+        "#ff6666",
+        "Cancel",
+        true,
+        ScanMode.BARCODE,
+      );
+
       print(barcodeScanRes);
     } on PlatformException {
       barcodeScanRes = 'Failed to get platform version.';
@@ -259,6 +264,15 @@ class _AdminHomeState extends State<AdminHome> {
     setState(() {
       _scanBarcode = barcodeScanRes;
     });
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ShowcaseDeliveryTimeline(
+          barcode: _scanBarcode,
+          name: widget.name,
+        ),
+      ),
+    );
   }
 }
 

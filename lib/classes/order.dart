@@ -10,7 +10,7 @@ class Order {
   String note;
 
   int driverPrice;
-  String curentState;
+  String barcode;
   //this all order state in application
   bool isLoading;
   bool isReceived;
@@ -93,6 +93,6 @@ class Order {
     this.isPaidDate,
     this.inStockDate,
     this.paidDriverDate,
-    this.curentState ="isLoading",
+    this.barcode,
   });
 }

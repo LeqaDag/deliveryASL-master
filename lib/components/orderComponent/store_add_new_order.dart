@@ -941,6 +941,7 @@ class _AddNewOdersState extends State<AddNewOders> {
               } else {
                 isUrgent = true;
               }
+              print(DateTime.now().year.toString()+DateTime.now().month.toString()+"000000");
               await OrderServices().addOrderData(new Order(
                 price: int.parse(orderPrice.text),
                 totalPrice: orderTotalPrice,
@@ -976,6 +977,7 @@ class _AddNewOdersState extends State<AddNewOders> {
                 isDoneDate: DateTime.now(),
                 isPaidDate: DateTime.now(),
                 inStockDate: DateTime.now(),
+                barcode: DateTime.now().year.toString()+DateTime.now().month.toString()+"000000"
               ));
               Toast.show("تم اضافة الطلبية بنجاح", context,
                   duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);

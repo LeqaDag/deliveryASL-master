@@ -10,15 +10,18 @@ class OrderServices {
   final String locationID;
   final int driverPrice;
   final String invoiceType;
-// locationID
-  OrderServices(
-      {this.uid,
-      this.businesID,
-      this.orderState,
-      this.driverID,
-      this.locationID,
-      this.driverPrice,
-      this.invoiceType});
+  final String barcode;
+
+  OrderServices({
+    this.uid,
+    this.businesID,
+    this.orderState,
+    this.driverID,
+    this.locationID,
+    this.driverPrice,
+    this.invoiceType,
+    this.barcode,
+  });
 
   final CollectionReference orderCollection =
       FirebaseFirestore.instance.collection('orders');
@@ -62,7 +65,7 @@ class OrderServices {
       'isDoneDate': order.isDoneDate,
       'isPaidDate': order.isPaidDate,
       'inStockDate': order.inStockDate,
-      'curentState': order.curentState,
+      'barcode': order.barcode,
     });
   }
 
@@ -91,7 +94,6 @@ class OrderServices {
     });
   }
 
-
   Future<void> updateOrderData(Order order) async {
     return await orderCollection.doc(uid).update({
       'price': order.price,
@@ -99,7 +101,7 @@ class OrderServices {
       'isUrgent': order.isUrgent,
       'description': order.description,
       'note': order.note,
-     // 'customerID': order.customerID,
+      // 'customerID': order.customerID,
       'businesID': order.businesID,
       'sublineID': order.sublineID,
       'locationID': order.locationID,
@@ -136,7 +138,7 @@ class OrderServices {
       sublineID: snapshot.data()['sublineID'],
       locationID: snapshot.data()['locationID'],
       indexLine: snapshot.data()['indexLine'],
-      curentState: snapshot.data()['curentState'],
+      barcode: snapshot.data()['barcode'],
       mainLineIndex: snapshot.data()['mainLineIndex'],
       mainlineID: snapshot.data()['mainlineID'],
       isPaidDriver: snapshot.data()['isPaidDriver'],
@@ -179,7 +181,7 @@ class OrderServices {
         isArchived: doc.data()['isArchived'] ?? '',
         // driverPrice: doc.data()['driverPrice'] ?? '',
         indexLine: doc.data()['indexLine'] ?? '',
-        curentState: doc.data()['curentState'] ?? '',
+        barcode: doc.data()['barcode'] ?? '',
         mainLineIndex: doc.data()['mainLineIndex'] ?? '',
         locationID: doc.data()['locationID'] ?? '',
         isPaidDriver: doc.data()['isPaidDriver'] ?? '',
@@ -199,6 +201,14 @@ class OrderServices {
 
   Stream<Order> get orderData {
     return orderCollection.doc(uid).snapshots().map(_orderDataFromSnapshot);
+  }
+
+  Stream<List<Order>> get orderByBarcode {
+    return orderCollection
+        .where('isArchived', isEqualTo: false)
+        .where('barcode', isEqualTo: barcode)
+        .snapshots()
+        .map(_orderListFromSnapshot);
   }
 
   Stream<Order> get orderByID {

@@ -16,7 +16,8 @@ import 'package:AsyadLogistic/services/businessServices.dart';
 import 'package:AsyadLogistic/services/customerServices.dart';
 import 'package:AsyadLogistic/services/orderServices.dart';
 import 'package:AsyadLogistic/services/subLineServices.dart';
-
+import 'package:intl/intl.dart';
+import 'dart:ui' as ui;
 import 'package:toast/toast.dart';
 
 class AddOrder extends StatefulWidget {
@@ -35,7 +36,6 @@ class _AddOrderState extends State<AddOrder> {
   List<Business> business;
 
   List<Location> locations;
-
   String cityID = "0",
       mainline,
       mainlineID,
@@ -58,6 +58,13 @@ class _AddOrderState extends State<AddOrder> {
   reset() {
     _key.currentState.reset();
   }
+
+  // void maxBarcodeValue() async {
+  //   String barcode = await OrderServices().maxBarcodeValue;
+  //   setState(() {
+  //     maxBarcode = barcode.substring(6);
+  //   });
+  // }
 
   @override
   void initState() {
@@ -88,9 +95,10 @@ class _AddOrderState extends State<AddOrder> {
   //
   @override
   Widget build(BuildContext context) {
+    // print(maxBarcode + "fngjfdngb");
     return Scaffold(
       endDrawer: Directionality(
-          textDirection: TextDirection.rtl,
+          textDirection: ui.TextDirection.rtl,
           child: AdminDrawer(name: widget.name)),
       appBar: AppBar(
         title: Text('اضافة طلبية جديدة',
@@ -99,7 +107,7 @@ class _AddOrderState extends State<AddOrder> {
         backgroundColor: Color(0xff316686),
       ),
       body: Directionality(
-          textDirection: TextDirection.rtl,
+          textDirection: ui.TextDirection.rtl,
           child: SingleChildScrollView(
             child: Container(
               padding: EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
@@ -317,10 +325,10 @@ class _AddOrderState extends State<AddOrder> {
                       ],
                     ),
                     Row(
-                    children: <Widget>[
-                      _deliveryType(),
-                    ],
-                  ),
+                      children: <Widget>[
+                        _deliveryType(),
+                      ],
+                    ),
                     _notes(orderNote),
                     _addNewOrderButton(),
                   ],
@@ -543,7 +551,7 @@ class _AddOrderState extends State<AddOrder> {
     }
   }
 
-Widget _orderDescription(TextEditingController fieldController) {
+  Widget _orderDescription(TextEditingController fieldController) {
     return Container(
       margin: EdgeInsets.all(10),
       child: Expanded(
@@ -562,7 +570,7 @@ Widget _orderDescription(TextEditingController fieldController) {
       ),
     );
   }
-  
+
   Widget _mainLineChoice() {
     print(locationID);
     if (isLocationSelected == true) {
@@ -926,106 +934,173 @@ Widget _orderDescription(TextEditingController fieldController) {
   }
 
   Widget _addNewOrderButton() {
-    return Container(
-      child: RaisedButton(
-          padding: EdgeInsets.only(right: 60, left: 60),
-          color: Color(0xff73A16A),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18.0),
-            side: BorderSide(color: Color(0xff73A16A)),
-          ),
-          onPressed: () async {
-            if (_formKey.currentState.validate()) {
-              // print(int.parse(orderPrice.text) +
-              //     int.parse(deliveryPrice));
+    return StreamBuilder<List<Order>>(
+        stream: OrderServices().orders,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            List<Order> orders = snapshot.data;
+            orders.sort((a, b) => a.barcode.compareTo(b.barcode));
+            return Container(
+              child: RaisedButton(
+                  padding: EdgeInsets.only(right: 60, left: 60),
+                  color: Color(0xff73A16A),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18.0),
+                    side: BorderSide(color: Color(0xff73A16A)),
+                  ),
+                  onPressed: () async {
+                    if (_formKey.currentState.validate()) {
+                      // print(int.parse(orderPrice.text) +
+                      //     int.parse(deliveryPrice));
 
-              Customer customer;
-              if (customerPhoneNumberAdditional.text == '') {
-                customer = new Customer(
-                  name: customerName.text,
-                  phoneNumber: int.parse(customerPhoneNumber.text),
-                  phoneNumberAdditional: int.parse("0"),
-                  cityID: cityID,
-                  cityName: cityName,
-                  address: customerAddress.text,
-                  businesID: businessID,
-                  sublineName: sublineName,
-                  isArchived: false,
-                );
-              } else {
-                customer = new Customer(
-                  name: customerName.text,
-                  phoneNumber: int.parse(customerPhoneNumber.text),
-                  phoneNumberAdditional:
-                      int.parse(customerPhoneNumberAdditional.text),
-                  cityID: cityID,
-                  cityName: cityName,
-                  address: customerAddress.text,
-                  businesID: businessID,
-                  sublineName: sublineName,
-                  isArchived: false,
-                );
-              }
-              bool isUrgent = false;
-              String customerID =
-                  await CustomerServices().addcustomerData(customer);
+                      // setState(() {
+                      //   maxBarcodeValue();
+                      // });
+                      Customer customer;
+                      if (customerPhoneNumberAdditional.text == '') {
+                        customer = new Customer(
+                          name: customerName.text,
+                          phoneNumber: int.parse(customerPhoneNumber.text),
+                          phoneNumberAdditional: int.parse("0"),
+                          cityID: cityID,
+                          cityName: cityName,
+                          address: customerAddress.text,
+                          businesID: businessID,
+                          sublineName: sublineName,
+                          isArchived: false,
+                        );
+                      } else {
+                        customer = new Customer(
+                          name: customerName.text,
+                          phoneNumber: int.parse(customerPhoneNumber.text),
+                          phoneNumberAdditional:
+                              int.parse(customerPhoneNumberAdditional.text),
+                          cityID: cityID,
+                          cityName: cityName,
+                          address: customerAddress.text,
+                          businesID: businessID,
+                          sublineName: sublineName,
+                          isArchived: false,
+                        );
+                      }
+                      bool isUrgent = false;
+                      String customerID =
+                          await CustomerServices().addcustomerData(customer);
 
-              if (typeOrder == "عادي") {
-                isUrgent = false;
-              } else {
-                isUrgent = true;
-              }
-              await OrderServices().addOrderData(new Order(
-                price: int.parse(orderPrice.text),
-                totalPrice: orderTotalPrice,
-                type: false,
-                description: orderDescription.text,
-                date: orderDate,
-                note: orderNote.text,
-                isLoading: true,
-                isLoadingDate: DateTime.now(),
-                isReceived: false,
-                isDelivery: false,
-                isUrgent: isUrgent,
-                isCancelld: false,
-                isReturn: false,
-                isDone: false,
-                isPaid: false,
-                inStock: false,
-                customerID: customerID,
-                businesID: businessID,
-                driverID: "",
-                isArchived: false,
-                sublineID: subline,
-                locationID: locationID,
-                indexLine: indexLine,
-                mainLineIndex: 0,
-                mainlineID: mainline,
-                isPaidDriver: false,
-                paidDriverDate: DateTime.now(),
-                isReceivedDate: DateTime.now(),
-                isDeliveryDate: DateTime.now(),
-                isCancelldDate: DateTime.now(),
-                isReturnDate: DateTime.now(),
-                isDoneDate: DateTime.now(),
-                isPaidDate: DateTime.now(),
-                inStockDate: DateTime.now(),
-              ));
-              Toast.show("تم اضافة الطلبية بنجاح", context,
-                  duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
-              await Future.delayed(Duration(milliseconds: 1000));
-              customerPhoneNumber.clear();
-              orderDescription.clear();
-              orderPrice.clear();
-              customerName.clear();
-              customerAddress.clear();
-              customerPhoneNumberAdditional.clear();
-              orderTotalPrice = 0;
-            }
-          },
-          child: Text('اضافة',
-              style: TextStyle(
-                  fontFamily: 'Amiri', fontSize: 18.0, color: Colors.white))),
-    );
+                      if (typeOrder == "عادي") {
+                        isUrgent = false;
+                      } else {
+                        isUrgent = true;
+                      }
+                      String barcode = '';
+                      String maxBarcode = orders.last.barcode.substring(6);
+                      String maxValue = '';
+                      print(maxBarcode);
+                      switch ((int.parse(maxBarcode) + 1).toString().length) {
+                        case 1:
+                          {
+                            maxValue = "00000" +
+                                (int.parse(maxBarcode) + 1).toString();
+                          }
+                          break;
+                        case 2:
+                          {
+                            maxValue =
+                                "0000" + (int.parse(maxBarcode) + 1).toString();
+                          }
+                          break;
+                        case 3:
+                          {
+                            maxValue =
+                                "000" + (int.parse(maxBarcode) + 1).toString();
+                          }
+                          break;
+                        case 4:
+                          {
+                            maxValue =
+                                "00" + (int.parse(maxBarcode) + 1).toString();
+                          }
+                          break;
+                        case 5:
+                          {
+                            maxValue =
+                                "0" + (int.parse(maxBarcode) + 1).toString();
+                          }
+                          break;
+                        case 6:
+                          {
+                            maxValue = "000000";
+                          }
+                          break;
+                        default:
+                      }
+                      if (DateTime.now().month.toString().length > 1) {
+                        barcode = DateTime.now().year.toString() +
+                            DateFormat.M().format(DateTime.now()) +
+                            maxValue;
+                      } else {
+                        barcode = DateTime.now().year.toString() +
+                            ("0" + DateFormat.M().format(DateTime.now())) +
+                            maxValue;
+                      }
+                      await OrderServices().addOrderData(new Order(
+                        price: int.parse(orderPrice.text),
+                        totalPrice: orderTotalPrice,
+                        type: false,
+                        description: orderDescription.text,
+                        date: orderDate,
+                        note: orderNote.text,
+                        isLoading: true,
+                        isLoadingDate: DateTime.now(),
+                        isReceived: false,
+                        isDelivery: false,
+                        isUrgent: isUrgent,
+                        isCancelld: false,
+                        isReturn: false,
+                        isDone: false,
+                        isPaid: false,
+                        inStock: false,
+                        customerID: customerID,
+                        businesID: businessID,
+                        driverID: "",
+                        isArchived: false,
+                        sublineID: subline,
+                        locationID: locationID,
+                        indexLine: indexLine,
+                        mainLineIndex: 0,
+                        mainlineID: mainline,
+                        isPaidDriver: false,
+                        paidDriverDate: DateTime.now(),
+                        isReceivedDate: DateTime.now(),
+                        isDeliveryDate: DateTime.now(),
+                        isCancelldDate: DateTime.now(),
+                        isReturnDate: DateTime.now(),
+                        isDoneDate: DateTime.now(),
+                        isPaidDate: DateTime.now(),
+                        inStockDate: DateTime.now(),
+                        barcode: barcode,
+                      ));
+                      Toast.show("تم اضافة الطلبية بنجاح", context,
+                          duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+                      await Future.delayed(Duration(milliseconds: 1000));
+                      customerPhoneNumber.clear();
+                      orderDescription.clear();
+                      orderPrice.clear();
+                      customerName.clear();
+                      customerAddress.clear();
+                      customerPhoneNumberAdditional.clear();
+                      orderTotalPrice = 0;
+                    }
+                  },
+                  child: Text('اضافة',
+                      style: TextStyle(
+                          fontFamily: 'Amiri',
+                          fontSize: 18.0,
+                          color: Colors.white))),
+            );
+          } else {
+            return Container();
+          }
+        });
   }
 }
