@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:AsyadLogistic/classes/order.dart';
-import 'package:firebase_database/firebase_database.dart';
 
 class OrderServices {
   final String uid;
@@ -11,6 +10,8 @@ class OrderServices {
   final int driverPrice;
   final String invoiceType;
   final String barcode;
+  final DateTime startDate;
+  final DateTime endDate;
 
   OrderServices({
     this.uid,
@@ -21,6 +22,8 @@ class OrderServices {
     this.driverPrice,
     this.invoiceType,
     this.barcode,
+    this.startDate,
+    this.endDate,
   });
 
   final CollectionReference orderCollection =
@@ -1070,5 +1073,16 @@ class OrderServices {
         .where('isPaid', isEqualTo: false)
         .snapshots()
         .map(_orderListFromSnapshot);
+  }
+
+  Stream<List<Order>> get ordersByBusinessID {
+    return orderCollection
+        .where('businesID', isEqualTo: businesID)
+        .where('date', isLessThanOrEqualTo: endDate)
+        .where('date', isGreaterThanOrEqualTo: startDate)
+        .where('isArchived', isEqualTo: false)
+        .snapshots()
+        .map(_orderListFromSnapshot);
+    // date
   }
 }

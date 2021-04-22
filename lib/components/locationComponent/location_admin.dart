@@ -2,11 +2,8 @@ import 'package:AsyadLogistic/classes/location.dart';
 import 'package:AsyadLogistic/services/locationServices.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:AsyadLogistic/components/lineComponent/mainLineComponent/listMainLine.dart';
 import 'package:AsyadLogistic/components/pages/drawer.dart';
-import 'package:AsyadLogistic/services/mainLineServices.dart';
 
-import '../../classes/mainLine.dart';
 import '../../constants.dart';
 import 'all_locations.dart';
 

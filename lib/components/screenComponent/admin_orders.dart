@@ -1,6 +1,7 @@
+import 'package:AsyadLogistic/classes/order.dart';
 import 'package:AsyadLogistic/components/orderComponent/addOrder.dart';
+import 'package:AsyadLogistic/components/searchComponent/ordersSearch.dart';
 import 'package:flutter/material.dart';
-import 'package:AsyadLogistic/components/orderComponent/store_add_new_order.dart';
 import 'package:AsyadLogistic/components/pages/drawer.dart';
 import 'package:AsyadLogistic/components/pages/loadingData.dart';
 import 'package:AsyadLogistic/services/orderServices.dart';
@@ -63,6 +64,19 @@ class _AdminOrdersState extends State<AdminOrders> {
                   centerTitle: true,
                   actions: <Widget>[
                     IconButton(
+                      onPressed: () async {
+                       showSearch(
+                          context: context,
+                          delegate: OrdersSearch(
+                            list: await OrderServices().orders.first,
+                            name: widget.name,
+                          ),
+                        );
+                      },
+                      icon: Icon(Icons.search),
+                      color: Colors.white,
+                    ),
+                    IconButton(
                       onPressed: () {
                         Navigator.push(
                           context,
@@ -72,7 +86,7 @@ class _AdminOrdersState extends State<AdminOrders> {
                       },
                       icon: Icon(Icons.add),
                       color: Colors.white,
-                    )
+                    ),
                   ],
                 ),
                 drawer: AdminDrawer(name: widget.name),

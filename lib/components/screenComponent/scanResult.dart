@@ -5,10 +5,9 @@ import 'package:AsyadLogistic/services/businessServices.dart';
 import 'package:AsyadLogistic/services/deliveryStatusServices.dart';
 import 'package:AsyadLogistic/services/driverServices.dart';
 import 'package:AsyadLogistic/services/orderServices.dart';
-import 'package:flutter/scheduler.dart';
+import 'package:toast/toast.dart';
 import './rightChild.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_showcase/flutter_showcase.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 import '../../constants.dart';
@@ -64,7 +63,7 @@ class _ShowcaseDeliveryTimelineState extends State<ShowcaseDeliveryTimeline> {
         textDirection: TextDirection.rtl,
         child: Column(
           children: <Widget>[
-            _Header(),
+            _Header(barcode:widget.barcode),
             Expanded(
               child: StreamBuilder<List<Order>>(
                 stream: OrderServices(barcode: widget.barcode).orderByBarcode,
@@ -495,9 +494,15 @@ class _ShowcaseDeliveryTimelineState extends State<ShowcaseDeliveryTimeline> {
                       ),
                     );
                   } else if (snapshot.hasError) {
-                    return Text("Loading ...");
+                    Toast.show("هذا الطرد غير متوفر", context,
+                        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+                    Navigator.of(context).pop();
+                    return Text("هذا الطرد غير متوفر");
                   } else {
-                    return Text("Loading ...");
+                    Toast.show("DDDهذا الطرد غير متوفر", context,
+                        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+                    Navigator.of(context).pop();
+                    // return Text("ddddهذا الطرد غير متوفر");
                   }
                 },
               ),
@@ -549,7 +554,11 @@ class _ShowcaseDeliveryTimelineState extends State<ShowcaseDeliveryTimeline> {
   }
 }
 
+// ignore: must_be_immutable
 class _Header extends StatelessWidget {
+  String barcode;
+
+  _Header({this.barcode});
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -571,14 +580,14 @@ class _Header extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Text(
-                    'ORDER NUMBER',
+                    'رقم الطرد',
                     style: GoogleFonts.yantramanav(
                       color: const Color(0xFFA2A2A2),
                       fontSize: 16,
                     ),
                   ),
                   Text(
-                    '#2482011',
+                    barcode,
                     style: GoogleFonts.yantramanav(
                       color: const Color(0xFF636564),
                       fontSize: 16,

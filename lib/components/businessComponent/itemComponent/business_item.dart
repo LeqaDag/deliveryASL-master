@@ -1,7 +1,17 @@
+import 'dart:io';
+
+import 'package:AsyadLogistic/classes/customer.dart';
+import 'package:AsyadLogistic/classes/location.dart';
+import 'package:AsyadLogistic/classes/mainLine.dart';
 import 'package:AsyadLogistic/components/businessComponent/updateComponent/update_company.dart';
+import 'package:AsyadLogistic/services/locationServices.dart';
+import 'package:AsyadLogistic/services/mainLineServices.dart';
 import 'package:badges/badges.dart';
+import 'package:excel/excel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:AsyadLogistic/classes/business.dart';
 import 'package:AsyadLogistic/classes/order.dart';
@@ -10,7 +20,10 @@ import 'package:AsyadLogistic/services/businessServices.dart';
 import 'package:AsyadLogistic/services/customerServices.dart';
 import 'package:AsyadLogistic/services/orderServices.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:toast/toast.dart';
 import '../../../constants.dart';
+import 'package:path/path.dart' as path;
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class AllBuisness extends StatelessWidget {
   final Color color;
@@ -28,6 +41,7 @@ class AllBuisness extends StatelessWidget {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+
     return StreamBuilder<Business>(
         stream: BusinessServices(uid: businessID).businessByID,
         builder: (context, snapshot) {
@@ -134,37 +148,47 @@ class AllBuisness extends StatelessWidget {
                               color: Colors.green,
                             ),
                           ),
-                          // IconButton(
-                          //   onPressed: () {
-                          //     return showDialog<void>(
-                          //         context: context,
-                          //         barrierDismissible:
-                          //             false, // user must tap button!
-                          //         builder: (BuildContext context) =>
-                          //             CustomDialog(
-                          //               title: "حذف شركة",
-                          //               description: ' هل ترغب بحذف الشركة',
-                          //               name: business.name,
-                          //               buttonText: "تأكيد",
-                          //               onPressed: () {
-                          //                 final FirebaseAuth auth =
-                          //                     FirebaseAuth.instance;
-                          //                 final User user = auth.currentUser;
-                          //                 BusinessServices().deleteBusinessData(
-                          //                     businessID, user.uid);
-                          //                 Navigator.of(context).pop();
-                          //               },
-                          //               cancelButton: "الغاء",
-                          //               cancelPressed: () {
-                          //                 Navigator.of(context).pop();
-                          //               },
-                          //             ));
-                          //   },
-                          //   icon: Icon(
-                          //     Icons.delete,
-                          //     color: Colors.red,
-                          //   ),
-                          // ),
+                          IconButton(
+                            onPressed: () {
+                              return showDialog<Widget>(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return Container(
+                                      color: Colors.white,
+                                      child: SfDateRangePicker(
+                                        selectionMode:
+                                            DateRangePickerSelectionMode.range,
+                                        showActionButtons: true,
+                                        onSubmit: (Object value) async {
+                                          PickerDateRange val = value;
+                                          print(val);
+                                          List<Order> orders =
+                                              await OrderServices(
+                                            businesID: businessID,
+                                            startDate: val.startDate,
+                                            endDate: val.endDate,
+                                          ).ordersByBusinessID.first;
+                                          print(orders);
+                                          _generateCSVAndView(
+                                              context, orders, businessID, val);
+                                          Toast.show(
+                                              "تم تنزيل الكشف", context,
+                                              duration: Toast.LENGTH_LONG,
+                                              gravity: Toast.BOTTOM);
+                                          Navigator.of(context).pop();
+                                        },
+                                        onCancel: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    );
+                                  });
+                            },
+                            icon: Icon(
+                              FontAwesomeIcons.solidFileExcel,
+                              color: Colors.green,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -176,6 +200,91 @@ class AllBuisness extends StatelessWidget {
             return Center(child: CircularProgressIndicator());
           }
         });
+  }
+
+  Future<void> _generateCSVAndView(
+      context, List<Order> data, String businesID, PickerDateRange val) async {
+    var excel = Excel.createExcel();
+
+    CellStyle cellStyle = CellStyle(
+      bold: true,
+      fontSize: 12,
+      backgroundColorHex: '#17375E',
+      fontColorHex: "#ffffff",
+      horizontalAlign: HorizontalAlign.Center,
+    );
+
+    var sheet = excel['Sheet1'];
+
+    List<String> dataList1 = [
+      'Barcode',
+      'Customer Name',
+      'Customer Phone',
+      'Customer Phone2',
+      'Payment Address 1',
+      'Payment City',
+      'Payment Zone',
+      'Total'
+    ];
+    String businessName = await BusinessServices(uid: businesID).businessName;
+    String startDate = intl.DateFormat('yyyy-MM-dd').format(val.startDate);
+    String endDate = intl.DateFormat('yyyy-MM-dd').format(val.endDate);
+    sheet.merge(CellIndex.indexByString("A1"), CellIndex.indexByString("H1"),
+        customValue:
+            "----------------------------------------- كشف  ${businessName.toString()} من $startDate الى $endDate -----------------------------------------");
+    sheet.insertRowIterables(dataList1, 1);
+    sheet.cell(CellIndex.indexByString("A2")).cellStyle = cellStyle;
+    sheet.cell(CellIndex.indexByString("B2")).cellStyle = cellStyle;
+    sheet.cell(CellIndex.indexByString("C2")).cellStyle = cellStyle;
+    sheet.cell(CellIndex.indexByString("D2")).cellStyle = cellStyle;
+    sheet.cell(CellIndex.indexByString("E2")).cellStyle = cellStyle;
+    sheet.cell(CellIndex.indexByString("F2")).cellStyle = cellStyle;
+    sheet.cell(CellIndex.indexByString("G2")).cellStyle = cellStyle;
+    sheet.cell(CellIndex.indexByString("G2")).cellStyle = cellStyle;
+    sheet.cell(CellIndex.indexByString("H2")).cellStyle = cellStyle;
+
+    Customer c;
+    int index = 2;
+
+    for (Order order in data) {
+      Stream<Customer> customer =
+          CustomerServices(uid: order.customerID).customerByID;
+      c = await customer.first;
+      Stream<MainLine> stream =
+          MainLineServices(uid: order.mainlineID).mainLineByID;
+      MainLine mainLine = await stream.first;
+      Stream<Location> streamLocation =
+          LocationServices(uid: order.locationID).locationByID;
+      Location location = await streamLocation.first;
+      sheet.insertRowIterables([
+        order.barcode.toString(),
+        c.name.toString(),
+        c.phoneNumber.toString(),
+        c.phoneNumberAdditional.toString(),
+        c.address.toString(),
+        mainLine.name,
+        location.name,
+        order.totalPrice.toString(),
+      ], index++);
+    }
+
+    excel.setDefaultSheet(sheet.sheetName).then((isSet) {
+      if (isSet) {
+        print("${sheet.sheetName} is set to default sheet.");
+      } else {
+        print("Unable to set ${sheet.sheetName} to default sheet.");
+      }
+    });
+    var status = await Permission.storage.status;
+    if (!status.isGranted) {
+      await Permission.storage.request();
+    }
+    excel.encode().then((fileBytes) {
+      File(path.join(
+          '/storage/emulated/0/Download/كشف ${businessName.toString()}.xlsx'))
+        ..createSync(recursive: false)
+        ..writeAsBytesSync(fileBytes);
+    });
   }
 }
 

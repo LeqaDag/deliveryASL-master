@@ -1,3 +1,5 @@
+import 'package:AsyadLogistic/classes/deliveryStatus.dart';
+import 'package:AsyadLogistic/services/deliveryStatusServices.dart';
 import 'package:flutter/material.dart';
 import 'package:AsyadLogistic/classes/business.dart';
 import 'package:AsyadLogistic/classes/customer.dart';
@@ -430,7 +432,8 @@ class _InStokeOrderDetailsState extends State<InStokeOrderDetails> {
                                                                   },
                                                                 );
                                                               } else {
-                                                                return Text("غير متوفر");
+                                                                return Text(
+                                                                    "غير متوفر");
                                                               }
                                                             }),
                                                       ],
@@ -685,7 +688,38 @@ class _InStokeOrderDetailsState extends State<InStokeOrderDetails> {
                                             OrderServices(
                                               uid: order.uid,
                                             ).updateOrderFromInStokeToisDelivery;
-
+                                            String id =
+                                                await DeliveriesStatusServices(
+                                                        orderID: order.uid)
+                                                    .deliveryStatusId;
+                                            if (id == null) {
+                                              await DeliveriesStatusServices()
+                                                  .addDeliveryStatusData(
+                                                      DeliveryStatus(
+                                                          orderID: order.uid,
+                                                          driverID:
+                                                              order.driverID,
+                                                          businessID:
+                                                              order.businesID,
+                                                          status: "13",
+                                                          date: DateTime.now(),
+                                                          note: "",
+                                                          isArchived: false));
+                                            } else {
+                                              await DeliveriesStatusServices(
+                                                      uid: id)
+                                                  .updateDeliveryStatus(
+                                                      DeliveryStatus(
+                                                          orderID: order.uid,
+                                                          driverID:
+                                                              order.driverID,
+                                                          businessID:
+                                                              order.businesID,
+                                                          status: '13',
+                                                          date: DateTime.now(),
+                                                          note: "",
+                                                          isArchived: false));
+                                            }
                                             Toast.show("تم الاستلام", context,
                                                 duration: Toast.LENGTH_LONG,
                                                 gravity: Toast.BOTTOM);

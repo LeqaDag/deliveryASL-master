@@ -1,7 +1,4 @@
-import 'package:AsyadLogistic/classes/mainLine.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 class LocationDetails extends StatefulWidget {
   final List<String> mainlineNameList;
   LocationDetails({this.mainlineNameList});

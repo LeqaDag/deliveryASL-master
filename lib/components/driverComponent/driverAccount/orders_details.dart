@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'done_orders.dart';
 import 'instoke_orders.dart';
 import 'not_ready_orders.dart';
-import 'stuck_orders.dart';
 
 class OrderDetails extends StatelessWidget {
   final String orderState, name, uid;

@@ -4,7 +4,6 @@ import 'package:AsyadLogistic/classes/city.dart';
 import 'package:AsyadLogistic/components/pages/drawer.dart';
 import 'package:provider/provider.dart';
 import 'package:AsyadLogistic/services/cityServices.dart';
-import 'package:toast/toast.dart';
 
 import '../../constants.dart';
 import 'cityList.dart';
