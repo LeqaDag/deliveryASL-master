@@ -78,6 +78,13 @@ class BusinessServices {
         .then((value) => value.data()['name']);
   }
 
+  Future<String> get businessCityId{
+    return businessCollection
+        .doc(uid)
+        .get()
+        .then((value) => value.data()['cityID']);
+  }
+
   Future<void> deleteBusinessData(String uid, String whoUser) async {
     return await businessCollection.doc(uid).update({
       'isArchived': true,

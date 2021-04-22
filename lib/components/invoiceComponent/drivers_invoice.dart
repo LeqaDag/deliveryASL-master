@@ -1,13 +1,14 @@
+import 'package:AsyadLogistic/components/reportComponent/shared.dart';
 import 'package:AsyadLogistic/components/widgetsComponent/CustomWidgets.dart';
 import 'package:AsyadLogistic/services/orderServices.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:AsyadLogistic/classes/order.dart';
-
+import 'package:intl/intl.dart' as intl;
 import '../../constants.dart';
 import 'driverInvoice/add_invoice_driver.dart';
-import 'shared_data.dart';
+import 'package:AsyadLogistic/components/reportComponent/shared.dart';
 
 class DriversInvoice extends StatefulWidget {
   final Order order;
@@ -68,174 +69,172 @@ class _DriversInvoiceState extends State<DriversInvoice> {
       paidDriver = "حذف هذه الطلبية المدفوعة";
     }
 
-    return Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: <
-        Widget>[
-      Card(
-          child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Container(
-                  width: 80.0,
-                  height: 50.0,
-                  decoration: new BoxDecoration(
-                    color: color,
-                    border: new Border.all(color: Colors.white, width: 2.0),
-                    borderRadius: new BorderRadius.circular(10.0),
-                  ),
-                  child: new Center(
-                    child: new Text(
-                      stateOrder,
-                      style: new TextStyle(fontSize: 13.0, color: Colors.white),
-                    ),
-                  ),
-                ),
-                VerticalDivider(),
-                CustomerName(order: widget.order),
-                Icon(
-                  Icons.arrow_downward,
-                ),
-                VerticalDivider(),
-                BisunessrName(order: widget.order),
-                Icon(
-                  Icons.arrow_upward,
-                ),
-              ]),
-          HorizantalDivider(width),
-          Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                CustomerCityAndSublineName(order: widget.order),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: <Widget>[
-                       Text(
-                        widget.order.totalPrice.toString(),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            left: height * 0.015,
-                            top: height * 0,
-                            bottom: height * 0),
-                        child: Image.asset(
-                          'assets/price.png',
-                          scale: 1.5,
-                        ),
-                      ),
-                    ]),
-              ]),
-          HorizantalDivider(width),
-          Row(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
-            CustomerAddressName(order: widget.order),
-          ]),
-          HorizantalDivider(width),
-          Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                 Text(
-                  widget.order.uid,
-                  style: new TextStyle(
-                    fontSize: 13.0,
-                    color: Color(0xFF457B9D),
-                  ),
-                ),
-                VerticalDivider(),
-                Expanded(
-                    child: Text(
-                  widget.order.description ?? "",
-                  style: new TextStyle(fontSize: 13.0),
-                )),
-              ]),
-          HorizantalDivider(width),
-          Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => AddInvoiceDriver(
-                              driverId: widget.order.driverID,
-                              name: widget.name,
-                              order: widget.order)),
-                    );
-                  },
-                  child: DriverName(order: widget.order),
-                ),
-                DriverPhoneNumber(order: widget.order),
-              ]),
-          HorizantalDivider(width),
-          Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                DeliveryNote(order: widget.order),
-                DeliveryStatus(order: widget.order),
-              ]),
-          HorizantalDivider(width),
-          Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                InkWell(
-                  onTap: () {
-                    return showDialog<void>(
-                        context: context,
-                        barrierDismissible: false, // user must tap button!
-                        builder: (BuildContext context) => CustomDialog(
-                              title: "حذف طلبية",
-                              description: ' هل ترغب بحذف هذه الطلبية الجاهزة',
-                              name: widget.order.description,
-                              buttonText: "تأكيد",
-                              onPressed: () {
-                                final FirebaseAuth auth =
-                                          FirebaseAuth.instance;
-                                      final User user = auth.currentUser;
-                                OrderServices().deleteOrderData(
-                                    widget.order.uid, user.uid);
-                                Navigator.of(context).pop();
-                                DriversInvoice(
-                                    order: widget.order, name: widget.name);
-                              },
-                              cancelButton: "الغاء",
-                              cancelPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            ));
-                  },
-                  child:  Text(
-                    paidDriver ?? "",
-                    style: new TextStyle(
-                        fontSize: 16.0,
-                        color: Color(0xffA8312D),
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ]),
-        ],
-      )),
-      SizedBox(
-        height: 15,
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 31, vertical: 21),
+      decoration: BoxDecoration(
+
+        borderRadius: BorderRadius.circular(15.0),
+        gradient: LinearGradient(
+          colors: [
+            Color(0xfff1f1f1),
+            Color(0xffffffff),
+          ],
+        ),
       ),
-    ]);
-  }
+      child: Padding(
+        padding: const EdgeInsets.all(13.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            ListView(
+              shrinkWrap: true,
+              scrollDirection: Axis.vertical,
+              children: <Widget>[
+                ListTile(
+                  title: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          "مع : " ?? "",
+                          style: new TextStyle(fontSize: 13.0),
+                        ),
+                        DriverName(order: widget.order),
 
-  // ignore: non_constant_identifier_names
-  Widget VerticalDivider() {
-    return Container(
-      color: Colors.black45,
-      height: 50,
-      width: 1,
-    );
-  }
+                      ]),
+                  subtitle: DriverPhoneNumber(order: widget.order,),
+                  trailing:
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => AddInvoiceDriver(
+                                              driverId: widget.order.driverID,
+                                              name: widget.name,
+                                              order: widget.order)),
+                                    );
+                                  },
+                                  child: Text("اضافة فاتورة السائق",
+                                    style: new TextStyle(fontSize: 14.0,
+                                        fontWeight: FontWeight.bold,color: Color(0xff316686)),),
+                                ),),
+                ListTile(
+                  title: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Icon(
+                            Icons.description
+                        ),
+                        Text(
+                          widget.order.description,
+                          style: TextStyle(color: Colors.black,fontSize: 13.0, ),
+                        ),
+                      ]),
+                 // Text(widget.order.barcode),
+                ),
+                ListTile(
+                  title:   Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Icon(
+                            Icons.business
+                        ),
+                        BisunessrName(order: widget.order),
+                      ]),
+                  subtitle: BusinessCity(order: widget.order,),
+                  trailing: BisunessPhoneNumber(order: widget.order,),
+                ),
+                ListTile(
+                    title:   Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Icon(
+                              Icons.supervised_user_circle
+                          ),
+                          CustomerName(order: widget.order),
+                        ]),
+                    subtitle:  Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Icon(
+                              Icons.location_on
+                          ),
+                          CustomerCityAndSublineName(order: widget.order),
+                          Text("/"),
+                          CustomerAddressName(order: widget.order),
+                        ]),
+                    trailing: CustomerPhoneNumber(order: widget.order,)
+                ),
+                ListTile(
+                  title:   Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Icon(
+                            Icons.calendar_today_outlined
+                        ),
+                        Text(
+                          " تاريخ الطلبية : ${intl.DateFormat('yyyy-MM-dd').format(
+                              widget.order.date)} " ??
+                              "",
+                          style: new TextStyle(fontSize: 13.0),
+                        ),
+                      ]),
+                ),
+                ListTile(
+                  title:  Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          "السعر : ",
+                        ),
+                        Text(
+                          widget.order.totalPrice.toString(),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              left: height * 0.015,
+                              top: height * 0,
+                              bottom: height * 0),
+                          child: Image.asset(
+                            'assets/price.png',
+                            scale: 1.5,
+                          ),
+                        ),
+                      ]),
 
-  // ignore: non_constant_identifier_names
-  Widget HorizantalDivider(double width) {
-    return Container(
-      color: Colors.black45,
-      height: 1,
-      width: width,
+                  trailing: Container(
+                    width: 80.0,
+                    height: 50.0,
+                    decoration: new BoxDecoration(
+                      color: color,
+                      border: new Border.all(color: Colors.white, width: 2.0),
+                      borderRadius: new BorderRadius.circular(30.0),
+                    ),
+                    child: new Center(
+                      child: new Text(
+                        stateOrder,
+                        style: new TextStyle(
+                            fontSize: 13.0, color: Colors.white),
+                      ),
+                    ),
+
+                  ),
+                )
+              ],
+            ),
+
+            ListTile(
+              title:  Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: <Widget>[
+                            DeliveryNote(order: widget.order),
+                            DeliveryStatus(order: widget.order),
+                          ]),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

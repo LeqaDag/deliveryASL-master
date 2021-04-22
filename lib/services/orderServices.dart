@@ -10,6 +10,7 @@ class OrderServices {
   final String locationID;
   final int driverPrice;
   final String invoiceType;
+  final String report;
 // locationID
   OrderServices(
       {this.uid,
@@ -18,7 +19,8 @@ class OrderServices {
       this.driverID,
       this.locationID,
       this.driverPrice,
-      this.invoiceType});
+      this.invoiceType,
+      this.report});
 
   final CollectionReference orderCollection =
       FirebaseFirestore.instance.collection('orders');
@@ -149,6 +151,7 @@ class OrderServices {
       isPaidDate: snapshot.data()['isPaidDate'].toDate(),
       inStockDate: snapshot.data()['inStockDate'].toDate(),
       isLoadingDate: snapshot.data()['isLoadingDate'].toDate(),
+      barcode: snapshot.data()['barcode'],
     );
   }
 
@@ -184,6 +187,7 @@ class OrderServices {
         locationID: doc.data()['locationID'] ?? '',
         isPaidDriver: doc.data()['isPaidDriver'] ?? '',
         mainlineID: doc.data()['mainlineID'] ?? '',
+        barcode: doc.data()['barcode'] ?? '',
         isLoadingDate: doc.data()['isLoadingDate'].toDate() ?? '',
         isReceivedDate: doc.data()['isReceivedDate'].toDate() ?? '',
         isDeliveryDate: doc.data()['isDeliveryDate'].toDate() ?? '',
@@ -1036,6 +1040,61 @@ class OrderServices {
         break;
     }
   }
+
+  Stream<List<Order>> get ordersReports {
+    switch (report) {
+      case 'جميع التحصيلات':
+        {
+          return orderCollection
+              .where('isArchived', isEqualTo: false)
+              .snapshots()
+              .map(_orderListFromSnapshot);
+        }
+        break;
+
+      case 'التحصيلات المستلمة':
+        {
+          return orderCollection
+              .where('isArchived', isEqualTo: false)
+              .where('isPaid', isEqualTo: true)
+              .snapshots()
+              .map(_orderListFromSnapshot);
+        }
+        break;
+
+      case 'التحصيل السائق':
+        {
+          return orderCollection
+              .where('isArchived', isEqualTo: false)
+              .where('isPaidDriver', isEqualTo: true)
+              .snapshots()
+              .map(_orderListFromSnapshot);
+        }
+        break;
+
+      case 'طرود قيد التسليم':
+        {
+          return orderCollection
+              .where('isArchived', isEqualTo: false)
+              .where('isDelivery', isEqualTo: true)
+              .snapshots()
+              .map(_orderListFromSnapshot);
+        }
+        break;
+
+      case 'التحصيل الجاهز للاستلام':
+        {
+          return orderCollection
+              .where('isArchived', isEqualTo: false)
+              .where('isDone', isEqualTo: true)
+              .where('isPaid', isEqualTo: false)
+              .snapshots()
+              .map(_orderListFromSnapshot);
+        }
+        break;
+    }
+  }
+
 
   Stream<List<Order>> allDoneOrders() {
     return orderCollection

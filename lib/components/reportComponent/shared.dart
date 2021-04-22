@@ -26,14 +26,13 @@ class DriverName extends StatelessWidget {
               "",
             );
           } else {
-            return Expanded(
-                child: Text(
-              " السائق : ${snapshot.data.toString()} " ?? "",
-              style: new TextStyle(
-                fontSize: 13.0,
-                color: Color(0xFF457B9D),
-              ),
-            ));
+            return Text(
+                  " السائق  ${snapshot.data.toString()} " ?? "",
+                  style: new TextStyle(
+                    fontSize: 13.0,
+                    color: Color(0xFF457B9D),
+                  ),
+                );
           }
         });
   }
@@ -55,16 +54,15 @@ class DriverPhoneNumber extends StatelessWidget {
             );
           } else {
             return InkWell(
-              child: Expanded(
-                  child: Text(
-                " ${snapshot.data.toString()} " ?? "",
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.green,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: "Amiri",
-                ),
-              )),
+              child: Text(
+                    " ${snapshot.data.toString()} " ?? "",
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.green,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: "Amiri",
+                    ),
+                  ),
               onTap: () {
                 launch("tel:" +
                     Uri.encodeComponent('0${snapshot.data.toString()}'));
@@ -90,19 +88,89 @@ class BisunessrName extends StatelessWidget {
               "",
             );
           } else {
-            return  Text(
-              "${snapshot.data.toString()} " ?? "",
-              style: new TextStyle(
-                fontSize: 13.0,
-                color: Color(0xFF457B9D),
-                fontWeight: FontWeight.bold,
-              ),
-            );
+            return Text(
+                  "${snapshot.data.toString()} " ?? "",
+                  style: new TextStyle(
+                    fontSize: 13.0,
+                  ),
+                );
           }
         });
   }
 }
 
+// ignore: must_be_immutable
+class BusinessCity extends StatelessWidget {
+  Order order;
+
+  BusinessCity({this.order});
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<String>(
+        future: BusinessServices(uid: order.businesID).businessCityId,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Text(
+              "",
+            );
+          } else {
+            String cityID = snapshot.data.toString();
+            return
+                FutureBuilder<String>(
+                    future: CityServices(uid: cityID).cityName,
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return Text(
+                          "",
+                        );
+                      } else {
+                        return Text(
+                          "${snapshot.data.toString()} " ?? "",
+                        );
+                      }
+                    });
+
+          }
+        });
+
+
+
+  }
+}
+// ignore: must_be_immutable
+class BisunessPhoneNumber extends StatelessWidget {
+  Order order;
+
+  BisunessPhoneNumber({this.order});
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<String>(
+        future: BusinessServices(uid: order.businesID).businessPhoneNumber,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Text(
+              "",
+            );
+          } else {
+            return InkWell(
+              child: Text(
+                " ${snapshot.data.toString()} " ?? "",
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.green,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: "Amiri",
+                ),
+              ),
+              onTap: () {
+                launch("tel:" +
+                    Uri.encodeComponent('0${snapshot.data.toString()}'));
+              },
+            );
+          }
+        });
+  }
+}
 // ignore: must_be_immutable
 class CustomerName extends StatelessWidget {
   Order order;
@@ -118,20 +186,51 @@ class CustomerName extends StatelessWidget {
               "",
             );
           } else {
-            return Expanded(
-                child: Text(
-              "${snapshot.data.toString()} " ?? "",
-              style: new TextStyle(
-                fontSize: 13.0,
-                color: Color(0xFF457B9D),
-                fontWeight: FontWeight.bold,
-              ),
-            ));
+            return Text(
+                  "${snapshot.data.toString()} " ?? "",
+                  style: new TextStyle(
+                    fontSize: 13.0,
+                  ),
+                );
           }
         });
   }
 }
 
+// ignore: must_be_immutable
+class CustomerPhoneNumber extends StatelessWidget {
+  Order order;
+
+  CustomerPhoneNumber({this.order});
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<int>(
+        future: CustomerServices(uid: order.customerID).customerPhoneNumber,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Text(
+              "",
+            );
+          } else {
+            return InkWell(
+              child: Text(
+                "0${snapshot.data.toString()} " ?? "",
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.green,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: "Amiri",
+                ),
+              ),
+              onTap: () {
+                launch("tel:" +
+                    Uri.encodeComponent('0${snapshot.data.toString()}'));
+              },
+            );
+          }
+        });
+  }
+}
 // ignore: must_be_immutable
 class CustomerCityName extends StatelessWidget {
   Order order;
@@ -147,10 +246,9 @@ class CustomerCityName extends StatelessWidget {
               "",
             );
           } else {
-            return Expanded(
-                child: Text(
-              "${snapshot.data.toString()} /" ?? "",
-            ));
+            return Text(
+                  "${snapshot.data.toString()} /" ?? "",
+                );
           }
         });
   }
@@ -171,10 +269,9 @@ class CustomerSublineName extends StatelessWidget {
               "",
             );
           } else {
-            return Expanded(
-                child: Text(
-              "${snapshot.data.toString()} " ?? "",
-            ));
+            return Text(
+                  "${snapshot.data.toString()} " ?? "",
+                );
           }
         });
   }
@@ -199,17 +296,16 @@ class CustomerCityAndSublineName extends StatelessWidget {
             cityName = snapshot.data.toString();
             return FutureBuilder<String>(
               future:
-                  CustomerServices(uid: order.customerID).customerSublineName,
+              CustomerServices(uid: order.customerID).customerSublineName,
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return Text(
                     "",
                   );
                 } else {
-                  return Expanded(
-                      child: Text(
-                    "$cityName / ${snapshot.data.toString()} " ?? "",
-                  ));
+                  return  Text(
+                        "$cityName / ${snapshot.data.toString()} " ?? "",
+                    style: new TextStyle(fontSize: 13.0),);
                 }
               },
             );
@@ -233,10 +329,9 @@ class CustomerAddressName extends StatelessWidget {
               "",
             );
           } else {
-            return Expanded(
-                child: Text(
-              "${snapshot.data.toString()} " ?? "",
-            ));
+            return Text(
+                  "${snapshot.data.toString()} " ?? "",
+                );
           }
         });
   }
@@ -257,10 +352,9 @@ class DeliveryNote extends StatelessWidget {
               "",
             );
           } else {
-            return Expanded(
-                child: Text(
-              "${snapshot.data.toString()} " ?? "",
-            ));
+            return  Text(
+                  "${snapshot.data.toString()} " ?? "",
+                );
           }
         });
   }
@@ -307,12 +401,13 @@ class DeliveryStatus extends StatelessWidget {
               statusString = "تم فقدان الطرد ";
             } else if (status == "12") {
               statusString = "ارجاع الى المخزن ";
+            } else {
+              statusString = "مع السائق";
             }
-            print(statusString);
-            return Expanded(
-                child: Text(
-              statusString,
-            ));
+
+            return Text(
+                  statusString,
+                );
           }
         });
   }
@@ -324,154 +419,26 @@ class OrderCountByState extends StatelessWidget {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    List<Order> orders;
-    int total;
 
     return Row(children: <Widget>[
       Container(
-          width: width - 2,
+
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(
-                          left: height * 0.005,
-                          right: height * 0.025,
-                          top: height * 0,
-                          bottom: height * 0),
-                      child: Image.asset(
-                        'assets/price.png',
-                        scale: 1.5,
-                      ),
-                    ),
-                    StreamBuilder<List<Order>>(
-                        stream: OrderServices().allOrders(),
-                        builder: (context, snapshot) {
-                          int totalPrice = 0;
-                          if (!snapshot.hasData) {
-                            return Text('جاري التحميل ... ');
-                          } else {
-                            orders = snapshot.data;
-                            orders.forEach((element) {
-                              if (element.isPaid == false) {
-                                totalPrice += element.totalPrice;
-                                total = totalPrice;
-                              }
-                            });
-                            return Text(
-                              totalPrice.toString(),
-                            );
-                          }
-                        }),
-                  ]),
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Icon(
-                      Icons.done,
-                      color: KBadgeColorAndContainerBorderColorReadyOrders,
-                    ),
-                    FutureBuilder<int>(
-                        future: OrderServices().orderDone,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return Text(
-                              ":${snapshot.data.toString()} " ?? "0",
-                            );
-                          } else {
-                            return Text(
-                              "0",
-                            );
-                          }
-                        }),
-                  ]),
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Icon(
-                      Icons.restore,
-                      color: KBadgeColorAndContainerBorderColorReturnOrders,
-                    ),
-                    FutureBuilder<int>(
-                        future: OrderServices().orderReturn,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return Text(
-                              ":${snapshot.data.toString()} " ?? "0",
-                            );
-                          } else {
-                            return Text(
-                              "0",
-                            );
-                          }
-                        }),
-                  ]),
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Icon(
-                      Icons.cancel,
-                      color: KBadgeColorAndContainerBorderColorCancelledOrders,
-                    ),
-                    FutureBuilder<int>(
-                        future: OrderServices().orderCancelld,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return Text(
-                              ":${snapshot.data.toString()} " ?? "0",
-                            );
-                          } else {
-                            return Text(
-                              "0",
-                            );
-                          }
-                        }),
-                  ]),
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Icon(
-                      Icons.business_center_outlined,
-                      color: KAllOrdersListTileColor,
-                    ),
-                    FutureBuilder<int>(
-                        future: OrderServices().orderDelivery,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return Text(
-                              ":${snapshot.data.toString()} " ?? "0",
-                            );
-                          } else {
-                            return Text(
-                              "0",
-                            );
-                          }
-                        }),
-                  ]),
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Icon(
-                      Icons.assignment_turned_in_outlined,
-                      color: KBadgeColorAndContainerBorderColorRecipientOrder,
-                    ),
-                    FutureBuilder<int>(
-                        future: OrderServices().orderReceived,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return Text(
-                              ":${snapshot.data.toString()} " ?? "0",
-                            );
-                          } else {
-                            return Text(
-                              "0",
-                            );
-                          }
-                        }),
-                  ]),
+              Container(
+                child: Image.asset('assets/oie_transparent (20).png'),
+                height: 50.0,
+              ),
+
+              Padding(
+                padding: EdgeInsets.all(4.0),
+                child: Image.asset(
+                  'assets/price.png',
+                  scale: 1.5,
+                ),
+              ),
+
             ],
           ))
     ]);
@@ -646,10 +613,9 @@ class BusinessCityName extends StatelessWidget {
               "",
             );
           } else {
-            return Expanded(
-                child: Text(
-              "${snapshot.data.toString()} " ?? "",
-            ));
+            return Text(
+                  "${snapshot.data.toString()} " ?? "",
+                );
           }
         });
   }
@@ -670,131 +636,131 @@ class OrderCountByBusiness extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: <Widget>[
         Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: <Widget>[
-        Icon(
-          Icons.done,
-          color: KBadgeColorAndContainerBorderColorReadyOrders,
-        ),
-        FutureBuilder<int>(
-            future: OrderServices(businesID: business.uid)
-                .countBusinessOrderByStateOrder("isDone1"),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Text(
-                  ":${snapshot.data.toString()} " ?? "0",
-                );
-              } else {
-                return Text(
-                  "0",
-                );
-              }
-            })]),
-            Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: <Widget>[
-        Icon(
-          Icons.restore,
-          color: KBadgeColorAndContainerBorderColorReturnOrders,
-        ),
-        FutureBuilder<int>(
-            future: OrderServices(businesID: business.uid)
-                .countBusinessOrderByStateOrder("isReturn"),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Text(
-                  ":${snapshot.data.toString()} " ?? "0",
-                );
-              } else {
-                return Text(
-                  "0",
-                );
-              }
-            })]),
-            Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: <Widget>[
-        Icon(
-          Icons.cancel,
-          color: KBadgeColorAndContainerBorderColorCancelledOrders,
-        ),
-        FutureBuilder<int>(
-            future: OrderServices(businesID: business.uid)
-                .countBusinessOrderByStateOrder("isCancelld"),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Text(
-                  ":${snapshot.data.toString()} " ?? "0",
-                );
-              } else {
-                return Text(
-                  "0",
-                );
-              }
-            })]),
-            Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: <Widget>[
-        Icon(
-          Icons.business_center_outlined,
-          color: KAllOrdersListTileColor,
-        ),
-        FutureBuilder<int>(
-            future: OrderServices(businesID: business.uid)
-                .countBusinessOrderByStateOrder("isDelivery"),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Text(
-                  ":${snapshot.data.toString()} " ?? "0",
-                );
-              } else {
-                return Text(
-                  "0",
-                );
-              }
-            })]),
-            Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: <Widget>[
-        Icon(
-          Icons.arrow_circle_up_rounded,
-          color: KBadgeColorAndContainerBorderColorLoadingOrder,
-        ),
-        FutureBuilder<int>(
-            future: OrderServices(businesID: business.uid)
-                .countBusinessOrderByStateOrder("isLoading"),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Text(
-                  ":${snapshot.data.toString()} " ?? "0",
-                );
-              } else {
-                return Text(
-                  "0",
-                );
-              }
-            })]),
-            Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: <Widget>[
-        Icon(
-          Icons.assignment_turned_in_outlined,
-          color: KBadgeColorAndContainerBorderColorRecipientOrder,
-        ),
-        FutureBuilder<int>(
-            future: OrderServices(businesID: business.uid)
-                .countBusinessOrderByStateOrder("isReceived"),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Text(
-                  ":${snapshot.data.toString()} " ?? "0",
-                );
-              } else {
-                return Text(
-                  "0",
-                );
-              }
-            })]),
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              Icon(
+                Icons.done,
+                color: KBadgeColorAndContainerBorderColorReadyOrders,
+              ),
+              FutureBuilder<int>(
+                  future: OrderServices(businesID: business.uid)
+                      .countBusinessOrderByStateOrder("isDone1"),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return Text(
+                        ":${snapshot.data.toString()} " ?? "0",
+                      );
+                    } else {
+                      return Text(
+                        "0",
+                      );
+                    }
+                  })]),
+        Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              Icon(
+                Icons.restore,
+                color: KBadgeColorAndContainerBorderColorReturnOrders,
+              ),
+              FutureBuilder<int>(
+                  future: OrderServices(businesID: business.uid)
+                      .countBusinessOrderByStateOrder("isReturn"),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return Text(
+                        ":${snapshot.data.toString()} " ?? "0",
+                      );
+                    } else {
+                      return Text(
+                        "0",
+                      );
+                    }
+                  })]),
+        Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              Icon(
+                Icons.cancel,
+                color: KBadgeColorAndContainerBorderColorCancelledOrders,
+              ),
+              FutureBuilder<int>(
+                  future: OrderServices(businesID: business.uid)
+                      .countBusinessOrderByStateOrder("isCancelld"),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return Text(
+                        ":${snapshot.data.toString()} " ?? "0",
+                      );
+                    } else {
+                      return Text(
+                        "0",
+                      );
+                    }
+                  })]),
+        Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              Icon(
+                Icons.business_center_outlined,
+                color: KAllOrdersListTileColor,
+              ),
+              FutureBuilder<int>(
+                  future: OrderServices(businesID: business.uid)
+                      .countBusinessOrderByStateOrder("isDelivery"),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return Text(
+                        ":${snapshot.data.toString()} " ?? "0",
+                      );
+                    } else {
+                      return Text(
+                        "0",
+                      );
+                    }
+                  })]),
+        Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              Icon(
+                Icons.arrow_circle_up_rounded,
+                color: KBadgeColorAndContainerBorderColorLoadingOrder,
+              ),
+              FutureBuilder<int>(
+                  future: OrderServices(businesID: business.uid)
+                      .countBusinessOrderByStateOrder("isLoading"),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return Text(
+                        ":${snapshot.data.toString()} " ?? "0",
+                      );
+                    } else {
+                      return Text(
+                        "0",
+                      );
+                    }
+                  })]),
+        Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              Icon(
+                Icons.assignment_turned_in_outlined,
+                color: KBadgeColorAndContainerBorderColorRecipientOrder,
+              ),
+              FutureBuilder<int>(
+                  future: OrderServices(businesID: business.uid)
+                      .countBusinessOrderByStateOrder("isReceived"),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return Text(
+                        ":${snapshot.data.toString()} " ?? "0",
+                      );
+                    } else {
+                      return Text(
+                        "0",
+                      );
+                    }
+                  })]),
       ],
     );
   }

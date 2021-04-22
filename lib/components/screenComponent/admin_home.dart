@@ -1,4 +1,8 @@
 import 'package:AsyadLogistic/components/locationComponent/location_admin.dart';
+import 'package:AsyadLogistic/components/reportComponent/report_admin.dart';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:open_file/open_file.dart';
 import 'package:AsyadLogistic/components/screenComponent/scanResult.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +15,7 @@ import 'package:AsyadLogistic/components/invoiceComponent/invoice_admin.dart';
 import 'package:AsyadLogistic/components/pages/drawer.dart';
 import 'package:AsyadLogistic/components/widgetsComponent/CustomWidgets.dart';
 import 'package:AsyadLogistic/components/lineComponent/all_lines.dart';
+import 'package:syncfusion_flutter_pdf/pdf.dart';
 import '../../constants.dart';
 import 'admin_orders.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
@@ -170,9 +175,13 @@ class _AdminHomeState extends State<AdminHome> {
                                       AssetImage("assets/Accounting.png"),
                                   text: "الحسابات المالية",
                                   onTap: () {
+                                    // ignore: unnecessary_statements
+                                    //_createPDF;
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
+                                          // builder: (context) =>
+                                          //     PDFCreator()),
                                           builder: (context) =>
                                               InvoiceAdmin(name: widget.name)),
                                     );
@@ -205,30 +214,30 @@ class _AdminHomeState extends State<AdminHome> {
                               //     }),
                             ],
                           ),
-                          Text('Scan result : $_scanBarcode\n',
-                              style: TextStyle(fontSize: 20))
-                          //CustomBoxSize(height: 0.05),
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          //   children: <Widget>[
+                          // Text('Scan result : $_scanBarcode\n',
+                          //     style: TextStyle(fontSize: 20))
+                          CustomBoxSize(height: 0.05),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: <Widget>[
 
-                          //     CustomContainer(
-                          //         width: 0.28,
-                          //         height: 0.15,
-                          //         imagepath: AssetImage("assets/region100.png"),
-                          //         text: "المناطق",
-                          //         onTap: () {
-                          //           Navigator.push(
-                          //             context,
-                          //             MaterialPageRoute(
-                          //                 builder: (context) => AllLocation(
-                          //                       name: name,
-                          //                     )),
-                          //           );
-                          //         }),
-                          //   ],
-                          // ),
-                          // CustomBoxSize(height: 0.05),
+                              CustomContainer(
+                                  width: 0.28,
+                                  height: 0.15,
+                                  imagepath: AssetImage("assets/report.png"),
+                                  text: "التقارير",
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => AllReports(
+                                                name: widget.name,
+                                              )),
+                                    );
+                                  }),
+                            ],
+                          ),
+                          CustomBoxSize(height: 0.05),
                         ],
                       ),
                     ],
@@ -239,6 +248,21 @@ class _AdminHomeState extends State<AdminHome> {
       ),
     );
   }
+
+  Future <void> _createPDF() async {
+    var document = PdfDocument();
+    document.pages.add().graphics.drawString("hi", PdfStandardFont(PdfFontFamily.helvetica,18),
+      brush:PdfSolidBrush(PdfColor(0,0,0)),bounds:Rect.fromLTWH(0,0,500,30));
+    var bytes=document.save();
+    document.dispose();
+
+    Directory directory = await getExternalStorageDirectory();
+    String path = directory.path;
+    File file = File('$path/Output.pdf');
+    await file.writeAsBytes(bytes, flush: true);
+    OpenFile.open('$path/Output.pdf');
+  }
+
 
   Future<void> scanBarcodeNormal() async {
     String barcodeScanRes;

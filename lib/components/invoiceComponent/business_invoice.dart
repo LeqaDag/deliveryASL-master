@@ -28,145 +28,165 @@ class _BusinessInvoiceState extends State<BusinessInvoice> {
 
     int total;
 
-    return Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          Card(
-              child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    Icon(
-                      Icons.bubble_chart_outlined,
-                    ),
-                    Expanded(
-                        child: Text(
-                      "${widget.business.name} " ?? "",
-                      style: new TextStyle(
-                        fontSize: 13.0,
-                        //color: Color(0xFF457B9D),
-                        fontWeight: FontWeight.bold,
-                      ),
-                    )),
-                    VerticalDivider(),
-                    Icon(
-                      Icons.location_on,
-                    ),
-                    BusinessCityName(
-                      business: widget.business,
-                    ),
-                  ]),
-              HorizantalDivider(width),
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    Row(
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 31, vertical: 21),
+      decoration: BoxDecoration(
+
+        borderRadius: BorderRadius.circular(15.0),
+        gradient: LinearGradient(
+          colors: [
+            Color(0xfff1f1f1),
+            Color(0xffffffff),
+          ],
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(13.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            ListView(
+              shrinkWrap: true,
+              scrollDirection: Axis.vertical,
+              children: <Widget>[
+                ListTile(
+                  title: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
-                        Text(
-                          "سعر الطلبيات الجاهزة :- ",
-                          style: new TextStyle(
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.bold,
+            Icon(
+                            Icons.bubble_chart_outlined,
                           ),
-                        ),
-                        StreamBuilder<List<Order>>(
-                            stream: OrderServices()
-                                .businessAllDoneOrders(widget.business.uid),
-                            builder: (context, snapshot) {
-                              int totalPrice = 0;
-                              if (!snapshot.hasData) {
-                                return Text('جاري التحميل ... ');
-                              } else {
-                                orders = snapshot.data;
-                                orders.forEach((element) {
-                                  if (element.isPaid == false) {
-                                    totalPrice += element.price;
-                                    total = totalPrice;
-                                  }
-                                });
-                                return Text(
-                                  totalPrice.toString(),
-                                  style: new TextStyle(
-                                    fontSize: 14.0,
-                                    color: Color(0xFF457B9D),
-                                    fontWeight: FontWeight.bold,
+                  Text(
+                                    "${widget.business.name} " ?? "",
+                                    style: new TextStyle(
+                                      fontSize: 13.0,
+                                      //color: Color(0xFF457B9D),
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  )
+
+                      ]),
+                  subtitle:  InkWell(
+                                    child: Text(
+                                      " ${widget.business.phoneNumber.toString()} " ?? "",
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.green,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: "Amiri",
+                                      ),
+                                    ),
+                                    onTap: () {
+                                      launch("tel:" +
+                                          Uri.encodeComponent(
+                                              '${widget.business.phoneNumber.toString()}'));
+                                    },
                                   ),
-                                );
-                              }
-                            }),
-                        Padding(
-                          padding: EdgeInsets.only(
-                              left: height * 0.025,
-                              right: height * 0.025,
-                              top: height * 0,
-                              bottom: height * 0),
-                          child: Image.asset(
-                            'assets/price.png',
-                            scale: 1.3,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          Text(
-                            "اضافة فاتورة ",
-                            style: new TextStyle(
-                              fontSize: 13.0,
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => AddInvoice(
-                                        businessId: widget.business.uid,
-                                        name: widget.name)),
-                              );
-                            },
-                            icon: Icon(
-                              Icons.add,
-                            ),
-                          )
-                        ]),
-                  ]),
-              HorizantalDivider(width),
-              OrderCountByBusiness(
-                business: widget.business,
+
+                  trailing:
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                          AddInvoice(
+                                                              businessId: widget.business.uid,
+                                                              name: widget.name)),
+
+                      );
+                    },
+                    child: Text("اضافة فاتورة الشركة",
+                      style: new TextStyle(fontSize: 14.0,
+                          fontWeight: FontWeight.bold,color: Color(0xff316686)),),
+                  ),),
+
+              ],
+            ),
+        //
+        // ListTile(
+        //   title:  Row(
+        //       mainAxisAlignment: MainAxisAlignment.start,
+        //       children: <Widget>[
+        //         Icon(
+        //             Icons.phone
+        //         ),
+        //         InkWell(
+        //           child: Text(
+        //             "${widget.business.phoneNumber} " ?? "",
+        //             style: TextStyle(
+        //               fontSize: 14,
+        //               color: Colors.green,
+        //               fontWeight: FontWeight.bold,
+        //               fontFamily: "Amiri",
+        //             ),
+        //           ),
+        //           onTap: () {
+        //             launch("tel:" +
+        //                 Uri.encodeComponent('0${widget.business.phoneNumber}'));
+        //           },
+        //         ),
+        //       ]),
+        // ),
+        ListTile(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                "سعر الطلبيات الجاهزة :- ",
+                style: new TextStyle(
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-              HorizantalDivider(width),
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: <Widget>[
-                    InkWell(
-                      child: Expanded(
-                          child: Text(
-                        " ${widget.business.phoneNumber.toString()} " ?? "",
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.green,
+              StreamBuilder<List<Order>>(
+                  stream: OrderServices()
+                      .businessAllDoneOrders(widget.business.uid),
+                  builder: (context, snapshot) {
+                    int totalPrice = 0;
+                    if (!snapshot.hasData) {
+                      return Text('جاري التحميل ... ');
+                    } else {
+                      orders = snapshot.data;
+                      orders.forEach((element) {
+                        if (element.isPaid == false) {
+                          totalPrice += element.price;
+                          total = totalPrice;
+                        }
+                      });
+                      return Text(
+                        totalPrice.toString(),
+                        style: new TextStyle(
+                          fontSize: 14.0,
+                          color: Color(0xFF457B9D),
                           fontWeight: FontWeight.bold,
-                          fontFamily: "Amiri",
                         ),
-                      )),
-                      onTap: () {
-                        launch("tel:" +
-                            Uri.encodeComponent(
-                                '${widget.business.phoneNumber.toString()}'));
-                      },
-                    ),
-                  ]),
+                      );
+                    }
+                  }),
+              Padding(
+                padding: EdgeInsets.only(
+                    left: height * 0.025,
+                    right: height * 0.025,
+                    top: height * 0,
+                    bottom: height * 0),
+                child: Image.asset(
+                  'assets/price.png',
+                  scale: 1.3,
+                ),
+              ),
             ],
-          )),
-          SizedBox(
-            height: 15,
           ),
-        ]);
+        ),
+
+            OrderCountByBusiness(
+              business: widget.business,
+            ),
+      ]),
+    ));
+
+
   }
 
   // ignore: non_constant_identifier_names
