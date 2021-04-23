@@ -49,7 +49,6 @@ class Order {
   bool isArchived;
   DateTime deleteDate;
   String deleteUser;
-  String barcode;
 
   Order({
     this.uid,
@@ -94,6 +93,5 @@ class Order {
     this.isPaidDate,
     this.inStockDate,
     this.paidDriverDate,
-    this.barcode,
   });
 }
