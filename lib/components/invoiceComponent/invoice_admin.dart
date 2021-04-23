@@ -2,8 +2,6 @@ import 'package:AsyadLogistic/components/invoiceComponent/placeholder.dart';
 import 'package:flutter/material.dart';
 import 'package:AsyadLogistic/components/pages/drawer.dart';
 
-import 'shared_data.dart';
-
 class InvoiceAdmin extends StatefulWidget {
   final String name;
   InvoiceAdmin({this.name});

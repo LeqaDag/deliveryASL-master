@@ -1,5 +1,7 @@
+import 'package:AsyadLogistic/classes/deliveryStatus.dart';
 import 'package:AsyadLogistic/classes/order.dart';
 import 'package:AsyadLogistic/services/customerServices.dart';
+import 'package:AsyadLogistic/services/deliveryStatusServices.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toast/toast.dart';
@@ -70,6 +72,30 @@ class _DriverOrderListState extends State<DriverOrderList> {
                                   OrderServices(
                                     uid: order.uid,
                                   ).updateOrderFromInStokeToisDelivery;
+                                  String id = await DeliveriesStatusServices(
+                                          orderID: order.uid)
+                                      .deliveryStatusId;
+                                  if (id == null) {
+                                    await DeliveriesStatusServices()
+                                        .addDeliveryStatusData(DeliveryStatus(
+                                            orderID: order.uid,
+                                            driverID: order.driverID,
+                                            businessID: order.businesID,
+                                            status: "13",
+                                            date: DateTime.now(),
+                                            note: "",
+                                            isArchived: false));
+                                  } else {
+                                    await DeliveriesStatusServices(uid: id)
+                                        .updateDeliveryStatus(DeliveryStatus(
+                                            orderID: order.uid,
+                                            driverID: order.driverID,
+                                            businessID: order.businesID,
+                                            status: '13',
+                                            date: DateTime.now(),
+                                            note: "",
+                                            isArchived: false));
+                                  }
                                 }
 
                                 Toast.show("تم الاستلام", context,
@@ -475,6 +501,7 @@ class _DoneDriverOrdersState extends State<DoneDriverOrders> {
         visible: false,
       );
     } else if (widget.order.isDone == true &&
+        widget.order.isPaidDriver == false &&
         widget.order.driverID == widget.uid) {
       return InkWell(
         onTap: () {

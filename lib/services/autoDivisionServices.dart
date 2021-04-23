@@ -1,11 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:AsyadLogistic/classes/driver.dart';
 import 'package:AsyadLogistic/classes/location.dart';
 import 'package:AsyadLogistic/classes/order.dart';
-import 'package:AsyadLogistic/services/driverServices.dart';
-import 'package:AsyadLogistic/services/locationServices.dart';
-import 'package:AsyadLogistic/services/orderServices.dart';
 
 class AutoDivisiovServices {
   final CollectionReference locationCollection =

@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:AsyadLogistic/classes/order.dart';
 import 'package:AsyadLogistic/components/orderComponent/orderList.dart';
 import 'package:AsyadLogistic/components/pages/drawer.dart';
-import 'package:AsyadLogistic/components/screenComponent/auto_division.dart';
 import 'package:AsyadLogistic/services/orderServices.dart';
 
 import '../../constants.dart';

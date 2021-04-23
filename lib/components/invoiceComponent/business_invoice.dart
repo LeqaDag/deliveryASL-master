@@ -3,9 +3,7 @@ import 'package:AsyadLogistic/classes/order.dart';
 import 'package:AsyadLogistic/services/orderServices.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart' as intl;
 import 'package:url_launcher/url_launcher.dart';
-import '../../constants.dart';
 import 'companyInvoice/add_invoice.dart';
 import 'shared_data.dart';
 
