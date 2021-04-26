@@ -45,7 +45,7 @@ dependencies:
   flutter_barcode_scanner: ^1.0.2
   syncfusion_flutter_pdf: ^18.1.42-beta
   path_provider: ^1.6.5
-  open_file: ^3.0.1  
+  open_file: ^3.0.1
   printing: ^3.6.0
   fluttertoast: ^3.0.4
   # bubble_showcase: ^1.0.0
